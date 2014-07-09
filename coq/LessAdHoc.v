@@ -1,4 +1,4 @@
-(** %\chapter{Canonical Structures and Lemma Overloading}% *)
+(** %\chapter{Proof Automation via Overloaded Lemmas}% *)
 
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
 Set Implicit Arguments.

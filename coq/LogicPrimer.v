@@ -2,7 +2,12 @@
 
 (** %\chapter{Propositional Logic and SSReflect}% *)
 
+(** The following directive enables SSReflect.  *)
+
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
+
+(** The following three are explained in the SSReflect tutorial%~\cite[Section 3.3]{Gontier-al:TR}%. *)
+
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
