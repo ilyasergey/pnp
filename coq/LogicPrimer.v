@@ -16,7 +16,7 @@ Definition append_lm (A: eqType) (x: A) (xs ys: seq A):
 (** ** A simple proof example *)
 
 Proof.
-elim: xs=>//a ls Ih.
+elim: xs=>// a ls Ih.
 rewrite inE; case/orP; first by move/eqP=>->/=; rewrite !eq_refl.
 by move/Ih=>/=->.
 Qed.

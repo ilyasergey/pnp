@@ -1,4 +1,4 @@
-MODULES      := LogicPrimer
+MODULES      := LogicPrimer Rewriting DepRecords LessAdHoc HTT
 VS           := $(MODULES:%=coq/%.v)
 TEX          := $(MODULES:%=latex/%.v.tex)
 RELEASE      := $(VS) Makefile
