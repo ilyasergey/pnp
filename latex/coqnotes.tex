@@ -12,15 +12,25 @@
 % Some new commands and CoqDoc macros
 \newcommand{\naive}[0]{na\"ive}
 
-\title{Programs and Proofs:\\
-Mechanizing Mathematics with Dependent Types 
+% Keep footnotes on one page
+\interfootnotelinepenalty=10000 
+
+% Line spacings
+\setlength{\parskip}{0.35\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip}
+\setlength{\parsep}{\parskip}
+\setlength{\topsep}{0cm}
+\setlength{\parindent}{0cm}
+
+
+\title{Programming Mathematics with Dependent Types 
 \\
 (Lecture Notes)
 }
 
-\author{}
+\author{Ilya Sergey}
 
 %\makeindex
+
 
 \begin{document}
 
@@ -41,12 +51,15 @@ This page is intentionally left blank.
 \tableofcontents
 
 \include{Introduction.v}
-\include{LogicPrimer.v}
+\include{FunProg.v}
 \include{Induction.v}
+\include{LogicPrimer.v}
 \include{Rewriting.v}
 \include{DepRecords.v}
 \include{HTT.v}
 \include{LessAdHoc.v}
+
+\include{further}
 
 \clearpage
 \phantomsection
