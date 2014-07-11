@@ -101,8 +101,8 @@ function will simply negate the boolean value and return its opposite:
 
 Definition negate b := 
   match b with 
-    true  => false
-  | flase => true
+  | true  => false
+  | false => true
   end.
 
 (**
@@ -180,7 +180,7 @@ convinient notation [0] to the _zero_ constructor [O].
 
 Fixpoint my_plus n m := 
  match n with 
-   0     => m   
+ | 0     => m   
  | n'.+1 => let: tmp := my_plus n' m in tmp.+1
  end.
 
@@ -294,7 +294,7 @@ Coq, we will continue our overview of programming principles in Coq.
 With the example of the addition function, we have already seen how
 the recursive functions are defined. However, using the [Fixpoint]
 command is not the only way to provide definitions to functions
-similar to [my_sum]. When defining the types [unit] or [empty], we
+similar to [my_plus]. When defining the types [unit] or [empty], we
 could have noticed the following output produced by the interactive
 interpreter:
 [[
@@ -312,7 +312,7 @@ accompannied by [nat_rect], [nat_ind] and [nat_rec], correspondingly.
 
 Continuing playing with natural numbers and leaving the [nat_rect] and
 [nat_ind] aside for a moment, we focus on the recurision primitive
-[nat_rec], which is a _higher-order_ function with the following type
+[nat_rec], which is a _higher-order_ function with the following type:
 
 *)
 
@@ -323,14 +323,348 @@ nat_rec : forall P : nat -> Set,
           P 0 -> (forall n : nat, P n -> P n.+1) -> forall n : nat, P n
 ]]
 
-The type of [nat_rec] requires a bit of explanation. 
+The type of [nat_rec] requires a bit of explanation. It is a
+polymorphic in the sence of Haskell and OCaml (i.e., it is parametrize
+over another type). More precisely, its first parameter, bound by the
+[forall] quantifier is a function, which maps natural numbers to types
+(hence the typo if this parameter is [nat -> Set]). The second
+parameter is a result of type described by application of the function
+[P] to zero. The third parameter is a _family_ of functions, indexed
+by a natural number [n]. Each function from such a family takes an
+argument of type [P n] and returns a result of type [P n.+1]. The
+default recursion principle for natural numbers is therefore a
+higher-order function (i.e., a combinator). If the three discussed
+arguments are provided, the result of [nat_rec] will be a function,
+mapping a natural number [n] to a value of type [P n].
 
-TODO
+To see how [nat_rec] is implemented, let us explore its generalized
+version, [nat_rect]:
+
+*)
+
+Print nat_rect.
+(** 
+[[
+nat_rect = 
+fun (P : nat -> Type) (f : P 0) (f0 : forall n : nat, P n -> P n.+1) =>
+fix F (n : nat) : P n :=
+  match n as n0 return (P n0) with
+  | 0 => f
+  | n0.+1 => f0 n0 (F n0)
+  end
+     : forall P : nat -> Type,
+       P 0 -> (forall n : nat, P n -> P n.+1) -> forall n : nat, P n
+]]
+
+Abstracting away from the details, we can see that [nat_rect] is
+indeed a function with three parameters (the keyword [fun] is similar
+the lambda notation and is common in the family of ML-like languages).
+The body of [nat_rect] is implemented as a recursive function (defined
+via the keyword [fix]) taking an argument [n] of type
+[nat]. Internally, it proceeds similaly to our implementation of
+[my_plus]: if the argument [n] is zero, then the "default" value [f] of
+type [P 0] is returned. Otherwise, the function proceeds recursively
+with a smaller argument [n0] by applying the "step" function [f0] to
+the [n0] and the result of recursive call [F n0].
+
+Therefore, the summing function can be implemented via the [nat]'s
+recursion combinator as follows:
+*)
+
+Definition my_plus1 n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
+
+Eval compute in my_plus1 16 12.
+
+(** 
+[  = 28 : (fun _ : nat => nat) 16]
+
+The result of invoking [my_plus1] is expectable. Notice, however, that
+when defining it we didn't have to use the keyword [Fixpoint] (or,
+equivalently, [fix]), since all recursion has been "sealed" within the
+definition of the combinator [nat_rect].
+
+** A note on dependent pattern matching
+
+An important thing to notice is the fact that the type of [P] in the
+definition of [nat_rec] is a function that maps _values_ of type [nat]
+into arbitrary types. This gives us a possibility to define
+_dependently-typed_ functions, whose return type depends on their
+input argument value. A simple example of such a function is below:
+
+*)
+
+Definition three_to_unit n := 
+ let: P := (fun n => if n is 3 then unit else nat) in
+ nat_rec P 0 (fun n' _ => match n' return P n'.+1 with
+               | 2 => tt
+               | _ => n'.+1
+               end) n.
+
+Eval compute in three_to_unit 0.
+(** [  = 0 : nat] *)
+Eval compute in three_to_unit 5.
+(** [  = 5 : nat] *)
+Eval compute in three_to_unit 3.
+(** [  = tt : unit] *)
+
+(** 
+
+The toy function [three_to_unit] maps every natural number to itself
+except for [3], which is being mapped into the value [tt] of type
+[unit]. We define it via the [nat_rec] combinator by providing it a
+function [P], which defines the type contract described just above.
+Importantly, as the first parameter.  The "step" function, which is a
+third parameter, of this [nat_rec] call, makes use of the _dependent_
+pattern matching, which now specifies explicit return type [P (n'.+1)]
+of the whole [match ... with ... end] expression. This small addition
+allows the Coq type checker to relate the expected type of the final
+result [P n] to the result of the pattern matching expression. Without
+the explicit [return] in the patternt matching, in some cases when its
+result type depends on the value of the scrutinee, the Coq type
+checking engine will fail to unify the type of the branch and the
+overall type.%\footnote{However, in this example Coq 8.4 does just
+fine even without the \texttt{return} annotation, we nevertheless
+presented it to outline the possible problem.}%
+
+In general, dependent pattern matching is quite powerful tool, which,
+however, should be used with a great caution, as it makes assisting
+Coq type checker to be a rather non-trivial task. In the was majority
+of the cases dependent pattern matching can be avoided. We address the
+curious reader to the Chapter 8 of Adam Chlipala's book for more
+examples on the subject%~\cite{Chlipala:BOOK}%.
+
+*)
+
+(** * More datatypes 
+
+While programming with natural numbers is fun, it is time for us to
+take a brief look at other datatypes familiar from functional
+programming, as they appear in Coq.
+
+
+The type of pairs is parametrized by two arbitrary types [A] and
+[B] (by now let us think of its sort [Type] as of a generalization of
+a generalization of [Set], which we have seen before). As in Haskell
+or OCaml, [prod] can also be seen as a type-level constructor with two
+parameters that can be possibly curried:
+*)
+
+Check prod.
+(**
+[ prod : Type -> Type -> Type]
+
+Pairs in Coq are defined as a higher-order datatype [prod] with just
+one constructor [pair]:
+
+*)
+Print prod.
+(** 
+[[
+Inductive prod (A B : Type) : Type :=  pair : A -> B -> A * B
+
+For pair: Arguments A, B are implicit and maximally inserted
+For prod: Argument scopes are [type_scope type_scope]
+For pair: Argument scopes are [type_scope type_scope _ _]
+]]
+
+The display above, besides showing how [prod] is defined, specifies
+that the type arguments of [prod] are _implicit_, in the sence that
+they will be inferred by the type-checker when enough information is
+provided, e.g., the arguments of the constructor [pair] are
+instantiated with particular values. For instance, type arguments can
+be omitted in the following expression: *)
+
+Check pair 1 tt.
+
+(** 
+[ (1, tt) : nat * unit]
+
+If one wants to explicitly specify the type arguments of a
+constructor, the [@]-prefixed notation can be used:
+
+*)
+
+Check @pair nat unit 1 tt.
+
+(** 
+[ (1, tt) : nat * unit]
+
+Notice that the parameters of the datatype come first in the order
+they are declared, followed by the arguments of the constructor (often
+also referred to as _indices_).
+
+The last two lines following the definition of [prod] specify that the
+notation for pairs is overloaded (in particular, the "[_ * _]"
+notation is also used by Coq to denote the multiplication of natural
+numbers), so it is given a specific _interpretation scope_. That is,
+when the expression [nat * unit] will appear in the type position, it
+will be interpreted as a type [pair nat unit] rather than like an
+(erroneous) attempt to "multiply" two types as they were integers. 
+
+Coq comes with a number of functions for manipulating datatypes, such
+as pair. For instance, the first and second components of a pair:
+*)
+
+Check fst.
+(**
+[fst : forall A B : Type, A * B -> A]
+*)
+
+Check snd.
+(**
+[fst : forall A B : Type, A * B -> A]
+
+Curiously, the notation "[_ * _]" is not hard-coded into Coq, but
+rather is defined as a lightweight syntactic sugar on top of standard
+Coq syntax. Very soon we will see how one can easily extend Coq's
+syntax by defining their own notations. We will also see how is it
+possible to find what a particular notation means.
+
+The arsenal of a functional programmer in Coq would be incomplete
+without proper sum and list datatypes:
+*)
+
+Print sum.
+(**
+[Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B]
+*)
+
+Print list.
+
+(** 
+[Inductive list (A : Type) : Type := nil : list A | cons : A -> list A -> list A]
+*)
+
+(** * Searching for definitions and notations
+
+Of course, we could keep enumerating datatypes and operations on them
+from the standard Coq/SSReflect library (which is quite large), but
+it's always better for a starting Coq hacker to have a way to find
+necessary definitions on her own. Fortunately, Coq provides a very
+powerful search tool, whose capabilities are greatly amplified by
+SSReflect. Its use is better demonstrated by examples.
+
+*)
+
+Search "filt".
+(** 
+[[
+List.filter  forall A : Type, (A -> bool) -> list A -> list A
+List.filter_In
+   forall (A : Type) (f : A -> bool) (x : A) (l : list A),
+   List.In x (List.filter f l) <-> List.In x l /\ f x = true
+]]
+*)
+
+Search "filt" (_ -> list _).
+(** 
+[[
+List.filter  forall A : Type, (A -> bool) -> list A -> list A
+]]
+
+That is, the first [Search] query just takes a string and looks for
+definitions of functions and propositions that have it as a part of
+their name. The second pattern elaborates the first by adding a
+requirement that the type of the function should include [(_ -> list
+_)] as a part of its return type, which narrows the search scope. As usual the
+underscores [_] denote a wildcard in the pattern and can be used both
+in the name or type component. Moreover, one can use named patterns of
+the form [?id] to bind free identifiers in the sub-types of a sought
+expression. For instance, the next query will list all function with
+map-like types (notice how the higher-order constructor types are
+abstracted over using wildcards):
+*)
+
+Search _ ((?X -> ?Y) -> _ ?X -> _ ?Y).
+(**
+[[
+option_map  forall A B : Type, (A -> B) -> option A -> option B
+List.map  forall A B : Type, (A -> B) -> list A -> list B
+...
+]]
+
+If necessary, the type patterns in the query can have their types
+explicitly specified in order to avoid ambiguities due to notation
+overloading. For instance, the folowing search will return all
+functions and propositions that make use of the [_ * _] notation and
+operate with natural numbers: *)
+
+Search _ (_ * _ : nat).
+
+(** 
+
+In contrast, the next query will only list the functions/propositions,
+where [_ * _] is treated as a notation for the pair datatype
+(including [fst] and [snd], which we have already seen):
+
+*)
+
+Search _ (_ * _: Type).
+
+(**
+
+A detailed explanation of the syntax of [Search] tool as well as
+additional examples can be found in Chapter 10 of SSReflect
+documentation%~\cite{Gontier-al:TR}%.
+
+When working with someone's Coq development, sometimes it might be not
+entirely obvious what particular notation means: Coq's extensible
+parser is very simple to abuse by defining completely intractable
+abbreviations, which might say a lot to the library developer, but not
+to its client. Coq provide the [Locate] to help in demistifying
+notations as well as locating the position of particular definitions.
+For example, the following query will show all the definitions of the
+notation "[_ + _]" as well as the scopes they defined in.
+
+*)
+
+Locate "_ + _".
+
+(** 
+[[
+Notation            Scope     
+"x + y" := sum x y   : type_scope
+                      
+"m + n" := addn m n  : nat_scope
+                      (default interpretation)
+...
+]]
+
+We can see now that the plsu-notation is used in particular for the
+addition of natural nubmers (in [nat_scope]) and the declaration of a
+sum type (in [type_scope]). Similarly to the notations, the [Locate]
+command can help finding the definition in the source modules they
+defined:%\footnote{The module system of Coq is similar to OCaml and
+will be discussed further in this chapter.}% *)
+
+Locate map.
+
+(**
+[[
+Constant Coq.Lists.List.map
+  (shorter name to refer to it in current context is List.map)
+Constant Ssreflect.ssrfun.Option.map
+  (shorter name to refer to it in current context is ssrfun.Option.map)
+...
+]]
+*)
+
+(** * An alternative way to define inductive datatypes
+
 *)
 
 
+Inductive prod1 (A B : Type) : Type :=  pair1 of A & B.
+Implicit Arguments pair1 [A B].
 
-(** * More datatypes *)
+Open Scope type_scope.
+
+
+Check pair1 3 5.
+
+(** * Modules and sections
+
+ *)
 
 
 
