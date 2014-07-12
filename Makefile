@@ -6,7 +6,7 @@ ssr.pname    := $(SSRCOQ_LIB)
 ssr.lname    := Ssreflect
 COQLIBS      := ssr
 MAKEFILE     := Makefile.coq
-COQNOTES     := coqnotes
+COQNOTES     := pnp
 
 .PHONY: coq clean doc
 
