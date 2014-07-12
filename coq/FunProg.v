@@ -13,10 +13,9 @@ languages, such as Haskell, OCaml or Scala, Coq makes heavy use of
 algebraic datatypes, represented by a number of possibly recursive
 constructors. 
 
-Very soon, we will see how programming with inductive algebraic data
-types incorporates reasoning about definitions, but for now let us
-take a short tour of Coq's syntax and define a couple of simple
-programs.
+Very soon, we will see how _programming_ with inductive algebraic
+datatypes incorporates _reasoning_ about them, but for now let us take
+a short tour of Coq's syntax and define a couple of simple programs.
 
 *)
 
@@ -33,7 +32,7 @@ in the following manner:
 Inductive unit : Set := tt.
 
 (** 
-
+ 
 The definition above postulates the type [unit] that has _exactly_ one
 constructor, namely, [tt]. In the type theory jargon, which we will
 adopt, it is said that the expression [tt] _inhabits_ the [unit]
@@ -187,7 +186,7 @@ Fixpoint my_plus n m :=
 (** 
 
 Here, we deliberately used less concise notation in order to
-demonstrate the syntax [let: ... := ... in ...] construct, which,
+demonstrate the syntax [let: x := e1 in e2] construct, which,
 similarly to Haskell and OCaml allows, one to bind intermediate
 computations within expressions.%\footnote{The same example also
 demonstrates the use of SSReflect alternative to Coq's standard
@@ -383,7 +382,7 @@ when defining it we didn't have to use the keyword [Fixpoint] (or,
 equivalently, [fix]), since all recursion has been "sealed" within the
 definition of the combinator [nat_rect].
 
-** A note on dependent pattern matching
+** Dependent function types and pattern matching
 
 An important thing to notice is the fact that the type of [P] in the
 definition of [nat_rec] is a function that maps _values_ of type [nat]
@@ -416,15 +415,16 @@ function [P], which defines the type contract described just above.
 Importantly, as the first parameter.  The "step" function, which is a
 third parameter, of this [nat_rec] call, makes use of the _dependent_
 pattern matching, which now specifies explicit return type [P (n'.+1)]
-of the whole [match ... with ... end] expression. This small addition
+of the whole [match e with ps end] expression. This small addition
 allows the Coq type checker to relate the expected type of the final
 result [P n] to the result of the pattern matching expression. Without
 the explicit [return] in the patternt matching, in some cases when its
 result type depends on the value of the scrutinee, the Coq type
 checking engine will fail to unify the type of the branch and the
 overall type.%\footnote{However, in this example Coq 8.4 does just
-fine even without the \texttt{return} annotation, we nevertheless
-presented it to outline the possible problem.}%
+fine even without the explicit \texttt{return} annotation in the
+[match]-expression, we nevertheless presented it to outline the
+possible problem.}%
 
 In general, dependent pattern matching is quite powerful tool, which,
 however, should be used with a great caution, as it makes assisting
@@ -432,6 +432,106 @@ Coq type checker to be a rather non-trivial task. In the was majority
 of the cases dependent pattern matching can be avoided. We address the
 curious reader to the Chapter 8 of Adam Chlipala's book for more
 examples on the subject%~\cite{Chlipala:BOOK}%.
+
+Dependent function types, akin to those of [nat_rec] and our
+[three_to_unit], which allow the type of the result to vary depending
+on the value of a function's argument are a powerful way to specify
+the behaviour of functions, and therefore, are often used to "certify"
+the dependently-typed programs. In Coq, dependent function types are
+omnipresent, and are syntactically specified using the
+[forall]-binder, similarly to the way _parametric_ types are specified
+in Haskell or type calculi like polymorphic lambda calculus (also
+known as System F%~\cite{Reynolds:SP74,Girard:PhD}%). The crucial
+difference beween Coq's core calculus and System F is that in Coq the
+types can be parametrised not just by _types_ but also by
+_values_. While the utility of this language "feature" can be already
+demonstrated for constructing and type-checking _programs_ (for
+example, [three_to_unit]), its true strength is best demonstrated when
+using Coq as a system to construct _proofs_, which is the topic of the
+subsequents chapters.
+
+** Recursion principle and non-inhabited types
+
+Automatically-generated recursion principles for inductively-defined
+datatypes provide a generic (although not universal) scheme to define
+recursive functions for the corresponding values. But what if a type
+is not inhabited, i.e., there are no values in it. We have already
+seen such a type---it's [empty], which defined the empty set. As any
+inductive datatype in Coq, it comes with an automatically generated
+generalized recursion principle, so let us check its type: *)
+
+Check empty_rect.
+
+(** 
+[[
+empty_rect
+     : forall (P : empty -> Type) (e : empty), P e
+]]
+
+Very curiously, the type signature of [empty_rec] postulates that it
+is sufficient to provide a function from [empty] to any type (which
+can very well be just a constant type, e.g., nat), and an argument [e]
+of type [empty], so the result of the call to [empty_ret] will bee of
+type [P e]. More concisely, empty_rect allows us to produce a result
+of _any_ type, given that we can provide an argument of type
+[empty]. While it might sound very surprising at the first moment,
+upon some reflection it seems like a perfectly valid principle, since
+we will _never_ be able to construct the required value of type
+[empty] on the first place. In more fancy words, such recursion
+principle can be reformulated as the following postulate:
+
+%
+\begin{center}
+
+If we assume existence of a value, which \emph{cannot be constructed},
+we will be able to construct \emph{anything}.
+
+\end{center}
+%
+
+This is a very important insight, which will become illuminating when
+we will be discussing reasoning with negation in the next chapter.
+
+To conclude this section, we only mention that defining a datatype
+with no constructors is not the only way to get a type, which is not
+inhabited. For example, the following type
+[strange]%~\cite{Bertot-Casteran:BOOK}% has a constructor, which,
+however, can never be invoked, as it requires a value of it type
+itself in order to return a value: *)
+
+Inductive strange : Set :=  cs : strange -> strange.
+
+(** 
+
+Therefore, an attempt to create a value of type [strange] by invoking
+its single constructor will inevitably lead to an infinie,
+non-terminating, series of constructor calls, and such programs cannon
+be encoded in Coq. It is interesting to take a look at the recursion
+principle of [strange]:
+
+*)
+
+Check strange_rect.
+
+(** 
+[[
+strange_rect
+     : forall P : strange -> Type,
+       (forall s : strange, P s -> P (cs s)) -> forall s : strange, P s
+]]
+
+That is, if we pose the argument [P] to be a constant type function
+[fun _ => empty], and the second argument to be just an identity
+function [(fun _ x => x)] that maps its second argument to itself, we
+will get a function that, upon receiving argument of type [strange]
+will construct an argument of type [empty]! More precisely, the
+existence of a value of type [strange] would allow us to create a
+value of type [empty] and, therefore a value of _any_ type, as was
+previously demonstrated. 
+
+To summarize, designing a datatype, which is not inhabited, while not
+trivial, is not impossible, and it is a task of a designer of the type
+to make sure that its values in fact can be constructed.
 
 *)
 
@@ -649,80 +749,98 @@ Constant Ssreflect.ssrfun.Option.map
 ]]
 *)
 
-(** * An alternative way to define inductive datatypes
+(** * An alternative syntax to define inductive datatypes
+
+In the previous sections of this chapter we have already seen the way
+inductive datatypes are defined in the setting "traditional"
+Coq. These are the definitions that will be displayed when using the
+[Print] utility. However, in the rest of the development in this book,
+we will be using a version of Coq, enhanced with the SSReflect tool,
+which, in particular, provides more concise notation for defining
+constructors. For instance, as an alternative to the standard
+definition of the product datatype, we can define our own product in the following way:
 
 *)
 
+Inductive my_prod (A B : Type) : Type :=  my_pair of A & B.
 
-Inductive prod1 (A B : Type) : Type :=  pair1 of A & B.
-Implicit Arguments pair1 [A B].
+(** 
 
-Open Scope type_scope.
+Notice that [A] and [B] are type parameters of the whole datatype as
+well as of its single constructor [my_pair], which _additionally_
+required two value arguments, _whose_ types are [A] and [B],
+respectively. 
+
+Next, let us try to create a value of type [my_prod nat unit] and
+check its type.  
+
+[[
+Check my_pair 1 tt.
+
+Error: The term "1" has type "nat" while it is expected to have type "Type".
+]]
+
+The error message is cause by the fact that the constructor has
+expected the type parameters to be provided _explicitly_ first, so the
+value above should in fact has been created by calling [my_pair nat
+unit 1 tt]. Since mentioning types every time is tedious, we can now
+take advantage of Coq's elaboration algorithm, which is capable to
+infer them from the values of actual arguments (e.g., [1] and [tt]),
+and declare [my_pair]'s type arguments as implicit:
+*)
+
+Implicit Arguments my_pair [A B].
+
+(**
+
+We have already witnessed standard Coq's datatypes making use of
+specific user-defined notations. Let us define such notation for the
+type [my_prod] and its [my_pair] constructor.
+ *)
+
+Notation "X ** Y" := (my_prod X Y) (at level 2).
+Notation "( X ,, Y )" := (my_pair X Y).
+
+(** 
+
+The [level] part in the first notation definition is mandatory for
+potentially left-recursive notations, which is the case here, in order
+to set up parsing priorities with respect to other notations.
+
+With these freshly defined notations we are now free to write the
+following expressions:
+
+*)
+
+Check (1 ,, 3).
+
+(** 
+[[
+(1,, 3)
+     : nat ** nat
+]]
+
+*)
+Check nat ** unit ** nat.
+
+(** 
+[[
+(nat ** unit) ** nat
+     : Set
+]]
+
+Notice that the notation "[_ ** _]" for [my_pair] by default is set to
+be left-associative. The other associativity should be declared
+explicitly, and we address the reader to the Chapter 12 of Coq
+manual%~\cite{Coq-manual}% for the details of the [Notation] command
+syntax.
 
 
-Check pair1 3 5.
+ * Modules and sections
 
-(** * Modules and sections
+We conclude this chapter by a very brief overview of Coq's module
+system.
 
  *)
 
 
-
-(* Fixpoint is_even n :=  *)
-(*  match n with  *)
-(*   | 0  => true *)
-(*   | 1  => false *)
-(*   | n'.+2  => is_even n' *)
-(*  end.  *)
-
-(* Check nat_rec. *)
-
-(* Definition is_even' := nat_rec (fun _ => bool) true (fun _ => negate).  *)
-
-(* Eval compute in is_even' 140. *)
-
-
-(* Check list_rec. *)
-
-(* Program Definition sum (l: seq nat): nat :=  *)
-(*   list_rec (fun _ => nat) 0 (fun x l res => x + res) l. *)
-
-(* Definition my_list := 1 :: 2 :: 3 :: nil. *)
-
-(* Eval compute in sum my_list. *)
-
-
-
-(* Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path. *)
-
-
-
-
-
-
-(* Set Implicit Arguments. *)
-(* Unset Strict Implicit. *)
-(* Unset Printing Implicit Defensive. *)
-
-(* Inductive isZero n : Prop := IsZero of (n = 0) & (n = 1). *)
-
-
-(* Theorem blah: forall n, isZero n -> False. *)
-(* move=> n. case. *)
-(* move=>->.  *)
-
-(* Theorem isZero_contra : isZero 1 -> False. *)
-(* Proof. *)
-(* case.  *)
-(* have X1: if 0 == 1 then False else True by case Y: (0 == 1)=>//.  *)
-(* by rewrite eq_sym=>X; rewrite X in X1. *)
-
-
-
-(* case Y: (0 == 1)=>//. *)
-(* have Z: isZero 1 -> 0 == 1. *)
-
-
-(* by rewrite Y in X1 =>/=. *)
-
-(*    move=> Z; rewrite -Z in X1. *)

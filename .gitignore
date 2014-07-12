@@ -149,6 +149,6 @@ cv/*.out
 Makefile.coq
 loadpath.v
 latex/*.v.tex
-latex/coqnotes.pdf
+latex/*.pdf
 
 
