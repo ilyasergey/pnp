@@ -3,7 +3,7 @@
 (** 
 
 We start our short journey with observing the capabilities of Coq as
-programming language. 
+a programming language. 
 
 Coq is often described as a functional programming language, since its
 programs are always pure, possibly higher-order functions, which means
@@ -63,14 +63,14 @@ Inductive empty : Set := .
 (**
 
 That is the empty set is precisely described by the type, values of
-which we simply _cannot construct_, as the type iteslf does _not_
+which we simply _cannot construct_, as the type itself does _not_
 provide any constructors! 
 In fact, this observation about inhabitance of types/sets and the
 definition of an empty type will come in quite handy very soon when we
 will be talking about the truth and falsehood in the setting of
-Curry-Howard correspondnce.
+Curry-Howard correspondence.
 Unfortunately, at this moment there is not so much we can do with such simple types as [unit] or
-[empty], so we procced by defining some more interesting datatypes.
+[empty], so we proceed by defining some more interesting datatypes.
 
 The type [bool] is familiar to every programmer. In Coq, it is
 unsurprisingly defined by providing exactly two constructors: [true]
@@ -107,7 +107,7 @@ Definition negate b :=
 (**
 
 The syntax of Coq as programming language is very similar to Standard
-ML. The keyword [Definition] us used to define non-reqursive values,
+ML. The keyword [Definition] us used to define non-recursive values,
 including functions. In the example above, we defined a function with
 one argument [b], which is being scrutinized agains two possibles
 value patterns ([true] and [false]), respectively, and the results are
@@ -130,7 +130,7 @@ Check negate.
 At this point we have seen only very simple forms of inductive types,
 such that all their inhabitants are explicitly enumerated (e.g.,
 [unit] and [bool]). The next type used ubiquitously in the
-computations and mathematical resoning are natural numbers, the first
+computations and mathematical reasoning are natural numbers, the first
 _truly_ inductive datatype. Following the Peano axioms the type [nat]
 natural numbers are defined by induction, i.e., via the following two
 constructors: *)
@@ -166,14 +166,14 @@ Require Import ssrnat.
 Probably, the most basic function working on natural numbers is their
 addition. Even though such function is already implemented in the vast
 majority of the programming languages (including Coq), let us do it
-from scratch using the defitinon of [nat] from above. Since [nat] is a
+from scratch using the definition of [nat] from above. Since [nat] is a
 recursive type, the addition of two natural numbers [n] and [m] should
 be defined recursively as well. In Coq, recursive functions are
 defined via the keyword [Fixpoint]. In the following definition of the
 [my_plus] function, we will make use of SSReflect's infix notation
 [.+1] (with no spaces between the characters) as an alternative to the
 standard [nat]'s recursive constructor [S].  Also, Coq provides a
-convinient notation [0] to the _zero_ constructor [O].
+convenient notation [0] to the _zero_ constructor [O].
 
 *)
 
@@ -258,16 +258,16 @@ computation power of Coq, which therefore is not Turing-complete as a
 programming language (as it supports only primitive recursion).
 
 Although Coq is equipped with a number of machinery to _reason_ about
-potentially non-terminating programs and prove some usefult facts
-about them%\footnote{Typically, this is done by supplying a
-user-specific termination argument, which "strictly reduces" at each
-function call, or defining a function, so it would take a
-\emph{co-inductive} datatype as its argument.}% (for example, Chapter
-7 of Adam Chlipala's book%~\cite{Chlipala:BOOK}% provides a broad
-overview of methods to encode potentially non-terminating programs in
-Coq and reason about them), it usually requires some ingenuity to
-execute generally-recursive computations withit Coq. Fortunatelly,
-even without the possibility to _execute_ any possible program in the
+potentially non-terminating programs and prove some useful facts about
+them%\footnote{Typically, this is done by supplying a user-specific
+termination argument, which "strictly reduces" at each function call,
+or defining a function, so it would take a \emph{co-inductive}
+datatype as its argument.}% (for example, Chapter 7 of Adam Chlipala's
+book%~\cite{Chlipala:BOOK}% provides a broad overview of methods to
+encode potentially non-terminating programs in Coq and reason about
+them), it usually requires some ingenuity to execute
+generally-recursive computations withit Coq. Fortunately, even
+without the possibility to _execute_ any possible program in the
 system, Coq provides a reach tool-set to _encode_ such programs, so a
 number of statements could be proved about them, and the encoded
 programs themselves could be later _extracted_ into a general-purpose
@@ -307,10 +307,10 @@ this case) three additional entities have been generated by the
 system. These are the companion _induction_ and _recursion_
 principles, which are named using the simple convention basing on the
 name of the datatype. For example, the [nat] datatype comes
-accompannied by [nat_rect], [nat_ind] and [nat_rec], correspondingly.
+accompanied by [nat_rect], [nat_ind] and [nat_rec], correspondingly.
 
 Continuing playing with natural numbers and leaving the [nat_rect] and
-[nat_ind] aside for a moment, we focus on the recurision primitive
+[nat_ind] aside for a moment, we focus on the recursion primitive
 [nat_rec], which is a _higher-order_ function with the following type:
 
 *)
@@ -323,7 +323,7 @@ nat_rec : forall P : nat -> Set,
 ]]
 
 The type of [nat_rec] requires a bit of explanation. It is a
-polymorphic in the sence of Haskell and OCaml (i.e., it is parametrize
+polymorphic in the sense of Haskell and OCaml (i.e., it is parametrize
 over another type). More precisely, its first parameter, bound by the
 [forall] quantifier is a function, which maps natural numbers to types
 (hence the typo if this parameter is [nat -> Set]). The second
@@ -360,7 +360,7 @@ indeed a function with three parameters (the keyword [fun] is similar
 the lambda notation and is common in the family of ML-like languages).
 The body of [nat_rect] is implemented as a recursive function (defined
 via the keyword [fix]) taking an argument [n] of type
-[nat]. Internally, it proceeds similaly to our implementation of
+[nat]. Internally, it proceeds similarly to our implementation of
 [my_plus]: if the argument [n] is zero, then the "default" value [f] of
 type [P 0] is returned. Otherwise, the function proceeds recursively
 with a smaller argument [n0] by applying the "step" function [f0] to
@@ -418,7 +418,7 @@ pattern matching, which now specifies explicit return type [P (n'.+1)]
 of the whole [match e with ps end] expression. This small addition
 allows the Coq type checker to relate the expected type of the final
 result [P n] to the result of the pattern matching expression. Without
-the explicit [return] in the patternt matching, in some cases when its
+the explicit [return] in the pattern matching, in some cases when its
 result type depends on the value of the scrutinee, the Coq type
 checking engine will fail to unify the type of the branch and the
 overall type.%\footnote{However, in this example Coq 8.4 does just
@@ -483,7 +483,7 @@ principle can be reformulated as the following postulate:
 %
 \begin{center}
 
-If we assume existence of a value, which \emph{cannot be constructed},
+Assuming existence of a value, which \emph{cannot be constructed},\\
 we will be able to construct \emph{anything}.
 
 \end{center}
@@ -568,7 +568,7 @@ For pair: Argument scopes are [type_scope type_scope _ _]
 ]]
 
 The display above, besides showing how [prod] is defined, specifies
-that the type arguments of [prod] are _implicit_, in the sence that
+that the type arguments of [prod] are _implicit_, in the sense that
 they will be inferred by the type-checker when enough information is
 provided, e.g., the arguments of the constructor [pair] are
 instantiated with particular values. For instance, type arguments can
@@ -685,7 +685,7 @@ List.map  forall A B : Type, (A -> B) -> list A -> list B
 
 If necessary, the type patterns in the query can have their types
 explicitly specified in order to avoid ambiguities due to notation
-overloading. For instance, the folowing search will return all
+overloading. For instance, the following search will return all
 functions and propositions that make use of the [_ * _] notation and
 operate with natural numbers: *)
 
@@ -711,7 +711,7 @@ When working with someone's Coq development, sometimes it might be not
 entirely obvious what particular notation means: Coq's extensible
 parser is very simple to abuse by defining completely intractable
 abbreviations, which might say a lot to the library developer, but not
-to its client. Coq provide the [Locate] to help in demistifying
+to its client. Coq provide the [Locate] to help in demystifying
 notations as well as locating the position of particular definitions.
 For example, the following query will show all the definitions of the
 notation "[_ + _]" as well as the scopes they defined in.
@@ -731,7 +731,7 @@ Notation            Scope
 ]]
 
 We can see now that the plsu-notation is used in particular for the
-addition of natural nubmers (in [nat_scope]) and the declaration of a
+addition of natural numbers (in [nat_scope]) and the declaration of a
 sum type (in [type_scope]). Similarly to the notations, the [Locate]
 command can help finding the definition in the source modules they
 defined:%\footnote{The module system of Coq is similar to OCaml and
@@ -836,11 +836,141 @@ manual%~\cite{Coq-manual}% for the details of the [Notation] command
 syntax.
 
 
- * Modules and sections
+ * Sections and modules
 
 We conclude this chapter by a very brief overview of Coq's module
 system.
 
+Sections are the simplest way to structure the programs in Coq. In
+particular, sections allow the programmer to limit the scope of
+packages imported to the current file (each compiled [*.v] file in the
+scope of the interpreter is considered as a package), as well as to
+defined _locally-scoped_ variables. To see how it works, let us
+construct a section containing an utility function for natural
+numbers.  Declaring a section starts from the keyword [Section],
+followed by the name of the section:
+
  *)
+
+Section NatUtilSection.
+
+(** 
+
+We not define a _variable_ [n] of type [n], whose scope is lexically
+limited by the section [NatUtilSection] (including its internal
+sections). One can think of variables declared this way as of
+unspecified values, which we assume to be available outside of the
+section.
+
+*)
+
+Variable n: nat.
+
+(** 
+
+We can now define a function, implementing a multiplication of natural
+numbers by mean of addition. For this we assume the variable [n] to be
+fixed, so the multiplication can be formulated just as a function of
+_one_ parameter:
+
+*)
+
+Fixpoint my_mult m := match (n, m) with
+ | (0, _) => 0
+ | (_, 0) => 0
+ | (_, m'.+1) => my_plus (my_mult m') n
+ end. 
+
+(** 
+
+We now close the section by using the [End] keyword.
+
+*)
+
+End NatUtilSection.
+
+(** 
+
+Unlike Haskell or Java's modules, sections in Coq are transparent:
+their internal definitions is visible outside of their bodies, and the
+definitions' names need not be qualified. The same _does not_ apply to
+sections' variables. Instead, they become _parameters_ of definitions
+they happened to be used in. This can be seen by printing the
+implementation of [my_mult] outside of the section [NatUtilSection].
+
+*)
+
+Print my_mult.
+
+(** 
+
+[[
+my_mult = 
+fun n : nat =>
+fix my_mult (m : nat) : nat :=
+  let (n0, y) := (n, m) in
+  match n0 with
+  | 0 => 0
+  | _.+1 => match y with
+            | 0 => 0
+            | m'.+1 => my_plus (my_mult m') n
+            end
+  end
+     : nat -> nat -> nat
+]]
+
+We can see now that the variable [n] became an actual parameter of
+[my_mult], so the function now takes _two_ parameters, just as
+expected.
+
+An alternative to sections in Coq, which provides better
+encapsulation, are _modules_. A module, similarly to a section, can
+contain locally-declared variables, sections and modules (but not
+modules within sections!). However, the internals of a module are not
+implicitly exposed to the outside, instead they should be exported
+explicitly by means of putting them into a submodule and via the
+command [Export], just as demonstrated below:
+
+*)
+
+Module NatUtilModule.
+
+Fixpoint my_fact n :=
+  if n is n'.+1 then my_mult n (my_fact n') else 1.
+
+Module ToExport.
+Definition fact := my_fact.
+End ToExport.
+
+End NatUtilModule.
+
+(**
+
+The submodule [ToExport] creates a synonym [fact] for the function
+[my_fact], defined outside of it. The following command explicitly
+exports all internals of the module [NatUtilModule.ToExport],
+therefore making [fact] visible outside of [NatUtilModule].
+
+ *)
+
+Export NatUtilModule.ToExport.
+
+(** 
+[[
+Check my_fact.
+
+Error: The reference my_fact was not found in the current environment.
+]]
+*)
+
+Check fact.
+
+(**
+[[
+fact
+     : nat -> nat
+]]
+*)
+
 
 
