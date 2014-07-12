@@ -1,10 +1,21 @@
 (** %\chapter{Inductive Predicates and Proofs about Them}% *)
 
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
-Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive
-.
+
+(** 
+
+Let's have a look at this hell below:
+
+*)
+
+Inductive isZero : nat -> Prop := IsZero : isZero 0.
+
+Theorem blah: isZero 1 -> False.
+Proof.
+move=> z.
+move: (isZero_ind (fun n => if n is 0 then True else False))=> Z.
+by apply (Z I 1).
+Qed.
 
 
 (* Fixpoint is_even n :=  *)
