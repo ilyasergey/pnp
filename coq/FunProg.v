@@ -436,7 +436,7 @@ examples on the subject%~\cite{Chlipala:BOOK}%.
 Dependent function types, akin to those of [nat_rec] and our
 [three_to_unit], which allow the type of the result to vary depending
 on the value of a function's argument are a powerful way to specify
-the behaviour of functions, and therefore, are often used to "certify"
+the behaviour of functions, and therefore, are often used to "enforce"
 the dependently-typed programs. In Coq, dependent function types are
 omnipresent, and are syntactically specified using the
 [forall]-binder, similarly to the way _parametric_ types are specified
@@ -477,7 +477,7 @@ of _any_ type, given that we can provide an argument of type
 [empty]. While it might sound very surprising at the first moment,
 upon some reflection it seems like a perfectly valid principle, since
 we will _never_ be able to construct the required value of type
-[empty] on the first place. In more fancy words, such recursion
+[empty] in the first place. In more fancy words, such recursion
 principle can be reformulated as the following postulate:
 
 %
