@@ -1,6 +1,6 @@
 (** printing \in %\ensuremath{\in}% #\in# *)
 
-(** %\chapter{Proofs in Propositional Logic}% *)
+(** %\chapter{Propositional Logic}% *)
 
 (** The following directive enables SSReflect.  *)
 
