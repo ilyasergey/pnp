@@ -400,11 +400,28 @@ Definition three_to_unit n :=
                end) n.
 
 Eval compute in three_to_unit 0.
-(** [  = 0 : nat] *)
+
+(** 
+
+[  = 0 : nat]
+
+*)
+
 Eval compute in three_to_unit 5.
-(** [  = 5 : nat] *)
+
+(** 
+
+[  = 5 : nat]
+
+*)
+
 Eval compute in three_to_unit 3.
-(** [  = tt : unit] *)
+
+(** 
+
+[  = tt : unit]
+
+*)
 
 (** 
 
