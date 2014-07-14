@@ -1,4 +1,5 @@
-(** %\chapter{Functional Programming in Coq}% *)
+(** %\chapter{Functional Programming in Coq}
+      \label{ch:funprog}% *)
 
 (** 
 
