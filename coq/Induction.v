@@ -1,4 +1,4 @@
-(** %\chapter{Inductive Predicates and Proofs about Them}% *)
+(** %\chapter{Inductive Predicates: the Good the Bad and the Ugly}% *)
 
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
 

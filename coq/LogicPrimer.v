@@ -168,11 +168,20 @@ TODO: discuss axioms of the classical logics
 
 *)
 
+(** * [Prop] versus [bool]
 
-(** * The basics of boolean reflection
+TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
+is as expressive as simple propositional logic (which is its strength,
+thank to Coq's terminating computations)
 
 *)
 
+
+(** 
+
+* The basics of boolean reflection
+
+*)
 
 
 (* Definition append_lm (A: eqType) (x: A) (xs ys: seq A):  *)
