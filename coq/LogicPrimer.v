@@ -426,20 +426,19 @@ case.
 (**
 
 The tactic [case] makes Coq to perform the case analysis. In
-particular, it _deconstructs_ the _top assumption_ of the goal, which
-is an implication. The top assumption in the goal is such that it
-comes first before any arrows, and in this case it is a value of type
-[False]. Then, for all constructors of the type, whose value is being
-case-analysed, the tactic [case] constructs _subgoals_ to be
-proved. Informally, in mathematical reasoning, the invocation of the
-[case] tactic would correspond to the statement "let us consider all
-possible cases, which amount to the construction of the top
-assumption". Naturally, since [False] has _no_ constructors (as it
-corresponds to the [empty] type), the case analysis on it produces
-_zero_ subgoals, which completes the proof immediately. Since the
-result of the proof is just some program, again, we can demonstrate
-the effect of [case] tactic by proving the same theorem with an exact
-proof term:
+particular, it _deconstructs_ the _top assumption_ of the goal. The
+top assumption in the goal is such that it comes first before any
+arrows, and in this case it is a value of type [False]. Then, for all
+constructors of the type, whose value is being case-analysed, the
+tactic [case] constructs _subgoals_ to be proved. Informally, in
+mathematical reasoning, the invocation of the [case] tactic would
+correspond to the statement "let us consider all possible cases, which
+amount to the construction of the top assumption". Naturally, since
+[False] has _no_ constructors (as it corresponds to the [empty] type),
+the case analysis on it produces _zero_ subgoals, which completes the
+proof immediately. Since the result of the proof is just some program,
+again, we can demonstrate the effect of [case] tactic by proving the
+same theorem with an exact proof term:
 
 *)
 
@@ -499,24 +498,24 @@ Proof.
 (** 
 
 Our goal is the statement of the theorem, its type. The frist thing we
-are going to do is to "peel off" some of the [forall]-bound variables
-and move them from the goal to the assumptions (i.e., from below to
-above the double line). This step in the proof script is usually
-referred to as _bookkeeping_, since it does not directly contribute to
-reducing the goal, but instead moves some of the values from the goal
-to assumption, as a preparatory step for the future reasoning.
-
+are going to do is to "peel off" some of the goal assumptions---the
+[forall]-bound variables---and move them from the goal to the
+assumption context (i.e., from below to above the double line). This
+step in the proof script is usually referred to as _bookkeeping_,
+since it does not directly contribute to reducing the goal, but
+instead moves some of the values from the goal to assumption, as a
+preparatory step for the future reasoning.
 
 SSReflect offers a tactic a small bu powerful toolkit of _tacticals_
 (i.e., higher-order tactics) for bookkeeping. In particular, for
 moving the bound variables from "bottom to the top", one should use a
 combination of the "no-op" tactic [move] and the tactical [=>]
-(spelled << => >>). The following command moves the bound variables
-[P], [Q] and [R] to the hypothesis context, simultaneously renaming
-them to [A], [B] and [C]. The renaming is optional, so we just show it
-here to demonstrate the possibility to give arbitrary (and,
-preferably, more meaningful) names to the assumption variables "on the
-fly".
+(spelled << => >>). The following command moves the next three
+assumptions from the goal, [P], [Q] and [R] to the assumption context,
+simultaneously renaming them to [A], [B] and [C]. The renaming is
+optional, so we just show it here to demonstrate the possibility to
+give arbitrary (and, preferably, more meaningful) names to the
+assumption variables "on the fly".
 
 *)
 
@@ -855,7 +854,28 @@ Qed.
 
 (** 
 
-THe datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
+In order to prove something out of a conjunction, one needs to
+_destruct_ its constructor, and the simplest way to do so is by the
+[case]-analysis on a single constructor.
+
+*)
+
+Goal P /\ Q -> Q.
+Proof.
+case.
+
+(**  
+
+Again, the tactic [case] replaced the top assumption [P /\ Q] of the
+goal with the arguments of its only constructor, [P] and [Q] making
+the rest of the proof trivial.
+*)
+
+done.
+Qed.
+
+(*
+The datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
 isomorphic to the [sum] datatype from %Chapter~\ref{ch:funprog}% and
 can be constructed by using one of its two constructors: [or_introl]
 or [or_intror].
@@ -911,6 +931,60 @@ completes, similarly to the trailing [done]. If the sequence of
 tactics [left; right] wouldn't prove the goal, a proof script error
 would be reported.
 
+The statements that have disjunction as their assumption are usually
+proved by case analysis on the two possible disjunction's
+constructors:
+
+*)
+
+Goal P \/ Q -> Q \/ P.
+case=>x.
+
+(** 
+
+Notice how the case analysis via the SSReflect's [case] tactic was
+combined here with the trailing [=>]. This resulted in moving the
+constructor parameter in _each_ of the subgoals from the goal
+assumptions to the assumption context. The types of [x] are different
+in the two branches of the proof, though. In the first branch, [x] has
+type [P], as it names the argument of the [or_introl] constructor.
+
+[[
+  P : Prop
+  Q : Prop
+  R : Prop
+  x : P
+  ============================
+   Q \/ P
+
+subgoal 2 (ID 248) is:
+ Q \/ P
+]]
+*)
+
+by right.
+
+(**
+
+[[
+  P : Prop
+  Q : Prop
+  R : Prop
+  x : Q
+  ============================
+   Q \/ P
+]]
+
+In the second branch the type of [x] is [Q], as it accounts for the
+case of the [or_intror] constructor.
+
+*)
+
+by left.
+Qed.
+
+(*
+
 It is worth noticing that the definition of disjunction in Coq is
 _constructive_, whereas the disjunction in classical logic is
 not. More precisely, in classical logic the proof of the proposition
@@ -929,8 +1003,9 @@ an implementation of, in the trivial assumptions given the proof of [P
 
 (** * Proofs with negation
 
-In Coq's constructive approach proving the negation of a proposition [P]
-literally means that one can derive the falsehood from [P].
+In Coq's constructive approach proving the negation of [~P] of a
+proposition [P] (spelled <<~ P>>) literally means that one can derive
+the falsehood from [P].
 
 *)
 
@@ -1005,7 +1080,50 @@ Qed.
 
 (** * Existential quantification
 
-TODO: Present the ex type
+Existential quantification in Coq, which is denoted by a notation
+"[exists x, P x]" is just yet another inductive datatype with exactly
+one constructor:
+
+*)
+
+Locate "exists".
+
+(**
+[[
+"'exists' x .. y , p" := ex (fun x => .. (ex (fun y => p)) ..)
+                      : type_scope
+]]
+
+*)
+
+Print ex.
+
+(**
+[[
+Inductive ex (A : Type) (P : A -> Prop) : Prop :=
+    ex_intro : forall x : A, P x -> ex A P
+]]
+
+The notation for existentials conveniently allows one to existentially
+quantify over several variables, therefore, leading to a chain of
+enclosed calls of the constructor [ex_intro].
+*)
+
+(* The way the existential quantification is encoded in Coq is a great *)
+(* example of a dependent type, more specifically, %\emph{dependent pair *)
+(* type}.\footnote{Dependent pair types are often referred to in the *)
+(* literature as \emph{dependent sums} or $\Sigma$-types, as they *)
+(* generalize the simple algebraic sum types.}%  *)
+
+(** 
+
+The type [ex] is parametrized with a type [A], over elements of which
+we quantify, and a predicate of type [A -> Prop]. Each inhabitant of
+the type [ex] is therefore TODO
+ 
+
+
+
 
 ** A conjunction and disjunction analogy
 
