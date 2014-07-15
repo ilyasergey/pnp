@@ -144,9 +144,9 @@ Print True.
 [Inductive True : Prop :=  I : True]
 
 Such simplicity makes it trivial to construct an instance of the
-[True] proposition%\footnote{In the context of propositional logic, we
+[True] proposition:%\footnote{In the context of propositional logic, we
 will be using the words ``type'' and ``proposition'' interchangeably
-without additional specification when it's clear from the context.}%:
+without additional specification when it's clear from the context.}%
 Now we can prove the following proposition in Coq's embedded
 propositional logic, essentially meaning that [True] is provable.
 
@@ -187,7 +187,7 @@ Proof.
 
 (**
 
-In the interactive proof mode, the [*goals*] display shows a _goal_ of
+In the interactive proof mode, the [goals] display shows a _goal_ of
 the proof---the type of the value to be constructed ([True] in this
 case), which is located below the double line. Above the line one can
 usually see the context of _assumptions_, which can be used in the
@@ -200,7 +200,7 @@ _exact_ value of the type of the goal.
 
 *)
 
-exact I.
+exact: I.
 
 (** 
 
@@ -371,7 +371,7 @@ with the right predicate [P]:
 
 *)
 
-exact (False_ind (1 = 2)).
+exact: (False_ind (1 = 2)).
 
 (**
 
@@ -426,25 +426,26 @@ case.
 (**
 
 The tactic [case] makes Coq to perform the case analysis. In
-particular, it _deconstructs_ the _top element_ of the goal, which is
-an implication. The top element is such that it comes first before any
-arrows, and in this case it is a value of type [False]. Then, for all
-constructors of the type, whose value is being case-analysed, the
-tactic [case] constructs _subgoals_ to be proved. Informally, in
-mathematical reasoning, the invocation of the [case] tactic would
-correspond to the statement "let us consider all possible cases, which
-imply the top element proposition". Naturally, since [False] has _no_
-constructors (as it corresponds to the [empty] type), the case
-analysis on it produces _zero_ subgoals, which completes the proof
-immediately. Since the result of the proof is just some program,
-again, we can demonstrate the effect of [case] tactic by proving the
-same theorem with an exact proof term:
+particular, it _deconstructs_ the _top assumption_ of the goal, which
+is an implication. The top assumption in the goal is such that it
+comes first before any arrows, and in this case it is a value of type
+[False]. Then, for all constructors of the type, whose value is being
+case-analysed, the tactic [case] constructs _subgoals_ to be
+proved. Informally, in mathematical reasoning, the invocation of the
+[case] tactic would correspond to the statement "let us consider all
+possible cases, which amount to the construction of the top
+assumption". Naturally, since [False] has _no_ constructors (as it
+corresponds to the [empty] type), the case analysis on it produces
+_zero_ subgoals, which completes the proof immediately. Since the
+result of the proof is just some program, again, we can demonstrate
+the effect of [case] tactic by proving the same theorem with an exact
+proof term:
 
 *)
 
 Undo.
 
-exact (fun (f: False) => match f with end).
+exact: (fun (f: False) => match f with end).
 
 (**
 
@@ -485,10 +486,10 @@ implication in Coq can be expressed via the following proposition:
 The proposition is therefore _parametrized_ over three propositional
 variables, [P], [Q] and [R] and states that from the proof term of
 type [P -> Q] and a proof term of type [Q -> R] one can receive a
-proof term of type [P -> R]%\footnote{Recall that the arrows have
+proof term of type [P -> R].%\footnote{Recall that the arrows have
 right associativity, just like function types in Haskell and OCaml,
 which allows one to apply functions partially, specifying their
-arguments one by one}%. Let us now prove these statement in the form
+arguments one by one}% Let us now prove these statement in the form
 of theorem.
 *)
 
@@ -539,7 +540,7 @@ by two subsequent applications of [H1] and [H2] to the value [a] of type [A]:
 
 *)
 
-exact (H2 (H1 a)).
+exact: (H2 (H1 a)).
 
 (**
 
@@ -661,12 +662,13 @@ proof styles.
 
 - The _forward_ proof style assumes that the human prover has some
   "foresight" with respect to the goal he is going to prove, so she
-  can defined some "helper" entities, which will then be used to solve
-  the goal. Typical example of the forward proofs are the proofs from
-  the classical mathematic textbooks: first a number of "supporting"
-  lemmas is formulated, proving some partial results, and finally all
-  these lemmas are applied in a concert in order to prove an important
-  theorem. 
+  can define some "helper" entities as well as to adapt the available
+  assumptions, which will then be used to solve the goal. Typical
+  example of the forward proofs are the proofs from the classical
+  mathematic textbooks: first a number of "supporting" lemmas is
+  formulated, proving some partial results, and finally all these
+  lemmas are applied in a concert in order to prove an important
+  theorem.
 
 While the standard Coq is very well with a large number of tactics
 that support reasoning in the backward style, it is less convenient
@@ -707,13 +709,13 @@ move: (imp_trans P Q R)=> H.
 
 (** 
 
-What is happened now is that the specialised version of [(imp_trans P
-Q R)], namely, [(P -> Q) -> (Q -> R) -> P -> R], has been moved to the
-goal, so it became [((P -> Q) -> (Q -> R) -> P -> R) -> P ->
-R]. Immediately after that, the top element (that is what has been
-just "pushed" to the goal stack) was moved to the top and given the
-name [H]. Let us now apply [H] to reduce the goal.
-*)
+What is happened now is a good example of the forward reasoning: the
+specialised version of [(imp_trans P Q R)], namely, [(P -> Q) -> (Q ->
+R) -> P -> R], has been moved to the goal, so it became [((P -> Q) ->
+(Q -> R) -> P -> R) -> P -> R]. Immediately after that, the top
+assumption (that is what has been just "pushed" to the goal stack) was
+moved to the top and given the name [H]. Now we have the assumption
+[H] that can be applied in order to reduce the goal.  *)
 
 apply: H.
 
@@ -772,24 +774,245 @@ reporting an error if the argument fails.}%
 
 (** * Conjunction and disjunction 
 
-TODO: Present conjunction and disjunction
+Two main logical connectives, conjunction and disjunction, are
+implemented in Coq as simple inductive datatypes in the sort
+[Prop]. In order to avoid some clutter, from this moment and till the
+end of the chapter let us start a section and assume a number of
+propositional variables in it (as we remember, those will be
+abstracted over outside of the sections in the statements they
+happened to occur).
 
 *)
 
+Section Connectives.
+Variables P Q R: Prop.
+
+(** 
+
+The propositional conjunction of [P] and [Q], denoted by [P /\ Q], is
+a straightforward Curry-Howard counterpart of the [pair] datatype that
+we have already seen in %Chapter~\ref{ch:funprog}%, and is defined by
+means of the datatype [and].
+
+*)
+
+Locate "_ /\ _".
+
+(** ["A /\ B" := and A B  : type_scope] *)
+
+Print and.
+
+(**
+
+[[
+Inductive and (A B : Prop) : Prop :=  conj : A -> B -> A /\ B
+
+For conj: Arguments A, B are implicit
+For and: Argument scopes are [type_scope type_scope]
+For conj: Argument scopes are [type_scope type_scope _ _]
+]]
+
+Proving a conjunction of [P] and [Q] therefore amounts to a pair by
+invoking the constructor [conj] and providing values of [P] and [Q] as
+its arguments:%\footnote{The keyword [Goal] creates an anonymous
+theorem and initiates the interactive proof mode.}%
+
+*)
+
+Goal P -> R -> P /\ R.
+move=> p q. 
+
+(** 
+
+The proof can be completed in several way. The most familiar one is to
+apply the constructor [conj] directly. It will create two subgoals,
+[P] and [Q] (which are the constructor arguments), that can be immediately discharged.
+
+*)
+
+apply: conj=>//.
+
+(** 
+
+Alternatively, since we know that [and] has just one constructor, we
+can use the generic Coq's [constructor n] tactic, where [n] is a
+number of a constructor to be applied (and in this case it's [1])
+
+*)
+
+Undo.
+constructor 1=>//.
+
+(**
+
+Finally, for propositions that have exactly one constructor, Coq
+provides a specialized tactic [split], which is a synonym for
+[constructor 1]:
+ *)
+
+Undo. split=>//.
+Qed.
+
+(** 
+
+THe datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
+isomorphic to the [sum] datatype from %Chapter~\ref{ch:funprog}% and
+can be constructed by using one of its two constructors: [or_introl]
+or [or_intror].
+
+*)
+
+Locate "_ \/ _".
+
+(** ["A \/ B" := or A B   : type_scope] *)
+
+Print or.
+
+(**
+
+[[
+Inductive or (A B : Prop) : Prop :=
+    or_introl : A -> A \/ B | or_intror : B -> A \/ B
+
+For or_introl, when applied to less than 1 argument:
+  Arguments A, B are implicit
+...
+]]
+
+In order to prove disjunction of [P] and [Q], it is sufficient to
+provide a proof of just [P] or [Q], therefore appealing to the
+appropriate constructor.
+
+*)
+
+Goal Q -> P \/ Q \/ R.
+move=> q. 
+
+(**  
+
+Similarly to the case of conjunction, this proof can be completed
+either by applying a constructor directly, by using [constructor 2]
+tactic or by a specialised Coq's tactic for disjunction: [left] or
+[right]. The notation ["_ \/ _"] is right-associative, hence the
+following proof script, which first reduces the goal to the proof of
+[Q \/ R], and then to the proof of [Q], which is trivial by
+assumption.
+
+*)
+
+by right; left.
+Qed.
+
+(** 
+
+The use of SSReflect's tactical [by] makes sure that its argument
+tactic ([right] in this case) succeeds and the proof of the goal
+completes, similarly to the trailing [done]. If the sequence of
+tactics [left; right] wouldn't prove the goal, a proof script error
+would be reported.
+
+It is worth noticing that the definition of disjunction in Coq is
+_constructive_, whereas the disjunction in classical logic is
+not. More precisely, in classical logic the proof of the proposition
+[P \/ ~ P] is true by the axiom of the excluded middle (see
+%Section~\ref{sec:axioms}% for a more detailed discussion), whereas in
+Coq, proving [P \/ ~ P] would amount to _constructing_ the proof of
+either [P] or [~ P]. Let us illustrate it with a specific example. If
+[P] is a proposition stating that [P = NP], then the classical logic's
+the tautology [P \/ ~ P] holds, although it does not contribute to the
+proof of either of the disjuncts. In constructive logic, which Coq is
+an implementation of, in the trivial assumptions given the proof of [P
+\/ ~ P], we would be able to extract the proof of either [P] or
+[~P].%\footnote{Therefore, winning us the Clay Institute's award.}%
+
+*)
 
 (** * Proofs with negation
 
-TODO: Show some proofs by negation
+In Coq's constructive approach proving the negation of a proposition [P]
+literally means that one can derive the falsehood from [P].
 
 *)
+
+Locate "~ _".
+
+(** 
+["~ x" := not x       : type_scope]
+*)
+
+Print not.
+
+(** 
+[[
+not = fun A : Prop => A -> False
+     : Prop -> Prop
+]]
+
+Therefore, the negation [not] on propositions from [Prop] is just a
+function, which maps a proposition [A] to the implication [A ->
+False]. With this respect the intuition of negation from the classical
+logic might be misleading: as it will be discussed in
+%Section~\ref{sec:axioms}%, the Calculus of Constructions lacks the
+axiom of double negation, which means that the proof of [~~A] will not
+deliver the proof of [A], as such derivation would be not
+constructive, as one cannot get a value of type [A] out of a function
+of type [[A -> B] -> B], where [B] is taken to be [False].
+
+However, reasoning out of negation helps to derive the familiar proofs
+by contradiction, given that we managed to construct [P] _and_ [~P],
+as demonstrated by the following theorem, which states that from any
+[Q] can be derived from [P] and [~P]. 
+
+*)
+
+Theorem absurd: P -> ~P -> Q. 
+Proof. by move=>p H; move:(H p). Qed.
+
+(** 
+
+One extremely useful theorem from propositional logic involving
+negation is _contraposition_. It states states that in an implication, the
+assumption and the goal can be flipped if inverted.
+
+*)
+
+Theorem contraP: (P -> Q) -> ~Q -> ~P.
+
+(** Let us see how it can be proved in Coq *)
+
+Proof.
+move=> H Hq. 
+move /H.
+
+(**
+
+The syntax [move / H] (spaces in between are optional) stands for one
+of the most powerful features of SSReflect, called _views_ (see
+%Section~9 of~\cite{Gontier-al:TR}%), which allows one to _weaken_ the
+assumption in the goal part of the proof on the fly by applying a
+hypothesis [H] to the top assumption in the goal. In the script above
+the first command [move=> H Hq] simply popped two assumptions from the
+goal to the context. What is left is [~P], or, equivalently [P ->
+False]. The view mechanism then "interpreted" [P] in the goal via [H]
+and changing it to [Q], since [H] was of type [P -> Q], which results
+in the modified goal [Q -> False].  Next, we apply the view [Hq] to
+the goal, which switches [Q] to [False], which makes the rest of the
+prof trivial.  *)
+
+move /Hq.
+done.
+Qed.
 
 (** * Existential quantification
 
 TODO: Present the ex type
 
+** A conjunction and disjunction analogy
+
 *)
 
 (** * Missing axioms from the classical logic
+%\label{sec:axioms}%
 
 TODO: discuss axioms of the classical logics
 
@@ -827,3 +1050,18 @@ thank to Coq's terminating computations)
 
 (* Set Printing Universes. *)
 (* Check (forall A : Set, list A) : Set. *)
+
+
+End Connectives.
+
+(* being hide *)
+Definition dys_imp (P Q: Prop) := (P -> Q) -> (Q -> P).
+Definition dys_contrap (P Q: Prop) := (P -> Q) -> (~P -> ~Q).
+
+Theorem di_false: (forall P Q: Prop, dys_imp P Q) -> False.
+Proof. by move/(_ _ True); apply. Qed.
+
+Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
+Proof. by move=>H; apply: (H False True)=>//. Qed.
+
+(* end hide *)
