@@ -57,3 +57,23 @@ topics, to the best of our knowledge, not covered in other course on Coq:
     Theory.
 
  *)
+
+(**
+
+* Setup
+
+TODO
+
+** Building Coq from sources
+
+TODO
+
+** Emacs set-up
+
+TODO
+
+** Installing and using SSReflect
+
+TODO
+
+*)
