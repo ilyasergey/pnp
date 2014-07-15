@@ -463,38 +463,331 @@ Coq: it is just a functional type, represented by an "arrow" notation
 [->] and familiar to all functional programmers. Indeed, if a function
 of type [A -> B] is a program that takes an argument value of type [A]
 and returns a result value of type [B], then the propositional
-implication [P -> Q]  ...
+implication [P -> Q] is, ... a program that takes an argument proof
+term of type [P] to a proof of [Q].
 
+Unlike most of the value-level functions we have seen so far,
+propositions are usually parametrized by other propositions, which
+makes them instances of _polymorphic_ types, as they appear in
+%System~$F$% and %System $F_{\omega}$%. Similarly to these systems, in
+Coq the universal quantifier [forall] (spelled <<forall>>) binds a
+variable immediately following it in the scope of the subsequent
+type.%\footnote{As it has been noticed in %Chapter~\ref{ch:funprog}%
+the [forall]-quantifier is Coq's syntactic notation for dependent
+function types, sometimes also referred to a \emph{$\Pi$-types} or
+\emph{dependent product types}.}% For instance, the transitivity of
+implication in Coq can be expressed via the following proposition:
+
+%\begin{center}%
+[forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R]
+%\end{center}%
+
+The proposition is therefore _parametrized_ over three propositional
+variables, [P], [Q] and [R] and states that from the proof term of
+type [P -> Q] and a proof term of type [Q -> R] one can receive a
+proof term of type [P -> R]%\footnote{Recall that the arrows have
+right associativity, just like function types in Haskell and OCaml,
+which allows one to apply functions partially, specifying their
+arguments one by one}%. Let us now prove these statement in the form
+of theorem.
+*)
+
+Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
+Proof.
+
+(** 
+
+Our goal is the statement of the theorem, its type. The frist thing we
+are going to do is to "peel off" some of the [forall]-bound variables
+and move them from the goal to the assumptions (i.e., from below to
+above the double line). This step in the proof script is usually
+referred to as _bookkeeping_, since it does not directly contribute to
+reducing the goal, but instead moves some of the values from the goal
+to assumption, as a preparatory step for the future reasoning.
+
+
+SSReflect offers a tactic a small bu powerful toolkit of _tacticals_
+(i.e., higher-order tactics) for bookkeeping. In particular, for
+moving the bound variables from "bottom to the top", one should use a
+combination of the "no-op" tactic [move] and the tactical [=>]
+(spelled << => >>). The following command moves the bound variables
+[P], [Q] and [R] to the hypothesis context, simultaneously renaming
+them to [A], [B] and [C]. The renaming is optional, so we just show it
+here to demonstrate the possibility to give arbitrary (and,
+preferably, more meaningful) names to the assumption variables "on the
+fly".
 
 *)
+
+move=> A B C.
 
 (**
 
-TODO:
+We can now move the three other arguments to the top using the same
+command: the [move=>] combination works uniformly for [forall]-bound
+variables as well as for the propositions on the left of the arrow.
 
 *)
 
+move=> H1 H2 a.
 
+(**
 
-(** * Logical connectives 
+Again, there are multiple ways to proceed now. For example, we can
+recall the functional programming and get the result of type [C] just
+by two subsequent applications of [H1] and [H2] to the value [a] of type [A]:
+
+*)
+
+exact (H2 (H1 a)).
+
+(**
+
+Alternatively, we can replace the direct application of the hypotheses
+[H1] and [H2] by the reversed sequence of calls to the [apply:]
+tactics.
+
+*)
+
+Undo.
+
+(**
+
+The first use of [apply:] will replace the goal [C] by the goal [B],
+since this is what it takes to get [C] by using [H2]:
+
+*)
+
+apply: H2.
+
+(** 
+
+The second use of [apply:] reduces the proof of [B] to the proof of
+[A], demanding an appropriate argument for [H1].
+
+*)
+
+apply: H1.
+
+(**
+
+Notice that both calls to apply: removed the appropriate hypotheses,
+[H1] and [H2] from the assumption context. If one needs a hypothesis
+to stay in the context (to use it twice, for example), then the
+occurrence of the tactic argument hypothesis should be parenthesised:
+[apply: (H1)].
+
+Finally, we can see that the only goal left to prove is to provide a
+proof term of type [A]. Luckily, this is exactly what we have in the
+assumption by the name [a], so the following tactics [assumption]
+finishes the proof by checking the assumption context and finding a
+value, whose type matches the goal:
+
+*)
+
+assumption.
+Qed.
+
+(**
+
+In the future, we will replace the use of trivial tactics, such as
+[assumption] by SSReflect's much more powerful tactics [done], which
+combines a number of standard Coq's tactics in an attempt to finish
+the proof of the current goal and reports an error if it fails to do
+so. 
+
+%
+\begin{exercise}[$\forall$-distributivity]
+\label{ex:forall-dist}
+
+Formulate and prove the following theorem in Coq, which states the
+distributivity of universal quantification with respect to implication:
+\[
+\forall P Q, [(\forall x, P(x) \implies Q(X)) \implies (\forall y, P(y) \implies \forall z, Q(Z))]
+\]
+
+\hint: Be careful with the scoping of [forall]-quantified variables and use parenthesis to resolve ambiguities!
+
+\end{exercise}
+%
+*)
+
+(* begin hide*)
+Theorem all_imp_dist A (P Q: A -> Prop): 
+  (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
+Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+(* end hide*)
+
+(**
+
+** On forward and backward reasoning
+
+Let us check now the actual value of the proof term of theorem
+[imp_trans]. 
+
+*)
+
+Print imp_trans. 
+
+(** 
+[[
+imp_trans = 
+fun (A B C : Prop) (H1 : A -> B) (H2 : B -> C) (a : A) =>
+(fun _evar_0_ : B => H2 _evar_0_) ((fun _evar_0_ : A => H1 _evar_0_) a)
+     : forall P Q R : Prop, (P -> Q) -> (Q -> R) -> P -> R
+
+Argument scopes are [type_scope type_scope type_scope _ _ _]
+]]
+
+Even though the proof term looks somewhat furry, this is almost
+exactly our initial proof term from the first proof attempt: [H2 (H1
+a)]. The only difference is that the hypotheses [H1] and [H2] are
+_eta-expanded_, that is instead of simply [H1] the proof terms
+features its operational equivalent [fun b: B => H2 b]. Otherwise, the
+printed program term indicates that the proof obtained by means of
+direct application of [H1] and [H2] is the same (modulo eta-expansion)
+as the proof obtained by means of using the [apply:] and [assumption]
+tactics. 
+
+These two styles of proving: by providing a direct proof to the goal
+or some part of it, and by reducing the goal via tactics, are usually
+referred in the mechanized proof community as _forward_ and _backward_
+proof styles.
+
+- The _backward_ proof style assumes that the goal is being gradually
+  transformed by means of applying some tactics, until its proof
+  becomes trivial and can be completed by means of a basic tactics,
+  like [assumption] or [done].
+
+- The _forward_ proof style assumes that the human prover has some
+  "foresight" with respect to the goal he is going to prove, so she
+  can defined some "helper" entities, which will then be used to solve
+  the goal. Typical example of the forward proofs are the proofs from
+  the classical mathematic textbooks: first a number of "supporting"
+  lemmas is formulated, proving some partial results, and finally all
+  these lemmas are applied in a concert in order to prove an important
+  theorem. 
+
+While the standard Coq is very well with a large number of tactics
+that support reasoning in the backward style, it is less convenient
+for the forward-style reasoning. This aspect of the tool is
+significantly enhanced by SSReflect, which introduces a small number
+of helping tactics, drastically simplifying the forward proofs, as we
+will see in the subsequent chapters.
+
+** Refining and bookkeeping assumptions 
+
+Suppose, we have the following theorem to prove, which is just a
+simple reformulation of the previously proved [imp_trans]:
+*)
+
+Theorem imp_trans' (P Q R: Prop) : (Q -> R) -> (P -> Q) -> P -> R.
+Proof.
+move=> H1 H2.
+
+(**  
+
+Notice that we made the propositional variables [P], [Q] and [R] to be
+parameters of the theorem, rather than [forall]-quantified
+values. This relieved us from the necessity to lift them using
+[move=>] in the beginning of the proof.
+
+In is natural to expect that the original [imp_trans] will be of some
+use. We are now in the position to apply it directly, as the current
+goal matches its conclusion. However, let us do something slightly
+different: _move_ the statement of [imp_trans] into the goal,
+simultaneously with specifying it (or, equivalently, partially
+applying) to the assumptions H1 H2. Such move "to the bottom part" in
+SSReflect is implemented by means of the [:] tactical, following the
+[move] command:
+
+*)
+
+move: (imp_trans P Q R)=> H.
+
+(** 
+
+What is happened now is that the specialised version of [(imp_trans P
+Q R)], namely, [(P -> Q) -> (Q -> R) -> P -> R], has been moved to the
+goal, so it became [((P -> Q) -> (Q -> R) -> P -> R) -> P ->
+R]. Immediately after that, the top element (that is what has been
+just "pushed" to the goal stack) was moved to the top and given the
+name [H]. Let us now apply [H] to reduce the goal.
+*)
+
+apply: H.
+
+(** 
+
+The proof forked into two goals, since [H] had two arguments, which we
+can now fulfil separately, as they trivially are our assumptions.
+*)
+
+done. done.
+
+(**
+
+The proof is complete, although the last step is somewhat repetitive,
+since we know that for two generated sub-goals the proof is the
+same. In fact, applications of tactics can be _chained_ using the [;]
+connective, so the following complete proof of [imp_trans'] runs
+[done] for _all_ subgoals generated by [apply: H]:
+
+*)
+
+Restart.
+
+move: (imp_trans P Q R)=> H H1 H2.
+apply: H; done.
+
+(**
+
+Also, notice that the sequence in which the hypotheses were moved to
+the top has changed: in order to make the proof more concise, we first
+created the "massaged" version of [imp_trans], and then moved it as
+[H] to the top, following by [H1] and [H2], which were in the goal
+from the very beginning.
+
+To conclude this section, let us demonstrate the shortest way to prove
+this theorem once again.
+
+*)
+
+Restart.
+move=>H1 H2; apply: (imp_trans P Q R)=>//.
+Qed.
+
+(**
+
+After traditional move of the two hypotheses to the top, we applied
+the specialised version of [imp_trans], where its three first
+arguments were explicitly instantiated with the local [P], [Q] and
+[R]. This application generated two subgoals, each of which has been
+then automatically solved by the trailing tactical [=>//], which is
+equivalent to [;try done].%\footnote{The Coq's \texttt{try} tactical
+tries to execute its tactic argument in a "soft way", that is, not
+reporting an error if the argument fails.}%
+
+*)
+
+(** * Conjunction and disjunction 
 
 TODO: Present conjunction and disjunction
 
 *)
 
 
-(** * Existential quantification
-
-TODO: Present the ex type
-
-*)
-
-(** * Expressing negation
+(** * Proofs with negation
 
 TODO: Show some proofs by negation
 
 *)
 
+(** * Existential quantification
+
+TODO: Present the ex type
+
+*)
 
 (** * Missing axioms from the classical logic
 

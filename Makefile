@@ -40,10 +40,10 @@ latex/%.v.tex: Makefile coq/%.v coq/%.glob
 	cd coq ; coqdoc --interpolate --latex --body-only -s \
 		$*.v -o ../latex/$*.v.tex
 
-latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib
+latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib latex/defs.tex
 	cd latex ; pdflatex $(COQNOTES) ; pdflatex $(COQNOTES) ; bibtex $(COQNOTES) ; makeindex $(COQNOTES) ; pdflatex $(COQNOTES) ; pdflatex $(COQNOTES)
 
-latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib
+latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex
 	cd latex ; pdflatex $* ; pdflatex $* ; bibtex $* ; makeindex $* ; pdflatex $* ; pdflatex $*
 
 clean:  $(MAKEFILE)
