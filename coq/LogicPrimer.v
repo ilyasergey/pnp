@@ -1459,13 +1459,13 @@ Qed.
 (** * Universes in Coq and [Prop] impredicativity
 
 While solving Exercise%~\ref{ex:equivax}% from the previous section,
-the reader could have noticed an interesting detail about the
-propositions in Coq and the sort [Prop]: the propositions that
-quantify over propositions still remain to be propositions, i.e., they
-still belong to the sort [Prop]. This property of propositions in Coq
-(and in general, the ability of entities to quantify over the entities
-of the same class) is called _impredicativity_. The opposite
-characteristic (i.e., the inability to refer to the element of the
+the reader could noticed an interesting detail about the propositions
+in Coq and the sort [Prop]: the propositions that quantify over
+propositions still remain to be propositions, i.e., they still belong
+to the sort [Prop]. This property of propositions in Coq (and in
+general, the ability of entities of some class to abstract over the
+entities of the same class) is called _impredicativity_. The opposite
+characteristic (i.e., the inability to refer to the elements of the
 same class) is called _predicativity_.
 
 _Impredicativity_ as a property of definitions is a very powerful
@@ -1473,10 +1473,43 @@ tool, as it allows one to define domains that are
 _self-recursive_. Unfortunately, when applied to the classical set
 theory, the impredicativity immediately leads to the famous Russel's
 paradox, which arises from the attempt to define a set of all sets
-that do not belong to themselves. As we remember, the types from the
-sort [Set] in Coq directly correspond to sets from the classical set
-theory. Therefore, in order to avoid type-level paradoxes when
-defining sets of values%~\cite{Coquand:LICS96}%, Coq introduces
+that do not belong to themselves. In the terms of programming, the
+Russel's paradox gives a direct recipe to encode a fixpoint combinator
+in the calculus itself and, therefore, write generally-recursive
+programs.
+
+One of the main challenges when designing the Calculus of
+Constructions was to implement its logical component (i.e., the
+fragment responsible for constructing elements of the [Prop] sort), so
+it would subsume the existing impredicative propositional
+calculi%~\cite{Coquand-Huet:ECCA85}%, and, in particular, %System~$F$%
+(which is impredicative), allowing for the expressive reasoning in the
+higher order logic. While as a type calculus, insensitive with respect
+to the termination, %System~$F$% works just fine and is adopted by a
+number of practical programming languages, in particular Haskell, it
+_does not_ enforce program termination.
+
+As we have observed previously, non-termination of Coq's
+data-manipulating programs would be disastrous and would compromise
+the whole soundness of the logic, as one would be able to write
+definitions similar to the following one, making it possible to derive
+the falsehood right away.
+
+<<
+Fixpoint f A (x: A): False := f x. 
+>>
+
+This is why the non-propositional component of Coq's dependent type
+system is _predicative_ and follows the _stratification_ approach
+suggested by %Martin-\loef~\cite{Martin-Loef:84}% and adopted, in
+particular, by Agda%~\cite{Norell:PhD}%.
+
+** Universe hierarchy
+
+As we remember, the types from the sort [Set] in Coq directly
+correspond to sets from the classical set theory. Therefore, in order
+to avoid type-level paradoxes when defining sets of values in a
+dependently-typed theory%~\cite{Coquand:LICS86}%, Coq introduces
 implicit _stratification_ of type levels, which are usually referred
 to as _Universes_. In the light of the stratification, the
 non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
@@ -1546,18 +1579,26 @@ Check R R.
 Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 ]]
 
-Quite fortunately, it has been proven that making the sort [Prop]
-impredicative _does not_ introduces any paradoxes in CIC. This is the
-reason why any proposition, quantifying over other propositions is
-again a proposition. The crucial trait of the elements of the [Prop]
-universe is that one _cannot perform pattern-matching_ on the proof
-terms, i.e., on the values, whose type is of sort [Prop]. This
-restriction is enforced by Coq syntactically,%\footnote{It would be
-imposed semantically if Coq supported full proof irrelevance,
-although, currently, for implementation reasons, the proof terms still
-can be observed (e.g., by means of \texttt{Print}ing them).}% and it
-makes it possible to keep the metatheory of CIC consistent allowing
-for impredicativity of [Prop] in constrast with all other universes.
+** Treatment of proof terms
+
+Let us now get back to the sort [Prop].  It has been proven that,
+assuming some restrictions on how proof terms are treated, making the
+sort [Prop] impredicative _does not_ introduces any paradoxes in
+CIC%~\cite{Coquand-Huet:ECCA85}%. This is the reason why any
+proposition, which quantifies over other propositions, is still a
+proposition, similarly to how a higher-order type in Haskell is still
+a valid Haskell type.
+
+The crucial trait of the elements of the [Prop] universe is that one
+_cannot perform pattern-matching_ on the proof terms, i.e., on the
+values, whose type is of sort [Prop]. This restriction is enforced by
+Coq syntactically,%\footnote{It would be imposed semantically if Coq
+supported full proof irrelevance, although, currently, for
+implementation reasons, the proof terms still can be observed (e.g.,
+by means of \texttt{Print}ing them).}% and it makes it possible to
+keep the metatheory of CIC consistent allowing for impredicativity of
+[Prop] in constrast with all other universes, which are a subject to
+%Martin-\loef%'s stratification.
 
 *)
 
