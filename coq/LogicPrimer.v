@@ -776,6 +776,7 @@ reporting an error if the argument fails.}%
 *)
 
 (** * Conjunction and disjunction 
+%\label{sec:conjdisj}%
 
 Two main logical connectives, conjunction and disjunction, are
 implemented in Coq as simple inductive predicates in the sort
@@ -823,7 +824,7 @@ theorem and initiates the interactive proof mode.}%
 *)
 
 Goal P -> R -> P /\ R.
-move=> p q. 
+move=> p r. 
 
 (** 
 
@@ -987,7 +988,10 @@ case of the [or_intror] constructor.
 by left.
 Qed.
 
-(*
+(** remove printing ~ *)
+(** printing ~ %\textasciitilde% *)
+
+(**
 
 It is worth noticing that the definition of disjunction in Coq is
 _constructive_, whereas the disjunction in classical logic is
@@ -1008,7 +1012,7 @@ an implementation of, in the trivial assumptions given the proof of [P
 (** * Proofs with negation
 
 In Coq's constructive approach proving the negation of [~P] of a
-proposition [P] (spelled <<~ P>>) literally means that one can derive
+proposition [P] literally means that one can derive
 the falsehood from [P].
 
 *)
@@ -1032,7 +1036,7 @@ function, which maps a proposition [A] to the implication [A ->
 False]. With this respect the intuition of negation from the classical
 logic might be misleading: as it will be discussed in
 %Section~\ref{sec:axioms}%, the Calculus of Constructions lacks the
-axiom of double negation, which means that the proof of [~~A] will not
+axiom of double negation, which means that the proof of [~ ~A] will not
 deliver the proof of [A], as such derivation would be not
 constructive, as one cannot get a value of type [A] out of a function
 of type [[A -> B] -> B], where [B] is taken to be [False].
@@ -1083,6 +1087,7 @@ done.
 Qed.
 
 (** remove printing exists *)
+(** printing <-> %\texttt{<->}% *)
 
 (** * Existential quantification
 
@@ -1110,7 +1115,7 @@ Inductive ex (A : Type) (P : A -> Prop) : Prop :=
     ex_intro : forall x : A, P x -> ex A P
 ]]
 
-The notation for existentially-quantified predicates conveniently
+The notation for existentially quantified predicates conveniently
 allows one to existentially quantify over several variables,
 therefore, leading to a chain of enclosed calls of the constructor
 [ex_intro].  
@@ -1142,8 +1147,8 @@ quantification is a goal, can be completed by applying the constructor
 which does exactly the same, instantiating the first parameter of the
 constructor with the provided value [z]. Let us demonstrate it on a
 simple example%~\cite[\S 5.2.6]{Bertot-Casteran:BOOK}%, accounting for
-the weakening of the predicate, satisfying the
-existentially-quantifying variable.
+the weakening of the predicate, satisfying the existentially
+quantified variable.
 
 *)
 
@@ -1178,9 +1183,45 @@ exists a.
 by apply: Hst.
 
 Qed.
- 
+
+(**
+%\begin{exercise}%
+
+Let us define our own version [my_ex] of the existential quantifier
+using the SSReflect notation for constructors:
+
+*)
+
+Inductive my_ex A (S: A -> Prop) : Prop := my_ex_intro x of S x.
 
 (** 
+
+The reader is invited to prove the following goal, establishing the
+equivalence of the two propositions
+
+*)
+
+Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
+
+(** 
+
+%\hint:% the propositional equivalence [<->] is just a conjunction of
+two implications, so proving it can be reduced to two separate goals
+by means of [split] tactics.
+
+*)
+
+(* begin hide *)
+Proof.
+move=> A S; split.
+- by case=> x Hs; exists x.
+by case=>y Hs; apply: my_ex_intro Hs.
+Qed.
+(* end hide *) 
+ 
+(** 
+
+%\end{exercise}%
 
 ** A conjunction and disjunction analogy
 
@@ -1213,27 +1254,318 @@ as_ a "tag" --- an indicator, which disjunct exactly is being proven
 of infinitary disjunction, the existential quantification "exists x, P
 x", the existentially quantified variable plays role of the tag
 indexing all possible propositions [P x]. Therefore, in order to prove
-such a proposition one needs first to deliver a witness [x] (usually,
+such a proposition, one needs first to deliver a witness [x] (usually,
 by means of calling the tactics [exists]), and then prove that for
 this witness/tag the proposition [P x] holds. Continuing the same
 analogy, the disjunction in the assumption of a goal usually leads to
-the proof by case analysis assuming that one of the disjuncts holds at
-a time. TODO
+the proof by [case] analysis assuming that one of the disjuncts holds
+at a time. Similarly, the way to destruct the existential
+quantification is by case-analysing on its constructor, which results
+in acquiring the witness (i.e., the "tag") and the corresponding
+"disjunct".
 
+Finally, the folklore alias "dependent product type" for dependent
+function types (i.e., [forall]-quantified types) indicates its
+relation to products, which are Curry-Howard counterparts of
+conjunctions. In the same spirit, the term "dependent sum type" for
+the dependent types, of which existential quantification is a
+particular case, hints to the relation to the usual sum types, and, in
+particular [sum] (discussed in %Chapter~\ref{ch:funprog}%), which is a
+Curry-Howard dual of a disjunction.
 
 *)
+
+End Connectives.
 
 (** * Missing axioms from the classical logic
 %\label{sec:axioms}%
 
-TODO: discuss axioms of the classical logics
+In the precious sections of this chapter, we have seen how a fair
+amount of propositions from the higher-order propositional logics can
+be encoded and proved in Coq. However, some reasoning principles,
+employed in the _classical_ propositional logic, cannot be encoded in
+Coq in a form of provable statements, and, hence, should be encoded as
+_axioms_.
+
+In this section, we provide a brief and by all means incomplete
+overview of the classical propositional logic axioms that are missing
+in Coq, but can be added by means of importing the appropriate
+libraries. We address the curious reader to %Chapter~12 of Adam
+Chlipala's book~\cite{Chlipala:BOOK}% for a detailed survey of useful
+axioms that can be added into Coq development on top of CIC. 
+
+We first import that classical logic axioms from the [Classical_Prop]
+module.
+
+*)
+
+Require Import Classical_Prop.
+
+
+(**
+
+The most often missed axiom is the axiom of _excluded middle_, which
+postulates that the disjunction of [P] and [~P] is provable. Adding
+this axiom circumvents the fact that the reasoning out of the excluded
+middle principle is _non-constructive_, as discussed in
+%Section~\ref{sec:conjdisj}%.
+
+*)
+
+Check classic.
+
+(** 
+[[
+classic
+     : forall P : Prop, P \/ ~ P
+]]
+
+Another axiom from the classical logic, which coincides with the type
+of Scheme's [call/cc]
+operator%\footnote{\url{http://community.schemewiki.org/?call-with-current-continuation}}%
+(pronounced as _{call with current continuation_) modulo Curry-Howard
+isomorphism is _Peirce's law_:
+
+*)
+
+Definition peirce_law := forall P Q: Prop, ((P -> Q) -> P) -> P.
+
+(** 
+
+In Scheme-like languages, the [call/cc] operator allows one to
+invoke the undelimited continuation, which aborts the
+computation. Similarly to the fact that [call/cc] cannot be
+implemented in terms of polymorphically-typed lambda calculus as a
+function and should be added as an external operator, the Peirce's law
+is an axiom in the constructive logic.
+
+The classical double negation principle is easily derivable from
+Peirce's law, and corresponds to the type of [call/cc], which alway
+invokes its continuation parameter, aborting the current computation.
+
+*)
+
+Check NNPP.
+
+(** 
+[[
+NNPP
+     : forall P : Prop, ~ ~P -> P
+]]
+
+Finally, the classical formulation of the implication through the
+disjunction is again an axiom in the constructive logic, as otherwise
+from the function of type [P -> Q] one would be able to construct the
+proof of [~P \/ Q], which would make the law of the excluded middle
+trivial to derive.
+*)
+
+Check imply_to_or.
+
+(**
+
+[[
+imply_to_or
+     : forall P Q : Prop, (P -> Q) -> ~P \/ Q
+]]
+
+Curiously, none of these axioms, if added to Coq, makes its logic
+unsound: it has been rigorously proven (although, not within Coq, due
+to %\Godel%'s incompleteness result) that all classical logic axioms
+are consistent with CIC, do not make it possible to derive the
+falsehood%~\cite{Werner:TACS97}%.
+
+The following exercise reconcile most of the familiar axioms of the
+classical logic.
+
+
+
+%\begin{exercise}{Equivalence of classical logic axioms~\cite[\S
+ 5.2.4]{Bertot-Casteran:BOOK}}
+\label{ex:equivax}
+%
+
+Prove that the following five axioms of the classical are equivalent.
+
+*)
+
+Definition peirce := peirce_law.
+Definition double_neg := forall P: Prop, ~ ~ P -> P.
+Definition excluded_middle := forall P: Prop, P \/ ~P.
+Definition de_morgan_not_and_not := forall P Q: Prop, ~ ( ~P /\ ~Q) -> P \/ Q.
+Definition implies_to_or := forall P Q: Prop, (P -> Q) -> (~P \/ Q).
+
+(* begin hide *)
+Lemma peirce_dn: peirce -> double_neg.
+Proof. by move=>H P Hn; apply: (H _ False)=> /Hn. Qed.
+
+Lemma dn_em : double_neg -> excluded_middle.
+Proof.
+rewrite /double_neg /excluded_middle=> Dn P. 
+apply: (Dn (P \/ ~ P))=>H1; apply: (H1).
+by left; apply: (Dn)=> H2; apply: H1; right.
+Qed.
+
+Lemma em_dmnan: excluded_middle -> de_morgan_not_and_not.
+Proof.
+rewrite /excluded_middle /de_morgan_not_and_not=> H1 P Q H2.
+suff: ~P -> Q.
+- move=>H3. move: (H1 P); case=>//X; first by left. 
+  by right; apply: H3. 
+move=> Pn.
+move: (H1 Q); case=>// Qn.
+suff: False=>//; apply: H2; split=>//.
+Qed.
+
+Lemma dmnan_ito : de_morgan_not_and_not -> implies_to_or.
+Proof.
+rewrite /de_morgan_not_and_not /implies_to_or=> H1 P Q Hi.
+suff: ~P \/ P.
+case=>//; first by left.
+- by move/ Hi; right.
+move: (H1 (~P) P)=> H2; apply: H2; case=> Hp p.
+suff: (P -> False) \/ False by case=>//.
+by apply: H1; case.
+Qed.
+
+Lemma ito_peirce : implies_to_or -> peirce.
+Proof.
+rewrite /peirce /peirce_law /implies_to_or=> H1 P Q H2.
+have X: P -> P by [].
+move: (H1 P P) =>/(_ X); case=>{X}// Pn.
+by apply: (H2)=>p. 
+Qed.
+
+(* end hide *)
+
+(**
+
+%\hint:% Use [rewrite /d] tactics to unfold the definition of a value
+ [d] and replace its name by its body. You can chain several
+ unfoldings by writing [rewrite /d1 /d2 ...] etc.
+
+%\hint:% To facilitate the forward reasoning by contradiction, you can
+ use the SSReflect tactic [suff: P], where [P] is an arbitrary
+ proposition. The system will then require you to prove that [P]
+ implies the goal _and_ [P] itself.
+
+%\end{exercise}%
 
 *)
 
 
-(** * Impredicativity of [Prop] and universes in Coq
+
+
+(** * Universes in Coq and [Prop] impredicativity
+
+While solving Exercise%~\ref{ex:equivax}% from the previous section,
+the reader could have noticed an interesting detail about the
+propositions in Coq and the sort [Prop]: the propositions that
+quantify over propositions still remain to be propositions, i.e., they
+still belong to the sort [Prop]. This property of propositions in Coq
+(and in general, the ability of entities to quantify over the entities
+of the same class) is called _impredicativity_. The opposite
+characteristic (i.e., the inability to refer to the element of the
+same class) is called _predicativity_.
+
+_Impredicativity_ as a property of definitions is a very powerful
+tool, as it allows one to define domains that are
+_self-recursive_. Unfortunately, when applied to the classical set
+theory, the impredicativity immediately leads to the famous Russel's
+paradox, which arises from the attempt to define a set of all sets
+that do not belong to themselves. As we remember, the types from the
+sort [Set] in Coq directly correspond to sets from the classical set
+theory. Therefore, in order to avoid type-level paradoxes when
+defining sets of values%~\cite{Coquand:LICS96}%, Coq introduces
+implicit _stratification_ of type levels, which are usually referred
+to as _Universes_. In the light of the stratification, the
+non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
+"live" on the [0]th level of universe hierarchy, namely, in the sort
+[Set]. The polymorphic types, quantifying over the elements of the
+[Set] universe are, therefore located at the higher level, which in
+Coq is denoted as [Type(1)], but in the displays is usually presented
+simply as [Type]. We can enable the explicit printing of the universe
+levels to see how the are assigned:
 
 *)
+
+Set Printing Universes.
+
+Check bool.
+(**
+[bool : Set]
+
+The following type is polymorphic over the elements of the [Set]
+universe, and this is why its own universe is "bumped up" by one, so
+it becomes [Type(1)].
+
+*)
+
+Definition S := forall T: Set, list T. 
+Check S.
+
+(**
+[S : Type (* max(Set, (Set)+1) *)]
+
+At this moment, Coq provides a very limited version of _universe
+polymorphism_. For instance, the next definition [R] is polymorphic
+with respect to the universe of its parameter [A], so its result lives
+in the universe, whose level is taken to be the level of [A].
+
+*)
+
+Definition R (A: Type) (x: A): A := x. 
+Implicit Arguments R [A].
+
+Check R tt. 
+
+(** 
+[R tt : unit]
+*)
+
+Check R Type. 
+
+(** 
+
+If the argument of [R] is itself a universe, it means that [A]'s
+level is higher than [x]'s level, and so is the level of [R]'s result.
+
+[R Type (* Top.1237 *) : Type (* Top.1238 *)]
+
+
+However, the attempt to apply [R] to itself immediately leads to an
+error reported, as the system cannot infer the level of the result, by
+means of solving a system of universe level inequations:
+
+*)
+
+(**
+[[
+Check R R.
+
+Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
+]]
+
+Quite fortunately, it has been proven that making the sort [Prop]
+impredicative _does not_ introduces any paradoxes in CIC. This is the
+reason why any proposition, quantifying over other propositions is
+again a proposition. The crucial trait of the elements of the [Prop]
+universe is that one _cannot perform pattern-matching_ on the proof
+terms, i.e., on the values, whose type is of sort [Prop]. This
+restriction is enforced by Coq syntactically,%\footnote{It would be
+imposed semantically if Coq supported full proof irrelevance,
+although, currently, for implementation reasons, the proof terms still
+can be observed (e.g., by means of \texttt{Print}ing them).}% and it
+makes it possible to keep the metatheory of CIC consistent allowing
+for impredicativity of [Prop] in constrast with all other universes.
+
+*)
+
+
+
+
+
+
 
 (* Definition append_lm (A: eqType) (x: A) (xs ys: seq A):  *)
 (*   x \in xs -> index x xs = index x (xs ++ ys). *)
@@ -1248,9 +1580,8 @@ TODO: discuss axioms of the classical logics
 (* Check (forall A : Set, list A) : Set. *)
 
 
-End Connectives.
 
-(* being hide *)
+(* begin hide *)
 Definition dys_imp (P Q: Prop) := (P -> Q) -> (Q -> P).
 Definition dys_contrap (P Q: Prop) := (P -> Q) -> (~P -> ~Q).
 

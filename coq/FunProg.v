@@ -785,9 +785,8 @@ In the previous sections of this chapter we have already seen the way
 inductive datatypes are defined in the setting "traditional"
 Coq. These are the definitions that will be displayed when using the
 [Print] utility. However, in the rest of the development in this book,
-if the names of the constructor arguments are not important, we will
-be using a version of Coq, enhanced with the SSReflect tool, which, in
-particular, provides more concise notation for defining
+we will be using a version of Coq, enhanced with the SSReflect tool,
+which, in particular, provides more concise notation for defining
 constructors. For instance, as an alternative to the standard
 definition of the product datatype, we can define our own product in
 the following way:

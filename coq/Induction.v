@@ -1,6 +1,40 @@
-(** %\chapter{Inductive Predicates: the Good the Bad and the Ugly}% *)
+(** %\chapter{More inductive predicates}% *)
 
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
+Require Import ssreflect ssrbool ssrnat.
+
+(** * Definitional equality in Coq
+
+
+ *)
+
+
+(** * Proofs by rewriting
+
+
+ *)
+
+Inductive people : Set := me | pope. 
+
+Definition discr p : Prop := 
+  if p is me then True else False.
+
+Lemma me_pope: 1 = 2 -> me = pope.
+Proof.
+move=> E.
+pose discr := fun n => if n is 1 then pope else me.
+rewrite -/(discr 2). 
+rewrite -E=>/=. 
+move: (eq_refl pope)=> H; assumption.
+Qed.
+
+
+(** * Axioms about equality
+
+TODO: K and friends
+
+ *)
+
+
 
 (** 
 
