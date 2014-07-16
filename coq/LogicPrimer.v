@@ -24,10 +24,12 @@ _propositions_.
 
 In Coq, propositions bear a lot of similarities with types,
 demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
-sort [Prop], similarly to how first-order types inhabit [Set]. The
-"values" that have elements of [Prop] as their types are usually
-referred to as _proofs_ or _proof terms_, the naming convention which
-stems out of the ide of %\emph{Curry-Howard
+sort [Prop], similarly to how first-order types inhabit
+[Set].%\footnote{In the Coq community, the datatypes of [Prop] sort ar
+usually referred to as \emph{inductive predicates}.}% The "values"
+that have elements of [Prop] as their types are usually referred to as
+_proofs_ or _proof terms_, the naming convention which stems out of
+the ide of %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
 _proofs-as-programs_, which is truly illuminating when it comes to the
@@ -266,11 +268,13 @@ evaluation of its body. In contrast, a proof term bound by means of
 and serves the only purpose: establish the fact that the corresponding
 type (the theorem's statement) is inhabited, and, therefore is true.
 This distinction between definitions and theorems arises from the
-notion of _proof irrelevance_, which, informally, postulates that one
-shouldn't be able to distinguish between two proofs of the same
-statement as long as they both are valid. Conversely, the programs
-(that is what is bound by means of [Definition]) are typically of
-interest by themselves, not only because of the type they return.
+notion of _proof irrelevance_, which, informally, states that
+(ideally) one shouldn't be able to distinguish between two proofs of
+the same statement as long as they both are valid.%\footnote{Although,
+in fact, proof terms in Coq can be very well distinguished.}%
+Conversely, the programs (that is what is bound by means of
+[Definition]) are typically of interest by themselves, not only
+because of the type they return.
 
 The difference between the two definitions of the truth's validity,
 which we have just constructed, can be demonstrated by means of the
@@ -510,7 +514,7 @@ SSReflect offers a tactic a small bu powerful toolkit of _tacticals_
 (i.e., higher-order tactics) for bookkeeping. In particular, for
 moving the bound variables from "bottom to the top", one should use a
 combination of the "no-op" tactic [move] and the tactical [=>]
-(spelled << => >>). The following command moves the next three
+(spelled <<=>>>). The following command moves the next three
 assumptions from the goal, [P], [Q] and [R] to the assumption context,
 simultaneously renaming them to [A], [B] and [C]. The renaming is
 optional, so we just show it here to demonstrate the possibility to
@@ -603,7 +607,7 @@ so.
 Formulate and prove the following theorem in Coq, which states the
 distributivity of universal quantification with respect to implication:
 \[
-\forall P Q, [(\forall x, P(x) \implies Q(X)) \implies (\forall y, P(y) \implies \forall z, Q(Z))]
+\forall P~Q, [(\forall x, P(x) \implies Q(x)) \implies ((\forall y, P(y)) \implies \forall z, Q(z))]
 \]
 
 \hint: Be careful with the scoping of [forall]-quantified variables and use parenthesis to resolve ambiguities!
@@ -774,7 +778,7 @@ reporting an error if the argument fails.}%
 (** * Conjunction and disjunction 
 
 Two main logical connectives, conjunction and disjunction, are
-implemented in Coq as simple inductive datatypes in the sort
+implemented in Coq as simple inductive predicates in the sort
 [Prop]. In order to avoid some clutter, from this moment and till the
 end of the chapter let us start a section and assume a number of
 propositional variables in it (as we remember, those will be
@@ -791,7 +795,7 @@ Variables P Q R: Prop.
 The propositional conjunction of [P] and [Q], denoted by [P /\ Q], is
 a straightforward Curry-Howard counterpart of the [pair] datatype that
 we have already seen in %Chapter~\ref{ch:funprog}%, and is defined by
-means of the datatype [and].
+means of the predicate [and].
 
 *)
 
@@ -1078,10 +1082,12 @@ move /Hq.
 done.
 Qed.
 
+(** remove printing exists *)
+
 (** * Existential quantification
 
 Existential quantification in Coq, which is denoted by a notation
-"[exists x, P x]" is just yet another inductive datatype with exactly
+"[exists x, P x]" is just yet another inductive predicate with exactly
 one constructor:
 
 *)
@@ -1104,28 +1110,116 @@ Inductive ex (A : Type) (P : A -> Prop) : Prop :=
     ex_intro : forall x : A, P x -> ex A P
 ]]
 
-The notation for existentials conveniently allows one to existentially
-quantify over several variables, therefore, leading to a chain of
-enclosed calls of the constructor [ex_intro].
+The notation for existentially-quantified predicates conveniently
+allows one to existentially quantify over several variables,
+therefore, leading to a chain of enclosed calls of the constructor
+[ex_intro].  
+
+The inductive predicate [ex] is parametrized with a type [A], over
+elements of which we quantify, and a predicate function of type [A ->
+Prop]. What is very important is that the scope of the variable [x] in
+the constructor captures [ex A P] as well. That is, the constructor
+type could be written as [forall x, (P x -> ex A P)] to emphasize that
+each particular instance of [ex A P] carries is defined by a
+_particular_ value of [x]. The actual value of [x], which satisfies
+the predicate [P] is, however, not exposed to the client, providing
+the _data abstraction_ and information hiding, similarly to the
+traditional existential types (see %Chapter~24
+of~\cite{Pierce:BOOK02}%), which would serve as a good analogy.  Each
+inhabitant of the type [ex] is therefore an instance of a
+%\emph{dependent pair},\footnote{In the literature, dependent pairs
+are often referred to as \emph{dependent sums} or $\Sigma$-types.}%
+whose first element is a _witness_ for the following predicate [P],
+and the second one is a result of application of [P] to [x], yielding
+a particular proposition. 
+
+The proofs of propositions that assume existential quantification are
+simply the proofs by case analysis: destructing the only constructor
+of [ex], immediately provides its arguments: a witness [x] and the
+predicate [P] it satisfies. The proofs, where the existential
+quantification is a goal, can be completed by applying the constructor
+[ex_intro] directly or by using a specialized Coq's tactic [exists z],
+which does exactly the same, instantiating the first parameter of the
+constructor with the provided value [z]. Let us demonstrate it on a
+simple example%~\cite[\S 5.2.6]{Bertot-Casteran:BOOK}%, accounting for
+the weakening of the predicate, satisfying the
+existentially-quantifying variable.
+
 *)
 
-(* The way the existential quantification is encoded in Coq is a great *)
-(* example of a dependent type, more specifically, %\emph{dependent pair *)
-(* type}.\footnote{Dependent pair types are often referred to in the *)
-(* literature as \emph{dependent sums} or $\Sigma$-types, as they *)
-(* generalize the simple algebraic sum types.}%  *)
+Theorem ex_imp_ex A (S T: A -> Prop): 
+  (exists a: A, S a) -> (forall x: A, S x -> T x) -> exists b: A, T b.
+
+(**
+
+The parentheses are important here, otherwise, for instance, the scope
+of the first existentially-quantified variable [a] would be the whole
+subsequent statement, not just [S a].
+
+remove printing exists
+
+*)
+
+Proof.
+
+(** First, we decompose the first existential sum into the witness [a]
+and the proposition [Hst], and also store the universally-quantified
+implication assumption with the name [Hst]. *)
+
+case=>a Hs Hst.
+
+(** Next, we apply the [ex]'s constructor by means of the [exists]
+tactic with an explicit witness value [a]: *)
+
+exists a.
+
+(** We finish the proof  by applying the weakening hypothesis [Hst]. *)
+
+by apply: Hst.
+
+Qed.
+ 
 
 (** 
 
-The type [ex] is parametrized with a type [A], over elements of which
-we quantify, and a predicate of type [A -> Prop]. Each inhabitant of
-the type [ex] is therefore TODO
- 
-
-
-
-
 ** A conjunction and disjunction analogy
+
+Sometimes, the universal and the existential quantifications are
+paraphrased as "infinitary" conjunction and disjunction
+correspondingly. This analogy comes in handy when understanding the
+properties of both quantifications, so let us elabore on it for a little bit.
+
+In order to prove the conjunction [P1 /\ ... /\ Pn], one needs to
+establish that _all_ propositions [P1 ... Pn] hold, which in the
+finite case can be done by proving [n] goal, for each statement
+separately (and this is what the [split] tactic helps to
+do). Similarly, in order to prove the propositions [forall x: A, P x],
+one need to prov that [P x] holds for _any_ [x] of type [A]. Since the
+type itself can define an infinite set, there is no way to enumerate
+all conjuncts, however, an explicit handle [x] gives a way to
+effective _index_ them, so proving [P x] for an arbitrary [x] would
+establish the validity of the universal quantification itself. Another
+useful insight is that in Coq [forall x: A, P x] is a type of a
+dependent function that maps [x] of type [A] to a value of type [P
+x]. The proof of the quantification would be, therefore, a function
+with a suitable "plot". Similarly, in the case of [n]-ary conjunction,
+the function has finite domain of exactly [n] points, for each of
+which an appropriate proof term should be found.
+
+In order to prove the [n]-ary disjunction [P1 \/ ... \/ Pn] in Coq, it
+is sufficient to provide a proof for just one of the disjunct _as well
+as_ a "tag" --- an indicator, which disjunct exactly is being proven
+(this is what tactics [left] and [right] help to achieve). In the case
+of infinitary disjunction, the existential quantification "exists x, P
+x", the existentially quantified variable plays role of the tag
+indexing all possible propositions [P x]. Therefore, in order to prove
+such a proposition one needs first to deliver a witness [x] (usually,
+by means of calling the tactics [exists]), and then prove that for
+this witness/tag the proposition [P x] holds. Continuing the same
+analogy, the disjunction in the assumption of a goal usually leads to
+the proof by case analysis assuming that one of the disjuncts holds at
+a time. TODO
+
 
 *)
 
@@ -1137,25 +1231,9 @@ TODO: discuss axioms of the classical logics
 *)
 
 
-(** * Impredicativity of [Prop] and Coq's sort hierarchy 
+(** * Impredicativity of [Prop] and universes in Coq
 
 *)
-
-(** * [Prop] versus [bool]
-
-TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
-is as expressive as simple propositional logic (which is its strength,
-thank to Coq's terminating computations)
-
-*)
-
-
-(** 
-
-* The basics of boolean reflection
-
-*)
-
 
 (* Definition append_lm (A: eqType) (x: A) (xs ys: seq A):  *)
 (*   x \in xs -> index x xs = index x (xs ++ ys). *)
