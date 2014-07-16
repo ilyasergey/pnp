@@ -1,6 +1,6 @@
 (** 
 
-%\chapter{The basics of boolean reflection}
+%\chapter{The Basics of Boolean Reflection}
 \label{ch:boolrefl}%
 
 *)

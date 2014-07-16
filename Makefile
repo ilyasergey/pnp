@@ -1,4 +1,4 @@
-MODULES      := Introduction FunProg LogicPrimer Induction BoolReflect Rewriting DepRecords LessAdHoc HTT
+MODULES      := Introduction FunProg LogicPrimer Induction SsrStyle BoolReflect Rewriting DepRecords LessAdHoc HTT
 VS           := $(MODULES:%=coq/%.v)
 TEX          := $(MODULES:%=latex/%.v.tex)
 RELEASE      := $(VS) Makefile

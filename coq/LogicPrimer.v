@@ -1456,10 +1456,10 @@ Qed.
 
 
 
-(** * Universes in Coq and [Prop] impredicativity
+(** * Universes and [Prop] impredicativity
 
 While solving Exercise%~\ref{ex:equivax}% from the previous section,
-the reader could noticed an interesting detail about the propositions
+the reader could notice an interesting detail about the propositions
 in Coq and the sort [Prop]: the propositions that quantify over
 propositions still remain to be propositions, i.e., they still belong
 to the sort [Prop]. This property of propositions in Coq (and in
@@ -1480,14 +1480,15 @@ programs.
 
 One of the main challenges when designing the Calculus of
 Constructions was to implement its logical component (i.e., the
-fragment responsible for constructing elements of the [Prop] sort), so
-it would subsume the existing impredicative propositional
-calculi%~\cite{Coquand-Huet:ECCA85}%, and, in particular, %System~$F$%
-(which is impredicative), allowing for the expressive reasoning in the
-higher order logic. While as a type calculus, insensitive with respect
-to the termination, %System~$F$% works just fine and is adopted by a
-number of practical programming languages, in particular Haskell, it
-_does not_ enforce program termination.
+fragment responsible for constructing and operating with elements of
+the [Prop] sort), so it would subsume the existing impredicative
+propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
+particular, %System~$F$% (which is impredicative), allowing for the
+expressive reasoning in the higher-order propositional logic. While as
+a type calculus, insensitive with respect to the termination,
+%System~$F$% works just fine and is adopted by a number of practical
+programming languages, in particular Haskell, it _does not_ enforce
+program termination.
 
 As we have observed previously, non-termination of Coq's
 data-manipulating programs would be disastrous and would compromise
@@ -1511,14 +1512,15 @@ correspond to sets from the classical set theory. Therefore, in order
 to avoid type-level paradoxes when defining sets of values in a
 dependently-typed theory%~\cite{Coquand:LICS86}%, Coq introduces
 implicit _stratification_ of type levels, which are usually referred
-to as _Universes_. In the light of the stratification, the
+to as _universes_. In the light of the stratification, the
 non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
-"live" on the [0]th level of universe hierarchy, namely, in the sort
+"live" at the [0]th level of universe hierarchy, namely, in the sort
 [Set]. The polymorphic types, quantifying over the elements of the
 [Set] universe are, therefore located at the higher level, which in
 Coq is denoted as [Type(1)], but in the displays is usually presented
-simply as [Type]. We can enable the explicit printing of the universe
-levels to see how the are assigned:
+simply as [Type], as well as all the higher universes. We can enable
+the explicit printing of the universe levels to see how they are
+assigned:
 
 *)
 
@@ -1538,7 +1540,10 @@ Definition S := forall T: Set, list T.
 Check S.
 
 (**
-[S : Type (* max(Set, (Set)+1) *)]
+
+%
+\textsf{S}\texttt{ : Type (* max(Set, (Set)+1) *)}
+%
 
 At this moment, Coq provides a very limited version of _universe
 polymorphism_. For instance, the next definition [R] is polymorphic
@@ -1563,12 +1568,15 @@ Check R Type.
 If the argument of [R] is itself a universe, it means that [A]'s
 level is higher than [x]'s level, and so is the level of [R]'s result.
 
-[R Type (* Top.1237 *) : Type (* Top.1238 *)]
+%
+\textsf{R} \texttt{Type (* Top.1237 *) : Type (* Top.1238 *)}
+%
 
 
 However, the attempt to apply [R] to itself immediately leads to an
 error reported, as the system cannot infer the level of the result, by
-means of solving a system of universe level inequations:
+means of solving a system of universe level inequations, therefore,
+preventing meta-circular paradoxes.
 
 *)
 
@@ -1592,13 +1600,10 @@ a valid Haskell type.
 The crucial trait of the elements of the [Prop] universe is that one
 _cannot perform pattern-matching_ on the proof terms, i.e., on the
 values, whose type is of sort [Prop]. This restriction is enforced by
-Coq syntactically,%\footnote{It would be imposed semantically if Coq
-supported full proof irrelevance, although, currently, for
-implementation reasons, the proof terms still can be observed (e.g.,
-by means of \texttt{Print}ing them).}% and it makes it possible to
-keep the metatheory of CIC consistent allowing for impredicativity of
-[Prop] in constrast with all other universes, which are a subject to
-%Martin-\loef%'s stratification.
+Coq syntactically, and it makes it possible to keep the metatheory of
+CIC consistent, allowing for impredicativity of [Prop], in contrast
+with all other universes, which are a subject to %Martin-\loef%'s
+stratification.
 
 *)
 

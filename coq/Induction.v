@@ -1,4 +1,4 @@
-(** %\chapter{More inductive predicates}% *)
+(** %\chapter{More Inductive Predicates}% *)
 
 Require Import ssreflect ssrbool ssrnat.
 
