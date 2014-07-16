@@ -1294,8 +1294,8 @@ libraries. We address the curious reader to %Chapter~12 of Adam
 Chlipala's book~\cite{Chlipala:BOOK}% for a detailed survey of useful
 axioms that can be added into Coq development on top of CIC. 
 
-We first import that classical logic axioms from the [Classical_Prop]
-module.
+To explore some of some of the axioms, we first import that classical
+logic module [Classical_Prop].
 
 *)
 
@@ -1561,17 +1561,20 @@ Check R tt.
 [R tt : unit]
 *)
 
-Check R Type. 
-
 (** 
 
 If the argument of [R] is itself a universe, it means that [A]'s
 level is higher than [x]'s level, and so is the level of [R]'s result.
 
+*)
+
+Check R Type. 
+
+(**
+
 %
 \textsf{R} \texttt{Type (* Top.1237 *) : Type (* Top.1238 *)}
 %
-
 
 However, the attempt to apply [R] to itself immediately leads to an
 error reported, as the system cannot infer the level of the result, by
