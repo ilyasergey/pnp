@@ -1,11 +1,107 @@
-(** %\chapter{More Inductive Predicates}% *)
+(** %\chapter{More Inductive Predicates}% 
 
-Require Import ssreflect ssrbool ssrnat.
 
-(** * Definitional equality in Coq
+In this chapter we will continute employing the enhancements
+intorduced into Coq by means of SSReflect, so for the next sections we
+will have the [ssreflect] module imported.
+
+*)
+
+Require Import ssreflect.
+
+(** * Propositional equality in Coq
 
 
  *)
+
+Require Import ssrnat.
+
+Inductive beautiful (n: nat) : Prop :=
+  b_0 of n = 0
+| b_3 of n = 3
+| b_5 of n = 5
+| b_sum n' m' of beautiful n' & beautiful m' & n = n' + m'.
+
+Theorem eight_is_beautiful: beautiful 8.
+Proof.
+apply: (b_sum _ 3 5)=>//. 
+- by apply: b_3.
+by apply b_5.
+Qed.
+
+Theorem b_times2 n: beautiful n ->  beautiful (n * 2).
+Proof.
+elim=>m.
+- by move=>->; apply:b_0.
+- move=>->; rewrite mulnC mul2n -addnn. 
+  by apply: (b_sum _ 3 3)=>//=; apply: b_3=>//=.
+- move=>->; rewrite mulnC mul2n -addnn. 
+  by apply: (b_sum _ 5 5)=>//=; apply: b_5=>//=.
+- move=> n' m' H1 H2 H3 H4=>->{m}.
+rewrite mulnC mul2n -addnn.
+rewrite addnAC addnA addnn -addnA addnn.
+apply: (b_sum _ n'.*2 m'.*2)=>//.
+ - by rewrite mulnC mul2n in H2.
+by rewrite mulnC mul2n in H4.
+Qed.
+
+Theorem b_timesm n m: beautiful n ->  beautiful (m * n).
+Proof.
+elim:m=>[_|m Hm Bn]; first by rewrite mul0n; apply: b_0.
+move: (Hm Bn)=> H1.
+by rewrite mulSn; apply: (b_sum _ n (m * n))=>//.
+Qed.
+
+Lemma one_not_beautiful n:  n = 1 -> ~ beautiful n.
+Proof.
+move=>E H; elim: H E=>n'; do?[by move=>->].
+move=> n1 m' _ H2 _ H4->{n' n}.
+case: n1 H2=>// n'=> H3.
+by case: n' H3=>//; move/(_ eq_refl).
+Qed.
+
+
+Inductive gorgeous (n: nat) : Prop :=
+  g_0 of n = 0
+| g_plus3 m of gorgeous m & n = m + 3
+| g_plus5 m of gorgeous m & n = m + 5.
+
+Theorem gorgeous_plus13 n:
+  gorgeous n -> gorgeous (n + 13).
+Proof.
+move=> H.
+apply: (g_plus5 _ (n + 8))=>//; last by rewrite -addnA; congr (_ + _).
+apply: (g_plus5 _ (n + 3)); last by rewrite -addnA; congr (_ + _).
+by apply: (g_plus3 _ n). 
+Qed.
+
+Theorem beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
+Proof.
+elim=>n'{n}=>//.
+- by move=>->; apply g_0.
+- by move=>->; apply: (g_plus3 _ 0)=>//; apply g_0.
+- by move=>->; apply: (g_plus5 _ 0)=>//; apply g_0.
+move=> n m H1 H2 H3 H4->{n'}. 
+elim: H2; first by move=>_->; rewrite add0n.
+by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus3 _ (m' + m)).
+by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus5 _ (m' + m)).
+Qed.
+
+Theorem g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
+Proof.
+rewrite muln2.
+elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply g_0.
+- rewrite doubleD -(addnn 3) addnA.
+  by apply: (g_plus3 _ (m.*2 + 3))=>//; apply: (g_plus3 _ m.*2)=>//.
+rewrite doubleD -(addnn 5) addnA.
+by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
+Qed.
+
+
+rewrite -(addnn 3).
+
+Search _ (_  .*2).
+
 
 
 (** * Proofs by rewriting
