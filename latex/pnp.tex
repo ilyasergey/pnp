@@ -1,5 +1,7 @@
-\documentclass[12pt]{report}
+\documentclass[pdftex,12pt]{scrbook}
 
+\usepackage[backref=true,backrefstyle=two,style=numeric]{biblatex}
+\usepackage[citecolor=blue]{hyperref}
 \usepackage[]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -9,8 +11,11 @@
 \usepackage{url}
 \usepackage{textcomp} 
 \usepackage{makeidx,hyperref}
+\usepackage{lipsum} 
 
 \input{defs}
+
+\bibliography{references,proceedings}
 
 % Keep footnotes on one page
 \interfootnotelinepenalty=10000 
@@ -24,28 +29,23 @@
 
 \title{Programs and Proofs:
 \\
-Mechanizing Mathematics with Dependent Types
+Mechanizing Mathematics\\ 
+with Dependent Types
 \\
 {\normalsize Lecture Notes}
 }
 
 \author{}
 
-%\makeindex
-
+\makeindex
 
 \begin{document}
 
 \maketitle
 
-\thispagestyle{empty}
-\mbox{}\vfill
-
-\begin{center}
-
-This page is intentionally left blank.
-
-\end{center}
+% \begin{center}
+% This page is intentionally left blank.
+% \end{center}
 
 \clearpage
 \phantomsection
@@ -54,28 +54,26 @@ This page is intentionally left blank.
 \setcounter{page}{1}
 \tableofcontents
 
-
 \include{Introduction.v}
 \include{FunProg.v}
 \include{LogicPrimer.v}
 \include{Induction.v}
+\include{Rewriting.v}
 \include{SsrStyle.v}
 \include{BoolReflect.v}
-\include{Rewriting.v}
 \include{DepRecords.v}
 \include{HTT.v}
 %\include{LessAdHoc.v}
+\include{Conclusion.v}
 
-\include{further}
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{chapter}{Bibliography}
-\bibliographystyle{plain}
-\bibliography{references,proceedings}
-
-% \clearpage
-% \addcontentsline{toc}{chapter}{Index}
-% \printindex
+\addcontentsline{toc}{chapter}{Index}
+\printindex
 
 \end{document}

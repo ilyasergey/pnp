@@ -1,8 +1,17 @@
 (** %\chapter{Propositional Logic}% *)
 
 (* begin hide *)
+Module LogicPrimer.
 Require Import ssreflect.
 (* end hide *)
+
+(** remove printing ~ *)
+(** printing ~ %\textasciitilde% *)
+(** printing R $R$ *)
+(** printing done %\texttt{\emph{done}}% *)
+(** printing congr %\texttt{\emph{congr}}% *)
+(** printing of %\texttt{\emph{of}}% *)
+(** printing suff %\texttt{\emph{suff}}% *)
 
 (** 
 
@@ -27,7 +36,7 @@ demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
 sort [Prop], similarly to how first-order types inhabit
 [Set].%\footnote{In the Coq community, the datatypes of [Prop] sort ar
 usually referred to as \emph{inductive predicates}.}% The "values"
-that have elements of [Prop] as their types are usually referred to as
+that have elements of \texttt{Prop} as their types are usually referred to as
 _proofs_ or _proof terms_, the naming convention which stems out of
 the ide of %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
@@ -164,7 +173,7 @@ Theorem true_is_true: True.
    True
 ]]
 
-The keyword [Theorem] serves two purposes. First, similarly to the
+The command [Theorem] %\ccom{Theorem}% serves two purposes. First, similarly to the
 command [Definition], it defines a named entity, which is not
 necessarily a proposition. In this case the name is
 [true_is_true]. Next, similarly to [Definition], there might follow a
@@ -173,11 +182,11 @@ colon [:] there is a type of the defined value, which in this case it
 [True]. With this respect there is no difference between [Theorem] and
 [Definition]. However, unlike [Definition], [Theorem] doesn't require
 one to provide the expression of the corresponding type right
-away. Instead, the interactive _proof mode_ is activated, so the proof
-term could be constructed incrementally. The process of the gradual
-proof construction is what makes Coq to be a _interactive proof
-assistant_, in addition to being already a programming language with
-dependent types. 
+away. Instead, the _interactive proof mode_ %\index{interactive proof mode}%  
+is activated, so the proof term could be constructed
+incrementally. The process of the gradual proof construction is what
+makes Coq to be a _interactive proof assistant_, in addition to being
+already a programming language with dependent types.
 
 Although not necessary, it is considered a good programming practice
 in Coq to start any interactive proof with a keyword [Proof], which
@@ -198,7 +207,7 @@ is empty, as theorem we stated does not make any and ventures to proof
 [True] out of thin air. Fortunately, this is quite easy to do, as from
 the formulation of the [True] type we already know that it is
 inhabited by its only constructor [I]. The next line proved the
-_exact_ value of the type of the goal.
+_exact_ value of the type of the goal.%\ttac{exact}%
 
 *)
 
@@ -250,7 +259,7 @@ will prefer the interactive proof mode to the "vanilla" program
 definition. It is worth noticing, thought, that even though the
 process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
-_tactics_ in Coq jargon), the result of such script, given that it
+_tactics_ in Coq jargon),%\index{Coq tactics}% the result of such script, given that it
 eliminates all goals, is a valid well-typed program. In comparison, in
 some other dependently-typed frameworks, the construction of proof
 terms does not obscure the fact that what is being constructed is a
@@ -355,12 +364,13 @@ False_ind
 That is, _any_ proposition can be derived from the falsehood by means
 of implication.%\footnote{In the light of Curry-Howard analogy, at
 this moment it shouldn't be surprising that Coq uses the arrow
-notation [->] both for function types and for propositional
+notation \texttt{->} both for function types and for propositional
 implication: after all, they both are just particular cases of
-functional abstraction, in sorts [Set] or [Prop], correspondingly.}%
-For instance, we can prove now that [False] implies the equality [1 =
-2].%\footnote{We postpone the definition of the equality till the next
-chapter, and for now let us consider it just a some proposition.}%
+functional abstraction, in sorts \texttt{Set} or \texttt{Prop},
+correspondingly.}% For instance, we can prove now that [False] implies
+the equality [1 = 2].%\footnote{We postpone the definition of the
+equality till the next chapter, and for now let us consider it to be
+just an arbitrary proposition.}%
 
 *)
 
@@ -391,7 +401,7 @@ Undo.
 
 Instead of supplying the argument [(1 = 2)] to [False_ind] manually,
 we can leave it to Coq to figure out, what it should be, by using the
-SSReflect [apply:] tactic.
+SSReflect [apply:] tactic.%\ssrt{apply:}%
 
 *)
 
@@ -429,20 +439,21 @@ case.
 
 (**
 
-The tactic [case] makes Coq to perform the case analysis. In
-particular, it _deconstructs_ the _top assumption_ of the goal. The
-top assumption in the goal is such that it comes first before any
-arrows, and in this case it is a value of type [False]. Then, for all
-constructors of the type, whose value is being case-analysed, the
-tactic [case] constructs _subgoals_ to be proved. Informally, in
-mathematical reasoning, the invocation of the [case] tactic would
-correspond to the statement "let us consider all possible cases, which
-amount to the construction of the top assumption". Naturally, since
-[False] has _no_ constructors (as it corresponds to the [empty] type),
-the case analysis on it produces _zero_ subgoals, which completes the
-proof immediately. Since the result of the proof is just some program,
-again, we can demonstrate the effect of [case] tactic by proving the
-same theorem with an exact proof term:
+The tactic [case]%\ssrt{case}% makes Coq to perform the case
+analysis. In particular, it _deconstructs_ the _top assumption_ of the
+goal. The top assumption in the goal is such that it comes first
+before any arrows, and in this case it is a value of type
+[False]. Then, for all constructors of the type, whose value is being
+case-analysed, the tactic [case] constructs _subgoals_ to be
+proved. Informally, in mathematical reasoning, the invocation of the
+[case] tactic would correspond to the statement "let us consider all
+possible cases, which amount to the construction of the top
+assumption". Naturally, since [False] has _no_ constructors (as it
+corresponds to the [empty] type), the case analysis on it produces
+_zero_ subgoals, which completes the proof immediately. Since the
+result of the proof is just some program, again, we can demonstrate
+the effect of [case] tactic by proving the same theorem with an exact
+proof term:
 
 *)
 
@@ -463,7 +474,7 @@ Qed.
 (** * Implication and universal quantification
 
 By this moment we have already seen how implication is represented in
-Coq: it is just a functional type, represented by an "arrow" notation
+Coq: it is just a functional type, represented by the "arrow" notation
 [->] and familiar to all functional programmers. Indeed, if a function
 of type [A -> B] is a program that takes an argument value of type [A]
 and returns a result value of type [B], then the propositional
@@ -476,11 +487,12 @@ makes them instances of _polymorphic_ types, as they appear in
 %System~$F$% and %System $F_{\omega}$%. Similarly to these systems, in
 Coq the universal quantifier [forall] (spelled <<forall>>) binds a
 variable immediately following it in the scope of the subsequent
-type.%\footnote{As it has been noticed in %Chapter~\ref{ch:funprog}%
-the [forall]-quantifier is Coq's syntactic notation for dependent
+type.%\footnote{As it has been noticed in Chapter~\ref{ch:funprog} the
+$\forall$-quantifier is Coq's syntactic notation for dependent
 function types, sometimes also referred to a \emph{$\Pi$-types} or
-\emph{dependent product types}.}% For instance, the transitivity of
-implication in Coq can be expressed via the following proposition:
+\emph{dependent product types}.}%%\index{dependent function type}% For
+instance, the transitivity of implication in Coq can be expressed via
+the following proposition:
 
 %\begin{center}%
 [forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R]
@@ -513,7 +525,7 @@ preparatory step for the future reasoning.
 SSReflect offers a tactic a small bu powerful toolkit of _tacticals_
 (i.e., higher-order tactics) for bookkeeping. In particular, for
 moving the bound variables from "bottom to the top", one should use a
-combination of the "no-op" tactic [move] and the tactical [=>]
+combination of the "no-op" tactic [move]%\ssrt{move}% and the tactical [=>]
 (spelled <<=>>>). The following command moves the next three
 assumptions from the goal, [P], [Q] and [R] to the assumption context,
 simultaneously renaming them to [A], [B] and [C]. The renaming is
@@ -583,19 +595,18 @@ occurrence of the tactic argument hypothesis should be parenthesised:
 
 Finally, we can see that the only goal left to prove is to provide a
 proof term of type [A]. Luckily, this is exactly what we have in the
-assumption by the name [a], so the following tactics [assumption]
-finishes the proof by checking the assumption context and finding a
-value, whose type matches the goal:
+assumption by the name [a], so the following demonstation of the exact
+[a] finishes the proof:
 
 *)
 
-assumption.
+exact a.
 Qed.
 
 (**
 
 In the future, we will replace the use of trivial tactics, such as
-[assumption] by SSReflect's much more powerful tactics [done], which
+[exact] by SSReflect's much more powerful tactics [done],%\ssrt{done}% which
 combines a number of standard Coq's tactics in an attempt to finish
 the proof of the current goal and reports an error if it fails to do
 so. 
@@ -610,7 +621,8 @@ distributivity of universal quantification with respect to implication:
 \forall P~Q, [(\forall x, P(x) \implies Q(x)) \implies ((\forall y, P(y)) \implies \forall z, Q(z))]
 \]
 
-\hint: Be careful with the scoping of [forall]-quantified variables and use parenthesis to resolve ambiguities!
+\hint Be careful with the scoping of universally-quantified variables
+and use parenthesis to resolve ambiguities!
 
 \end{exercise}
 %
@@ -650,8 +662,7 @@ _eta-expanded_, that is instead of simply [H1] the proof terms
 features its operational equivalent [fun b: B => H2 b]. Otherwise, the
 printed program term indicates that the proof obtained by means of
 direct application of [H1] and [H2] is the same (modulo eta-expansion)
-as the proof obtained by means of using the [apply:] and [assumption]
-tactics. 
+as the proof obtained by means of using the [apply:] tactic.
 
 These two styles of proving: by providing a direct proof to the goal
 or some part of it, and by reducing the goal via tactics, are usually
@@ -661,7 +672,7 @@ proof styles.
 - The _backward_ proof style assumes that the goal is being gradually
   transformed by means of applying some tactics, until its proof
   becomes trivial and can be completed by means of a basic tactics,
-  like [assumption] or [done].
+  like [exact] or [done].
 
 - The _forward_ proof style assumes that the human prover has some
   "foresight" with respect to the goal he is going to prove, so she
@@ -788,7 +799,7 @@ happened to occur).
 
 *)
 
-Section Connectives.
+Module Connectives.
 Variables P Q R: Prop.
 
 (** 
@@ -818,8 +829,8 @@ For conj: Argument scopes are [type_scope type_scope _ _]
 
 Proving a conjunction of [P] and [Q] therefore amounts to a pair by
 invoking the constructor [conj] and providing values of [P] and [Q] as
-its arguments:%\footnote{The keyword [Goal] creates an anonymous
-theorem and initiates the interactive proof mode.}%
+its arguments:%\footnote{The command \texttt{Goal}\ccom{Goal} creates an
+anonymous theorem and initiates the interactive proof mode.}%
 
 *)
 
@@ -988,9 +999,6 @@ case of the [or_intror] constructor.
 by left.
 Qed.
 
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-
 (**
 
 It is worth noticing that the definition of disjunction in Coq is
@@ -1039,7 +1047,7 @@ logic might be misleading: as it will be discussed in
 axiom of double negation, which means that the proof of [~ ~A] will not
 deliver the proof of [A], as such derivation would be not
 constructive, as one cannot get a value of type [A] out of a function
-of type [[A -> B] -> B], where [B] is taken to be [False].
+of type [(A -> B) -> B], where [B] is taken to be [False].
 
 However, reasoning out of negation helps to derive the familiar proofs
 by contradiction, given that we managed to construct [P] _and_ [~P],
@@ -1205,7 +1213,7 @@ Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
 
 (** 
 
-%\hint:% the propositional equivalence [<->] is just a conjunction of
+%\hint% the propositional equivalence [<->] is just a conjunction of
 two implications, so proving it can be reduced to two separate goals
 by means of [split] tactics.
 
@@ -1280,7 +1288,7 @@ End Connectives.
 (** * Missing axioms from the classical logic
 %\label{sec:axioms}%
 
-In the precious sections of this chapter, we have seen how a fair
+In the previous sections of this chapter, we have seen how a fair
 amount of propositions from the higher-order propositional logics can
 be encoded and proved in Coq. However, some reasoning principles,
 employed in the _classical_ propositional logic, cannot be encoded in
@@ -1440,21 +1448,18 @@ Qed.
 
 (**
 
-%\hint:% Use [rewrite /d] tactics to unfold the definition of a value
+%\hint% Use [rewrite /d] tactics to unfold the definition of a value
  [d] and replace its name by its body. You can chain several
- unfoldings by writing [rewrite /d1 /d2 ...] etc.
+ unfoldings by writing [rewrite /d1 /d2 ...] etc. %\ssrt{rewrite}%
 
-%\hint:% To facilitate the forward reasoning by contradiction, you can
- use the SSReflect tactic [suff: P], where [P] is an arbitrary
- proposition. The system will then require you to prove that [P]
- implies the goal _and_ [P] itself.
+%\hint% To facilitate the forward reasoning by contradiction, you can
+ use the SSReflect tactic [suff: P], %\ssrt{suff}% where [P] is
+ an arbitrary proposition. The system will then require you to prove
+ that [P] implies the goal _and_ [P] itself.
 
 %\end{exercise}%
 
 *)
-
-
-
 
 (** * Universes and [Prop] impredicativity
 
@@ -1462,21 +1467,12 @@ While solving Exercise%~\ref{ex:equivax}% from the previous section,
 the reader could notice an interesting detail about the propositions
 in Coq and the sort [Prop]: the propositions that quantify over
 propositions still remain to be propositions, i.e., they still belong
-to the sort [Prop]. This property of propositions in Coq (and in
+to the sort [Prop]. This property of propositions in Coq (and, in
 general, the ability of entities of some class to abstract over the
-entities of the same class) is called _impredicativity_. The opposite
+entities of the same class) is called
+_impredicativity_. %\index{impredicativity}% The opposite
 characteristic (i.e., the inability to refer to the elements of the
-same class) is called _predicativity_.
-
-_Impredicativity_ as a property of definitions is a very powerful
-tool, as it allows one to define domains that are
-_self-recursive_. Unfortunately, when applied to the classical set
-theory, the impredicativity immediately leads to the famous Russel's
-paradox, which arises from the attempt to define a set of all sets
-that do not belong to themselves. In the terms of programming, the
-Russel's paradox gives a direct recipe to encode a fixpoint combinator
-in the calculus itself and, therefore, write generally-recursive
-programs.
+same class) is called _predicativity_. %\index{predicativity}%
 
 One of the main challenges when designing the Calculus of
 Constructions was to implement its logical component (i.e., the
@@ -1484,35 +1480,54 @@ fragment responsible for constructing and operating with elements of
 the [Prop] sort), so it would subsume the existing impredicative
 propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
 particular, %System~$F$% (which is impredicative), allowing for the
-expressive reasoning in the higher-order propositional logic. While as
-a type calculus, insensitive with respect to the termination,
-%System~$F$% works just fine and is adopted by a number of practical
-programming languages, in particular Haskell, it _does not_ enforce
-program termination.
+expressive reasoning in the higher-order propositional logic.
 
-As we have observed previously, non-termination of Coq's
-data-manipulating programs would be disastrous and would compromise
-the whole soundness of the logic, as one would be able to write
-definitions similar to the following one, making it possible to derive
-the falsehood right away.
+_Impredicativity_ as a property of definitions is a very powerful
+tool, as it allows one to define domains that are _self-recursive_---a
+feature of [Prop] that we recently observed. Unfortunately, when
+restated in the classical set theory, impredicativity immediately
+leads to the famous Russel's paradox, which arises from the attempt to
+define a set of all sets that do not belong to themselves. In the
+terms of programming, the Russel's paradox provides a recipe to encode
+a fixpoint combinator in the calculus itself and write
+generally-recursive programs.
 
-<<
-Fixpoint f A (x: A): False := f x. 
->>
+%System~$F$% is not a dependently-typed calculus and it has been
+proven to contain no paradoxes%~\cite{Girard:PhD}%, as it reasons only
+about _types_ (or, _propositions_), which do not depend on
+values. However, adding dependent types to the mix (which Coq requires
+to make propositions quantify over arbitrary values, not just other
+propositions, serivng as a general-purpose logic) makes the design of
+a calculus more complicated, in order to avoid paradoxes akin to the
+Russels', which arise from mixing values and sets of values. This
+necessity to "cut the knot" inevitably requires to have a sort of a
+higher level, which contains all sets and propositions (i.e., the
+whole sorts [Set] and [Prop]), but does not contain itself. Let us
+call such sort [Type]. It turns out that the self-inclusion [Type :
+Type] leads to another class of paradoxes%~\cite{Coquand:LICS86}%, and
+in order to avoid them the hierarchy of higher-order sorts should be
+made infinite and _stratified_. %\index{stratification}%
+Stratification means that each sort has a level number, and is
+contained in a sort of a higher level but not in itself. The described
+approach is suggested by %Martin-\loef~\cite{Martin-Loef:84}% and
+adopted literally, in particular, by
+Agda%~\cite{Norell:PhD}\index{Agda}%. The stratified type sorts,
+following %Martin-\loef%'s tradition, are usually referred to as
+_universes_.%\index{universes}%
 
-This is why the non-propositional component of Coq's dependent type
-system is _predicative_ and follows the _stratification_ approach
-suggested by %Martin-\loef~\cite{Martin-Loef:84}% and adopted, in
-particular, by Agda%~\cite{Norell:PhD}%.
+A similar stratification is also implemented in Coq, which has its own
+universe hierarchy, although with an important twist. The two
+universes, [Set] and [Prop] cohabit at the 1th level of the universe
+hierarchy with [Prop] being impredicative. The universe containing
+both [Set] and [Prop] is called [Type(1)], and it is _predicative_, as
+well as all universes that are above it in the hierarchy. CIC
+therefore remains consistent as a calculus, only because of the fact
+that all impredicativity in it is contained at the very bottom of the
+hierarchy.
 
-** Universe hierarchy
+** Exploring and debugging the universe hierarchy
 
-As we remember, the types from the sort [Set] in Coq directly
-correspond to sets from the classical set theory. Therefore, in order
-to avoid type-level paradoxes when defining sets of values in a
-dependently-typed theory%~\cite{Coquand:LICS86}%, Coq introduces
-implicit _stratification_ of type levels, which are usually referred
-to as _universes_. In the light of the stratification, the
+In the light of %Martin-\loef%'s stratification, the Coq'
 non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
 "live" at the [0]th level of universe hierarchy, namely, in the sort
 [Set]. The polymorphic types, quantifying over the elements of the
@@ -1527,8 +1542,32 @@ assigned:
 Set Printing Universes.
 
 Check bool.
+
 (**
-[bool : Set]
+[[
+bool
+     : Set
+]]
+*)
+
+Check Set.
+
+(**
+%
+\texttt{Set}
+
+~~~~~\texttt{: Type (* (Set)+1 *)}
+%
+*)
+
+Check Prop.
+
+(**
+%
+\texttt{Prop}
+
+~~~~~\texttt{: Type (* (Set)+1 *)}
+%
 
 The following type is polymorphic over the elements of the [Set]
 universe, and this is why its own universe is "bumped up" by one, so
@@ -1542,7 +1581,9 @@ Check S.
 (**
 
 %
-\textsf{S}\texttt{ : Type (* max(Set, (Set)+1) *)}
+\textsf{S}
+
+~~~~~\texttt{: Type (* max(Set, (Set)+1) *)}
 %
 
 At this moment, Coq provides a very limited version of _universe
@@ -1558,7 +1599,10 @@ Implicit Arguments R [A].
 Check R tt. 
 
 (** 
-[R tt : unit]
+[[
+R tt 
+     : unit
+]]
 *)
 
 (** 
@@ -1573,7 +1617,9 @@ Check R Type.
 (**
 
 %
-\textsf{R} \texttt{Type (* Top.1237 *) : Type (* Top.1238 *)}
+\textsf{R} 
+
+~~~~~\texttt{: Type (* Top.1237 *) : Type (* Top.1238 *)}
 %
 
 However, the attempt to apply [R] to itself immediately leads to an
@@ -1590,44 +1636,7 @@ Check R R.
 Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 ]]
 
-** Treatment of proof terms
-
-Let us now get back to the sort [Prop].  It has been proven that,
-assuming some restrictions on how proof terms are treated, making the
-sort [Prop] impredicative _does not_ introduces any paradoxes in
-CIC%~\cite{Coquand-Huet:ECCA85}%. This is the reason why any
-proposition, which quantifies over other propositions, is still a
-proposition, similarly to how a higher-order type in Haskell is still
-a valid Haskell type.
-
-The crucial trait of the elements of the [Prop] universe is that one
-_cannot perform pattern-matching_ on the proof terms, i.e., on the
-values, whose type is of sort [Prop]. This restriction is enforced by
-Coq syntactically, and it makes it possible to keep the metatheory of
-CIC consistent, allowing for impredicativity of [Prop], in contrast
-with all other universes, which are a subject to %Martin-\loef%'s
-stratification.
-
 *)
-
-
-
-
-
-
-
-(* Definition append_lm (A: eqType) (x: A) (xs ys: seq A):  *)
-(*   x \in xs -> index x xs = index x (xs ++ ys). *)
-
-(* Proof. *)
-(* elim: xs=>// a ls Ih. *)
-(* rewrite inE; case/orP; first by move/eqP=>->/=; rewrite !eq_refl. *)
-(* by move/Ih=>/=->. *)
-(* Qed. *)
-
-(* Set Printing Universes. *)
-(* Check (forall A : Set, list A) : Set. *)
-
 
 
 (* begin hide *)
@@ -1639,5 +1648,9 @@ Proof. by move/(_ _ True); apply. Qed.
 
 Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
 Proof. by move=>H; apply: (H False True)=>//. Qed.
-
 (* end hide *)
+
+(* begin hide *)
+End LogicPrimer.
+(* end hide *)
+

@@ -1,5 +1,15 @@
 (** %\chapter{Introduction}% *)
 
+(* begin hide *)
+Module Intro.
+(* end hide *)
+
+(** printing done %\texttt{\emph{done}}% *)
+(** printing congr %\texttt{\emph{congr}}% *)
+(** printing have %\texttt{\emph{have}}% *)
+
+
+
 (**
 
 The goal of this short course is to demonstrate how mathematical
@@ -77,3 +87,7 @@ TODO
 TODO
 
 *)
+
+(* begin hide *)
+End Intro.
+(* end hide *)

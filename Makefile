@@ -1,4 +1,4 @@
-MODULES      := Introduction FunProg LogicPrimer Induction SsrStyle BoolReflect Rewriting DepRecords LessAdHoc HTT
+MODULES      := Introduction FunProg LogicPrimer Induction SsrStyle BoolReflect Rewriting DepRecords LessAdHoc HTT Conclusion
 VS           := $(MODULES:%=coq/%.v)
 TEX          := $(MODULES:%=latex/%.v.tex)
 RELEASE      := $(VS) Makefile
@@ -40,11 +40,11 @@ latex/%.v.tex: Makefile coq/%.v coq/%.glob
 	cd coq ; coqdoc --interpolate --latex --body-only -s \
 		$*.v -o ../latex/$*.v.tex
 
-latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib latex/defs.tex
-	cd latex ; pdflatex $(COQNOTES) ; pdflatex $(COQNOTES) ; bibtex $(COQNOTES) ; makeindex $(COQNOTES) ; pdflatex $(COQNOTES) ; pdflatex $(COQNOTES)
+latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib latex/defs.tex 
+	cd latex && pdflatex $(COQNOTES) && pdflatex $(COQNOTES) && bibtex $(COQNOTES) && makeindex $(COQNOTES) && pdflatex $(COQNOTES) && pdflatex $(COQNOTES)
 
-latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex
-	cd latex ; pdflatex $* ; pdflatex $* ; bibtex $* ; makeindex $* ; pdflatex $* ; pdflatex $*
+latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
+	cd latex && pdflatex $* && pdflatex $* && bibtex $* && makeindex $* && pdflatex $* && pdflatex $*
 
 clean:  $(MAKEFILE)
 	make -f $(MAKEFILE) clean

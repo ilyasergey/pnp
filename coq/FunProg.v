@@ -1,6 +1,15 @@
 (** %\chapter{Functional Programming in Coq}
       \label{ch:funprog}% *)
 
+(* begin hide *)
+Module FunProg.
+(* end hide *)
+
+(** printing done %\texttt{\emph{done}}% *)
+(** printing congr %\texttt{\emph{congr}}% *)
+(** printing of %\texttt{\emph{of}}% *)
+
+
 (** 
 
 We start our short journey with observing the capabilities of Coq as
@@ -247,7 +256,8 @@ itself, which is known under the name of Turing's _halting
 problem_).%\footnote{The computability properties of primitively and
 generally recursive functions is a large topic, which is essentially
 orthogonal to our development, so we omit a detailed discussion on the
-theory of recursion and address an interested reader to the literature~\cite{???}}%
+theory of recursion and address an interested reader to the
+literature~\cite{???}}\index{halting problem}%
 
 The check for primitive recursion, which implies termination, is
 performed by Coq _syntactically_, and the system makes sure that there
@@ -332,7 +342,7 @@ parameter is a result of type described by application of the function
 [P] to zero. The third parameter is a _family_ of functions, indexed
 by a natural number [n]. Each function from such a family takes an
 argument of type [P n] and returns a result of type [P n.+1]. The
-default recursion principle for natural numbers is therefore a
+default recursion principle%\index{recursion principle}% for natural numbers is therefore a
 higher-order function (i.e., a combinator). If the three discussed
 arguments are provided, the result of [nat_rec] will be a function,
 mapping a natural number [n] to a value of type [P n].
@@ -385,6 +395,7 @@ definition of the combinator [nat_rect].
 
 ** Dependent function types and pattern matching
 
+%\index{dependent pattern matching}%
 An important thing to notice is the fact that the type of [P] in the
 definition of [nat_rec] is a function that maps _values_ of type [nat]
 into arbitrary types. This gives us a possibility to define
@@ -463,6 +474,7 @@ of the cases dependent pattern matching can be avoided. We address the
 curious reader to the Chapter 8 of Adam Chlipala's book for more
 examples on the subject%~\cite{Chlipala:BOOK}%.
 
+%\index{dependent function type}%
 Dependent function types, akin to those of [nat_rec] and our
 [three_to_unit], which allow the type of the result to vary depending
 on the value of a function's argument are a powerful way to specify
@@ -1003,3 +1015,6 @@ fact
 ]]
 *)
 
+(* begin hide *)
+End FunProg.
+(* end hide *)
