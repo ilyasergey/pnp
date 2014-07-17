@@ -66,6 +66,19 @@ Inductive gorgeous (n: nat) : Prop :=
 | g_plus3 m of gorgeous m & n = m + 3
 | g_plus5 m of gorgeous m & n = m + 5.
 
+Require Import ssrbool.
+
+Fixpoint gorgeous_b (n: nat) : bool := 
+ match n with 
+ | 0 => true
+ | m.+3 => (gorgeous_b m) || 
+              (match m with 
+                m'.+2 => gorgeous_b m'
+              | _ => false
+              end)
+ | _ => false
+ end.
+
 Theorem gorgeous_plus13 n:
   gorgeous n -> gorgeous (n + 13).
 Proof.
@@ -74,6 +87,34 @@ apply: (g_plus5 _ (n + 8))=>//; last by rewrite -addnA; congr (_ + _).
 apply: (g_plus5 _ (n + 3)); last by rewrite -addnA; congr (_ + _).
 by apply: (g_plus3 _ n). 
 Qed.
+
+Require Import eqtype.
+
+Set Implicit Arguments.
+Unset Strict Implicit.
+Unset Printing Implicit Defensive.
+
+Goal forall n m, n + 2 == m + 1 + 1 -> n == m.
+Proof.
+move=> n m.
+by rewrite -addnA eqn_add2r. 
+Qed.
+
+(*
+Theorem gorgeous_plus13' n:
+  gorgeous_b n -> gorgeous_b (n + 13).
+Proof.
+elim: n=>// n IH.
+simpl in IH.
+rewrite addSnnS. 
+simpl.
+rewrite addnC /= in IH.
+rewrite addnC /=.
+move=>
+simpl.
+case: n=>//=.  simpl.
+move=>n.
+*)
 
 Theorem beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
 Proof.
@@ -98,31 +139,24 @@ by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
 
 
-rewrite -(addnn 3).
-
-Search _ (_  .*2).
-
-
-
 (** * Proofs by rewriting
 
 
  *)
 
-Inductive people : Set := me | pope. 
+(* Inductive people : Set := me | pope.  *)
 
-Definition discr p : Prop := 
-  if p is me then True else False.
+(* Definition discr p : Prop :=  *)
+(*   if p is me then True else False. *)
 
-Lemma me_pope: 1 = 2 -> me = pope.
-Proof.
-move=> E.
-pose discr := fun n => if n is 1 then pope else me.
-rewrite -/(discr 2). 
-rewrite -E=>/=. 
-move: (eq_refl pope)=> H; assumption.
-Qed.
-
+(* Lemma me_pope: 1 = 2 -> me = pope. *)
+(* Proof. *)
+(* move=> E. *)
+(* pose discr := fun n => if n is 1 then pope else me. *)
+(* rewrite -/(discr 2).  *)
+(* rewrite -E=>/=.  *)
+(* move: (eq_refl pope)=> H; assumption. *)
+(* Qed. *)
 
 (** * Axioms about equality
 
@@ -138,14 +172,14 @@ Let's have a look at this hell below:
 
 *)
 
-Inductive isZero : nat -> Prop := IsZero : isZero 0.
+(* Inductive isZero : nat -> Prop := IsZero : isZero 0. *)
 
-Theorem blah: isZero 1 -> False.
-Proof.
-move=> z.
-move: (isZero_ind (fun n => if n is 0 then True else False))=> Z.
-by apply (Z I 1).
-Qed.
+(* Theorem blah: isZero 1 -> False. *)
+(* Proof. *)
+(* move=> z. *)
+(* move: (isZero_ind (fun n => if n is 0 then True else False))=> Z. *)
+(* by apply (Z I 1). *)
+(* Qed. *)
 
 
 (* Fixpoint is_even n :=  *)
