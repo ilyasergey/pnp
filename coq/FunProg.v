@@ -33,9 +33,9 @@ a short tour of Coq's syntax and define a couple of simple programs.
 
 (** 
 
-The simplest datatype once can imagine is [unit], a type
-inhabited by exactly one element. In Coq, one can define such a type
-in the following manner: 
+The simplest datatype once can imagine is [unit], a type inhabited by
+exactly one element. %\ccom{Inductive}% In Coq, one can define such a
+type in the following manner:
 
 *)
 
@@ -48,7 +48,7 @@ constructor, namely, [tt]. In the type theory jargon, which we will
 adopt, it is said that the expression [tt] _inhabits_ the [unit]
 type. Naturally, it is the only inhabitant of the set, corresponding
 to the [unit] type. We can now check the [tt]'s affiliation via the
-[Check] command:
+[Check]%\ccom{Check}% command:
 
 *)
 
@@ -87,14 +87,14 @@ unsurprisingly defined by providing exactly two constructors: [true]
 and [false]. Since [bool] is already provided by the standard
 Coq/SSReflect library, we do not need to define it ourselves. Instead,
 we include the following modules into our file using the [Require
-Import] keywords:
+Import] %\ccom{Require Import}% command:
 
 *)
 
 Require Import ssreflect ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
-printing it: *)
+printing it: %\ccom{Print}% *)
 
 Print bool.
 (** [Inductive bool : Set :=  true : bool | false : bool] *)
@@ -117,16 +117,16 @@ Definition negate b :=
 (**
 
 The syntax of Coq as programming language is very similar to Standard
-ML. The keyword [Definition] us used to define non-recursive values,
-including functions. In the example above, we defined a function with
-one argument [b], which is being scrutinized agains two possibles
-value patterns ([true] and [false]), respectively, and the results are
-returned. Notice that thanks to its very powerful type inference
-algorithm, Coq didn't require us to annotate neither the argument [b]
-with its type, nor the function itself with its result type: these
-types were soundly inferred, which might be confirmed by checking the
-overall type of [negate], which states that it is a function from
-[bool] to [bool]:
+ML. The keyword [Definition] %\ccom{Definition}% is used to define
+non-recursive values, including functions. In the example above, we
+defined a function with one argument [b], which is being scrutinized
+agains two possibles value patterns ([true] and [false]),
+respectively, and the results are returned. Notice that thanks to its
+very powerful type inference algorithm, Coq didn't require us to
+annotate neither the argument [b] with its type, nor the function
+itself with its result type: these types were soundly inferred, which
+might be confirmed by checking the overall type of [negate], which
+states that it is a function from [bool] to [bool]:
 
 *)
 
@@ -684,7 +684,7 @@ from the standard Coq/SSReflect library (which is quite large), but
 it's always better for a starting Coq hacker to have a way to find
 necessary definitions on her own. Fortunately, Coq provides a very
 powerful search tool, whose capabilities are greatly amplified by
-SSReflect. Its use is better demonstrated by examples.
+SSReflect. Its use is better demonstrated by examples.%\ccom{Search}%
 
 *)
 
@@ -753,10 +753,11 @@ When working with someone's Coq development, sometimes it might be not
 entirely obvious what particular notation means: Coq's extensible
 parser is very simple to abuse by defining completely intractable
 abbreviations, which might say a lot to the library developer, but not
-to its client. Coq provide the [Locate] to help in demystifying
-notations as well as locating the position of particular definitions.
-For example, the following query will show all the definitions of the
-notation "[_ + _]" as well as the scopes they defined in.
+to its client. Coq provide the [Locate] %\ccom{Locate}% command to
+help in demystifying notations as well as locating the position of
+particular definitions.  For example, the following query will show
+all the definitions of the notation "[_ + _]" as well as the scopes
+they defined in.
 
 *)
 
@@ -875,8 +876,8 @@ Check nat ** unit ** nat.
 Notice that the notation "[_ ** _]" for [my_pair] by default is set to
 be left-associative. The other associativity should be declared
 explicitly, and we address the reader to the Chapter 12 of Coq
-manual%~\cite{Coq-manual}% for the details of the [Notation] command
-syntax.
+manual%~\cite{Coq-manual}% for the details of the [Notation]
+%\ccom{Notation}% command syntax.
 
 
  * Sections and modules
@@ -890,7 +891,7 @@ packages imported to the current file (each compiled [*.v] file in the
 scope of the interpreter is considered as a package), as well as to
 defined _locally-scoped_ variables. To see how it works, let us
 construct a section containing an utility function for natural
-numbers.  Declaring a section starts from the keyword [Section],
+numbers.  Declaring a section starts from the keyword [Section],%\ccom{Section}%
 followed by the name of the section:
 
  *)
@@ -901,7 +902,7 @@ Section NatUtilSection.
 
 We not define a _variable_ [n] of type [n], whose scope is lexically
 limited by the section [NatUtilSection] (including its internal
-sections). One can think of variables declared this way as of
+sections). One can think of variables declared this way as of%\ccom{Variable}%
 unspecified values, which we assume to be available outside of the
 section.
 
@@ -926,7 +927,7 @@ Fixpoint my_mult m := match (n, m) with
 
 (** 
 
-We now close the section by using the [End] keyword.
+We now close the section by using the [End] %\ccom{End}% keyword.
 
 *)
 
@@ -967,12 +968,12 @@ We can see now that the variable [n] became an actual parameter of
 expected.
 
 An alternative to sections in Coq, which provides better
-encapsulation, are _modules_. A module, similarly to a section, can
-contain locally-declared variables, sections and modules (but not
-modules within sections!). However, the internals of a module are not
-implicitly exposed to the outside, instead they should be exported
-explicitly by means of putting them into a submodule and via the
-command [Export], just as demonstrated below:
+encapsulation, are _modules_. A module, %\ccom{Module}% similarly to a
+section, can contain locally-declared variables, sections and modules
+(but not modules within sections!). However, the internals of a module
+are not implicitly exposed to the outside, instead they should be
+exported explicitly by means of putting them into a submodule and via
+the command [Export]%\ccom{Export}%, just as demonstrated below:
 
 *)
 

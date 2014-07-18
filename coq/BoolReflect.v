@@ -32,15 +32,17 @@ connective.
 
 *)
 
-
-
 (** * Using conditionals in predicates
 
-TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
-is as expressive as simple propositional logic (which is its strength,
-thank to Coq's terminating computations)
 
 *)
+
+
+(** * Case analysing on a boolean assumption
+
+
+*)
+
 
 
 (** * Types with decidable equalities
