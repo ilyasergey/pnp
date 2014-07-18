@@ -1,4 +1,7 @@
-(** %\chapter{Propositional Logic}% *)
+(** %
+\chapter{Propositional Logic}
+\label{ch:proplog}
+% *)
 
 (* begin hide *)
 Module LogicPrimer.

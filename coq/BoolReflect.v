@@ -6,7 +6,7 @@
 *)
 
 
-(** * [Prop] versus [bool]
+(** * %\texttt{Prop} versus \emph{bool}%
 
 TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
 is as expressive as simple propositional logic (which is its strength,
@@ -15,7 +15,7 @@ thank to Coq's terminating computations)
 *)
 
 
-(** * The [reflect] data type
+(** * %The \emph{reflect} type family%
 
 Construct a simple reflection procedure for some simple user-specific
 connective.

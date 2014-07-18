@@ -9,11 +9,6 @@ will have the [ssreflect] module imported.
 
 Require Import ssreflect.
 
-(** * Propositional equality in Coq
-
-
- *)
-
 Require Import ssrnat.
 
 Inductive beautiful (n: nat) : Prop :=
@@ -137,32 +132,6 @@ elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply
 rewrite doubleD -(addnn 5) addnA.
 by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
-
-
-(** * Proofs by rewriting
-
-
- *)
-
-(* Inductive people : Set := me | pope.  *)
-
-(* Definition discr p : Prop :=  *)
-(*   if p is me then True else False. *)
-
-(* Lemma me_pope: 1 = 2 -> me = pope. *)
-(* Proof. *)
-(* move=> E. *)
-(* pose discr := fun n => if n is 1 then pope else me. *)
-(* rewrite -/(discr 2).  *)
-(* rewrite -E=>/=.  *)
-(* move: (eq_refl pope)=> H; assumption. *)
-(* Qed. *)
-
-(** * Axioms about equality
-
-TODO: K and friends
-
- *)
 
 
 
