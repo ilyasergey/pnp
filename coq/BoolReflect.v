@@ -1,3 +1,12 @@
+(** remove printing ~ *)
+(** printing ~ %\textasciitilde% *)
+(** printing R $R$ *)
+(** printing done %\texttt{\emph{done}}% *)
+(** printing congr %\texttt{\emph{congr}}% *)
+(** printing of %\texttt{\emph{of}}% *)
+(** printing suff %\texttt{\emph{suff}}% *)
+
+
 (** 
 
 %\chapter{The Basics of Boolean Reflection}

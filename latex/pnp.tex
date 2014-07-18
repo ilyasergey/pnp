@@ -12,20 +12,33 @@
 \usepackage{textcomp} 
 \usepackage{makeidx,hyperref}
 \usepackage{lipsum} 
+\usepackage{scrpage2}
 
-\input{defs}
+% Fancy headers
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\ihead{\headmark}
+\ohead[\pagemark]{\pagemark}
+% Footer spacing
+\setlength{\headsep}{0.35in}  
 
-\bibliography{references,proceedings}
-
-% Keep footnotes on one page
-\interfootnotelinepenalty=10000 
+% No page number on chapter pages
+\renewcommand{\chapterpagestyle}{empty}
 
 % Line spacings
 \setlength{\parskip}{0.35\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip}
 \setlength{\parsep}{\parskip}
 \setlength{\topsep}{7pt}
 \setlength{\parindent}{0cm}
+\addtolength{\textheight}{0.3in}
 
+% Keep footnotes on one page
+\interfootnotelinepenalty=10000 
+
+% Specific macros
+\input{defs}
+
+\bibliography{references,proceedings}
 
 \title{Programs and Proofs:
 \\
@@ -35,7 +48,7 @@ with Dependent Types
 {\normalsize Lecture Notes}
 }
 
-\author{}
+\author{Ilya Sergey}
 
 \makeindex
 
@@ -50,8 +63,8 @@ with Dependent Types
 \clearpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Contents}
-
 \setcounter{page}{1}
+
 \tableofcontents
 
 \include{Introduction.v}
@@ -65,7 +78,6 @@ with Dependent Types
 \include{HTT.v}
 %\include{LessAdHoc.v}
 \include{Conclusion.v}
-
 
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}

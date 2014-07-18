@@ -1,4 +1,6 @@
-(** %\chapter{Introduction}% *)
+(** %
+
+\chapter{Introduction}% *)
 
 (* begin hide *)
 Module Intro.

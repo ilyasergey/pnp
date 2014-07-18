@@ -1,3 +1,12 @@
+(** remove printing ~ *)
+(** printing ~ %\textasciitilde% *)
+(** printing R $R$ *)
+(** printing done %\texttt{\emph{done}}% *)
+(** printing congr %\texttt{\emph{congr}}% *)
+(** printing of %\texttt{\emph{of}}% *)
+(** printing suff %\texttt{\emph{suff}}% *)
+
+
 (** %
 \chapter{Propositional Logic}
 \label{ch:proplog}
@@ -7,14 +16,6 @@
 Module LogicPrimer.
 Require Import ssreflect.
 (* end hide *)
-
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-(** printing R $R$ *)
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing suff %\texttt{\emph{suff}}% *)
 
 (** 
 
@@ -59,7 +60,8 @@ one asks a question "Whether the proposition [P] is _true_?", what is
 meant in fact is "Whether the _proof_ of [P] can be constructed?" This
 is an unusual twist, which is crucial for understanding the process of
 understanding the concept of "truth" and proving propositions in CIC
-(and, equivalently, in Coq), so we specifically outline it here:
+(and, equivalently, in Coq), so we specifically outline it here in the
+form of a motto:
 
 %
 \newpage

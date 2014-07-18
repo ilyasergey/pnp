@@ -4,7 +4,8 @@ Module Conclusion.
 
 
 (**
-%\chapter{Conclusion}
+%
+\chapter{Conclusion}
 \label{ch:conclusion}
 %
 
