@@ -323,8 +323,118 @@ the whole new level and is a subject of the next section.
 
 * Proofs by rewriting %\label{sec:rewriting}%
 
+The vast majority of the steps when constructing real-life proofs in
+Coq are _rewriting_ step. The general flow of the interactive
+(considered in more detail in %Chapter~\ref{ch:ssrstyle}%) is
+typically targeted on formulating and proving small auxiliary
+hypotheses about equalities in the forward-style reasoning and then
+exploiting the derived equalities by means of rewriting in the goal
+and, occasionally, other assumptions in the context. All rewriting
+machinery is handled by SSReflect's enhanced [rewrite]%\ssrt{rewrite}%
+tactics, and in this section we focus on its particular uses.
+
+** Unfolding definitions and on-site rewritings
+
+One of the common uses of the [rewrite] tactic is to fold/unfold
+transparent definitions. In general, Coq is capable to perform the
+unfoldings itself, whenever it's required. Nevertheless, manual
+unfolding of a definition might help to understand the details of the
+implementation, as demonstrated by the following example.
 
 *)
+
+Definition double A (f: A -> A) (x: A) := f (f x).
+
+Lemma double2 A (x: A) f t: 
+  t = double f x -> double f t = nat_iter 4 f x.
+Proof.
+
+(**
+
+The first thing to do in this proof is to get read of the auxiliary
+variable [t], as it does not occur in any of the assumptions, but just
+in the subsequent goal. This can be done using the following sequence
+of tactics that first moves the equality assumption to the top and
+then rewrites by it in the goal.
+
+*)
+
+move=>Et; rewrite Et.
+
+(**
+
+Even though the remaining goal is simple enough to be completed by
+[done], let us unfold both definition to make sure that the two terms
+are indeed equal structurally. Such unfoldings can be _chained_, just
+as any other rewritings.
+
+ *)
+
+rewrite /double /nat_iter.
+done.
+
+(**
+
+An alternative way to prove the same statement would be to use the
+<< -> >> %\ssrtl{->}% tactical, which is usually combined with [move] or
+[case], but instead of moving the assumption to the top, it makes sure
+that the assumption is an equality and rewrites by it.
+
+ *)
+
+Restart.
+by move=>->; rewrite /double.
+Qed.
+
+(** 
+
+Notice that the tactical has a companion one << <- >>, which performs
+the rewriting by an equality assumption from right to left, in
+contrast to << -> >>, which rewrites left to right.
+
+The reverse operation to folding is done by using [rewrite -/...]
+instead of [rewrite /...]%\footnote{As the reader will notice soon, it
+is a general pattern with SSReflect's rewriting to prefix a
+\texttt{rewrite} argument with \texttt{-}, if the \emph{reverse}
+rewriting operation should be performed.}%
+
+** Proofs by congruence and rewritings by lemmas
+
+*)
+
+Definition f x y :=  x + y.
+
+Goal forall x y, x + y + (y + x) = f y x + f y x.
+Proof. 
+move=> x y.
+
+(** 
+
+First, let us unfold only all occurrences of [f] in the goal.
+
+*)
+
+rewrite /f.
+
+(**
+
+We can now reduce the goal by appealing to SSReflect's [congr]
+tactics, which takes advantage of the fact that equality implies
+Leibniz' equality, so the external addition of equal elements can be
+"stripped off".
+
+ *)
+
+congr (_ + _).
+
+(** 
+
+Rewrite by commutativity
+
+*)
+
+admit. Qed.
+
 
 (** * Encoding custom rewriting rules
 
