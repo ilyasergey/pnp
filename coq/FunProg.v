@@ -207,10 +207,11 @@ further.}% The function [my_plus] is recursive on its _first_
 argument, which is being decreased in the body, so [n'] is a
 predecessor of [n] is passed to the recursive call. We can now check
 the result of evaluation of [my_plus] via Coq's [Eval compute in]
-command:%\footnote{The command in evaluation might look a bit verbose
-in this form, but it is only because of its great flexibility, as it
-allows for different evaluation strategies. In this case we employed
-\texttt{compute}, as it performs all possible reductions.}%
+%\ccom{Eval}% command:%\footnote{The command in evaluation might look
+a bit verbose in this form, but it is only because of its great
+flexibility, as it allows for different evaluation strategies. In this
+case we employed \texttt{compute}, as it performs all possible
+reductions.}%
 
 *)
 
@@ -224,7 +225,7 @@ to pattern matching with only two alternatives:
 
 *)
 
-Fixpoint my_plus' n m := if n is n'.+1 then (my_plus n' m).+1 else m.
+Fixpoint my_plus' n m := if n is n'.+1 then (my_plus' n' m).+1 else m.
 
 (**
 

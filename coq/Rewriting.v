@@ -25,7 +25,7 @@ mathematical proof.%\footnote{The reader could have, probably, heard
 how mathematics sometimes is referred to as a "science of
 rewritings".}% Later in the chapter, we will see how rewriting by
 equality is just a particular case of a general proof pattern, which
-allows one to define arbitrary _rewwriting rules_ by exploiting Coq's
+allows one to define arbitrary _rewriting rules_ by exploiting Coq's
 mechanism of _indexed type families_.
 
 *)
@@ -61,17 +61,17 @@ Inductive eq (A : Type) (x : A) : A -> Prop :=  eq_refl : eq x x
 As we can see, the equality is just yet another inductive predicate,
 similar to the logical connectives we've seen in
 %Chapter~\ref{ch:logic}%. However, there are differences, which are of
-importance. First, equality as a predicate is
-_parametrized_ %\index{datatype parameters}% over two arguments: a
-[Type] [A] of an unspecified universe (so, it can be [Set], [Prop] or
-any of higher universes, but not prop) and an element [x] of type
-[A]. There is nothing particularly new here: we have seen parametrized
-inductive predicates before, for instance, conjunction and disjunction
-in %Section~\ref{sec:conjdisj}%. The novel part of this definition is
+importance. First, equality as a predicate is _parametrized_
+%\index{datatype parameters}% over two arguments: a [Type] [A] of an
+unspecified universe (so, it can be [Set], [Prop] or any of higher
+universes, but not prop) and an element [x] of type [A]. There is
+nothing particularly new here: we have seen parametrized inductive
+predicates before, for instance, conjunction and disjunction in
+%Section~\ref{sec:conjdisj}%. The novel part of this definition is
 what comes after the semicolon trailing the parameter list. Unlike all
 previously seen logical connectives, the equality predicate has type
 [A -> Prop] in contrast to just [Prop]. In the Coq terminology, it
-means that [eq] is not just inductively-defined datatype, by is an
+means that [eq] is not just inductively-defined datatype, but is an
 _indexed type family_.%\index{indexed type families}% In this
 particular case, it is indexed %\index{datatype indices}% by elements
 of type [A], which appears at the left of the arrow.
@@ -84,7 +84,7 @@ of type [A], which appears at the left of the arrow.
 %\index{generalized algebraic datatypes}%It is common to think of
 indexed type families in Coq as of _generalized algebraic datatypes_
 (GADTs), familiar from Haskell%~\cite{PeytonJones-al:ICFP06}% and
-allowing one to refine the process mattern matching basing on the type
+allowing one to refine the process pattern matching basing on the type
 index of the scrutinee. However, another analogy turns out to be much
 more useful in the Coq setting: indexed type families in fact allow
 one to encode _rewriting principles_. To understand, what the indexed
@@ -126,7 +126,7 @@ As we can see, this definition literally repeats the Coq's standard
 definition of propositional equality. The reason for the code
 duplication is that SSReflect provides a specific treatment of Coq's
 standard equality predicate, so the case-analysis on its instances is
-completely superceded by the powerful [rewrite] tactics, which we will
+completely superseded by the powerful [rewrite] tactics, which we will
 see in %Section~\ref{sec:rewriting}% of this chapter. Alas, this
 special treatment also leads to a non-standard behavior of
 case-analysis on equality. This is why, for didactical purposes we
@@ -135,7 +135,7 @@ this section.
 
 Let us now prove some interesting properties of the freshly-defined
 equalities. We start with symmetry of [===] by formulating the following
-lemma:%\footnote{The Coq's command \texttt{Lemma} is identic to
+lemma:%\footnote{The Coq's command \texttt{Lemma} is identical to
 \texttt{Theorem}.\ccom{Lemma}}%
 
 *)
@@ -144,7 +144,7 @@ Lemma my_eq_sym A (x y: A) : x === y -> y === x.
 
 (**
 
-First, we analyse on the top assumtion of the goal, [x === y].
+First, we analyse on the top assumption of the goal, [x === y].
 
 *)
 
@@ -182,9 +182,9 @@ Proof. by move=>H; case. Qed.
 
 Another important application of the equality predicate family and
 similar ones %\index{discrimination}% are _proofs by discrimination_,
-in which the contradition is reached (i.e., thefalsehood is derived)
+in which the contradiction is reached (i.e., the falsehood is derived)
 our of the fact that two clearly non-equal elements are assumed to be
-equal. The next lemma demonsrates the essens of the proof by
+equal. The next lemma demonstrates the essens of the proof by
 discrimination using the [my_eq] predicate.
 
 *)
@@ -201,16 +201,16 @@ distinguish between values of the type with an implicit _definitional
 equality_,%\index{definitional equality}% which relates two values if
 they have identical structure.%\footnote{Naturally, it is not trivial
 to establish definitional equality on \emph{any} values, as the values
-might have infinite nature. For instance, establishing the equality of
-two functions would require checking their results on all elements of
-the common domain, which might be infinite. in this respect, the
-propositional equality acts like it ``compares the references'',
-whereas definitional equality ``compares the structure'' of two
-elements.}% In particular, natural numbers can be compared against
-each other by means of direct pattern matching, which is decidable for
-them, thanks to the inductive definition. Using this insight we define
-a local "discriminating" function [D] using the SSReflect's enhanced
-[pose] %\ssrt{pose}% tactic:
+might be of an infinite nature. For instance, establishing the
+equality of two functions would require checking their results on all
+elements of the common domain, which might be infinite. in this
+respect, the propositional equality acts like it ``compares the
+references'', whereas definitional equality ``compares the structure''
+of two elements.}% In particular, natural numbers can be compared
+against each other by means of direct pattern matching, which is
+decidable for them, thanks to the inductive definition. Using this
+insight we define a local "discriminating" function [D] using the
+SSReflect's enhanced [pose] %\ssrt{pose}% tactic:
 
  *)
 
@@ -221,9 +221,9 @@ pose D x := if x is 2 then False else True.
 Now, proving [D 1] is [True] can be accomplished by simple executing
 [D] with appropriate arguments (recall that [D] is an
 always-terminating just a function, whose result is a computable
-value). That SSReflect's tactic [have] allows to delare the local
-fact, which can be then proving on-site by simple computation (which
-is performed via [by []]).
+value). That SSReflect's tactic [have]%\ssrt{have}% allows to declare
+the local fact, which can be then proving on-site by simple
+computation (which is performed via [by []]).
 
 *)
 

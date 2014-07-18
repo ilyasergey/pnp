@@ -42,7 +42,9 @@ sort [Prop], similarly to how first-order types inhabit
 usually referred to as \emph{inductive predicates}.\index{inductive predicates}}% 
 The "values" that have elements of \texttt{Prop} as
 their types are usually referred to as _proofs_ or _proof terms_, the
-naming convention which stems out of the ide of %\emph{Curry-Howard
+naming convention which stems out of the ide of 
+%\index{Curry-Howard Correspondence}%
+%\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
 _proofs-as-programs_, which is truly illuminating when it comes to the
@@ -221,13 +223,15 @@ exact: I.
 (** 
 
 This completes the proof, which is indicated by the display [*response*]:
+
 [[
 No more subgoals.
 (dependent evars:)
 ]]
+
 The only thing left to complete the proof is to inform Coq that now
 the Theorem [true_is_true] is proved, which is achieved by typing the
-keyword [Qed].
+command %\ccom{Qed}% [Qed].
 
 *)
 
@@ -368,14 +372,14 @@ False_ind
 
 That is, _any_ proposition can be derived from the falsehood by means
 of implication.%\footnote{In the light of Curry-Howard analogy, at
-this moment it shouldn't be surprising that Coq uses the arrow
-notation \texttt{->} both for function types and for propositional
-implication: after all, they both are just particular cases of
-functional abstraction, in sorts \texttt{Set} or \texttt{Prop},
-correspondingly.}% For instance, we can prove now that [False] implies
-the equality [1 = 2].%\footnote{We postpone the definition of the
-equality till the next chapter, and for now let us consider it to be
-just an arbitrary proposition.}%
+\index{Curry-Howard Correspondence} this moment it shouldn't be
+surprising that Coq uses the arrow notation \texttt{->} both for
+function types and for propositional implication: after all, they both
+are just particular cases of functional abstraction, in sorts
+\texttt{Set} or \texttt{Prop}, correspondingly.}% For instance, we can
+prove now that [False] implies the equality [1 = 2].%\footnote{We
+postpone the definition of the equality till the next chapter, and for
+now let us consider it to be just an arbitrary proposition.}%
 
 *)
 
@@ -663,7 +667,7 @@ Argument scopes are [type_scope type_scope type_scope _ _ _]
 Even though the proof term looks somewhat furry, this is almost
 exactly our initial proof term from the first proof attempt: [H2 (H1
 a)]. The only difference is that the hypotheses [H1] and [H2] are
-_eta-expanded_, that is instead of simply [H1] the proof terms
+_eta-expanded_,%\index{eta-expansion}% that is instead of simply [H1] the proof terms
 features its operational equivalent [fun b: B => H2 b]. Otherwise, the
 printed program term indicates that the proof obtained by means of
 direct application of [H1] and [H2] is the same (modulo eta-expansion)
@@ -672,7 +676,7 @@ as the proof obtained by means of using the [apply:] tactic.
 These two styles of proving: by providing a direct proof to the goal
 or some part of it, and by reducing the goal via tactics, are usually
 referred in the mechanized proof community as _forward_ and _backward_
-proof styles.
+proof styles%\index{forward proof style}\index{backward proof style}%.
 
 - The _backward_ proof style assumes that the goal is being gradually
   transformed by means of applying some tactics, until its proof
@@ -800,8 +804,8 @@ implemented in Coq as simple inductive predicates in the sort
 [Prop]. In order to avoid some clutter, from this moment and till the
 end of the chapter let us start a section and assume a number of
 propositional variables in it (as we remember, those will be
-abstracted over outside of the sections in the statements they
-happened to occur).
+abstracted over outside of the sections in the statements
+they%\ccom{Variables}% happened to occur).
 
 *)
 
@@ -856,8 +860,9 @@ apply: conj=>//.
 (** 
 
 Alternatively, since we know that [and] has just one constructor, we
-can use the generic Coq's [constructor n] tactic, where [n] is a
-number of a constructor to be applied (and in this case it's [1])
+can use the generic Coq's [constructor n]%\ttac{constructor}% tactic,
+where [n] is a number of a constructor to be applied (and in this case
+it's [1])
 
 *)
 
@@ -867,7 +872,7 @@ constructor 1=>//.
 (**
 
 Finally, for propositions that have exactly one constructor, Coq
-provides a specialized tactic [split], which is a synonym for
+provides a specialized tactic [split]%\ttac{split}%, which is a synonym for
 [constructor 1]:
  *)
 
@@ -934,11 +939,11 @@ move=> q.
 
 Similarly to the case of conjunction, this proof can be completed
 either by applying a constructor directly, by using [constructor 2]
-tactic or by a specialised Coq's tactic for disjunction: [left] or
-[right]. The notation ["_ \/ _"] is right-associative, hence the
-following proof script, which first reduces the goal to the proof of
-[Q \/ R], and then to the proof of [Q], which is trivial by
-assumption.
+tactic or by a specialised Coq's tactic for disjunction:
+[left]%\ttac{left}\ttac{right}% or [right]. The notation ["_ \/ _"] is
+right-associative, hence the following proof script, which first
+reduces the goal to the proof of [Q \/ R], and then to the proof of
+[Q], which is trivial by assumption.
 
 *)
 
@@ -1301,6 +1306,7 @@ employed in the _classical_ propositional logic, cannot be encoded in
 Coq in a form of provable statements, and, hence, should be encoded as
 _axioms_.
 
+%\index{classical propositional logic}%
 In this section, we provide a brief and by all means incomplete
 overview of the classical propositional logic axioms that are missing
 in Coq, but can be added by means of importing the appropriate
