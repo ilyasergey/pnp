@@ -651,10 +651,10 @@ manual~\cite{Gontier-al:TR}%.
 *)
 
 
-(** * Indexed predicate families as rewriting rules
+(** * Indexed datatype families as rewriting rules
 
 In %Section~\ref{sec:propeq}% of this chapter we have already seen how
-defining indexed predicate families %\index{indexed type families}%
+defining indexed datatype families %\index{indexed type families}%
 makes it possible for Coq to provide a convenient rewriting machinery,
 which is implicitly invoked by case analysis on such families' refined
 types, thanks to sophisticated Coq's unification machinery.
@@ -819,15 +819,14 @@ analogy. Case-analysing on the statement of the lemma [eqP] resulted
 in two different "options", as one would expect from the shape of the
 table. The first, case, [m <= n], resulted in generating the
 assumption [m <= n], as it is an argument of the corresponding
-constructor. What is more important, _all_ occurrences of the
-"columns"' values in the goal were replaced by corresponding boolean
-values, just as it was encoded in the table! The similar thing
-happened with the second goal, which encoded the alternative case,
-i.e., when [n < m]. 
+constructor. What is more important, _all_ occurrences of the columns'
+values were replaced in the goal by the corresponding boolean values,
+just as it was encoded in the table! The similar thing happened with
+the second goal, which encoded the alternative case, i.e., [n < m].
 
 Now, considering a boolean value [true && false] in a goal simply as a
 proposition [(true && false) = true], the proof is trivial by
-simplification of boolean conjunctions.
+simplification of the boolean conjunction.
 
 *)
 
@@ -844,7 +843,7 @@ is quite narrowly-scoped, and it is not clear how useful it might be
 for other proofs.
 
 To demonstrate the custom rewriting rules defined by means of indexed
-predicate families in their shine, let us get back to the definition
+datatype families in their shine, let us get back to the definition
 of [maxn] and the lemma about it:
 
 *)
@@ -882,17 +881,19 @@ Qed.
 (** 
 
 The key advantage we got out of using the custom rewriting rule,
-defined as an indexed predicate family is lifting the need to prove
+defined as an indexed datatype family is lifting the need to prove
 _by induction_ a statement, which one would intuitively prove by means
 of _case analysis_. In fact, al inductive reasoning was conveniently
-"sealed" by the proof of [leqP] (and the lemmas it made use of), so
-the convenient "truth table" interface was given to the client.
+"sealed" by the proof of [leqP] and the lemmas it made use of, so the
+just the tailored "truth table"-like interface for case analysis was
+given to the client.
 
 We invite the reader to exercise in using the custom rewriting rule by
 proving a series of properties of [maxn].
 
-%\begin{exercise}[Properties of% [maxn]%]%
-Prove the following lemmas about [maxn]. 
+%\begin{exercise}\label{ex:maxn-props}% 
+
+Prove the following lemmas about [maxn].
 
 %\hint% It might be useful to employ the lemmas [ltnNge], [leqNgt],
  [ltnS] and similar to them from SSReflect's [ssrnat] %\ssrm{ssrnat}%
