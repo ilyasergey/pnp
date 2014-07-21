@@ -636,7 +636,7 @@ result trivially follows.
 
 We conclude this section by noticing that the same rewriting machinery
 is applicable not only to the goal, but also to hypotheses in the
-assumption context using the [rewrite H1 in H2] syntax (where [H] is
+assumption context using the [rewrite H1 in H2] syntax (where [H1] is
 the rewriting hypothesis and [H2] is a hypothesis, where the rewriting
 should happen). There are many more tricks that can be done with
 rewritings, and we address the reader to %Chapter~7 of SSReflect
