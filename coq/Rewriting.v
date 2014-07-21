@@ -648,12 +648,78 @@ manual~\cite{Gontier-al:TR}%.
 (** * Encoding custom rewriting rules
 
 
- *)
+*)
+
+Require Import ssrbool eqtype.
+
+Lemma huh1 n m: (m <= n) /\ (m > n) -> False.
+Proof.
+suff X: m <= n -> ~(m > n) by case=>/X. 
+by elim: m n => [|m IHm] [|n] //; exact: IHm n.
+Qed.
+
+Definition maxn m n := if m < n then n else m.
+
+Inductive leq_xor_gtn m n : bool -> bool -> Set :=
+  | LeqNotGtn of m <= n : leq_xor_gtn m n true false
+  | GtnNotLeq of n < m  : leq_xor_gtn m n false true.
+
+Lemma leqP m n : leq_xor_gtn m n (m <= n) (n < m).
+Proof.
+rewrite ltnNge.
+case le_mn: (m <= n); constructor=>//.
+by rewrite ltnNge le_mn.
+Qed.
 
 
-(* * Axioms about equality
+Lemma huh m n: (m <= n) && (m > n) = true -> False.
+Proof.
+by case: leqP.
+Qed.
 
-TODO: K and friends
+Lemma max_is_max m n: n <= maxn m n /\ m <= maxn m n.
+Proof.
+rewrite /maxn.
+case: leqP=>// H; split; first by apply:leqnn.
+by rewrite ltn_neqAle in H; case/andP: H.
+Qed.
 
- *)
+(* 
+
+* Axioms about equality
+
+Require Import ssrfun Eqdep.
+Check Streicher_K.
+Inductive type := Nat | Bool. 
+Fixpoint typeDenote t :=
+  match t with
+    Nat => nat
+  | Bool => bool
+  end.
+
+Inductive exp t := 
+  NConst of Nat = t & nat
+| Plus of Nat = t & exp Nat & exp Nat
+| Eq of  Bool = t & exp Nat & exp Nat
+| BConst of Bool = t & bool 
+| If of exp Bool & exp t & exp t.
+
+Definition cast T (t t' : type) (r : t = t') (e : T t): T t' :=
+  match r in (_ = t') return T t' with erefl => e end.
+
+Lemma eqc T t (r : t = t) (e : T t) : cast r e = e.
+Proof. by move: r; apply: Streicher_K. Qed.
+
+Fixpoint expDenote t (e : exp t) : typeDenote t :=
+  match e with
+    NConst r n => cast (T := typeDenote) r n
+  | Plus r e1 e2 => cast r (expDenote e1 + expDenote e2)
+  | Eq r e1 e2 => cast r (expDenote e1 == expDenote e2) 
+  | BConst r b => cast r b
+  | If e' e1 e2 => if expDenote e' then expDenote e1 else expDenote e2
+  end.
+*)
+
+
+
 
