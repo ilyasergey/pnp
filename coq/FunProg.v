@@ -407,16 +407,15 @@ input argument value. A simple example of such a function is below:
 
 Check nat_rec.
 
-(*
-Definition blah n := 
+Definition sum_no_zero n := 
  let: P := (fun n => if n is 0 then unit else nat) in
  nat_rec P tt (fun n' m => 
 match n' return P n' -> _ with
    | 0 => fun _ => 1
-   | n1.+1 => fun m => my_plus m n1 
+   | n1.+1 => fun m => my_plus m (n'.+1) 
 end m) n.
-*)
 
+(*
 Definition three_to_unit n := 
  let: P := (fun n => if n is 3 then unit else nat) in
  nat_rec P 0 (fun n' _ => match n' return P n'.+1 with
@@ -425,48 +424,79 @@ Definition three_to_unit n :=
                end) n.
 
 Eval compute in three_to_unit 0.
+*)
+
+Eval compute in sum_no_zero 0.
 
 (** 
 
-[  = 0 : nat]
+[[ 
+     = tt
+     : (fun n : nat => match n with
+                       | 0 => unit
+                       | _.+1 => nat
+                       end) 0
+]]
 
 *)
 
-Eval compute in three_to_unit 5.
+Eval compute in sum_no_zero 5.
 
 (** 
 
-[  = 5 : nat]
+[[
+     = 15
+     : (fun n : nat => match n with
+                       | 0 => unit
+                       | _.+1 => nat
+                       end) 5
+]]
 
 *)
 
-Eval compute in three_to_unit 3.
-
 (** 
 
-[  = tt : unit]
+The toy function [sum_no_zero] maps every natural number [n] to a sum
+of numbers [1] ... [n], except for [0], which is being mapped into the
+value [tt] of type [unit]. We define it via the [nat_rec] combinator
+by providing it a function [P], which defines the type contract
+described just above.  Importantly, as the first parameter.  The
+"step" function, which is a third parameter, of this [nat_rec] call,
+makes use of the _dependent_ pattern matching, which now explicitly
+_refines_ explicit the return type [P n' -> _] of the whole [match e
+with ps end] expression. This small addition allows the Coq type
+checker to relate the expected type of [my_plus]' first argument in
+the second branch to the the type of the pattern matching scrutinee
+[n']. Without the explicit [return] in the pattern matching, in some
+cases when its result type depends on the value of the scrutinee, the
+Coq type checking engine will fail to unify the type of the branch and
+the overall type. In particular, had we omitted the [return] clauses
+in the pattern matching, we would get the following type-checking
+error, indicating that Coq cannot infer that the type of [my_plus]'
+argument is always [nat], so it complains:
 
-*)
+[[
+Definition sum_no_zero' n := 
+ let: P := (fun n => if n is 0 then unit else nat) in
+ nat_rec P tt (fun n' m => 
+match n' with
+   | 0 => fun _ => 1
+   | n1.+1 => fun m => my_plus m (n'.+1) 
+end m) n.
+]]
 
-(** 
-
-The toy function [three_to_unit] maps every natural number to itself
-except for [3], which is being mapped into the value [tt] of type
-[unit]. We define it via the [nat_rec] combinator by providing it a
-function [P], which defines the type contract described just above.
-Importantly, as the first parameter.  The "step" function, which is a
-third parameter, of this [nat_rec] call, makes use of the _dependent_
-pattern matching, which now specifies explicit return type [P (n'.+1)]
-of the whole [match e with ps end] expression. This small addition
-allows the Coq type checker to relate the expected type of the final
-result [P n] to the result of the pattern matching expression. Without
-the explicit [return] in the pattern matching, in some cases when its
-result type depends on the value of the scrutinee, the Coq type
-checking engine will fail to unify the type of the branch and the
-overall type.%\footnote{However, in this example Coq 8.4 does just
-fine even without the explicit \texttt{return} annotation in the
-[match]-expression, we nevertheless presented it to outline the
-possible problem.}%
+[[
+Error:
+In environment
+n : ?37
+P := fun n : nat => match n with
+                    | 0 => unit
+                    | _.+1 => nat
+                    end : nat -> Set
+n' : nat
+m : P n'
+The term "m" has type "P n'" while it is expected to have type "nat".
+]]
 
 In general, dependent pattern matching is quite powerful tool, which,
 however, should be used with a great caution, as it makes assisting
@@ -477,7 +507,7 @@ examples on the subject%~\cite{Chlipala:BOOK}%.
 
 %\index{dependent function type}%
 Dependent function types, akin to those of [nat_rec] and our
-[three_to_unit], which allow the type of the result to vary depending
+[sum_no_zero], which allow the type of the result to vary depending
 on the value of a function's argument are a powerful way to specify
 the behaviour of functions, and therefore, are often used to "enforce"
 the dependently-typed programs. In Coq, dependent function types are
@@ -489,7 +519,7 @@ difference beween Coq's core calculus and System F is that in Coq the
 types can be parametrised not just by _types_ but also by
 _values_. While the utility of this language "feature" can be already
 demonstrated for constructing and type-checking _programs_ (for
-example, [three_to_unit]), its true strength is best demonstrated when
+example, [sum_no_zero]), its true strength is best demonstrated when
 using Coq as a system to construct _proofs_, which is the topic of the
 subsequents chapters.
 
