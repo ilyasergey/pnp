@@ -1,4 +1,9 @@
-(** %\chapter{Encoding Mathematical Structures with Dependent Records}% *)
+(** 
+%
+\chapter{Encoding Mathematical Structures with Dependent Records}
+\label{ch:depstruct}
+% 
+*)
 
 (* begin hide *)
 Require Import ssreflect.

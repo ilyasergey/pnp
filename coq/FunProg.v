@@ -257,8 +257,7 @@ itself, which is known under the name of Turing's _halting
 problem_).%\footnote{The computability properties of primitively and
 generally recursive functions is a large topic, which is essentially
 orthogonal to our development, so we omit a detailed discussion on the
-theory of recursion and address an interested reader to the
-literature~\cite{???}}\index{halting problem}%
+theory of recursion.}\index{halting problem}%
 
 The check for primitive recursion, which implies termination, is
 performed by Coq _syntactically_, and the system makes sure that there
