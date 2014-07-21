@@ -14,7 +14,6 @@
 
 (* begin hide *)
 Module LogicPrimer.
-Require Import ssreflect.
 (* end hide *)
 
 (** 
@@ -149,7 +148,16 @@ demonstrating how one the two simplest propositions, the truth and the
 falsehood, are encoded. Once again, let us remind that, unlike in the
 Propositional Logic, in Coq these two are _not_ the only possible
 propositional _values_, and soon we will see how a wide range of
-propositions different from mere truth or falsehood are implemented.
+propositions different from mere truth or falsehood are
+implemented. From now on, we will be always including the standard
+SSREflect's module [ssreflect], %\ssrm{ssreflect}% which imports some
+necessary machinery for dealing with propositions and proofs.
+
+*)
+
+Require Import ssreflect.
+
+(**
 
 The truth is represented in Coq as a datatype of sort [Prop] with just
 one constructor, taking no arguments:

@@ -32,6 +32,16 @@ connective.
 
 *)
 
+
+(*
+Lemma max_r x y : x <= y -> maxn x y = y.
+Proof.
+rewrite /maxn; case: leqP=>// H1 H2.
+suff: y <= x <= y by rewrite -eqn_leq; move/eqP. 
+by apply/andP; split=>//. Qed.
+*)
+
+
 (** * Using conditionals in predicates
 
 
