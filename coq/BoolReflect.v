@@ -17,6 +17,7 @@ Module BoolReflect.
 (** printing of %\texttt{\emph{of}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
+(** printing View %\texttt{\emph{View}}% *)
 
 (** 
 
@@ -113,11 +114,220 @@ move=>p; move: (H1 p).
 
 (** 
 
-TODO: now present views
+This proof pattern of "switching the view" turns out to be so frequent
+that SSReflect introduces a special _view_ tactical %\texttt{/}% for
+it, which is typically combined with the standard [move] or [case]
+tactics. In particular, the last proof line could be replaced by the
+following:
 
 *)
 
-admit. Qed.
+Undo.
+move/H1.
+
+(** 
+
+The assumption [H1] used for weakening is usually referred to as a
+%\index{view lemma}% _view lemma_. The spaces before and after
+%\texttt{/}% are optional. One can also _chain_ the views into one
+series, so the current proof can be completed as follows:
+
+*)
+
+by move/H3 /H2.
+Qed.
+
+(** 
+
+** Combining views and bookkeeping
+
+The view tactical can be also combined with the standard bookkeeping
+machinery, so it will apply the specified view lemma to the
+corresponding assumption of the goal, as demonstrated by the following
+proof script, which use the partially-applied assumption [H p] as a
+view lemma:
+
+*)
+
+Goal forall P Q R, P -> (P -> Q -> R) -> Q -> R.
+Proof.
+by move=>P Q R p H /(H p).
+
+(**
+
+In fact, this prove can be shortened even further by using the view
+notation for the _top_ assumption:
+
+*)
+
+Undo.
+move=> P Q R p. 
+by move/(_ p). 
+Qed.
+
+(** 
+
+The last proof script first moved for assumptions to the context, so
+the goal became [(P -> Q -> R) -> R]. Next, it partially applied the
+top assumption [(P -> Q -> R)] to [p : P] from the context and moved
+the result back to the goal, so it became [(P -> Q) -> P -> Q], which
+is trivially provable.
+
+It is also possible to use views in combination with the [case]
+tactics, which first performs the "view switch" via the view lemma
+provided and then case-analyses on the result, as, demonstrated by the
+following proof script:
+
+*)
+
+Goal forall P Q R, (P -> Q /\ R) -> P -> R.
+Proof.
+move=> P Q R H.
+by case/H. 
+Qed.
+
+(** 
+
+What is happened is that the combined tactic [case/H] first switched
+the top assumption of the goal from [P] to [Q /\ R] and then
+case-analyses on it, which gave the proof of [R] right away, allowing
+us to conclude the proof.
+
+** Using views with equivalences
+%\label{seq:viewseq}%
+
+So far we have explored only views that help to weaken the hypothesis
+using the view lemma, which is an implication. In fact, SSReflect's
+view mechanism is elaborated enough to deal with view lemmas defined
+by means of equivlance (double implication) %\texttt{<->}%, and the
+system can figure out itself, "in which direction" the view lemma
+should be applied. Let us demonstrate it with the following example,
+which makes use of the hypothesis [PQequiv],%\footnote{The Coq's
+command \texttt{Hypothesis} is a synonym for \texttt{Axiom} and
+\texttt{Variable}.\ccom{Hypothesis}\ccom{Variable}\ccom{Axiom}}% whose
+nature is irrelevant for the illustration purposes:
+
+*)
+
+Variables S T: bool -> Prop.
+Hypothesis STequiv : forall a b, T a <-> S (a || b). 
+
+Lemma ST_False a b: (T a -> False) -> S (a || b) -> False.
+Proof.
+by move=>H /STequiv.
+Qed.
+
+(**
+
+** Declaring view hints
+
+Let us get back to the example from %Section~\ref{seq:viewseq}%, in
+which we have seen how views can deal with equalities. The mentioned
+elaboration, which helped the system to recognize, in which direction
+the double implication hypothesis [STequiv] should have been used, is
+not hard-coded into SSReflect. Instead, it is provided by a flexible
+mechanism of %\index{view hints}% _view hints_, which allows one to
+specify view lemmas that should be applied _implicitly_ whenever it is
+necessary and can be figured out unambiguously.
+
+In the case of the proof of the [ST_False] lemma the view hint [iffRL]
+from the included module [ssreflect]%\footnote{Implicit view hints are
+defined by means of \texttt{View Hint}\ccom{View Hint} command, added
+to Coq by SSReflect.}% %\ssrm{ssreflect}% has been "fired" in order to
+adapt the hypothesis [STequiv], so the adapted variant could be
+applied as a view lemma to the argument of type [S (a || b)].
+
+*)
+
+Check iffRL.
+
+(** 
+
+The type of [iffRL] reveals that what it does is simply switching the
+equivalence to the implication, which works right-to-left, as captured
+by the name. Let us now redo the proof of the [ST_False] lemma to see
+what is happening under the hood:
+
+*)
+
+Lemma ST_False' a b: (T a -> False) -> S (a || b) -> False.
+Proof.
+move=> H.
+move/(iffRL (STequiv a b)).
+done.
+Qed.
+
+(**
+
+The view switch on the second line of the proof is what has been done
+automatically in the previous case: the implicit view [iffRL] has been
+applied to the call of [STequiv], which was in its turn supplied the
+necessary arguments [a] and [b], inferred by the system from the goal,
+so the type of [(STequiv a b)] would match the parameter type of
+[iffRL], and the whole application would allow to make a view switch
+in the goal.  What is left behind the scenes is the rest of the
+attempts made by Coq/SSReflect in its search for a suitable implicit
+view, which ended when the system has finally picked [iffRL].
+
+In general, the design of powerful view hints is non-trivial, as they
+should capture precisely the situation when the "view switch" is
+absolutely necessary and the implicit views will not "fire"
+spuriously. In the same time, implicit view hints is what allows for
+the smooth implementation of the boolean reflection, as we will
+discuss in %Section~\ref{sec:reflect}%.
+
+
+** Applying view lemmas to the goal
+
+Similarly to how they are used for _assumptions_, views can be udes to
+interpret the goal by means of combiningy the Coq's standard [apply]
+and [exact] tactics with the view tactical %\texttt{/}%. In the case
+is [H] is a view lemma, which is just an implication [P -> Q], where
+[Q] is the statement of the goal, the enhanced tactic [apply/ P] will
+work exactly as the standard SSReflect's [apply:], that is, it will
+replace the goal [Q] with [H]'s assumption [P] to prove.
+
+However, interpreting goals via views turns out to be very beneficial
+in the presence of implicit view hints. For example, let us consider
+the following proposition to prove.
+
+*)
+
+Definition TS_neg: forall a, T (negb a) -> S ((negb a) || a).
+Proof.
+move=>a H. 
+apply/STequiv.
+done.
+Qed.
+
+(** 
+
+The view switch on the goal by via [apply/STequiv] changes the goal
+from [S ((negb a) || a)] to [T (negb a)], so the rest of the proof
+becomes trivial. Again, notice that the system managed to infer the
+right arguments for the [STequiv] hypothesis by analysing the goal.
+
+Now, if we print the body of [TS_neg] (we can do it since it has been
+defined via [Definition] rather than [Theorem]), we will be able to
+see how an application of the implicit application of the view lemma
+[iffLR] of type [forall P Q : Prop, (P <-> Q) -> P -> Q] has been
+inserted, allowing for the construction of the proof term:
+
+*)
+
+Print TS_neg.
+
+(**
+
+[[
+TS_neg = 
+  fun (a : bool) (H : T (negb a)) =>
+  (fun F : T (negb a) =>
+     iffLR (Q:=S (negb a || a)) (STequiv (negb a) a) F) H
+     : forall a : bool, T (negb a) -> S (negb a || a)
+]]
+
+*)
 
 
 (** * %\texttt{Prop} versus \emph{bool}%
@@ -140,6 +350,7 @@ apply:X.
 Require Import ssrbool.
 
 (** * %The \textsf{\textbf{reflect}} type family%
+%\label{sec:reflect}%
 
 
 
