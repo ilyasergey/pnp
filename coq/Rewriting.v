@@ -792,8 +792,10 @@ Proof.
 (** 
 
 Let us first "switch" from the propositional conjunction [/\] to the
-boolean one [&&]. This trick might look a bit unfair at the moment,
-but it will be soon explained in %Chapter~\ref{ch:boolrefl}.%
+boolean one [&&] using the _view_ mechanism by using the [move]
+tactics the trailing tactical %\texttt{/}\ssrtl{/}\index{views}%. This
+trick might look a bit unfair at the moment, but it will be soon
+explained in %Section~\ref{sec:views} of Chapter~\ref{ch:boolrefl}.%
 
 *)
 
@@ -913,7 +915,8 @@ Prove the following lemmas about [maxn].
 Lemma max_l m n: n <= m -> maxn m n = m.
 (* begin hide *)
 Proof.
-rewrite /maxn; case: leqP=>//.
+rewrite /maxn. 
+by case: (leqP n m)=>//.
 Qed.
 (* end hide *)
 

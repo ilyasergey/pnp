@@ -1,3 +1,14 @@
+(** 
+
+%\chapter{Views and Boolean Reflection}
+\label{ch:boolrefl}%
+
+*)
+
+(* begin hide *)
+Module BoolReflect.
+(* end hide *)
+
 (** remove printing ~ *)
 (** printing ~ %\textasciitilde% *)
 (** printing R $R$ *)
@@ -5,15 +16,16 @@
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
+(** printing have %\texttt{\emph{have}}% *)
 
+Require Import ssreflect ssrbool.
 
-(** 
+(** * Views in SSReflect
+%\label{sec:views}%
 
-%\chapter{The Basics of Boolean Reflection}
-\label{ch:boolrefl}%
+TODO: demonstrate interpreting assumptions, goals and hypotheses.
 
 *)
-
 
 (** * %\texttt{Prop} versus \emph{bool}%
 
@@ -23,23 +35,30 @@ thank to Coq's terminating computations)
 
 *)
 
+(*
+Goal forall a b : bool, a && b.
+move=> a b. 
+have X: a /\ b -> a && b. by move/andP.
+apply:X.
+*)
 
-(** * %The \emph{reflect} type family%
+(** * %The \textsf{\textbf{reflect}} type family%
 
 Construct a simple reflection procedure for some simple user-specific
 connective.
 
-
 *)
 
+(* begin hide *)
+Module Inner.
+(* end hide *)
+Inductive reflect (P : Prop) : bool -> Set :=
+  | ReflectT  of   P : reflect P true
+  | ReflectF of ~ P : reflect P false.
+(* begin hide *)
+End Inner.
+(* end hide *)
 
-(*
-Lemma max_r x y : x <= y -> maxn x y = y.
-Proof.
-rewrite /maxn; case: leqP=>// H1 H2.
-suff: y <= x <= y by rewrite -eqn_leq; move/eqP. 
-by apply/andP; split=>//. Qed.
-*)
 
 
 (** * Using conditionals in predicates
@@ -62,3 +81,7 @@ is as expressive as simple propositional logic (which is its strength,
 thank to Coq's terminating computations)
 
 *)
+
+(* begin hide *)
+End BoolReflect.
+(* end hide *)
