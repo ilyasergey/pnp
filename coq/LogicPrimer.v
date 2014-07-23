@@ -33,17 +33,17 @@ working with a new kind of entities, incorporated by Coq:
 _propositions_.
 
 * Propositions and the [Prop] sort
+%\label{sec:propsort}%
 
 In Coq, propositions bear a lot of similarities with types,
 demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
 sort [Prop], similarly to how first-order types inhabit
 [Set].%\footnote{In the Coq community, the datatypes of [Prop] sort ar
-usually referred to as \emph{inductive predicates}.\index{inductive predicates}}% 
-The "values" that have elements of \texttt{Prop} as
-their types are usually referred to as _proofs_ or _proof terms_, the
-naming convention which stems out of the ide of 
-%\index{Curry-Howard Correspondence}%
-%\emph{Curry-Howard
+usually referred to as \emph{inductive predicates}.\index{inductive
+predicates}}% The "values" that have elements of [Prop] as their types
+are usually referred to as _proofs_ or _proof terms_, the naming
+convention which stems out of the ide of %\index{Curry-Howard
+Correspondence}% %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
 _proofs-as-programs_, which is truly illuminating when it comes to the

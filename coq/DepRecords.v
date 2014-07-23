@@ -17,6 +17,7 @@ Unset Printing Implicit Defensive.
 In this chapter we will learn how to encode the reasoning about common
 algebraic data structures in Coq. In particular, we will meet some old
 friends from the course of abstract algebra: monoids and PCMs. 
+
 *)
 
 (** * A basic mathematical structure: monoid *)
@@ -30,7 +31,12 @@ them. We will take natural numbers and lists as instances.
 
 (** * Fun with Partial Commutative Monoids *)
 
-(** * Introducing canonical structures *)
+(** * Introducing canonical structures 
+
+** Types with computable equalities
+
+*)
+
 
 
 (**

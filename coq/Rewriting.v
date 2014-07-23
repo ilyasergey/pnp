@@ -183,6 +183,7 @@ Proof. by move=>H; case. Qed.
 (**
 
 ** Implementing discrimination
+%\label{sec:discr}%
 
 Another important application of the equality predicate family and
 similar ones %\index{discrimination}% are _proofs by discrimination_,

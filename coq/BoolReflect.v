@@ -335,32 +335,272 @@ TS_neg =
 (** * %\texttt{Prop} versus \emph{bool}%
 %\label{sec:propbool}%
 
+As we have already explored in the previous chapters, in CIC, the
+logical foundation of Coq there is a number of important distinction
+between logical propositions and boolean values. There is an infinite
+number of ways to represent different propositions in the sort [Prop]
+by means of defining the datatypes. In contrast, the type [bool] is
+represented just by two values: [true] and [false]. Moreover, as it
+was discussed in %Chapter~\ref{ch:logic}%, in Coq only those
+propositions are considered to be _true_, whose proof term can be
+constructed. And, of course, there is no such thing as a "proof term
+of [true]", as [true] is simply a value. 
 
-TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
-is as expressive as simple propositional logic (which is its strength,
-thank to Coq's terminating computations)
+A more interesting question, though, is for which propositions [P] the
+proofs can be computed _automatically_ by means of running a program,
+whose result will be an answer to the question "Whether [P]
+holds?". Therefore, such program should always _terminate_ and, upon
+terminating, say "true" or "false". The propositions, for which a
+construction of such program (even a very inefficient one) is
+possible, are referred to %\index{decidability}% as _decidable_
+ones. Alas, as it was discussed in %Section~\ref{sec:propsort} of
+Chapter~\ref{ch:logic}%, quite a lot of interesting propositions are
+undecidable. Such properties include the classical halting problem
+%\index{halting problem}% ("Whether the program [p] terminates or
+not?") and any higher-order formulae, i.e., such that contain
+quantifiers. For instance, it is not possible to implement a
+higher-order function, which would take two arbitrary functions $f_1$
+and $f_2$ of type [nat -> nat] and return a boolean answer, which
+would indicate whether these two functions are equal (point-wise) or
+not, as it would account to checking the result of the both on each
+natural number, which, clearaly, wouldn't terminate. Therefore, the
+function equality is a good example of a proposition, which is is
+undecidable in general, so we cannot provide a terminating procedure
+for any values of its arguments (i.e., $f_1$ and $f_2$)
+
+However, the _undecidability_ of higher-order propositions (like the
+functional equality) does not make them _non-provable_ for particular
+cases, as we have clearly observed thorough the past few chapters. It
+usualy take a human intuition, though, to construct a proof of an
+undecidable proposition by means of combining a number of hypotheses
+(i.e., constructing a proof terms), which is what one does when
+building a proof using tactics in Coq. For instance, if we have some
+extra insight about the two functions $f_1$ and $f_2$, which are
+checked for equality, we might be able to construct the proof of them
+being equal or not, in the similar ways as we have carried the proofs
+so far. Again, even if the functions are unknown upfront, it does not
+seem possible to implement an always-terminating procedure that would
+automatically decide whether they are equal or not.
+
+The above said does not mean that all possible propositions should be
+implemented as instances of [Prop], making their clients to construct
+the always construct their proofs, when it is necessary, since,
+fortunally, some propositions as _decidable_, so it is possible to
+construct a decision procedure for them. A good example of such
+proposition is a predicate, which ensures that a number [n] is
+prime. Of course, in Coq one can easily encode primality of a natural
+number by means of the following inductive predicate, which ensures
+that [n] is [0], [1] or has no other natural divisors but [1] and [n]
+itself.
 
 *)
 
-(*
-Goal forall a b : bool, a && b.
-move=> a b. 
-have X: a /\ b -> a && b. by move/andP.
-apply:X.
-*)
+Inductive isPrime n : Prop := 
+ | IsZero of n = 0
+ | IsOne of n = 1
+ | IsOther of forall n1 n2, n = n1 * n2 -> (n1 = 1 /\ n2 = n) \/ (n1 = n /\ n2 = 1).
 
 (** 
 
-** Using conditionals in predicates
-
-** Case analysing on a boolean assumption
-
-** Types with decidable equalities
+Such definition, although correct, is quite inconvenient to use, as it
+does not provide a direct way to _check_ whether some particular
+number (e.g., 239) is prime or not. Instead, it requires on to
+construct a proof of primality for _each_ particular case using the
+constructors (or the contradiction, which would imply that the number
+is not prime). As it's well known, there is a terminating procedure to
+compute whether the number is prime or not by means of _enumerating_
+all potential divisors of [n] from [1] to the square root of [n]. Such
+procedure is actually implemented in the SSReflect's [prime]
+%\ssrm{prime}% module and proved correct with respect to the
+definition similar to the one above,%\footnote{Although the
+implementation and the proof are somewhat non-trivial, as they require
+to build a primitively-recursive function, which performs the
+enumeration, so we do not consider them here.}% so now one can test
+the numbers by equality by simply _executing_ the appropriate function
+and getting a boolean answer:
 
 *)
 
+Require Import ssrnat prime.
+Eval compute in prime 239.
+(** 
+[[
+     = true
+     : bool
+]]
+
+Therefore, we can summarize that the _decidability_ is what draws the
+line between propositions encoded by means of Coq's [Prop] datatypes
+and procedures, returning a [bool] result. [Prop] provides a way to
+encode a larger class of logical statements, in particular, thanks to
+the fact that it allows to use quantifiers and, therefore encode
+higher-order propositions. The price to pay for the expressivity is
+the necessity to explicitly construct the proofs of the encoded
+statements, which might lead to series of tedious and repetitive
+scripts. [bool]-returning functions, when implemented in Coq, are
+decidable by construction (as Coq enforces termination), and,
+therefore, provide a way to compute the propositions they
+implement. Of course, in order to be reduce to [true] or [false], all
+quantifiers should be removed by means of instantiated the
+corresponding bound variables, after which the computation becomes
+possible. 
+
+For instance, while the expression [(prime 239) || (prime 42)] can be
+evaluated to [true] right away, whereas the expression
+
+[[
+forall n, (prime n) || prime (n +1)
+]]
+
+is not even well-typed (as polymorphic [forall]-quantification in Coq
+does not admit primitive types). This expression can be, however,
+_coreced_ into [Prop] by means of comparing the boolean expresion with
+[true] using the propositional equality:
+
+[[
+forall n, ((prime n) || prime (n +1) = true)
+]]
+
+This last example brings us to the insight that the [bool]-returning
+functions (i.e., decidable predicates) can be naturally _injected_
+%\index{injection}% into propositions of sort [Prop] by simply
+comparing their result with [true] via propositional equality. This is
+what is done by SSReflect automatically using the implicit
+%\index{coercion}\ccom{Coercion}% _coercion_, imported by the
+[ssrbool] module:%\ssrm{ssrbool}%
+
+[[
+Coercion is_true (b: bool) := b = true
+]]
+
+This coersion can be seen as an implicit type conversion, familiar
+from the languages like Scala or Haskell, and it inserted by Coq
+automatically every time it expect to see a value of sort [Prop], but
+instead encounters a boolean value. Let us consider the following goal
+as an example:
+
+*)
 
 Require Import ssrbool.
+Goal prime (16 + 14) -> False.
+Proof. done. Qed.
+
+(** 
+
+As we can see, the proof is rather short, and, in fact, done by
+Coq/SSReflect fully automatically. In fact, the system first
+_computes_ the value of [prime (16 + 14)], which is, obviously
+[false]. Then the boolean value [false] is coerced into the
+propositional equality [false = true], as previously described. The
+equality is then automatically discriminated (%see
+Section~\ref{sec:discr}%), which allows the system to infer the
+falsehood, completing the proof.
+
+This example and the previous discussion should convey the idea that
+_decidable propositions should be implemented as computable functions
+returning a boolean result_. This simple design pattern makes it
+possible to take full advantage of the computational power of Coq as a
+programming language and prove decidable properties automatically,
+rather then by means of emposing a burden of constructing an explicit
+proof. Whe have shown how a boolean result can be easily injected back
+to the world of propositions. This computational approach to proofs is
+what has been taken by SSReflect to the extreme, making the proofs
+about common mathematical constructions to be very short, as most of
+the proof obligrations simply _do not appear_, as the system is
+possible to reduce them by means of performing the computations on the
+fly. Even though, as discussed, some propositions can be only encoded
+as elements of [Prop], our general advice is to rely on the
+computations whenever it is possible.
+
+In the following subsections we will elaborate on some additional
+specifications and proof patterns, which are enabled by using boolean
+values instead of full-fledged propositions from [Prop].
+
+** Using conditionals in predicates
+
+The ternary conditional operator [if-then-else] is something that
+programmers use on a regular basis. However, when it comes to the
+specifications in the form of Coq's standard propositions it turns out
+one cannot simply employ the [if-then-else] connective in them, as it
+expects its conditional argument to be of type [bool]. This
+restriction is, again, a consequence of the fact that the result of
+[if-then-else] expression should be computable, which conflicts with
+the fact that not every proposition is decidable and, hence, there is
+no sound way overload the conditional operator, so it would rely on
+the existence of the proof of its conditional (or its negation).
+
+[[
+Definition prime_spec_bad n m : Prop := m = (if isPrime n then 1 else 2).
+
+Error: In environment
+m : nat
+n : nat
+The term "isPrime n" has type "Prop" while it is expected to have type "bool".
+]]
+
+Fortunately, the computable predicates are free from this problem, so
+on can freely use them in the conditionals:
+
+*)
+
+Definition prime_spec n m : Prop := m = (if prime n then 1 else 2).
+
+(**
+
+** Case analysing on a boolean assumption
+
+Another advantage of the boolean predicates is that they automatically
+come with a natural case analysis principle: reasoning about an
+outcome of a particular predicate, one can always consider two
+possibilities: when it returned [true] or [false]. This makes is
+particularly pleasant to reason about the programs and specifications
+that use conditional, which is demonstrated by the following example.
+
+*)
+
+Definition discr_prime n := (if prime n then 0 else 1) + 1.
+
+(** 
+
+Let us now prove that the definition [prime_spec] gives a precise
+specification of the function [discr_prime]:
+
+*)
+
+Lemma discr_prime_spec : forall n, prime_spec n (discr_prime n).
+Proof.
+move=>n. rewrite /prime_spec /discr_prime.
+
+(**
+
+The proof of the specification is totally in the spirit of what one
+would have done when proving it manually: we just case-analyse on the
+value of [prime n], which is either [true] or [false]. Similarly to
+the way the rewritings are handled by means of unification, in both
+cases the system substitutes [prime n] with its boolean value in the
+specification as well. The evaluation completes the proof.
+
+*)
+
+by case: (prime n)=>//.
+Qed.
+
+(**
+
+Another commonly used case of a boolean predicate to perform a case
+analysis on is _computable equality_, which can be employed in the
+proof proceeding by an argument "let us assume [a] to be equal to [b]
+(or not)". As already hinted by the example with the function equality
+earlier in this section, the computable equality is not always
+possible to implement. Fortunately, it can be implemented for a large
+class of datatypes, such as booleans, natural numbers, lists and sets
+(of elements with computable equality), and it was implemented in
+SSReflect, so one can take an advantage of it in the
+proofs.%\footnote{The way the computable equality is encoded so it
+would work uniformly for different types is a lar topic by itself, so
+we postpone its explanation until Chapter~\ref{ch:depstruct}}%
+
+*)
 
 (** * %The \textsf{\textbf{reflect}} type family%
 %\label{sec:reflect}%
@@ -371,6 +611,7 @@ Construct a simple reflection procedure for some simple user-specific
 connective.
 
 *)
+
 
 (* begin hide *)
 Module Inner.
@@ -403,9 +644,31 @@ Show Proof.
 
 Qed.
 
+(**
+
+** Reflecting logical connectives
+
+*)
+
 Goal forall a b c : bool, [|| false, false, true | false].
 move=> a b c.
 done.
+Qed.
+
+(** 
+
+** Reflecting decidable equalities
+
+
+*)
+
+Require Import eqtype.
+Definition foo (x y: nat) := if x == y then 1 else 0.
+
+Goal forall x y, x = y -> foo x y = 1.
+Proof.
+move=>x y; rewrite /foo.
+by move/eqP=>->.
 Qed.
 
 (** 
@@ -418,7 +681,6 @@ Let us define a propositional version of the _exclusive or_
 *)
 
 Definition XOR (P Q: Prop) := (P \/ Q) /\ ~(P /\ Q).
-(* Notation "x 'XOR' y" := (XOR x y)(at level 71, left associativity). *)
 
 (** 
 
@@ -435,7 +697,7 @@ Now, prove the following _generalized_ reflection lemma [xorP_gen] and
 its direct consequence, the usual refletion lemma [xorP]:
 
 %\hint% Recall that the _reflect_ predicate is just a rewriting rule,
- so one can case-analyse on it.
+ so one can perform a case analysis on it.
 
 *)
 
