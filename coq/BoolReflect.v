@@ -232,10 +232,12 @@ necessary and can be figured out unambiguously.
 
 In the case of the proof of the [ST_False] lemma the view hint [iffRL]
 from the included module [ssreflect]%\footnote{Implicit view hints are
-defined by means of \texttt{View Hint}\ccom{View Hint} command, added
-to Coq by SSReflect.}% %\ssrm{ssreflect}% has been "fired" in order to
-adapt the hypothesis [STequiv], so the adapted variant could be
-applied as a view lemma to the argument of type [S (a || b)].
+defined by means of \texttt{Hint View}\ccom{Hint View} command, added
+to Coq by SSReflect. See the implementation of the module
+[ssrbool]\ssrm{ssrbool} and Section 9.8 of the Reference
+Manual~\cite{Gontier-al:TR}.}% %\ssrm{ssreflect}% has been "fired" in
+order to adapt the hypothesis [STequiv], so the adapted variant could
+be applied as a view lemma to the argument of type [S (a || b)].
 
 *)
 
@@ -281,7 +283,7 @@ discuss in %Section~\ref{sec:reflect}%.
 
 Similarly to how they are used for _assumptions_, views can be udes to
 interpret the goal by means of combiningy the Coq's standard [apply]
-and [exact] tactics with the view tactical %\texttt{/}%. In the case
+and [exact] tactics with the view tactical%~\texttt{/}%. In the case
 is [H] is a view lemma, which is just an implication [P -> Q], where
 [Q] is the statement of the goal, the enhanced tactic [apply/ P] will
 work exactly as the standard SSReflect's [apply:], that is, it will
@@ -347,6 +349,17 @@ have X: a /\ b -> a && b. by move/andP.
 apply:X.
 *)
 
+(** 
+
+** Using conditionals in predicates
+
+** Case analysing on a boolean assumption
+
+** Types with decidable equalities
+
+*)
+
+
 Require Import ssrbool.
 
 (** * %The \textsf{\textbf{reflect}} type family%
@@ -395,30 +408,182 @@ move=> a b c.
 done.
 Qed.
 
+(** 
 
+%\begin{exercise}[Reflecting exclusive disjunction]%
 
+Let us define a propositional version of the _exclusive or_
+%\index{exclusive disjunction}% predicate:
 
+*)
 
-(** * Using conditionals in predicates
+Definition XOR (P Q: Prop) := (P \/ Q) /\ ~(P /\ Q).
+(* Notation "x 'XOR' y" := (XOR x y)(at level 71, left associativity). *)
 
+(** 
+
+as well as its boolean version (in a curried form, so it takes just
+one argument and returns a function):
+
+*)
+
+Definition xorb b := if b then negb else fun x => x.
+
+(** 
+
+Now, prove the following _generalized_ reflection lemma [xorP_gen] and
+its direct consequence, the usual refletion lemma [xorP]:
+
+%\hint% Recall that the _reflect_ predicate is just a rewriting rule,
+ so one can case-analyse on it.
+
+*)
+
+Lemma xorP_gen (b1 b2 : bool)(P1 P2: Prop): 
+  reflect P1 b1 -> reflect P2 b2 -> reflect (XOR P1 P2) (xorb b1 b2).
+(* begin hide *)
+Proof.
+case=>H1; case=>H2; constructor; rewrite /XOR. 
+- by case; case=>H; apply.
+- split; first by left. 
+  by case=>_ H; apply: H2.
+- split; first by right.
+  by case=>H _; apply: H1.
+- intuition.
+Qed.
+(* end hide *)
+
+Lemma xorP (b1 b2 : bool): reflect (XOR b1 b2) (xorb b1 b2).
+Proof.
+(* begin hide *)
+by apply: xorP_gen; case:b1=>//=; case:b2=>//=; constructor.
+(* end hide *)
+Qed.
+
+(** 
+%\end{exercise}%
+
+%\begin{exercise}[Alternative formulation of exclusive disjunction]%
+
+Let us consider an alternative version of exclusive or, defined by
+means of the predicate [XOR']:
+
+*)
+
+Definition XOR' (P Q: Prop) := (P /\ ~Q) \/ (~P /\ Q).
+(** 
+
+Prove the following equivalence lemma between to versions of [XOR]:
+
+*)
+
+Lemma XORequiv P Q: XOR P Q <-> XOR' P Q.
+(* begin hide *)
+Proof.
+split. 
+- case; case=>[p|q] H. 
+  - by left; split=>// q; apply: H.
+  by right; split=>// p; apply H.
+case; case=>p q.
+- split=>[| H]; first by left.
+  by apply: q; case: H.
+split; first by right. 
+by case=>/p.
+Qed.
+(* end hide *)
+
+(** 
+
+The final step is to use the equivalence we have just proved in order
+to establish an alternative version of the reflective correspondence
+of exclusive disjuntion.
+
+%\hint% Use the [Search] machinery to look for lemmas that might help
+ to leverage the equivalence between two predicates and make the
+ following proof to be a one-liner.
+
+*)
+
+(* Search _ (reflect _ _). *)
+Lemma xorP' (b1 b2 : bool): reflect (XOR' b1 b2) (xorb b1 b2).
+(* begin hide *)
+Proof.
+by apply: (equivP (xorP b1 b2) (XORequiv _ _)).
+Qed.
+(* end hide *)
+ 
+(** 
+
+%\end{exercise}%
+
+Unsurprisingly, every statement about exclusive or, e.g., its
+commutativity and associativity, is extremely easy to prove when it is
+considered as a boolean function. 
+
+*)
+
+Lemma xorbC (b1 b2: bool) : (xorb b1 b2) = (xorb b2 b1). 
+Proof. by case: b1; case: b2=>//. Qed.
+
+Lemma xorbA (b1 b2 b3: bool) : (xorb (xorb b1 b2) b3) = (xorb b1 (xorb b2 b3)). 
+Proof. by case: b1; case: b2; case: b3=>//. Qed.
+
+(** 
+
+It is also not difficult to prove the propositional counterparts of
+the above lemmas for decidable propositions, reflected by them, hence
+the following exercise.
+
+%\begin{exercise}%
+
+Prove the following specialized lemmas for decidable propositions
+represented y booleans:
+
+*)
+
+Lemma xorCb (b1 b2: bool) : (XOR b1 b2) <-> (XOR b2 b1). 
+(* begin hide *)
+Proof.
+by split; move/xorP; rewrite xorbC; move/xorP.
+Qed.
+(* end hide *)
+
+Lemma xorAb (b1 b2 b3: bool) : (XOR (XOR b1 b2) b3) <-> (XOR b1 (XOR b2 b3)). 
+(* begin hide *)
+Proof.
+split=>H. 
+apply: (xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3)); first by case: b1 {H}; constructor.
+- by apply/xorP.
+- rewrite -xorbA. 
+  apply/(xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3)=>//; first by apply/xorP. 
+  case: b3 {H} =>//; constructor=>//.
+apply: (xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3). 
+- by apply/xorP.
+- case: b3 {H}; constructor=>//.
+rewrite xorbA. 
+apply/(xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3))=>//; last by apply/xorP. 
+case: b1 {H} =>//; constructor=>//.
+Qed.
+(* end hide *)
+
+(** 
+
+%\hint% In the proof of [xorAb] the generalized reflection lemma
+ [xorP_gen] might come in handy.
+
+%\hint% A redundant assumption [H] in the context can be erased by
+ typing [clear H] %\ttac{clear}% or [move => {H}]. The latter form can
+ be combined with any bookkeeping sequence, not only with [move]
+ tactics.
+
+%\hint% The Coq's embedded tactic [intuition] can be helpful for
+ automatically solving goals in propositional logic.%\ttac{intuition}%
+
+%\end{exercise}%
 
 *)
 
 
-(** * Case analysing on a boolean assumption
-
-
-*)
-
-
-
-(** * Types with decidable equalities
-
-TODO: Emphasize that in Prop you can use quantifiers, whereas [bool]
-is as expressive as simple propositional logic (which is its strength,
-thank to Coq's terminating computations)
-
-*)
 
 (* begin hide *)
 End BoolReflect.
