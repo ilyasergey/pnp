@@ -199,7 +199,7 @@ us to conclude the proof.
 So far we have explored only views that help to weaken the hypothesis
 using the view lemma, which is an implication. In fact, SSReflect's
 view mechanism is elaborated enough to deal with view lemmas defined
-by means of equivlance (double implication) %\texttt{<->}%, and the
+by means of equivalence (double implication) %\texttt{<->}%, and the
 system can figure out itself, "in which direction" the view lemma
 should be applied. Let us demonstrate it with the following example,
 which makes use of the hypothesis [PQequiv],%\footnote{The Coq's
@@ -281,8 +281,8 @@ discuss in %Section~\ref{sec:reflect}%.
 
 ** Applying view lemmas to the goal
 
-Similarly to how they are used for _assumptions_, views can be udes to
-interpret the goal by means of combiningy the Coq's standard [apply]
+Similarly to how they are used for _assumptions_, views can be used to
+interpret the goal by means of combining the Coq's standard [apply]
 and [exact] tactics with the view tactical%~\texttt{/}%. In the case
 is [H] is a view lemma, which is just an implication [P -> Q], where
 [Q] is the statement of the goal, the enhanced tactic [apply/ P] will
@@ -363,7 +363,7 @@ higher-order function, which would take two arbitrary functions $f_1$
 and $f_2$ of type [nat -> nat] and return a boolean answer, which
 would indicate whether these two functions are equal (point-wise) or
 not, as it would account to checking the result of the both on each
-natural number, which, clearaly, wouldn't terminate. Therefore, the
+natural number, which, clearly, wouldn't terminate. Therefore, the
 function equality is a good example of a proposition, which is is
 undecidable in general, so we cannot provide a terminating procedure
 for any values of its arguments (i.e., $f_1$ and $f_2$)
@@ -371,7 +371,7 @@ for any values of its arguments (i.e., $f_1$ and $f_2$)
 However, the _undecidability_ of higher-order propositions (like the
 functional equality) does not make them _non-provable_ for particular
 cases, as we have clearly observed thorough the past few chapters. It
-usualy take a human intuition, though, to construct a proof of an
+usually take a human intuition, though, to construct a proof of an
 undecidable proposition by means of combining a number of hypotheses
 (i.e., constructing a proof terms), which is what one does when
 building a proof using tactics in Coq. For instance, if we have some
@@ -385,7 +385,7 @@ automatically decide whether they are equal or not.
 The above said does not mean that all possible propositions should be
 implemented as instances of [Prop], making their clients to construct
 the always construct their proofs, when it is necessary, since,
-fortunally, some propositions as _decidable_, so it is possible to
+fortunately, some propositions as _decidable_, so it is possible to
 construct a decision procedure for them. A good example of such
 proposition is a predicate, which ensures that a number [n] is
 prime. Of course, in Coq one can easily encode primality of a natural
@@ -454,7 +454,7 @@ forall n, (prime n) || prime (n +1)
 
 is not even well-typed (as polymorphic [forall]-quantification in Coq
 does not admit primitive types). This expression can be, however,
-_coreced_ into [Prop] by means of comparing the boolean expresion with
+_coerced_ into [Prop] by means of comparing the boolean expresion with
 [true] using the propositional equality:
 
 [[
@@ -473,7 +473,7 @@ what is done by SSReflect automatically using the implicit
 Coercion is_true (b: bool) := b = true
 ]]
 
-This coersion can be seen as an implicit type conversion, familiar
+This coercion can be seen as an implicit type conversion, familiar
 from the languages like Scala or Haskell, and it inserted by Coq
 automatically every time it expect to see a value of sort [Prop], but
 instead encounters a boolean value. Let us consider the following goal
@@ -501,15 +501,15 @@ _decidable propositions should be implemented as computable functions
 returning a boolean result_. This simple design pattern makes it
 possible to take full advantage of the computational power of Coq as a
 programming language and prove decidable properties automatically,
-rather then by means of emposing a burden of constructing an explicit
-proof. Whe have shown how a boolean result can be easily injected back
-to the world of propositions. This computational approach to proofs is
-what has been taken by SSReflect to the extreme, making the proofs
-about common mathematical constructions to be very short, as most of
-the proof obligrations simply _do not appear_, as the system is
-possible to reduce them by means of performing the computations on the
-fly. Even though, as discussed, some propositions can be only encoded
-as elements of [Prop], our general advice is to rely on the
+rather then by means of imposing a burden of constructing an explicit
+proof. We have just seen how a boolean result can be easily injected
+back to the world of propositions. This computational approach to
+proofs is what has been taken by SSReflect to the extreme, making the
+proofs about common mathematical constructions to be very short, as
+most of the proof obligations simply _do not appear_, as the system
+is possible to reduce them by means of performing the computations on
+the fly. Even though, as discussed, some propositions can be only
+encoded as elements of [Prop], our general advice is to rely on the
 computations whenever it is possible.
 
 In the following subsections we will elaborate on some additional
@@ -606,12 +606,38 @@ we postpone its explanation until Chapter~\ref{ch:depstruct}}%
 %\label{sec:reflect}%
 
 
-
-Construct a simple reflection procedure for some simple user-specific
-connective.
+Being able to state all the properties of interest in a way that they
+are decidable is a true blessing. However, even though encoding
+everything in terms of [bool]-returning functions and connectives comes
+with the obvious benefits, reasoning in terms of props might be more
+convenient when the information of the structure of the proofs
+matters. For instance, let us consider the following situation:
 
 *)
 
+Variables do_check1 do_check2 : nat -> bool.
+Hypothesis H: forall n, do_check2 n -> prime n.
+
+(** 
+[[
+Lemma check_prime n : (do_check1 n) && (do_check2 n) -> prime n.
+]]
+
+The lemma [check_prime] employs the boolean conjunction [&&] from the
+[ssrbool] module in its assumption, so we know that its result is some
+boolean. However simply case-analysing on its component does not bring
+any results. What we want indeed is a way to _decompose_ the boolean
+conjunction into the components and then use the hypothesis [H]. This
+is what could be accomplished easily had we employed the
+_propositional conjunction_ [/\] instead, as it comes with a
+case-analysis principle. This is why we need a mechanism to
+conveniently switch between two possible representation. SSReflect
+solves this problem by employing the familiar rewriting machinery (see
+Section~\ref{sec:indexed} of Chapter~\ref{ch:rewriting}) and
+introducing the inductive predicate family [reflect], which connects
+propositions an booleans:
+
+*)
 
 (* begin hide *)
 Module Inner.
@@ -623,55 +649,147 @@ Inductive reflect (P : Prop) : bool -> Set :=
 End Inner.
 (* end hide *)
 
-Lemma andl_b a b: a && b -> a.
-Proof.
-by case/andP.
-Show Proof.
-
 (**
-[[
-(fun (a b : bool) (top : a && b) =>
- (fun F: forall (a0 : a) (b0 : b),
-         (fun _ : a /\ b => is_true a) (conj a0 b0) =>
-  match elimTF andP top 
-  as a0 return ((fun _ : a /\ b => is_true a) a0)
-  with
-  | conj x x0 => Fx x0
-  end) (fun (a0 : a) (_ : b) => a0))
-]]
+
+Similarly to the custom rewriting rules, the [reflect] predicate is
+nothing but a convenient way to encode a "truth" table with respect to
+the predicate [P], which is [reflect]'s only parameter. In other
+words, the propositions [(reflect P b)] ensures that [(is_true b)] and
+[P] are logically equivalent and can be replaced one by another. For
+instance, the following rewriting lemmas can be proved for the simple
+instances of [Prop].
 
 *)
 
-Qed.
+Lemma trueP : reflect True true.
+Proof. by constructor. Qed.
+
+Lemma falseP : reflect False false.
+Proof. by constructor. Qed.
+
+(** 
+
+The proofs with boolean truth and falsehood can be then completed by
+case analysis, as with any other rewriting rules:
+
+*)
+
+Goal false -> False.
+Proof. by case:falseP=>//. Qed.
 
 (**
 
 ** Reflecting logical connectives
 
+The true power of the [reflect] predicate, though, is that it might be
+put to work with arbitrary logical connectives and user-defined
+predicates, therefore delivering the rewriting principles, allowing
+one to switch between [bool] and [Prop] (in the decidable case) by
+means of rewriting lemmas. SSReflect comes with a number of such
+lemmas, so let us consider one of them, [andP].
+
 *)
 
-Goal forall a b c : bool, [|| false, false, true | false].
-move=> a b c.
-done.
-Qed.
+Lemma andP (b1 b2 : bool) : reflect (b1 /\ b2) (b1 && b2).
+Proof. by case b1; case b2; constructor=> //; case. Qed.
 
 (** 
 
-** Reflecting decidable equalities
+Notice that [andP] is stated over two boolean variables, [b1] and
+[b2], which, nevertheless, are treated as instances of [Prop] in the
+conjunction [/\], being implicitly coerced. 
 
+We can now put this lemma to work and prove our initial example:
 
 *)
 
-Require Import eqtype.
-Definition foo (x y: nat) := if x == y then 1 else 0.
-
-Goal forall x y, x = y -> foo x y = 1.
+Lemma check_prime n : (do_check1 n) && (do_check2 n) -> prime n.
 Proof.
-move=>x y; rewrite /foo.
-by move/eqP=>->.
+case: andP=>//.
+
+(**
+
+Case analysis on the rewriting rule [andP] immediately generates two
+goals, and the second one has [false] as an assumption, so it is
+discharged immediately by using %\texttt{//}\ssrtl{//}%. The remaining
+goal has a shape that we can work with, so we conclude the proof by
+applying the hypothesis [H] declared above.
+
+*)
+
+by case=>_ /H.
 Qed.
 
 (** 
+
+Although the example above is a valid usage of the reflected
+propositions, SSReflect leverages the rewriting with respect to
+boolean predicates even more by defining a number of _hint views_ for
+the rewriting lemmas that make use of the [reflect] predicates. This
+allows one to use the rewriting rules (e.g., [andP]) in the form of
+_views_ %\index{views}%, which can be applied directly to an
+assumption or a goal, as demonstrated by the next definition.
+
+*)
+
+Definition andb_orb b1 b2: b1 && b2 -> b1 || b2.
+Proof.
+case/andP=>H1 H2.
+by apply/orP; left.
+Qed.
+
+(** 
+
+The first line of the proof switched the top assumption from the
+boolean conjunction to the propositional one by means of [andP] used
+as a view. The second line applied the [orP] view, doing the similar
+switch in the goal, completing the proof by using a constructor of the
+propositional disjunction.
+
+*)
+
+Print andb_orb.
+
+
+(**
+
+Let us take a brief look to the obtained proof term for [andb_orb].
+
+%\newpage%
+
+[[
+andb_orb = 
+fun (b1 b2 : bool) (goal : b1 && b2) =>
+(fun F : forall (a : b1) (b : b2),
+                (fun _ : b1 /\ b2 => is_true (b1 || b2)) (conj a b) =>
+ match
+   elimTF (andP b1 b2) goal as a return ((fun _ : b1 /\ b2 => is_true (b1 || b2)) a)
+ with
+ | conj x x0 => F x x0
+ end)
+  (fun (H1 : b1) (_ : b2) =>
+   (fun F : if true then b1 \/ b2 else ~ (b1 \/ b2) =>
+    introTF (c:=true) orP F) (or_introl H1))
+     : forall b1 b2 : bool, b1 && b2 -> b1 || b2
+]]
+
+As we can see, the calls to the rewriting lemmas [andP] and [orP] were
+implicitly "wrapped" into the call of hints [elimTF] and [introTF],
+correspondingly. Defined by via the conditional operator, both these
+view hints allowed to avoid the second redundant goal, which would be
+had to deal with, had we simply gone with case analysis on [andP] and
+[orP].
+
+*)
+
+Check elimTF.
+
+(** 
+[[
+elimTF
+     : forall (P : Prop) (b c : bool),
+       reflect P b -> b = c -> if c then P else ~ P
+]]
 
 %\begin{exercise}[Reflecting exclusive disjunction]%
 
@@ -694,7 +812,7 @@ Definition xorb b := if b then negb else fun x => x.
 (** 
 
 Now, prove the following _generalized_ reflection lemma [xorP_gen] and
-its direct consequence, the usual refletion lemma [xorP]:
+its direct consequence, the usual reflection lemma [xorP]:
 
 %\hint% Recall that the _reflect_ predicate is just a rewriting rule,
  so one can perform a case analysis on it.
@@ -758,7 +876,7 @@ Qed.
 
 The final step is to use the equivalence we have just proved in order
 to establish an alternative version of the reflective correspondence
-of exclusive disjuntion.
+of exclusive disjunction.
 
 %\hint% Use the [Search] machinery to look for lemmas that might help
  to leverage the equivalence between two predicates and make the
@@ -843,8 +961,52 @@ Qed.
 
 %\end{exercise}%
 
+** Reflecting decidable equalities
+
+Logical connectives are not the only class of inductive predicates
+that is worth building a [reflect]-based rewriting principle for.
+Another useful class of decidable propositions, which are often
+reflected are qualities. 
+
+Postponing the description of a generic mechanism for declaring
+equalities until %Chapter~\ref{ch:depstruct}%, let us see how
+switching between decidable [bool]-returning equality [==] (defined in
+the SSReflect's module [eqtype]%\ssrm{eqtype}%) and the familiar
+propositional equality can be beneficial.
+
 *)
 
+Require Import eqtype.
+Definition foo (x y: nat) := if x == y then 1 else 0.
+
+(** 
+
+The function [foo] naturally uses the natural numbers' boolean
+equality [==] in its body, as it is the only one that can be used in
+the conditional operator. The next goal, though, assumes the
+propositional equality of [x] and [y], which are passed to [foo] as
+arguments.
+
+*)
+
+Goal forall x y, x = y -> foo x y = 1.
+Proof.
+move=>x y; rewrite /foo.
+
+(** 
+
+The rewriting rule/view lemma [eqP], imported from [eqtype] allows us
+to switch from the propositional equality to the boolean one, which
+makes the assumption to be [x == y]. Next, we combine the implicit
+fact that [x == y] in the assumption of a proposition is in fact [(x
+== y) = true] to perform on-site (see %Section~\ref{sec:on-site}%)
+rewriting by means of the %\texttt{->}\ssrtl{->}% tactical, so the
+rest of the proof is simply by computation.
+
+*)
+
+by move/eqP=>->.
+Qed.
 
 
 (* begin hide *)

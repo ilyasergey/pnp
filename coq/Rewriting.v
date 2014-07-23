@@ -339,6 +339,7 @@ machinery is handled by SSReflect's enhanced [rewrite]%\ssrt{rewrite}%
 tactics, and in this section we focus on its particular uses.
 
 ** Unfolding definitions and on-site rewritings
+%\label{sec:on-site}%
 
 One of the common uses of the [rewrite] tactic is to fold/unfold
 transparent definitions. In general, Coq is capable to perform the
@@ -653,6 +654,7 @@ manual~\cite{Gontier-al:TR}%.
 
 
 (** * Indexed datatype families as rewriting rules
+%\label{sec:indexed}%
 
 In %Section~\ref{sec:propeq}% of this chapter we have already seen how
 defining indexed datatype families %\index{indexed type families}%
