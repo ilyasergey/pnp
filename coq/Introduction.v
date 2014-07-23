@@ -72,6 +72,8 @@ topics, to the best of our knowledge, not covered in other course on Coq:
 
 (**
 
+* Why SSReflect?
+
 * Setup
 
 TODO

@@ -127,6 +127,15 @@ move/H1.
 
 (** 
 
+[[
+  ...
+  H1 : P -> Q
+  H2 : R -> S
+  H3 : Q -> R
+  ============================
+   Q -> S
+]]
+
 The assumption [H1] used for weakening is usually referred to as a
 %\index{view lemma}% _view lemma_. The spaces before and after
 %\texttt{/}% are optional. One can also _chain_ the views into one
@@ -573,6 +582,12 @@ move=>n. rewrite /prime_spec /discr_prime.
 
 (**
 
+[[
+  n : nat
+  ============================
+   (if prime n then 0 else 1) + 1 = (if prime n then 1 else 2)
+]]
+
 The proof of the specification is totally in the spirit of what one
 would have done when proving it manually: we just case-analyse on the
 value of [prime n], which is either [true] or [false]. Similarly to
@@ -708,6 +723,11 @@ Proof.
 case: andP=>//.
 
 (**
+[[
+  n : nat
+  ============================
+   do_check1 n /\ do_check2 n -> true -> prime n
+]]
 
 Case analysis on the rewriting rule [andP] immediately generates two
 goals, and the second one has [false] as an assumption, so it is
@@ -754,8 +774,6 @@ Print andb_orb.
 (**
 
 Let us take a brief look to the obtained proof term for [andb_orb].
-
-%\newpage%
 
 [[
 andb_orb = 
@@ -994,6 +1012,13 @@ Proof.
 move=>x y; rewrite /foo.
 
 (** 
+
+[[
+  x : nat
+  y : nat
+  ============================
+   x = y -> (if x == y then 1 else 0) = 1
+]]
 
 The rewriting rule/view lemma [eqP], imported from [eqtype] allows us
 to switch from the propositional equality to the boolean one, which
