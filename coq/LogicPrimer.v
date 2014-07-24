@@ -383,7 +383,7 @@ False_ind
 
 That is, _any_ proposition can be derived from the falsehood by means
 of implication.%\footnote{In the light of Curry-Howard analogy, at
-\index{Curry-Howard Correspondence} this moment it shouldn't be
+\index{Curry-Howard correspondence} this moment it shouldn't be
 surprising that Coq uses the arrow notation \texttt{->} both for
 function types and for propositional implication: after all, they both
 are just particular cases of functional abstraction, in sorts
