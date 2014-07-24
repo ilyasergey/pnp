@@ -997,10 +997,10 @@ Another useful class of decidable propositions, which are often
 reflected are qualities. 
 
 Postponing the description of a generic mechanism for declaring
-equalities until %Chapter~\ref{ch:depstruct}%, let us see how
-switching between decidable [bool]-returning equality [==] (defined in
-the SSReflect's module [eqtype]%\ssrm{eqtype}%) and the familiar
-propositional equality can be beneficial.
+polymorphic decidable equalities until %Chapter~\ref{ch:depstruct}%,
+let us see how switching between decidable [bool]-returning equality
+[==] (defined in the SSReflect's module [eqtype]%\ssrm{eqtype}%) and
+the familiar propositional equality can be beneficial.
 
 *)
 
