@@ -2,9 +2,7 @@
 \label{ch:ssrstyle}
 % *)
 
-
-(** %\section{More Inductive Predicates}% 
-
+(** 
 
 In this chapter we will continute employing the enhancements
 intorduced into Coq by means of SSReflect, so for the next sections we
@@ -12,9 +10,95 @@ will have the [ssreflect] module imported.
 
 *)
 
-Require Import ssreflect.
+Require Import ssreflect ssrbool ssrnat eqtype.
 
-Require Import ssrnat.
+(** 
+
+%\section{Inductive predicates that should be functions}%
+
+*)
+
+(** 
+
+Let's have a look at this hell below:
+
+*)
+
+(* Inductive isZero : nat -> Prop := IsZero : isZero 0. *)
+
+(* Theorem blah: isZero 1 -> False. *)
+(* Proof. *)
+(* move=> z. *)
+(* move: (isZero_ind (fun n => if n is 0 then True else False))=> Z. *)
+(* by apply (Z I 1). *)
+(* Qed. *)
+
+
+(* Fixpoint is_even n :=  *)
+(*  match n with  *)
+(*   | 0  => true *)
+(*   | 1  => false *)
+(*   | n'.+2  => is_even n' *)
+(*  end.  *)
+
+(* Check nat_rec. *)
+
+(* Definition is_even' := nat_rec (fun _ => bool) true (fun _ => negate).  *)
+
+(* Eval compute in is_even' 140. *)
+
+
+(* Check list_rec. *)
+
+(* Program Definition sum (l: seq nat): nat :=  *)
+(*   list_rec (fun _ => nat) 0 (fun x l res => x + res) l. *)
+
+(* Definition my_list := 1 :: 2 :: 3 :: nil. *)
+
+(* Eval compute in sum my_list. *)
+
+
+
+(* Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path. *)
+
+
+
+
+
+
+(* Set Implicit Arguments. *)
+(* Unset Strict Implicit. *)
+(* Unset Printing Implicit Defensive. *)
+
+(* Inductive isZero n : Prop := IsZero of (n = 0) & (n = 1). *)
+
+
+(* Theorem blah: forall n, isZero n -> False. *)
+(* move=> n. case. *)
+(* move=>->.  *)
+
+(* Theorem isZero_contra : isZero 1 -> False. *)
+(* Proof. *)
+(* case.  *)
+(* have X1: if 0 == 1 then False else True by case Y: (0 == 1)=>//.  *)
+(* by rewrite eq_sym=>X; rewrite X in X1. *)
+
+
+
+(* case Y: (0 == 1)=>//. *)
+(* have Z: isZero 1 -> 0 == 1. *)
+
+
+(* by rewrite Y in X1 =>/=. *)
+
+(*    move=> Z; rewrite -Z in X1. *)
+
+
+(**
+
+%\section{Inductive predicates that cannot be avoided}%
+
+*)
 
 Inductive beautiful (n: nat) : Prop :=
   b_0 of n = 0
@@ -139,78 +223,21 @@ by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
 
 
+(**
 
-(** 
+%\section{On non-standard induction principles}%
 
-Let's have a look at this hell below:
+TODO: Example from Section 9.3.1 from Coq'Art book.
+
+%\section{Structuring the proof scripts}%
+
+TODO: bullets, indentation, selectors, terminators etc.
+
+%\section{Working with SSReflect libraries}%
+
+TODO: General naming policies.
 
 *)
 
-(* Inductive isZero : nat -> Prop := IsZero : isZero 0. *)
-
-(* Theorem blah: isZero 1 -> False. *)
-(* Proof. *)
-(* move=> z. *)
-(* move: (isZero_ind (fun n => if n is 0 then True else False))=> Z. *)
-(* by apply (Z I 1). *)
-(* Qed. *)
 
 
-(* Fixpoint is_even n :=  *)
-(*  match n with  *)
-(*   | 0  => true *)
-(*   | 1  => false *)
-(*   | n'.+2  => is_even n' *)
-(*  end.  *)
-
-(* Check nat_rec. *)
-
-(* Definition is_even' := nat_rec (fun _ => bool) true (fun _ => negate).  *)
-
-(* Eval compute in is_even' 140. *)
-
-
-(* Check list_rec. *)
-
-(* Program Definition sum (l: seq nat): nat :=  *)
-(*   list_rec (fun _ => nat) 0 (fun x l res => x + res) l. *)
-
-(* Definition my_list := 1 :: 2 :: 3 :: nil. *)
-
-(* Eval compute in sum my_list. *)
-
-
-
-(* Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path. *)
-
-
-
-
-
-
-(* Set Implicit Arguments. *)
-(* Unset Strict Implicit. *)
-(* Unset Printing Implicit Defensive. *)
-
-(* Inductive isZero n : Prop := IsZero of (n = 0) & (n = 1). *)
-
-
-(* Theorem blah: forall n, isZero n -> False. *)
-(* move=> n. case. *)
-(* move=>->.  *)
-
-(* Theorem isZero_contra : isZero 1 -> False. *)
-(* Proof. *)
-(* case.  *)
-(* have X1: if 0 == 1 then False else True by case Y: (0 == 1)=>//.  *)
-(* by rewrite eq_sym=>X; rewrite X in X1. *)
-
-
-
-(* case Y: (0 == 1)=>//. *)
-(* have Z: isZero 1 -> 0 == 1. *)
-
-
-(* by rewrite Y in X1 =>/=. *)
-
-(*    move=> Z; rewrite -Z in X1. *)

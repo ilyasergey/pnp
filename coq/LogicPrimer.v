@@ -276,14 +276,16 @@ will prefer the interactive proof mode to the "vanilla" program
 definition. It is worth noticing, thought, that even though the
 process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
-_tactics_ in Coq jargon),%\index{Coq tactics}% the result of such script, given that it
-eliminates all goals, is a valid well-typed program. In comparison, in
-some other dependently-typed frameworks, the construction of proof
-terms does not obscure the fact that what is being constructed is a
-program, so the resulting interactive proof process is formulated as
-"filling the holes" in a program (i.e., a proof-term), which is being
-gradually refined. We step away from the discussion on which of these
-two views to the proof term construction is more appropriate.
+_tactics_ in Coq jargon),%\index{Coq/SSReflect tactics}%
+%\index{tactics|see {Coq/SSReflect tactics}}% the result of such
+script, given that it eliminates all goals, is a valid well-typed
+program. In comparison, in some other dependently-typed frameworks,
+the construction of proof terms does not obscure the fact that what is
+being constructed is a program, so the resulting interactive proof
+process is formulated as "filling the holes" in a program (i.e., a
+proof-term), which is being gradually refined. We step away from the
+discussion on which of these two views to the proof term construction
+is more appropriate.
 
 There is one more important difference between values defined by as
 [Definition]s and [Theorem]s. While both define what in fact is a
@@ -407,8 +409,9 @@ exact: (False_ind (1 = 2)).
 (**
 
 This indeed proves the theorem, but for now, let us explore a couple
-of other ways to prove the same statement. For this we first Undo the
-last command of the already succeeded but not yet completed proof.
+of other ways to prove the same statement. For this we first
+%\ccom{Undo}% [Undo] the last command of the already succeeded but not
+yet completed proof.
 
 *)
 

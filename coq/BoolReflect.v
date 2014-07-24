@@ -28,14 +28,16 @@ proofs by case analysis and rewriting. In this chapter, we will show
 how the custom rewriting machinery can be taken to the whole new level
 and be used to facilitate the reasoning about _computable_ properties
 and predicates. We will consider a series of insights that lead to the
-idea of the _small-scale reflection_, the %\index{small-scale
-reflection|textbf}% heart of the SSReflect framework, which blurs the
-boundaries between computable predicates defined in the sort [Prop]
-(see %Chapter~\ref{ch:logic}%) and Coq's recursive functions returning
-a result of type [bool] (in the spirit of the definitions that we have
-seen in %Chapter~\ref{ch:funprog}%). That said, in the vast number of
-cases these two are just two sides of the same coin and, hence, should
-be treated uniformly, serving to facilitate the reasoning in two
+idea of the _small-scale reflection_, the heart of the SSReflect
+%\index{small-scale reflection|textbf}%
+%\index{reflection|see {small-scale reflection}}%
+framework, which blurs the boundaries between computable predicates
+defined in the sort [Prop] (see %Chapter~\ref{ch:logic}%) and Coq's
+recursive functions returning a result of type [bool] (in the spirit
+of the definitions that we have seen in
+%Chapter~\ref{ch:funprog}%). That said, in the vast number of cases
+these two are just two sides of the same coin and, hence, should be
+treated uniformly, serving to facilitate the reasoning in two
 different directions: %\index{reflection|see {small-scale
 reflection}}%
 
@@ -633,10 +635,9 @@ matters. For instance, let us consider the following situation:
 Variables do_check1 do_check2 : nat -> bool.
 Hypothesis H: forall n, do_check2 n -> prime n.
 
-(** 
-[[
 Lemma check_prime n : (do_check1 n) && (do_check2 n) -> prime n.
-]]
+
+(** 
 
 The lemma [check_prime] employs the boolean conjunction [&&] from the
 [ssrbool] module in its assumption, so we know that its result is some
@@ -645,12 +646,21 @@ any results. What we want indeed is a way to _decompose_ the boolean
 conjunction into the components and then use the hypothesis [H]. This
 is what could be accomplished easily had we employed the
 _propositional conjunction_ [/\] instead, as it comes with a
-case-analysis principle. This is why we need a mechanism to
-conveniently switch between two possible representation. SSReflect
-solves this problem by employing the familiar rewriting machinery (see
-Section~\ref{sec:indexed} of Chapter~\ref{ch:rewriting}) and
-introducing the inductive predicate family [reflect], which connects
-propositions an booleans:
+case-analysis principle.
+
+
+*)
+
+(** %\ccom{Abort}% *)
+Abort.
+
+(**
+
+This is why we need a mechanism to conveniently switch between two
+possible representation. SSReflect solves this problem by employing
+the familiar rewriting machinery (see Section~\ref{sec:indexed} of
+Chapter~\ref{ch:rewriting}) and introducing the inductive predicate
+family [reflect], which connects propositions an booleans:
 
 *)
 
@@ -671,7 +681,7 @@ nothing but a convenient way to encode a "truth" table with respect to
 the predicate [P], which is [reflect]'s only parameter. In other
 words, the propositions [(reflect P b)] ensures that [(is_true b)] and
 [P] are logically equivalent and can be replaced one by another. For
-instance, the following rewriting lemmas can be proved for the simple
+instance, the following rewriting lemmas %\index{rewriting lemma}% can be proved for the simple
 instances of [Prop].
 
 *)
