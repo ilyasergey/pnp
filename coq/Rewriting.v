@@ -584,6 +584,7 @@ number of papers, presenting the state of the art in this
 direction%~\cite{Gontier-al:ICFP11,Mahboubi-Tassi:ITP13}%.
 
 ** Naming in subgoals and conditional rewritings
+%\label{sec:naming-subgoals}%
 
 When working with multiple cases, it is possible to "chain" the
 executing of several tactics. Then, in the case of a script [tac1;

@@ -214,35 +214,175 @@ through a series of predicates defined both as inductive datatypes and
 boolean functions and compare the proofs of various properties stated
 over the alternative representations.
 
+One can defined the fact that the only natural number which is equalt
+to zero is the zero itself, as shown below:
+
 *)
+
+
+Inductive isZero (n: nat) : Prop := IsZero of n = 0.
+
+(**
+
+Naturally, such equality can be exploited to derived paradoxes, as the
+following lemma shows:
+
+*)
+
+Lemma isZero_paradox: isZero 1 -> False.
+Proof. by case. Qed.
+
 
 (** 
 
-Let's have a look at this hell below:
+However, the equality on natural numbers is, decidable, so the very
+same definition can be rewritten as a function employing the boolean
+equality [(==)] (see %Section~\ref{sec:eqrefl} of
+Chapter~\ref{ch:boolrefl}%), which will make the proofs of paradoxes
+even shorter than they already are:
 
 *)
 
-Inductive isZero : nat -> Prop := IsZero : isZero 0.
+Definition is_zero n : bool := n == 0.
 
-Theorem blah: isZero 1 -> False.
-Proof.
-move=> z.
-move: (isZero_ind (fun n => if n is 0 then True else False))=> Z.
-by apply (Z I 1).
-Qed.
+Lemma is_zero_paradox: is_zero 1 -> False.
+Proof. done. Qed.
 
-Inductive evenP1 n : Prop :=
-  Even01 of n = 0 | EvenSs1 m of n = m.+2 & evenP1 m.
+(** 
+
+That is, instead of the unavoidable case-analysis with the first
+[Prop]-based definition, the functional definition made Coq compute
+the result for us, deriving the falsehood automatically.
+
+The benefits of the computable definitions become even more obvious
+when considering the next example, the predicate defining whether a
+natural number is even or odd. Again, we define two versions, the
+inductive predicate and a boolean function.
+
+*)
+
+Inductive evenP n : Prop :=
+  Even0 of n = 0 | EvenSS m of n = m.+2 & evenP m.
 
 Fixpoint evenb n := if n is n'.+2 then evenb n' else n == 0.
 
-Lemma even_4: evenb 4.
-Proof. done. Qed.
+(** 
 
-Theorem even_3_contra: ~evenb 3.
-Proof. done. Qed.
+Let us now prove a simple property: that fact that [(n + 1 + n)] is
+even leads to a paradox. We first prove it for the version defined in
+[Prop].
 
-(* TODO: How to build induction on recursive function? *)
+*)
+
+Lemma evenP_contra n : evenP (n + 1 + n) -> False.
+Proof.
+elim: n=>//[| n Hn]; first by rewrite addn0 add0n; case=>//.
+
+(** 
+
+We start the proof by induction on [n], which is triggered by [elim:
+n].%\footnote{Remember that the [elim], \ssrt{elim} as most of other
+SSReflect's tactics operates on the top assumption.}% The subsequent
+two goals (for the zero and the successor cases) are then simplified
+via %\texttt{//}% and the induction variable and hypothesis are given
+the names [n] and [Hn], respectively, in the second goal (as described
+in %Section~\ref{sec:naming-subgoals}%). Then, the first goal (the
+[0]-case) is discharged by simplified the sum via two rewritings by
+[addn0] and [add0n] lemmas from the [ssrnat] module and case-analysis
+on the assumption of the form [evenP 1], which delivers the
+contradiction.
+
+The second goal is annoyingly trickier.
+
+[[
+  n : nat
+  Hn : evenP (n + 1 + n) -> False
+  ============================
+   evenP (n.+1 + 1 + n.+1) -> False
+]]
+
+First, let us do some rewritings that make the hypothesis and the goal
+look alike.%\footnote{Recall that% [n.+1] %stands for the
+\emph{value} of the successor of% [n] %, whereas% [n + 1] % is a
+function call, so the whole expression in the goal cannot be just
+trivially simplified and requires some rewritings to be done.}% *)
+
+rewrite addn1 addnS addnC !addnS. 
+rewrite addnC addn1 addnS in Hn.
+
+(**
+[[
+  n : nat
+  Hn : evenP (n + n).+1 -> False
+  ============================
+   evenP (n + n).+3 -> False
+]] 
+
+Now, even though the hypothesis [Hn] and the goal are almost the same
+module the natural "[2]-orbit" of the [evenP] predicate and some
+rewritings, we cannot take an advantage of it right away, and instead
+are required to case-analysed on the assumption of the form [evenP (n
++ n).+3]:
+
+
+*)
+
+case=>// m /eqP.
+
+(**
+
+[[
+  n : nat
+  Hn : evenP (n + n).+1 -> False
+  m : nat
+  ============================
+   (n + n).+3 = m.+2 -> evenP m -> False
+]]
+
+Only now we can make use of the rewriting lemma to "strip off" the
+constant summands from the equality in the assumption, so it could be
+employed for brushing the goal, so it would match the hypothesis
+exactly.
+
+*)
+
+by rewrite !eqSS; move/eqP=><-.
+Qed.
+
+(** 
+
+Now, let us take a look at the proof of the same fact, but with the
+computable version of the predicate [evenb].
+
+*)
+
+Lemma evenb_contra n: evenb (n + 1 + n) -> False.
+Proof. 
+elim: n=>[|n IH] //.
+
+(** 
+[[
+  n : nat
+  IH : evenb (n + 1 + n) -> False
+  ============================
+   evenb (n.+1 + 1 + n.+1) -> False
+]]
+
+The [0]-case of the proof by induction on [n] is automatically
+discharged by computation, since [evenb 1 = false]. The inductive step
+is no more complicated, and it takes only two rewriting to get it into
+the shape, so the computation of [evenb] could finish the proof.
+
+*)
+
+by rewrite addSn addnS. 
+Qed.
+
+(** 
+TODO
+
+*)
+
 Lemma evenb_plus m n : evenb m -> evenb n -> evenb (m + n).
 Proof.
 (* Generalize all but the second occurrence of [m]. *)
@@ -251,25 +391,12 @@ by case=>// m' /ltnW /IH.
 Qed.
 
 (*Proof by induction on the rule (for evenP) *)
-Lemma evenP1_plus n m : evenP1 n -> evenP1 m -> evenP1 (n + m).
+Lemma evenP_plus n m : evenP n -> evenP m -> evenP (n + m).
 Proof.
 elim=>//n'; first by move=>->; rewrite add0n.
 move=> m'->{n'} H1 H2 H3; rewrite addnC !addnS addnC.
-by apply: (EvenSs1 (m' + m).+2 (m' + m))=>//; apply: H2.
+by apply: (EvenSS (m' + m).+2 (m' + m))=>//; apply: H2.
 Qed.
-
-
-Lemma evenP1_contra n : evenP1 (n + 1 + n) -> False.
-Proof.
-elim: n=>//[| n Hn].
-- by rewrite addn0 add0n; case=>//.
-rewrite addn1 addnS addnC !addnS; case=>//.
-move=>m /eqP; rewrite !eqSS; move/eqP=><-.
-by rewrite addnC addn1 addnS in Hn.
-Qed.
-
-Lemma evenb_contra n: evenb (n + 1 + n) -> False.
-Proof. by elim: n=>[|n IH] //; rewrite addSn addnS. Qed.
 
 (**
 

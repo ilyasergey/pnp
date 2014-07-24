@@ -995,6 +995,7 @@ Qed.
 %\end{exercise}%
 
 ** Reflecting decidable equalities
+%\label{sec:eqrefl}%
 
 Logical connectives are not the only class of inductive predicates
 that is worth building a [reflect]-based rewriting principle for.
