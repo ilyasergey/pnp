@@ -24,14 +24,14 @@ Let's have a look at this hell below:
 
 *)
 
-(* Inductive isZero : nat -> Prop := IsZero : isZero 0. *)
+Inductive isZero : nat -> Prop := IsZero : isZero 0.
 
-(* Theorem blah: isZero 1 -> False. *)
-(* Proof. *)
-(* move=> z. *)
-(* move: (isZero_ind (fun n => if n is 0 then True else False))=> Z. *)
-(* by apply (Z I 1). *)
-(* Qed. *)
+Theorem blah: isZero 1 -> False.
+Proof.
+move=> z.
+move: (isZero_ind (fun n => if n is 0 then True else False))=> Z.
+by apply (Z I 1).
+Qed.
 
 
 (* Fixpoint is_even n :=  *)
