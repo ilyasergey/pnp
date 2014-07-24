@@ -693,18 +693,85 @@ syntax by defining their own notations. We will also see how is it
 possible to find what a particular notation means.
 
 The arsenal of a functional programmer in Coq would be incomplete
-without proper sum and list datatypes:
-*)
+without proper sum and list datatypes:%\footnote{In SSReflect's
+enhanced library lists are paraphrased as the% [seq] % datatype, which
+is imported from the module% [seq] %}% *)
 
 Print sum.
 (**
-[Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B]
+[[
+Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
+]]
+*)
+
+Require Import seq.
+Print seq.
+
+(** 
+[[
+Notation seq := list
+]]
 *)
 
 Print list.
 
-(** 
-[Inductive list (A : Type) : Type := nil : list A | cons : A -> list A -> list A]
+(**
+[[
+Inductive list (A : Type) : Type := nil : list A | cons : A -> list A -> list A]
+]]
+
+%\begin{exercise}[Fun with lists in Coq]%
+
+Implement the recursive function [alternate] of type [seq nat -> seq
+nat -> seq nat], so it would construct the alternation of two
+sequences according to the following "test cases".
+
+*)
+
+(* begin hide *) 
+Fixpoint alternate (l1 l2 : seq nat) : seq nat := 
+match (l1, l2) with 
+  | ([::], [::]) => [::]
+  | ([::], ys) => ys
+  | (xs, [:: ]) => xs
+  | (x::xs, y::ys) => x :: y :: (alternate xs ys)
+  end. 
+(* end hide*)
+
+Eval compute in alternate [:: 1;2;3] [:: 4;5;6].
+
+(**
+[[
+     = [:: 1; 4; 2; 5; 3; 6]
+     : seq nat
+]]
+*)
+
+Eval compute in alternate [:: 1] [:: 4;5;6].
+
+(**
+
+[[
+     = [:: 1; 4; 5; 6]
+     : seq nat
+]]
+
+*)
+
+Eval compute in alternate [:: 1;2;3] [:: 4].
+
+(**
+
+[[
+     = [:: 1; 4; 2; 3]
+     : seq nat
+]]
+
+%\hint% The reason why the "obvious" elegant solution might fail is
+ that the argument is not strictly decreasing.
+
+%\end{exercise}%
+
 *)
 
 (** * Searching for definitions and notations
