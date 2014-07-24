@@ -141,7 +141,7 @@ Proof.
 move=>E H; elim: H E=>n'; do?[by move=>->].
 move=> n1 m' _ H2 _ H4->{n' n}.
 case: n1 H2=>// n'=> H3.
-by case: n' H3=>//; move/(_ eq_refl).
+by case: n' H3=>//; case.
 Qed.
 
 
