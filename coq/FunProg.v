@@ -913,7 +913,7 @@ manual%~\cite{Coq-manual}% for the details of the [Notation]
  * Sections and modules
 
 We conclude this chapter by a very brief overview of Coq's module
-system.
+system.%\index{sections}\index{modules}%
 
 Sections are the simplest way to structure the programs in Coq. In
 particular, sections allow the programmer to limit the scope of

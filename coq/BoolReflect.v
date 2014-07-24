@@ -460,20 +460,25 @@ For instance, while the expression [(prime 239) || (prime 42)] can be
 evaluated to [true] right away, whereas the expression
 
 [[
-forall n, (prime n) || prime (n +1)
+forall n, (prime n) || prime (n + 1)
 ]]
 
-is not even well-typed (as polymorphic [forall]-quantification in Coq
-does not admit primitive types). This expression can be, however,
-_coerced_ into [Prop] by means of comparing the boolean expresion with
-[true] using the propositional equality:
+is not even well-typed. The reason for this is that polymorphic
+[forall]-quantification in Coq does not admit _values_ to come after
+the comma (so the dependent function type "$\Pi{}n:~\textsf{nat}, n$"
+is malformed), similarly to how one cannot write a _type_ [Int -> 3]
+in Haskell%\index{Haskell}%, as it does not make sense. This
+expression can be, however, _coerced_ into [Prop] by means of
+comparing the boolean expresion with [true] using the propositional
+equality
 
 [[
 forall n, ((prime n) || prime (n +1) = true)
 ]]
 
-This last example brings us to the insight that the [bool]-returning
-functions (i.e., decidable predicates) can be naturally _injected_
+which makes the whole expression to be of type [Prop]. This last
+example brings us to the insight that the [bool]-returning functions
+(i.e., decidable predicates) can be naturally _injected_
 %\index{injection}% into propositions of sort [Prop] by simply
 comparing their result with [true] via propositional equality. This is
 what is done by SSReflect automatically using the implicit

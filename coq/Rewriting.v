@@ -87,14 +87,14 @@ of type [A], which appears at the left of the arrow.
 %\index{generalized algebraic datatypes}%It is common to think of
 indexed type families in Coq as of _generalized algebraic datatypes_
 (GADTs)%~\cite{PeytonJones-al:ICFP06,Xi-al:POPL03}%, familiar from
-Haskell, and allowing one to refine the process pattern matching
-basing on the type index of the scrutinee. However, another analogy
-turns out to be much more useful in the Coq setting: indexed type
-families in fact allow one to encode _rewriting principles_. To
-understand, what the indexed datatype definition has to do with
-rewriting, let us take a close look at the definition of [eq]. The
-type of its only constructor [eq_refl] is a bit misleading, as it
-looks like it is applied to two arguments: [x] and ... [x]. To
+%\index{Haskell}% Haskell, and allowing one to refine the process
+pattern matching basing on the type index of the scrutinee. However,
+another analogy turns out to be much more useful in the Coq setting:
+indexed type families in fact allow one to encode _rewriting
+principles_. To understand, what the indexed datatype definition has
+to do with rewriting, let us take a close look at the definition of
+[eq]. The type of its only constructor [eq_refl] is a bit misleading,
+as it looks like it is applied to two arguments: [x] and ... [x]. To
 disambiguate it, we shall put some parentheses, so, it fact, it should
 read as
 

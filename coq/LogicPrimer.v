@@ -42,8 +42,8 @@ sort [Prop], similarly to how first-order types inhabit
 usually referred to as \emph{inductive predicates}.\index{inductive
 predicates}}% The "values" that have elements of [Prop] as their types
 are usually referred to as _proofs_ or _proof terms_, the naming
-convention which stems out of the ide of %\index{Curry-Howard
-Correspondence}% %\emph{Curry-Howard
+convention which stems out of the ide of 
+%\index{Curry-Howard correspondence}% %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
 _proofs-as-programs_, which is truly illuminating when it comes to the
@@ -204,8 +204,9 @@ makes Coq to be a _interactive proof assistant_, in addition to being
 already a programming language with dependent types.
 
 Although not necessary, it is considered a good programming practice
-in Coq to start any interactive proof with a keyword [Proof], which
-makes the final scripts easier to read and improves the general proof layout.
+in Coq to start any interactive proof with the Coq's command
+%\ccom{Proof}% [Proof], which makes the final scripts easier to read
+and improves the general proof layout.
 
 *)
 
@@ -222,7 +223,7 @@ is empty, as theorem we stated does not make any and ventures to proof
 [True] out of thin air. Fortunately, this is quite easy to do, as from
 the formulation of the [True] type we already know that it is
 inhabited by its only constructor [I]. The next line proved the
-_exact_ value of the type of the goal.%\ttac{exact}%
+_exact_ value of the type of the goal.%\ttac{exact:}%
 
 *)
 
@@ -288,21 +289,21 @@ discussion on which of these two views to the proof term construction
 is more appropriate.
 
 There is one more important difference between values defined by as
-[Definition]s and [Theorem]s. While both define what in fact is a
-proof terms for the declared type, the value bound by [Definition] is
-_transparent_: it can be executed by means of unfolding and subsequent
-evaluation of its body. In contrast, a proof term bound by means of
-[Theorem] is _opaque_, which means that its body cannot be evaluated
-and serves the only purpose: establish the fact that the corresponding
-type (the theorem's statement) is inhabited, and, therefore is true.
-This distinction between definitions and theorems arises from the
-notion of _proof irrelevance_, which, informally, states that
-(ideally) one shouldn't be able to distinguish between two proofs of
-the same statement as long as they both are valid.%\footnote{Although,
-in fact, proof terms in Coq can be very well distinguished.}%
-Conversely, the programs (that is what is bound by means of
-[Definition]) are typically of interest by themselves, not only
-because of the type they return.
+[Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
+both define what in fact is a proof terms for the declared type, the
+value bound by [Definition] is _transparent_: it can be executed by
+means of unfolding and subsequent evaluation of its body. In contrast,
+a proof term bound by means of [Theorem] is _opaque_, which means that
+its body cannot be evaluated and serves the only purpose: establish
+the fact that the corresponding type (the theorem's statement) is
+inhabited, and, therefore is true.  This distinction between
+definitions and theorems arises from the notion of _proof
+irrelevance_, which, informally, states that (ideally) one shouldn't
+be able to distinguish between two proofs of the same statement as
+long as they both are valid.%\footnote{Although, in fact, proof terms
+in Coq can be very well distinguished.}% Conversely, the programs
+(that is what is bound by means of [Definition]) are typically of
+interest by themselves, not only because of the type they return.
 
 The difference between the two definitions of the truth's validity,
 which we have just constructed, can be demonstrated by means of the

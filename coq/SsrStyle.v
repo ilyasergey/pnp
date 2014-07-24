@@ -33,7 +33,6 @@ move: (isZero_ind (fun n => if n is 0 then True else False))=> Z.
 by apply (Z I 1).
 Qed.
 
-
 (* Fixpoint is_even n :=  *)
 (*  match n with  *)
 (*   | 0  => true *)
@@ -225,9 +224,11 @@ Qed.
 
 (**
 
-%\section{On non-standard induction principles}%
+%\section{Generalizing induction hypotheses}%
 
 TODO: Example from Section 9.3.1 from Coq'Art book.
+
+TODO: show a different induction principle
 
 %\section{Structuring the proof scripts}%
 
