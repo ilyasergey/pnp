@@ -600,7 +600,7 @@ of the proof.
 
 (**
 
-** Using a custom induction hypothesis
+** Eliminating assumptions with a custom induction hypothesis
 
 The functions like [evenb], with specific value orbits, are not
 particularly uncommon, and it is useful to understand the key
@@ -706,6 +706,14 @@ Qed.
 
 * Inductive predicates that cannot be avoided
 
+Although formulating predicates as boolean functions is often
+preferable, it is not always trivial to do. Sometimes, it is much
+simpler to come up with an inductive predicate, which witnesses the
+property of interest. As an example for such property, let us consider
+the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
+%Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
+\textsf{MoreInd})%.
+
 *)
 
 Inductive beautiful (n: nat) : Prop :=
@@ -714,52 +722,110 @@ Inductive beautiful (n: nat) : Prop :=
 | b_5 of n = 5
 | b_sum n' m' of beautiful n' & beautiful m' & n = n' + m'.
 
+(** 
+
+The number is beautiful %\index{beautiful numbers}% if it's either
+[0], [3], [5] or a sum of two beautiful numbers. Indeed, there are
+many ways to decompose some numbers into the sum $3 \times n + 5
+\times n$.%\footnote{In fact, the solution of this simple Diophantine 
+equation are all natural numbers, greater than $7$.}% Encoding a
+function, which checks whether a number is beautiful or not, although,
+not impossible, is not entirely trivial (and, in particular, it's not
+trivial to prove the correctness of such function with respect to the
+definition above). Therefore, if one decides to stick with the
+predicate definition, some operations become tedious, as, even for
+constants the property should be _inferred_ rather than proved:
+
+*)
+
 Theorem eight_is_beautiful: beautiful 8.
 Proof.
-apply: (b_sum _ 3 5)=>//. 
-- by apply: b_3.
+apply: (b_sum _ 3 5)=>//; first by apply: b_3. 
 by apply b_5.
 Qed.
 
-Theorem b_times2 n: beautiful n ->  beautiful (n * 2).
+Theorem b_times2 n: beautiful n ->  beautiful (2 * n).
 Proof.
-elim=>m.
-- by move=>->; apply:b_0.
-- move=>->; rewrite mulnC mul2n -addnn. 
-  by apply: (b_sum _ 3 3)=>//=; apply: b_3=>//=.
-- move=>->; rewrite mulnC mul2n -addnn. 
-  by apply: (b_sum _ 5 5)=>//=; apply: b_5=>//=.
-- move=> n' m' H1 H2 H3 H4=>->{m}.
-rewrite mulnC mul2n -addnn.
-rewrite addnAC addnA addnn -addnA addnn.
-apply: (b_sum _ n'.*2 m'.*2)=>//.
- - by rewrite mulnC mul2n in H2.
-by rewrite mulnC mul2n in H4.
+by move=>H; apply: (b_sum _ n n)=>//; rewrite mul2n addnn.
 Qed.
 
-Theorem b_timesm n m: beautiful n ->  beautiful (m * n).
+(** 
+
+In particular, the negation proofs become much less straightforward
+than one would expect:
+
+*)
+
+Lemma one_not_beautiful n:  n = 1 -> ~ beautiful n.
+Proof.
+move=>E H. 
+
+(** 
+
+[[
+  n : nat
+  E : n = 1
+  H : beautiful n
+  ============================
+   False
+]]
+
+The way to infer the falsehood will be to proceed by induction on the
+hypothesis [H]:
+
+*)
+
+elim: H E=>n'; do?[by move=>->].
+move=> n1 m' _ H2 _ H4->{n' n}.
+
+(** 
+
+Notice how the assumptions [n'] and [n] are removed from the context
+(since we don't need them any more) by enumerating them using [{n' n}]
+notation.
+
+*)
+
+case: n1 H2=>// n'=> H3.
+by case: n' H3=>//; case.
+Qed.
+
+(** 
+
+%\begin{exercise}%
+
+Proof the following theorem about beautiful and gorgeous numbers.
+
+*)
+
+Lemma b_timesm n m: beautiful n ->  beautiful (m * n).
+(* begin hide *)
 Proof.
 elim:m=>[_|m Hm Bn]; first by rewrite mul0n; apply: b_0.
 move: (Hm Bn)=> H1.
 by rewrite mulSn; apply: (b_sum _ n (m * n))=>//.
 Qed.
+(* end hide *)
 
-Lemma one_not_beautiful n:  n = 1 -> ~ beautiful n.
-Proof.
-move=>E H; elim: H E=>n'; do?[by move=>->].
-move=> n1 m' _ H2 _ H4->{n' n}.
-case: n1 H2=>// n'=> H3.
-by case: n' H3=>//; case.
-Qed.
+(** 
 
+%\hint% Choose wisely, what to build the induction on.
+
+%\end{exercise}%
+
+To practice with proofs by induction, let us consider yet another
+inductive predicate, borrowed fro Pierce et al.'s course and defining
+which of natural numbers are _gorgeous_.  
+%\index{gorgeous numbers}%
+
+*)
 
 Inductive gorgeous (n: nat) : Prop :=
-  g_0 of n = 0
+| g_0 of n = 0
 | g_plus3 m of gorgeous m & n = m + 3
 | g_plus5 m of gorgeous m & n = m + 5.
 
-Require Import ssrbool.
-
+(*
 Fixpoint gorgeous_b (n: nat) : bool := 
  match n with 
  | 0 => true
@@ -771,44 +837,37 @@ Fixpoint gorgeous_b (n: nat) : bool :=
  | _ => false
  end.
 
-Theorem gorgeous_plus13 n:
-  gorgeous n -> gorgeous (n + 13).
+Lemma nat3_ind (P: nat -> Prop): 
+  P 0 -> P 1 -> P 2 -> (forall n, P n -> P (n.+3)) -> forall n, P n.
+Proof.
+move=> H0 H1 H2 H n. 
+suff: (P n /\ P (n.+1) /\ P (n.+2)) by case.
+elim: n=>//n; case=>H3 [H4 H5]; split=>//; split=>//. 
+by apply: H.
+Qed.
+*)
+
+(** 
+
+%\begin{exercise}%
+
+Prove the following statements about gorgeous numbers:
+
+*)
+
+
+Lemma gorgeous_plus13 n: gorgeous n -> gorgeous (n + 13).
+(* begin hide *)
 Proof.
 move=> H.
 apply: (g_plus5 _ (n + 8))=>//; last by rewrite -addnA; congr (_ + _).
 apply: (g_plus5 _ (n + 3)); last by rewrite -addnA; congr (_ + _).
 by apply: (g_plus3 _ n). 
 Qed.
+(* end hide *)
 
-Require Import eqtype.
-
-Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive.
-
-Goal forall n m, n + 2 == m + 1 + 1 -> n == m.
-Proof.
-move=> n m.
-by rewrite -addnA eqn_add2r. 
-Qed.
-
-(*
-Theorem gorgeous_plus13' n:
-  gorgeous_b n -> gorgeous_b (n + 13).
-Proof.
-elim: n=>// n IH.
-simpl in IH.
-rewrite addSnnS. 
-simpl.
-rewrite addnC /= in IH.
-rewrite addnC /=.
-move=>
-simpl.
-case: n=>//=.  simpl.
-move=>n.
-*)
-
-Theorem beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
+Lemma beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
+(* begin hide *)
 Proof.
 elim=>n'{n}=>//.
 - by move=>->; apply g_0.
@@ -819,8 +878,10 @@ elim: H2; first by move=>_->; rewrite add0n.
 by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus3 _ (m' + m)).
 by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus5 _ (m' + m)).
 Qed.
+(* end hide *)
 
-Theorem g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
+Lemma g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
+(* begin hide *)
 Proof.
 rewrite muln2.
 elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply g_0.
@@ -829,13 +890,16 @@ elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply
 rewrite doubleD -(addnn 5) addnA.
 by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
-
-
-
+(* end hide *)
 
 (**
 
-%\section{Working with SSReflect libraries}%
+As usual, do not hesitate to use the [Search] utility for finding the
+necessary rewriting lemmas from the [ssrnat] module.
+
+%\end{exercise}%
+
+* Working with SSReflect libraries
 
 TODO: General naming policies.
 
