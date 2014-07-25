@@ -206,13 +206,14 @@ It has been already discussed in this manuscript that, even though, a
 lot of interesting propositions are inherently undecidable and should
 be, therefore, represented in Coq as instances of the sort [Prop], one
 should strive to implement as many of _decidable_ propositions as
-possible as [bool]-returning function. Such "computational" approach
-to the propositions turns out to pay off drastically in the long-term
-persepective, as most of the usual proof burdent will be carried out
-by Coq's computational component. In this section we will browse
-through a series of predicates defined both as inductive datatypes and
-boolean functions and compare the proofs of various properties stated
-over the alternative representations.
+%\index{decidable propositions}% possible as [bool]-returning
+function. Such "computational" approach to the propositions turns out
+to pay off drastically in the long-term persepective, as most of the
+usual proof burdent will be carried out by Coq's computational
+component. In this section we will browse through a series of
+predicates defined both as inductive datatypes and boolean functions
+and compare the proofs of various properties stated over the
+alternative representations.
 
 One can defined the fact that the only natural number which is equalt
 to zero is the zero itself, as shown below:
@@ -711,8 +712,9 @@ preferable, it is not always trivial to do. Sometimes, it is much
 simpler to come up with an inductive predicate, which witnesses the
 property of interest. As an example for such property, let us consider
 the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
-%Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
-\textsf{MoreInd})%.
+%Pierce et al.'s electronic book~\cite{Pierce-al:SF} 
+\index{Software Foundations}
+(Chapter \textsf{MoreInd})%.
 
 *)
 
