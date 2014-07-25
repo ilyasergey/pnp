@@ -1,6 +1,6 @@
 (** 
 %
-\chapter{Encoding Mathematical Structures with Dependent Records}
+\chapter{Encoding Mathematical Structures}
 \label{ch:depstruct}
 % 
 *)
