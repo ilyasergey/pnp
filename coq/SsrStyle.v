@@ -319,7 +319,7 @@ rewrite addnC addn1 addnS in Hn.
 ]] 
 
 Now, even though the hypothesis [Hn] and the goal are almost the same
-module the natural "[2]-orbit" of the [evenP] predicate and some
+module the natural "[(.+2)]-orbit" of the [evenP] predicate and some
 rewritings, we cannot take an advantage of it right away, and instead
 are required to case-analysed on the assumption of the form [evenP (n
 + n).+3]:
@@ -368,10 +368,11 @@ elim: n=>[|n IH] //.
    evenb (n.+1 + 1 + n.+1) -> False
 ]]
 
-The [0]-case of the proof by induction on [n] is automatically
-discharged by computation, since [evenb 1 = false]. The inductive step
-is no more complicated, and it takes only two rewriting to get it into
-the shape, so the computation of [evenb] could finish the proof.
+In the case of zero, the proof by induction on [n] is automatically
+carried out by computation, since [evenb 1 = false]. The inductive
+step is not significantly more complicated, and it takes only two
+rewriting to get it into the shape, so the computation of [evenb]
+could finish the proof.
 
 *)
 
@@ -379,33 +380,336 @@ by rewrite addSn addnS.
 Qed.
 
 (** 
-TODO
+
+Sometimes, though, the value "orbits", which can be advantageous for
+the proofs involving [bool]-returning predicates, might require a bit
+trickier induction hypotheses than just the statement required to be
+proved. Let us compare the two proofs of the same fact, formulated
+with [evenP] and [evennb].
 
 *)
 
-Lemma evenb_plus m n : evenb m -> evenb n -> evenb (m + n).
-Proof.
-(* Generalize all but the second occurrence of [m]. *)
-elim: m {-2}m (leqnn m)=>[|m IH]; case=>//.
-by case=>// m' /ltnW /IH.
-Qed.
-
-(*Proof by induction on the rule (for evenP) *)
 Lemma evenP_plus n m : evenP n -> evenP m -> evenP (n + m).
 Proof.
 elim=>//n'; first by move=>->; rewrite add0n.
+
+(** 
+
+[[
+  n : nat
+  m : nat
+  n' : nat
+  ============================
+   forall m0 : nat,
+   n' = m0.+2 ->
+   evenP m0 -> (evenP m -> evenP (m0 + m)) -> evenP m -> evenP (n' + m)
+]]
+
+The induction here is on the predicate [evenP], so the first case is
+discharged by rewriting.
+
+*)
+
 move=> m'->{n'} H1 H2 H3; rewrite addnC !addnS addnC.
-by apply: (EvenSS (m' + m).+2 (m' + m))=>//; apply: H2.
-Qed.
 
 (**
 
-%\section{Inductive predicates that cannot be avoided}%
+In order to proceed with the inductive case, again a few rewritings
+are required.
+
+*)
+
+by apply: (EvenSS _ _)=>//; apply: H2.
+
+(** 
+
+[[
+  n : nat
+  m : nat
+  m' : nat
+  H1 : evenP m'
+  H2 : evenP m -> evenP (m' + m)
+  H3 : evenP m
+  ============================
+   evenP (m' + m).+2
+]]
+
+The proof is completed by explicitly applying the constructor [EvenSS]
+of the [evenP] datatype, followed by application of the induction
+hypothesis [H2].
+
+*)
+
+Qed.
+
+(** 
+
+In this particular case, the resulting proof was quite
+straightforward, thanks to the explicit equality [n = m.+2] in the
+definition of the [EvenSS] constructor.
+
+In the case of the boolean specification, though, the induction should
+be done on the natural argument itself, which makes the first attempt
+of the proof to be not entirely trivial.
+
+*)
+
+Lemma evenb_plus n m : evenb n -> evenb m -> evenb (n + m).
+Proof.
+elim: n=>[|n Hn]; first by rewrite add0n.
+
+(** 
+[[
+  m : nat
+  n : nat
+  Hn : evenb n -> evenb m -> evenb (n + m)
+  ============================
+   evenb n.+1 -> evenb m -> evenb (n.+1 + m)
+]]
+
+The problem now is that, if we keep building the proof by induction on
+[n] or [m], the induction hypothesis and the goal will be always
+"mismatched" by one, which will prevent us finishing the proof using
+the hypothesis. 
+
+There are multiple ways to escape this vicious circle, and one of them
+is to _generalize_ the induction hypothesis. To do so, let us restart
+the proof.
+
+*)
+
+Restart.
+move: (leqnn n).
+
+(**
+
+[[
+  n : nat
+  m : nat
+  ============================
+   n <= n -> evenb n -> evenb m -> evenb (n + m)
+]]
+
+Now, we are going to proceed with the proof by _selective_ induction
+on [n], such that some of its occurrences in the goal will be a
+subject of inductive reasoning (namely, the second one), and some
+others will be left generalized (that is, bound by a forall-quantified
+variable). We do so by using SSReflect's tactics [elim] with explicit
+_occurrence selectors_.  %\index{occurrence selectors}%
+
+*)
+
+elim: n {-2}n.
+
+(** 
+
+[[
+  m : nat
+  ============================
+   forall n : nat, n <= 0 -> evenb n -> evenb m -> evenb (n + m)
+
+subgoal 2 (ID 860) is:
+ forall n : nat,
+ (forall n0 : nat, n0 <= n -> evenb n0 -> evenb m -> evenb (n0 + m)) ->
+ forall n0 : nat, n0 <= n.+1 -> evenb n0 -> evenb m -> evenb (n0 + m)
+]]
+
+The same effect could be achieved by using [elim: n {1 3 4}n], that
+is, indicating which occurrences of [n] _should_ be generalized,
+instead of specifying, which ones should not (as we did by means of
+[{-2}n]).
+
+Now, the first goal can be solved by case-analysis on the top
+assumption (that is, [n]).
+
+*)
+
+- by case=>//.
+
+(** 
+
+For the second goal, we first move some of the assumptions to the context.
+
+*)
+
+move=>n Hn. 
+
+(** 
+[[
+  m : nat
+  n : nat
+  Hn : forall n0 : nat, n0 <= n -> evenb n0 -> evenb m -> evenb (n0 + m)
+  ============================
+   forall n0 : nat, n0 <= n.+1 -> evenb n0 -> evenb m -> evenb (n0 + m)
+]]
+
+And then perform the case-analysis on [n0] in the goal, which results
+in two goals, one of which is automatically discharged.
+
+*)
+
+case=>//.
+
+(** 
+
+[[
+  m : nat
+  n : nat
+  Hn : forall n0 : nat, n0 <= n -> evenb n0 -> evenb m -> evenb (n0 + m)
+  ============================
+   forall n0 : nat, n0 < n.+1 -> evenb n0.+1 -> evenb m -> evenb (n0.+1 + m)
+]]
+
+Doing _one more_ case analysis will adde one more [1] to the induction
+variable [n0], which will bring us to the desired [(.+2)]-orbit.
+
+*)
+
+case=>// n0.
+
+(**
+[[
+  m : nat
+  n : nat
+  Hn : forall n0 : nat, n0 <= n -> evenb n0 -> evenb m -> evenb (n0 + m)
+  n0 : nat
+  ============================
+   n0.+1 < n.+1 -> evenb n0.+2 -> evenb m -> evenb (n0.+2 + m)
+]]
+
+The only thing left to do is to tweak the top assumption (by relaxing
+the inequality via the [ltnW] lemma), so we could apply the induction
+hypothesis [Hn].
+
+*)
+
+by move/ltnW /Hn=>//.
+Qed.
+
+(** 
+
+It is fair to notice that this proof was far less direct that one
+could expect, but it taught us an important trick---selective
+generalization of the induction hypothesis. In particular, by
+introducing an extra assumption [n <= n] in the beginning, we later
+exploited it, so we could apply the induction hypothesis, which was
+otherwise general enough to match the ultimate goal at the last step
+of the proof.
+
+*)
+
+(**
+
+** Using a custom induction hypothesis
+
+The functions like [evenb], with specific value orbits, are not
+particularly uncommon, and it is useful to understand the key
+induction principles to reason about them. In particular, the above
+discussed proof could have been much more straightforward if we first
+proved a different induction principle [nat2_ind] for natural numbers.
+
+*)
+
+Lemma nat2_ind (P: nat -> Prop): 
+  P 0 -> P 1 -> (forall n, P n -> P (n.+2)) -> forall n, P n.
+Proof.
+move=> H0 H1 H n. 
+
+(** 
+[[
+  P : nat -> Prop
+  H0 : P 0
+  H1 : P 1
+  H : forall n : nat, P n -> P n.+2
+  n : nat
+  ============================
+   P n
+]]
+
+Unsurprisingly, the proof of this induction principle follows the same
+pattern as the proof of [evenb_plus]---generalizing the hypothesis. In
+this particular case, we generalize it in the way that it would
+provide an "impedance matcher" between the 1-step of the defaul
+induction on natural numbers and the 2-step induction in the
+hypothesis [H]. We show that for the proof it is sufficient to
+establish [(P n /\ P (n.+1))]:
+
+*)
+
+suff: (P n /\ P (n.+1)) by case.
+
+(** 
+
+The rest of the proof proceeds by the standard induction on [n].
+
+*)
+
+by elim: n=>//n; case=> H2 H3; split=>//; last by apply: H.
+Qed.
+
+(** 
+
+Now, since the new induction principle [nat2_ind] exactly matches the
+2-orbit, we can directly employ it for the proof of the previous result.
+
+*)
+
+Lemma evenb_plus' n m : evenb n -> evenb m -> evenb (n + m).
+Proof.
+by elim/nat2_ind : n.
+Qed.
+
+(** 
+
+Notice that we used the version of the [elim] tactics with specific
+_elimination view_ [nat2_ind], different from the default one, which
+is possible using the view tactical %\texttt{/}\ssrtl{/}\ssrt{elim}%.
+%\index{elimination view}% In this sense, the "standard induction"
+[elim: n] would be equivalent to [elim/nat_ind: n].
+
+%\begin{exercise}%
+
+Let us define the binary division function [div2] as follows.
+
+*)
+
+
+Fixpoint div2 (n: nat) := if n is p.+2 then (div2 p).+1 else 0.
+
+(** 
+
+Prove the following lemma directly, _without_ using the [nat2_ind]
+induction principle.
+
+*)
+
+(* begin hide *)
+Lemma div2orb n : div2 (n.+2) = (div2 n).+1.
+Proof. by case: n=>//. Qed.
+(* end hide *)
+
+Lemma div2_le n: div2 n <= n.
+(* begin hide *)
+Proof.
+suff: (div2 n <= n) /\ (div2 n.+1 <= n.+1) by case.
+elim: n=>//[n].
+case: n=>// n; rewrite !div2orb; case=>H1 H2.
+split=>//. Search _ (_ < _.+1). 
+rewrite -ltnS in H1.
+by move: (ltn_trans H1 (ltnSn n.+2)).
+Qed.
+(* end hide *)
+
+(** 
+
+%\end{exercise}%
+
+* Inductive predicates that cannot be avoided
 
 *)
 
 Inductive beautiful (n: nat) : Prop :=
-  b_0 of n = 0
+| b_0 of n = 0
 | b_3 of n = 3
 | b_5 of n = 5
 | b_sum n' m' of beautiful n' & beautiful m' & n = n' + m'.
@@ -527,35 +831,9 @@ by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
 
 
-(**
-
-%\section{Generalizing induction hypotheses}%
-
-TODO: Example from Section 9.3.1 from Coq'Art book.
-
-*)
-
-Fixpoint div2 (n: nat) := if n is p.+2 then (div2 p).+1 else 0.
-
-Lemma div2orb n : div2 (n.+2) = (div2 n).+1.
-Proof. by case: n=>//. Qed.
-
-Lemma div2_le n: div2 n <= n.
-Proof.
-suff: (div2 n <= n) /\ (div2 n.+1 <= n.+1) by case.
-elim: n=>//[n].
-case: n=>// n; rewrite !div2orb; case=>H1 H2.
-split=>//. Search _ (_ < _.+1). 
-rewrite -ltnS in H1.
-by move: (ltn_trans H1 (ltnSn n.+2)).
-Qed.
-
-
 
 
 (**
-
-TODO: show a different induction principle
 
 %\section{Working with SSReflect libraries}%
 
