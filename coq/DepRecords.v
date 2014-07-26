@@ -47,6 +47,7 @@ We recommend the interested authors to take a look at Chapter 1 of
 %Fran\c{c}ois% Garillot's PhD dissertation for more examples of
 mathematical data structure encoding in Coq/SSReflect%~\cite{Garillot:PhD}%. 
 
+More examples in%~\cite{Garillot-al:TPHOL09}%.
 
 *)
 

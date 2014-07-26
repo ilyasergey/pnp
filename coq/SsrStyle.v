@@ -1068,9 +1068,9 @@ last_ind
        forall s : seq T, P s
 ]]
 
-That is, [last_ind] is very similar to the standard principle
-[list_ind], except for the fact that its "induction step" is defined
-with respect to the [rcons] function, rather than the list's
+That is, [last_ind] is very similar to the standard list induction
+principle [list_ind], except for the fact that its "induction step" is
+defined with respect to the [rcons] function, rather than the list's
 constructor [cons]. We encourage the reader to check the proof of the
 list function properties, such as [nth_rev] or [foldl_rev] to see the
 reasoning by the [last_ind] induction principle.
