@@ -119,6 +119,8 @@ To demonstrate the actual proofs on the case analysis by equality, we
 will have to perform an awkward twist: define _our own_ equality
 predicate. 
 
+%\ccom{Set Implicit Arguments}%
+
 *)
 
 Set Implicit Arguments.
