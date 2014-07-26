@@ -79,13 +79,15 @@ Luckily, Coq's ability to work with dependent types and combine
 programs and propositions about them in the same language, as we've
 already witnessed in the previous chapters, makes it possible to
 define mathematical structures with a necessary degree of rigour and
-describe their properties precisely by means of stating them ad
+describe their properties precisely by means of stating them as
 _types_ (i.e., propositions) of the appropriate implementation's
 parameters. Therefore, any faithful instance of an abstract
-mathematical structure implemented this would, would be required to
-provide not just the _carrier_ and implementation of the operations
-but also _proofs_ of propositions that constrain these operations.  In
-this chapter we will learn how to encode the reasoning about common
+mathematical structure implemented this way, would be enforced to
+provide not just the _carrier_ and implementations of the declared
+operations but also _proofs_ of propositions that constrain these
+operations and the carrier.
+
+In this chapter we will learn how to encode the reasoning about common
 algebraic data structures in Coq in a way very similar to how data
 structures are encoded in languages like C (with a bit of Haskell's
 type class-like machinery). In the process, we will meet some old
