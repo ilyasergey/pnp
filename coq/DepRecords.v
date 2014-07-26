@@ -108,7 +108,7 @@ Unset Printing Implicit Defensive.
 
 (** 
 
-* A simple mathematical structure: partial commutative monoid 
+* Encoding partial commutative monoids
 
 %\index{partial commutative monoid}%
 %\index{PCM|see {partial commutative monoid}}%
