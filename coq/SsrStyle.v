@@ -935,10 +935,157 @@ necessary rewriting lemmas from the [ssrnat] module.
 
 * Working with SSReflect libraries
 
-TODO: General naming policies.
+SSReflect extension to Coq%\footnote{In this version of the course we
+stick to using the version 1.4 of SSReflect}% comes with an impressive
+number of libraries for reasoning about the vas majority of discrete
+data types and structures, including but not limited to booleans,
+natural numbers, sequences, finite functions and sets, graphs,
+algebras, matrices, permutations etc. As discussed in this and prevous
+chapters, all these libraries give preference to the computable
+functions rather than inductive predicates and leverage the reasoning
+via rewriting by equality. They also introduce a lot of notations that
+are worth being re-used in order to make the proof scripts tractable,
+yet concise.
+
+We would like to conclude this chapter with a short overview of
+standrad SSReflect programming and naming policies, which will,
+hopefully, simplify their use in a standalone development.
+
+** Notation and standard operation properties
+
+SSReflect's module [ssrbool] introduces convenient notation for
+predicate connectives, such as [/\] and [\/]. In particular, multiple
+conjunctions and disjunctions are better to be written as [[ /\ P1, P2
+& P3]] and [[ \/ P1, P2 | P3]], respectively, opposed to [P1 /\ P2 /\
+P3] and [P1 \/ P2 \/ P3]. The specific notation makes it more
+convenient to use such connectives in the proofs that proceed by case
+analysis. Compare.
 
 *)
 
+Lemma conj4 P1 P2 P3 P4 : P1 /\ P2 /\ P3 /\ P4 -> P3.
+Proof. by case=>p1 [p2][p3]. Qed.
+
+Lemma conj4' P1 P2 P3 P4 : [ /\ P1, P2, P3 & P4] -> P3.
+Proof. by case. Qed.
+
+(** 
+
+In the first case, we had progressivly decompose binary
+right-associated conjunctions, which was done by means of the _product
+naming_ pattern [[...]],%\footnote{The same introduction pattern works
+in fact for \emph{any} product type with one constructor, e.g., the
+existential quantification (see Chapter~\ref{ch:logic}).}% so
+eventually all levels vere peeled off, and we got the necessary
+hypothesis [p3]. In the second formulation, [conj4'], the case
+analysis immediately decomposed the whole 4-conjunction into the
+separate assumptions. 
+
+For functions of arity bigger than 1, SSReflect's module [ssrfun] also
+introduces convenient notation, allowing them to be curried with
+respect to the second argument:%\index{currying}%
+
+*) 
+
+Require Import ssrfun.
+Locate "_ ^~ _".
+(** 
+[[
+"f ^~ y" := fun x => f x y     : fun_scope
+]]
+
+For instance, this is how one can now express the partially applied
+function, which applies its argument to the list [[:: 1; 2; 3]]:
+
+*)
+
+Require Import seq.
+Check map ^~ [:: 1; 2; 3].
+
+(**
+
+[[
+map^~ [:: 1; 2; 3]
+     : (nat -> ?2919) -> seq ?2919
+]]
+
+Finally, [ssrfun] defines a number of standard operator properties,
+such as commutativity, distributivity etc in the form of the
+correspondingly defined predicates: [commutative], [right_inverse]
+etc. For example, since we have now [ssrbool] and [ssrnat] imported,
+we can search for left-distributive operations defined in those two
+modules (such that they come with the proofs of the corresponding
+predicates):
+
+*)
+
+Search _ (left_distributive _).
+
+(**
+
+[[
+andb_orl  left_distributive andb orb
+orb_andl  left_distributive orb andb
+andb_addl  left_distributive andb addb
+addn_maxl  left_distributive addn maxn
+addn_minl  left_distributive addn minn
+...
+]]
+
+A number of such properties is usually defined in a generic way, using
+Coq's canonical structures, which is a topic of
+%Chapter~\ref{ch:depstruct}%.
+
+** Libraries for lists and finite sets
+
+Lists, being one of the most basic inductive datatypes, are ususally a
+subject of a lot of exercises for the fresh Coq hackers. SSReflect's
+modules [seq] %\ssrm{seq}% collect a number of the most commonly used
+procedures on lists and their properties, as well as some non-standard
+inductive principles, drastically simplifying the reasoning.
+
+For instance, properties of some of the functions, such as _list
+reversal_ are simpler to prove not by the standard "direct" induction
+on the list structure, but rather iterating the list from its last
+element, for which the [seq] library provides the necessary definition
+and induction principle:
+
+[[
+Fixpoint rcons s z := if s is x :: s' then x :: rcons s' z else [:: z].
+]]
+
+*)
+
+Check last_ind.
+
+(**
+
+[[
+last_ind
+     : forall (T : Type) (P : seq T -> Type),
+       P [::] ->
+       (forall (s : seq T) (x : T), P s -> P (rcons s x)) ->
+       forall s : seq T, P s
+]]
+
+That is, [last_ind] is very similar to the standard principle
+[list_ind], except for the fact that its "induction step" is defined
+with respect to the [rcons] function, rather than the list's
+constructor [cons]. We encourage the reader to check the proof of the
+list function properties, such as [nth_rev] or [foldl_rev] to see the
+reasoning by the [last_ind] induction principle.
+
+Another commonly used SSReflect module [finset] %\ssrm{finset}%
+implements a functionality of sets of elements of %\index{finite
+types}% of _finite_ types (i.e., types with a finite number of
+elements), providing operation, such as intersection, union,
+complement as well as a number of lemmas about them. Notice, though,
+that assuming a type to be finite is quite a restriction; for
+instance, whereas [bool] is a finite type, [nat] is not (however, a
+finite segment of natural numbers is), and we will consider such
+declaring finite types in detail in the next chapter.
+
+*)
 
 (* begin hide *)
 End SsrStyle.
