@@ -10,7 +10,7 @@ Module Conclusion.
 %
 
 %
-\lipsum[1-9] 
+\textcolor{white}{\lipsum[1-8]}
 %
 *)
 

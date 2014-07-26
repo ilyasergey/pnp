@@ -15,17 +15,16 @@ Module FunProg.
 We start our short journey with observing the capabilities of Coq as
 a programming language. 
 
-Coq is often described as a functional programming language, since its
-programs are always pure, possibly higher-order functions, which means
-that they might take other functions as parameters and return
-functions as results. Similarly to other functional programming
-languages, such as Haskell, OCaml or Scala, Coq makes heavy use of
-algebraic datatypes, represented by a number of possibly recursive
-constructors. 
-
-Very soon, we will see how _programming_ with inductive algebraic
-datatypes incorporates _reasoning_ about them, but for now let us take
-a short tour of Coq's syntax and define a couple of simple programs.
+Coq is often described as a _functional_ programming language, since
+its programs are always pure (i.e., not producing any sort of side
+effects), possibly higher-order functions, which means that they might
+take other functions as parameters and return functions as
+results. Similarly to other functional programming languages, such as
+Haskell, OCaml or Scala, Coq makes heavy use of algebraic datatypes,
+represented by a number of possibly recursive constructors.  Very
+soon, we will see how _programming_ with inductive algebraic datatypes
+incorporates _reasoning_ about them, but for now let us take a short
+tour of Coq's syntax and define a couple of simple programs.
 
 *)
 

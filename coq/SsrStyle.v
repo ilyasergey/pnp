@@ -206,14 +206,13 @@ It has been already discussed in this manuscript that, even though, a
 lot of interesting propositions are inherently undecidable and should
 be, therefore, represented in Coq as instances of the sort [Prop], one
 should strive to implement as many of _decidable_ propositions as
-%\index{decidable propositions}% possible as [bool]-returning
-function. Such "computational" approach to the propositions turns out
-to pay off drastically in the long-term persepective, as most of the
-usual proof burdent will be carried out by Coq's computational
-component. In this section we will browse through a series of
-predicates defined both as inductive datatypes and boolean functions
-and compare the proofs of various properties stated over the
-alternative representations.
+possible as [bool]-returning function. Such "computational" approach
+to the propositions turns out to pay off drastically in the long-term
+persepective, as most of the usual proof burdent will be carried out
+by Coq's computational component. In this section we will browse
+through a series of predicates defined both as inductive datatypes and
+boolean functions and compare the proofs of various properties stated
+over the alternative representations.
 
 One can defined the fact that the only natural number which is equalt
 to zero is the zero itself, as shown below:
@@ -415,15 +414,6 @@ move=> m'->{n'} H1 H2 H3; rewrite addnC !addnS addnC.
 
 (**
 
-In order to proceed with the inductive case, again a few rewritings
-are required.
-
-*)
-
-by apply: (EvenSS _ _)=>//; apply: H2.
-
-(** 
-
 [[
   n : nat
   m : nat
@@ -435,11 +425,54 @@ by apply: (EvenSS _ _)=>//; apply: H2.
    evenP (m' + m).+2
 ]]
 
-The proof is completed by explicitly applying the constructor [EvenSS]
-of the [evenP] datatype, followed by application of the induction
-hypothesis [H2].
+
+
+In order to proceed with the inductive case, again a few rewritings
+are required.
 
 *)
+
+apply: (EvenSS _ _)=>//.
+
+(**
+
+[[
+  n : nat
+  m : nat
+  m' : nat
+  H1 : evenP m'
+  H2 : evenP m -> evenP (m' + m)
+  H3 : evenP m
+  ============================
+   evenP (m' + m)
+]] 
+
+The proof script is continued by explicitly applying the constructor
+[EvenSS] of the [evenP] datatype. Notice the use of the wildcard
+underscores %\index{wildcards}% in the application of [EvenSS]. Let us
+check its type:
+
+*)
+
+Check EvenSS.
+
+(** 
+[[
+EvenSS
+     : forall n m : nat, n = m.+2 -> evenP m -> evenP n
+]]
+
+By using the underscores, we allowed Coq to _infer_ the two necessary
+arguments for the [EvenSS] constructor, namely, the values of [n] and
+[m]. The system was able to do it basing on the goal, which was
+reduced by applying it. After the simplification and automatic
+discharging the of the trivial subgoals (e.g., [(m' + m)+.2 = (m' +
+m)+.2]) via the %\texttt{//}% tactical, the only left obligation can
+be proved by applying the hypothesis [H2].
+
+*)
+
+by apply: H2.
 
 Qed.
 
@@ -712,9 +745,8 @@ preferable, it is not always trivial to do. Sometimes, it is much
 simpler to come up with an inductive predicate, which witnesses the
 property of interest. As an example for such property, let us consider
 the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
-%Pierce et al.'s electronic book~\cite{Pierce-al:SF} 
-\index{Software Foundations}
-(Chapter \textsf{MoreInd})%.
+%Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
+\textsf{MoreInd})%.
 
 *)
 

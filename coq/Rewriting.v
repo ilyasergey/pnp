@@ -558,12 +558,13 @@ Qed.
 
 The _r-pattern_ %\index{r-pattern}% (redex pattern) [[y + _]],
 preceding the lemma to be used for rewriting, specifies, which
-subexpression of the goal should be a subject of rewriting. In this
-particular case, it does not matter that much, since any single
-rewriting by commutativity in any of the sums, ont the left or on the
-right, would make the proof go through. However, in a more
-sophisticated goal it makes sense to specify explicitly, what should
-be rewritten:
+subexpression of the goal should be a subject of rewriting. When
+non-ambiguous, some parts of the expressions can be replaced by
+wildcard %\index{wildcards}% underscores [_]. In this particular case,
+it does not matter that much, since any single rewriting by
+commutativity in any of the sums, ont the left or on the right, would
+make the proof go through. However, in a more sophisticated goal it
+makes sense to specify explicitly, what should be rewritten:
 
 *)
 
@@ -746,7 +747,7 @@ Lemma huh n m: (m <= n) /\ (m > n) -> False.
 From now on, we will be consistently including yet another SSReflect
 modules, [ssrbool] and [eqtype], %\ssrm{ssrbool}\ssrm{eqtype}% into
 our development. The need for them is due to the smooth combination of
-reasoning with [Prop]ositions and [bool]leans, which is a subject of
+reasoning with [Prop]ositions and [bool]eans, which is a subject of
 the next chapter. Even though in SSReflect's library, relations on
 natural numbers, such as [<=] and [>], are defined as _boolean_
 functions, we recommend to the reader to think of them as of
@@ -757,7 +758,7 @@ Although the statement is somewhat obvious, in the setting of Coq's
 inductive definition of natural numbers it should be no big surprise
 that it is proved by induction. We present the proof here, leaving the
 details aside, so the reader could figure them out on his own, as a
-simple exercise.%\ssrt{elim}\ssrt{suff}\ssrtl{//}%
+simple exercise.%\ssrt{elim}\ssrt{suff:}\ssrtl{//}%
 
 *)
 
@@ -792,6 +793,7 @@ The stated lemma [max_is_max] can be, indeed, proved by induction on
 following this path. 
 
 ** Encoding custom rewriting rules
+%\label{sec:enccustom}%
 
 In the rest of this section, we will leverage the intuition behind
 indexed type families considered as _rewriting rules_
@@ -957,8 +959,6 @@ rewrite /maxn.
 We are now in the position to unleash our rewriting rule, which,
 together with simplifications by means of the [//] tactical
 %\ssrtl{//}% does most of the job.
-
-%\newpage%
 
 *)
 

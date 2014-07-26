@@ -490,10 +490,11 @@ Coercion is_true (b: bool) := b = true
 ]]
 
 This coercion can be seen as an implicit type conversion, familiar
-from the languages like Scala or Haskell, and it inserted by Coq
-automatically every time it expect to see a value of sort [Prop], but
-instead encounters a boolean value. Let us consider the following goal
-as an example:
+from the languages like Scala or Haskell
+%\index{Scala}\index{Haskell}%, and it inserted by Coq automatically
+every time it expect to see a value of sort [Prop], but instead
+encounters a boolean value. Let us consider the following goal as an
+example:
 
 *)
 
@@ -568,9 +569,13 @@ Definition prime_spec n m : Prop := m = (if prime n then 1 else 2).
 Another advantage of the boolean predicates is that they automatically
 come with a natural case analysis principle: reasoning about an
 outcome of a particular predicate, one can always consider two
-possibilities: when it returned [true] or [false]. This makes is
-particularly pleasant to reason about the programs and specifications
-that use conditional, which is demonstrated by the following example.
+possibilities: when it returned [true] or [false].%\footnote{We have
+already seen an instance of such case analysis inf the proof of the
+%[leqP]% lemma in Section~\ref{sec:enccustom} of
+Chapter~\ref{ch:eqrew}, although deliberately did not elaborate on
+it back then.}% This makes is particularly pleasant to reason about
+the programs and specifications that use conditional, which is
+demonstrated by the following example.
 
 *)
 
@@ -663,8 +668,8 @@ Abort.
 
 This is why we need a mechanism to conveniently switch between two
 possible representation. SSReflect solves this problem by employing
-the familiar rewriting machinery (see Section~\ref{sec:indexed} of
-Chapter~\ref{ch:rewriting}) and introducing the inductive predicate
+the familiar rewriting machinery (%see Section~\ref{sec:indexed} of
+Chapter~\ref{ch:eqrew}%) and introducing the inductive predicate
 family [reflect], which connects propositions an booleans:
 
 *)
@@ -686,8 +691,8 @@ nothing but a convenient way to encode a "truth" table with respect to
 the predicate [P], which is [reflect]'s only parameter. In other
 words, the propositions [(reflect P b)] ensures that [(is_true b)] and
 [P] are logically equivalent and can be replaced one by another. For
-instance, the following rewriting lemmas %\index{rewriting lemma}% can be proved for the simple
-instances of [Prop].
+instance, the following rewriting lemmas %\index{rewriting lemma}% can
+be proved for the simple instances of [Prop].
 
 *)
 

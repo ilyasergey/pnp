@@ -16,6 +16,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{url}
 \usepackage{textcomp} 
+\usepackage{color}
 \usepackage{makeidx,hyperref}
 \usepackage{lipsum} 
 \usepackage{scrpage2}
@@ -82,9 +83,13 @@
 \include{HTT.v}
 \include{Conclusion.v}
 
+\clearpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography
+
+% textual hack for making page referenced to be in the right place
+\textcolor{white}{\lipsum[1-8]}
 
 \clearpage
 \phantomsection
@@ -92,3 +97,4 @@
 \printindex
 
 \end{document}
+ 

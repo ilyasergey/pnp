@@ -1479,7 +1479,7 @@ Qed.
  etc. %\ssrt{rewrite}%
 
 %\hint% To facilitate the forward reasoning by contradiction, you can
- use the SSReflect tactic [suff: P], %\ssrt{suff}% where [P] is
+ use the SSReflect tactic [suff: P], %\ssrt{suff:}% where [P] is
  an arbitrary proposition. The system will then require you to prove
  that [P] implies the goal _and_ [P] itself.
 
