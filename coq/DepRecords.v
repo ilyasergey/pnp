@@ -49,11 +49,11 @@ _lattice_ in Haskell as follows:
 
 <<
 class Lattice a where
- bot :: a
- top :: a
- pre :: a -> a -> Bool
- lub :: a -> a -> a
- glb :: a -> a -> a
+  bot :: a
+  top :: a
+  pre :: a -> a -> Bool
+  lub :: a -> a -> a
+  glb :: a -> a -> a
 >>
 
 That is, the class %\texttt{Lattice}% is parametrized by a _carrier_
@@ -110,6 +110,8 @@ Unset Printing Implicit Defensive.
 
 * Encoding partial commutative monoids
 
+TODO: describe what a PCM is
+
 %\index{partial commutative monoid}%
 %\index{PCM|see {partial commutative monoid}}%
 
@@ -137,9 +139,18 @@ Record mixin_of (T : Type) := Mixin {
     _ : forall x y, valid_op (join_op x y) -> valid_op x; 
     _ : valid_op unit_op }.
 
+(**
+
+We can now prove a number of facts about the structure, very much in
+the spirit of the facts that re being proven in the algebra course.
+For instance, the following lemma states that [unit_op] is alse the
+_right unit_. %\index{right unit}%
+
+*)
+
 Lemma r_unit T (pcm: mixin_of T) (t: T) : (join_op pcm t (unit_op pcm)) = t.
 Proof.
-case: pcm=>_ jo uo Hc _ Hlu _ _ /=.
+case: pcm=>_ join unit Hc _ Hlu _ _ /=.
 
 (** 
 [[
