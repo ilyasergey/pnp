@@ -38,11 +38,11 @@ _propositions_.
 In Coq, propositions bear a lot of similarities with types,
 demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
 sort [Prop], similarly to how first-order types inhabit
-[Set].%\footnote{In the Coq community, the datatypes of [Prop] sort ar
-usually referred to as \emph{inductive predicates}.\index{inductive
-predicates}}% The "values" that have elements of [Prop] as their types
-are usually referred to as _proofs_ or _proof terms_, the naming
-convention which stems out of the ide of 
+[Set].%\footnote{In the Coq community, the datatypes of % [Prop] %
+sort ar usually referred to as \emph{inductive
+predicates}.\index{inductive predicates}}% The "values" that have
+elements of [Prop] as their types are usually referred to as _proofs_
+or _proof terms_, the naming convention which stems out of the ide of
 %\index{Curry-Howard correspondence}% %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
@@ -51,6 +51,8 @@ intuition behind the formal proof construction in Coq, which, in fact,
 is just programming in disguise.
 
 The _Calculus of Inductive Constructions_
+%\index{Calculus of Inductive Constructions}%
+%\index{CIC|see {Calculus~of~Inductive~Constructions}}%
 (CIC)%~\cite{Bertot-Casteran:BOOK,Coquand-Huet:IC88}%, a logical
 foundation of Coq, similarly to its close relative, Martin-%\loef%'s
 _Intuitionistic Type Theory_ %\cite{Martin-Loef:84}%, considers proofs
@@ -132,9 +134,9 @@ leaving reasoning about values aside till the next chapter. It is
 worth noticing that a fragment of Coq, which deals with the sort
 [Prop], accommodating all the propositions, and allows the programmer
 to make statements with propositions, corresponds to the logical
-calculus, known as %System~$F_{\omega}$% (see Chapter 30
-of%~\cite{Pierce:BOOK02}%) extending %System
-$F$~\cite{Reynolds:SP74,Girard:PhD}%, mentioned in
+calculus, known as %System~$F_{\omega}$\index{System $F_{\omega}$}%
+(see Chapter 30 of%~\cite{Pierce:BOOK02}%) %\index{System $F$}%
+extending %System $F$~\cite{Reynolds:SP74,Girard:PhD}%, mentioned in
 Chapter%~\ref{ch:funprog}%. Unlike %System $F$%, which introduces
 polymorphic types, and, equivalently, first-order propositions that
 quantify over other propositions, %System~$F_{\omega}$% allows one to
@@ -505,6 +507,7 @@ term of type [P] to a proof of [Q].
 Unlike most of the value-level functions we have seen so far,
 propositions are usually parametrized by other propositions, which
 makes them instances of _polymorphic_ types, as they appear in
+%\index{System $F$}%
 %System~$F$% and %System $F_{\omega}$%. Similarly to these systems, in
 Coq the universal quantifier [forall] (spelled <<forall>>) binds a
 variable immediately following it in the scope of the subsequent
@@ -1505,6 +1508,7 @@ Constructions was to implement its logical component (i.e., the
 fragment responsible for constructing and operating with elements of
 the [Prop] sort), so it would subsume the existing impredicative
 propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
+%\index{System $F$}%
 particular, %System~$F$% (which is impredicative), allowing for the
 expressive reasoning in the higher-order propositional logic.
 
