@@ -703,7 +703,8 @@ Qed.
 
 Now, as we have defined a PCM structure along with its psecialized
 version, a cancellative PCM, it is time to see how to _instantiate_
-these abstract definition with concrete datatypes.
+these abstract definitions with concrete datatypes, i.e., _prove_ the
+later ones to be instances of a PCM.
 
 %\index{instantiation}%
 
@@ -721,7 +722,10 @@ Definition natPCMMixin :=
 *)
 
 Definition NatPCM := PCM nat natPCMMixin.
+
 Canonical natPCM := PCM nat natPCMMixin.
+
+Print Canonical Projections.
 
 Export CancelPCM.Exports.
 Check CancelPCMMixin.
