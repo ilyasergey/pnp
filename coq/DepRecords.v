@@ -152,7 +152,7 @@ reasoning.
 
 *)
 
-Section PCMDef.
+Module PCMDef.
 
 (**
 
@@ -219,24 +219,25 @@ unit_op is defined
 The syntax of Coq's dependent records is reminiscent to the one of
 records in C. Following SSReflect's naming
 pattern~\cite{Garillot-al:TPHOL09}, we call the record type (defined
-in a dedicated section) [mixin_of] and its only constructor
-[Mixin]. The reasons for such naming convention will be explained
-soon, and for now let's discuss the definition. The PCM record type is
-parametrized over the carrier type [T], which determines the carrier
-set of a PCM. It then lists three _named_ fields. [join_op] describes
-an implementation of the PCM's binary operation. [unit_op] defines the
-unit element. Finally, the [valid_op] predicate determines whether a
-particular element of the carrier set [T] is valid or not, and, thus,
-serves as a way to express the partiality of the [join_op] operation
-(the result is undefined, whenever the corresponding value of [T] is
-non-valid). Next, the PCM record lists five unnamed PCM _properties_,
-which should be satisfied whenever the recor is instantiated and are
-defined using the standard propositions from SSReflect's [ssrfun]
-%\ssrm{ssrfun}% module (see %Section~\ref{sec:funprops}%). In
-particular, the PCM type definition requires the operation to be
-[commutative] and [associative]. It also states that if $a \join b
-\neq \bot$ then $a \neq \bot$ (the same statement about $b$ can be
-proved by commutativity), and that the unit element is valid. 
+in a dedicated module for the reasons explained further) [mixin_of]
+and its only constructor [Mixin]. The reasons for such naming
+convention will be explained soon, and for now let's discuss the
+definition. The PCM record type is parametrized over the carrier type
+[T], which determines the carrier set of a PCM. It then lists three
+_named_ fields. [join_op] describes an implementation of the PCM's
+binary operation. [unit_op] defines the unit element. Finally, the
+[valid_op] predicate determines whether a particular element of the
+carrier set [T] is valid or not, and, thus, serves as a way to express
+the partiality of the [join_op] operation (the result is undefined,
+whenever the corresponding value of [T] is non-valid). Next, the PCM
+record lists five unnamed PCM _properties_, which should be satisfied
+whenever the recor is instantiated and are defined using the standard
+propositions from SSReflect's [ssrfun] %\ssrm{ssrfun}% module (see
+%Section~\ref{sec:funprops}%). In particular, the PCM type definition
+requires the operation to be [commutative] and [associative]. It also
+states that if $a \join b \neq \bot$ then $a \neq \bot$ (the same
+statement about $b$ can be proved by commutativity), and that the unit
+element is valid.
 
 Notice that in the definition of the [mixin_of] record type, the types
 of some of the later's fields (e.g., any of the properties) depend on
@@ -337,33 +338,53 @@ Inductive mixin_of' (T: Type) :=
 (**
 
 Although this definition seems more principle and is closer to what we
-have seen before. 
+have seen before, the record notation is more convenient, as it
+defined getters automatically as well as allows one to express
+inheritance between data structures by means of the coercion operator
+%\texttt{:>}\gop{:>}%
+operator%~\cite{Garillot-al:TPHOL09}%.%\footnote{In the next section
+will show a different way to encode implicit inheritance, though.}%
 
-TODO
-
-** Packaging the structure
+** Packaging the structure from mixins
 
 *)
 
-(** TODO: emphasize the [:>] coercion *)
+Section Packing.
 
-Structure pack_type : Type := Pack {sort :> Type; _ : mixin_of sort; _ : Type}.
+(** TODO: emphasize the Local/Explicit coercion *)
+Structure pack_type : Type := Pack {sort : Type; _ : mixin_of sort}.
+
+(** 
+
+%\index{Sortclass@\emph{Sortclass}}%
+%\gop{:>}%
+%\ccom{Local Coercion}%
+*)
+Local Coercion sort : pack_type >-> Sortclass.
 
 Variables (T : Type) (cT : pack_type).
 
-Definition class : mixin_of cT := let: Pack _ c _ as cT' := cT return mixin_of cT' in c.
+Definition class : mixin_of cT := let: Pack _ c as cT' := cT return mixin_of cT' in c.
 
-Check class.
-
-Definition pack c := @Pack T c T.
+Definition pack T c := @Pack T c.
 
 Definition valid := valid_op class.
 Definition join := join_op class.
 Definition unit := unit_op class.
 
-End PCMDef.
+End Packing.
 
-Print join.
+Module Exports.
+Notation pcm := pack_type.
+Notation PCMMixin := Mixin.
+Notation PCM T m := (@pack T m).
+Coercion sort : pack_type >-> Sortclass.
+
+
+
+Print pcm.
+
+
 
 (**
 
@@ -376,24 +397,66 @@ them. We will take natural numbers and lists as instances.
 
 * Properties of partial commutative monoids 
 
-
 *)
 
 Notation "x \+ y" := (join x y) (at level 43, left associativity).
 
-Section Tada.
-Definition pcm := pack_type.
+Section PCMLemmas.
 Variable U V : pcm.
 
 Lemma joinC (x y : U) : x \+ y = y \+ x.
 Proof. by case: U x y=>tp [v j z Cj *]; apply: Cj. Qed.
-End Tada.
 
+End PCMLemmas.
+
+
+End Exports.
+End PCMDef.
+
+Export PCMDef.Exports.
 
 (** 
 
 * Implementing inheritance hierarchies via telescopes
 %\index{telescopes}%
+
+*)
+
+
+Module CancelPCM.
+
+Record mixin_of (U : pcm) := Mixin {
+  _ : forall a b c: U, a \+ b = a \+ c -> b = c
+}.
+
+Section Packing.
+
+Structure pack_type : Type := Pack {sort : pcm; _ : mixin_of sort}.
+Local Coercion sort : pack_type >-> pcm.
+
+Variables (T : Type) (cT : pack_type).
+
+Definition class : mixin_of cT := let: Pack _ c as cT' := cT return mixin_of cT' in c.
+
+End Packing.
+
+Module Exports.
+Notation cancel_pcm := pack_type.
+Notation CancelPCMMixin := Mixin.
+Notation CancelPCM T m:= (@Pack T m).
+Coercion sort : pack_type >-> pcm.
+
+Lemma cancel_inv (U: cancel_pcm) (x y z: U): x \+ y = z \+ x -> y = z.
+Proof.
+case: U x y z=>Up [Hc] x y z.
+by rewrite [z \+ _]joinC; apply:Hc.
+Qed.
+
+End Exports.
+
+End CancelPCM.
+
+(**
 
 TODO: notice that no multiple inheritance is possible (easily)
 
@@ -403,17 +466,32 @@ TODO: show first definition withou equality.
 
 %\ccom{Canonical}%
 
-** Defining arbitrary PCM instances with overloaded operations
+** Defining arbitrary PCM instances
 
 *)
 
 Definition natPCMMixin := 
-  Mixin addnC addnA add0n (fun x y => @id true) (erefl _).
-Canonical natPCM := Eval hnf in pack natPCMMixin.
+  PCMMixin addnC addnA add0n (fun x y => @id true) (erefl _).
 
-Variables a b: nat.
+Canonical natPCM := Eval hnf in PCM nat natPCMMixin.
 
-(** 
+Export CancelPCM.Exports.
+Check CancelPCMMixin.
+
+Lemma cancelNat : forall a b c: nat, a + b = a + c -> b = c.
+Proof.
+move=> a b c; elim: a=>// n Hn H.
+by apply: Hn; rewrite !addSn in H; move/eq_add_S: H.
+Qed.
+
+Definition cancelNatPCMMixin := CancelPCMMixin cancelNat.
+Canonical cancelNatPCM := Eval hnf in CancelPCM natPCM cancelNatPCMMixin.
+
+Section PCMExamples.
+
+Variables a b c: nat.
+
+(* 
 
 TODO: can I use [+] here instead of [\+] ?
 
@@ -423,10 +501,17 @@ Goal a \+ b = a \+ b.
 by rewrite joinC.
 Qed.
 
+Goal c \+ a = a \+ b -> c = b.
+rewrite [c \+ _]joinC [_ \+ b]joinC.
+by move/cancel_inv.
+Qed.
+
+End PCMExamples.
+
 
 (**
 
-** Types with computable equalities
+* Types with computable equalities
 
 *)
 
