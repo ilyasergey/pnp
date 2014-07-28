@@ -488,27 +488,120 @@ Coercion type : pack_type >-> Sortclass.
 
 * Properties of partial commutative monoids 
 
+Before we close the [Exports] module of the [PCMDef] package, it makes
+sense to supply as many properties to the clients, as it will be
+necessary for them to build the reasoning involving PCMs. In the
+tradition of encapsulation, %\index{encapsulation}% requiring to
+expose only the relevan, as abstarct a possible, elements of the
+interface to its clients, it is undesirable for users of the [pcm]
+datatype to perform any sort of analysis on the structure of the
+[mixin_of] datatype, as it will lead to rather tedious and cumbersome
+proofs, which will be subject of massive changes, once we decide to
+change the implementation of the PCM mixin structure. 
+
+This is why in this section we supply a number of properties of PCM
+elements and operations, derived from its structure, which we observe
+to be enough to build the reasoning with arbitrary PCM instances.
+
 *)
 
-
 Section PCMLemmas.
-Variable U V : pcm.
+Variable U : pcm.
+
+(** 
+
+For instance, the following lemma re-establishes the commutativity of
+the [\+] operation:
+
+*)
 
 Lemma joinC (x y : U) : x \+ y = y \+ x.
-Proof. by case: U x y=>tp [v j z Cj *]; apply: Cj. Qed.
+Proof.
+by case: U x y=> tp [v j z Cj *]; apply Cj.
+Qed.
+
+
+(** 
+
+Notice that in order to make the proof to go through, we had to "push"
+the PCM elements [x] and [y] to be the assumption of the goal before
+case-analysing on [U]. This is due to the fact that [U] the structure
+of [U] affets the type of [x] and [y], therefore destructing it cy
+means of [case] would change the representation of [x] and [y] as
+well, doing some rewriting and simplifications. Therefore, when [U] is
+being decomposed, al its dependent value should be in the scope of
+decomposition. The naming pattern [*] helped us to give automatic
+names to all remaining assumptions, appearing from decomposition of
+[U]'s second component before moving it to the context before
+finishing the proof by applying the commutativity "field" [Cj].
+
+*)
+
+Lemma joinA (x y z : U) : x \+ (y \+ z) = x \+ y \+ z.
+Proof. 
+by case: U x y z=>tp [v j z Cj Aj *]; apply: Aj. 
+Qed.
+
+(** 
+
+%\begin{exercise}[PCM laws]% Proof the rest of the PCM laws.
+
+*)
+
+Lemma joinAC (x y z : U) : x \+ y \+ z = x \+ z \+ y.
+(* begin hide *)
+Proof. by rewrite -joinA (joinC y) joinA. Qed.
+(* end hide *)
+
+Lemma joinCA (x y z : U) : x \+ (y \+ z) = y \+ (x \+ z).
+(* begin hide *)
+Proof. by rewrite joinA (joinC x) -joinA. Qed.
+(* end hide *)
+
+Lemma validL (x y : U) : valid (x \+ y) -> valid x.
+(* begin hide *)
+Proof. case: U x y=>tp [v j z Cj Aj Uj /= Mj inv f]; apply: Mj. Qed.
+(* end hide *)
+
+Lemma validR (x y : U) : valid (x \+ y) -> valid y.
+(* begin hide *)
+Proof. by rewrite joinC; apply: validL. Qed.
+(* end hide *)
+
+Lemma unitL (x : U) : (@Unit U) \+ x = x.
+(* begin hide *)
+Proof. by case: U x=>tp [v j z Cj Aj Uj *]; apply: Uj. Qed.
+(* end hide *)
+
+Lemma unitR (x : U) : x \+ (@Unit U) = x.
+(* begin hide *)
+Proof. by rewrite joinC unitL. Qed.
+(* end hide *)
+
+Lemma valid_unit : valid (@Unit U).
+(* begin hide *)
+Proof. by case: U=>tp [v j z Cj Aj Uj Vm Vu *]. Qed.
+(* end hide *)
+
+(**
+
+%\end{exercise}%
+
+*)
 
 End PCMLemmas.
 
-
 End Exports.
+
 End PCMDef.
 
 Export PCMDef.Exports.
 
 (** 
 
-* Implementing inheritance hierarchies via telescopes
-%\index{telescopes}%
+* Implementing inheritance hierarchies
+
+%\index{inheritance}%
 
 *)
 
@@ -532,10 +625,9 @@ Notation CancelPCMMixin := Mixin.
 Notation CancelPCM T m:= (@Pack T m).
 Coercion pcmT : pack_type >-> pcm.
 
-Lemma cancel_inv (U: cancel_pcm) (x y z: U): x \+ y = z \+ x -> y = z.
+Lemma cancel (U: cancel_pcm) (x y z: U): x \+ y = x \+ z -> y = z.
 Proof.
-case: U x y z=>Up [Hc] x y z.
-by rewrite [z \+ _]joinC; apply:Hc.
+by case: U x y z=>Up [Hc] x y z; apply:Hc.
 Qed.
 
 End Exports.
@@ -588,8 +680,7 @@ by rewrite joinC.
 Qed.
 
 Goal c \+ a = a \+ b -> c = b.
-rewrite [c \+ _]joinC [_ \+ b]joinC.
-by move/cancel_inv.
+by rewrite [c \+ _]joinC; move/cancel.
 Qed.
 
 End PCMExamples.
@@ -597,7 +688,7 @@ End PCMExamples.
 
 (**
 
-* Types with computable equalities
+** Types with computable equalities
 
 *)
 
