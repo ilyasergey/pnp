@@ -347,6 +347,7 @@ operator%~\cite{Garillot-al:TPHOL09}%.%\footnote{In the next section
 will show a different way to encode implicit inheritance, though.}%
 
 ** Packaging the structure from mixins
+%\label{sec:packaging}%
 
 *)
 
@@ -603,46 +604,108 @@ Export PCMDef.Exports.
 
 %\index{inheritance}%
 
-*)
+By packaging an arbitrary type [T] into one record with the PCM
+structure in %Section~\ref{sec:packaging}% and suppying it with a
+specific implicit coercion, we have alredy achieved some degree of
+inheritance: any element of a PCM can be also perceived by the system
+in an appropriate context, as an element of its carrier type. 
 
+In this section, we will go even further and show how to build
+hierarchies of mathematical structures using the same way of encoding
+inheritance. We will use a cancellative PCM as a running example. 
+
+*)
 
 Module CancelPCM.
 
+(**
+
+PCMs with cancellation %\index{cancellative}% extend ordinary PCMs
+with an extra property, that states that the equality $a \join b = a
+\join c$ for any $a$, $b$ and $c$, whenever $a \join b$ is defined,
+implies $a = b$. We express such property via an additional mixin
+recor type, parametrized over an arbitrary PCM [U].
+
+*)
+
 Record mixin_of (U : pcm) := Mixin {
-  _ : forall a b c: U, a \+ b = a \+ c -> b = c
+  _ : forall a b c: U, valid (a \+ b) -> a \+ b = a \+ c -> b = c
 }.
 
-Section Packing.
+(** 
+
+Notice that the validity of the sum [a \+ c] is not imposed, as it can
+be proven by equality and the validity of [a \+ b].
+
+We continue the definition by defining the standard packaging data
+structure.
+
+*)
 
 Structure pack_type : Type := Pack {pcmT : pcm; _ : mixin_of pcmT}.
-Local Coercion pcmT : pack_type >-> pcm.
-
-End Packing.
 
 Module Exports.
+
 Notation cancel_pcm := pack_type.
 Notation CancelPCMMixin := Mixin.
 Notation CancelPCM T m:= (@Pack T m).
+
+(** 
+
+There is a tiny twist in the definition of the specific coercion,
+though, as now we it specifies that the instance of the packed data
+structure, describing the cancellative PCM, can be seen as an instance
+of the underlying PCM. Implied coercions are transitive, which means
+that the same instance can be coerced even further to [U]'s carrier
+type [T].
+
+*)
+
 Coercion pcmT : pack_type >-> pcm.
 
-Lemma cancel (U: cancel_pcm) (x y z: U): x \+ y = x \+ z -> y = z.
+(** 
+
+We finish the definition of the cancellative PCM by providing its only
+important law, which is a direct consequence of the newly added
+property.
+
+*)
+
+Lemma cancel (U: cancel_pcm) (x y z: U): 
+  valid (x \+ y) -> x \+ y = x \+ z -> y = z.
 Proof.
 by case: U x y z=>Up [Hc] x y z; apply:Hc.
 Qed.
 
 End Exports.
+End CancelPCM. 
 
-End CancelPCM.
+Export CancelPCM.Exports.
+
+(** 
+
+The proof of following lemma, combining commutativity and
+cancellativity, demonstrates how the properties of a cancellative PCM
+work in concert with the properties of its base PCM structure.
+
+*)
+
+Lemma cancelC (U: cancel_pcm) (x y z : U) :
+  valid (y \+ x \+ z) -> y \+ x = x \+ z -> y = z.
+Proof.
+by move/validL; rewrite ![y \+ _]joinC; apply: cancel.
+Qed.
+
 
 (**
 
-TODO: notice that no multiple inheritance is possible (easily)
+* Instantiation and canonical structures
 
-* Introducing canonical structures  
+Now, as we have defined a PCM structure along with its psecialized
+version, a cancellative PCM, it is time to see how to _instantiate_
+these abstract definition with concrete datatypes.
 
-TODO: show first definition withou equality.
-
-%\ccom{Canonical}%
+%\index{instantiation}%
 
 ** Defining arbitrary PCM instances
 
@@ -651,19 +714,26 @@ TODO: show first definition withou equality.
 Definition natPCMMixin := 
   PCMMixin addnC addnA add0n (fun x y => @id true) (erefl _).
 
-Canonical natPCM := Eval hnf in PCM nat natPCMMixin.
+(**
+
+%\ccom{Canonical}%
+
+*)
+
+Definition NatPCM := PCM nat natPCMMixin.
+Canonical natPCM := PCM nat natPCMMixin.
 
 Export CancelPCM.Exports.
 Check CancelPCMMixin.
 
-Lemma cancelNat : forall a b c: nat, a + b = a + c -> b = c.
+Lemma cancelNat : forall a b c: nat, true -> a + b = a + c -> b = c.
 Proof.
-move=> a b c; elim: a=>// n Hn H.
+move=> a b c; elim: a=>// n /(_ is_true_true) Hn _ H.
 by apply: Hn; rewrite !addSn in H; move/eq_add_S: H.
 Qed.
 
 Definition cancelNatPCMMixin := CancelPCMMixin cancelNat.
-Canonical cancelNatPCM := Eval hnf in CancelPCM natPCM cancelNatPCMMixin.
+Canonical cancelNatPCM := CancelPCM natPCM cancelNatPCMMixin.
 
 Section PCMExamples.
 
@@ -679,8 +749,11 @@ Goal a \+ b = a \+ b.
 by rewrite joinC.
 Qed.
 
+Lemma valid_nat: forall a b: nat, valid (a \+ b).
+Proof. by []. Qed.
+
 Goal c \+ a = a \+ b -> c = b.
-by rewrite [c \+ _]joinC; move/cancel.
+by rewrite [c \+ _]joinC; move/(cancel (valid_nat _ _)).
 Qed.
 
 End PCMExamples.
