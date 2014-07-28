@@ -976,7 +976,8 @@ manual%~\cite{Coq-manual}% for the details of the [Notation]
 %\ccom{Notation}% command syntax.
 
 
- * Sections and modules
+* Sections and modules
+\label{sec:secmod}
 
 We conclude this chapter by a very brief overview of Coq's module
 system.%\index{sections}\index{modules}%
@@ -1078,9 +1079,9 @@ Module NatUtilModule.
 Fixpoint my_fact n :=
   if n is n'.+1 then my_mult n (my_fact n') else 1.
 
-Module ToExport.
+Module Exports.
 Definition fact := my_fact.
-End ToExport.
+End Exports.
 
 End NatUtilModule.
 
@@ -1093,7 +1094,7 @@ therefore making [fact] visible outside of [NatUtilModule].
 
  *)
 
-Export NatUtilModule.ToExport.
+Export NatUtilModule.Exports.
 
 (** 
 [[

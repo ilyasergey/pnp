@@ -20,6 +20,7 @@ Module DepRecords.
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
 (** printing View %\texttt{\emph{View}}% *)
+(** printing >-> %\texttt{>->}% *)
 
 
 (**  
@@ -351,47 +352,137 @@ will show a different way to encode implicit inheritance, though.}%
 
 Section Packing.
 
-(** TODO: emphasize the Local/Explicit coercion *)
-Structure pack_type : Type := Pack {sort : Type; _ : mixin_of sort}.
+(** 
+
+%\index{packaging}%
+
+By now, we have defined a structure of a PCM "interface" in a form of
+sets of the components it is defined over and their
+properties. However, it might be the case that the same carries set
+(which we represented by the type parameter [T]), should be given
+properties from other algebraic data structures (e.g., lattices),
+which are essentially orthogomal to those of a PCM. Moreover, at some
+point one might be interested in implementing the proper inheritance
+of the PCM structure with respect to the carrier type [T]. That is, if
+the type [T] comes with some additional operations, they should be
+availbale from it, even if it's seen as being "wrapped" into the PCM
+structure. That is, if [T] is proven to be a PCM, one should be able
+to use this fact as well as the functions, defined on [T] separately.
+
+These two problems, namely, (a) combining together structures into
+one, and (b) implementing inheritance and proper mix-in composition,
+can be done in Coq using the description pattern, known as "packed
+classes"%~\cite{Garillot-al:TPHOL09}%. %\index{packed classes}% The
+idea of the approach is to define a "wrapper" recrod type, which would
+"pack" several mix-ins together, similar to how it is done in
+object-oriented langauges with implicit trait compostion, e.g.,
+Scala%~\cite{Odersky-Zenger:OOPSLA05}%.%\footnote{Using this mechanism
+will, however, afford us a greater degree of flexibility, as it is up
+to the Coq programmer to define the resolution policy of the combined
+record's membeer, rather than to relly on implicit mechaisms of field
+linearization.}%
+
+%\index{Scala}\index{traits}%
+
+*)
+
+Structure pack_type : Type := Pack {type : Type; _ : mixin_of type}.
 
 (** 
 
-%\index{Sortclass@\emph{Sortclass}}%
-%\gop{:>}%
+The dependent data tructure declares two fields: the field [type] of
+type [Type], which described the carrier type of the PCM instance, and
+the actual PCM structure (without an explicit name given) of type
+[mixin_of type]. That is, in order to construct an instance of
+[pack_type], one will have to provide _both_ arguments: the carrier
+set and a PCM structure for it.
+
+Next, we specify that the field [type] of the [pack_type] should be
+also considered as a _coercion_, that is, whenever we have a value of
+type [pack_type], whose field [type] is some [T], it can be implicitly
+seen as an element of type [T]. The coercion is specified locally, so
+it will work only in the scope of the current section (i.e.,
+[Packing]) by using Coq's [Local Coercion] command. We address the
+reader to Chapter 18 of the Coq Reference Manual%~\cite{Coq-manual}%
+for more details of the implicit coercions.
+
 %\ccom{Local Coercion}%
 *)
-Local Coercion sort : pack_type >-> Sortclass.
 
-Variables (T : Type) (cT : pack_type).
-
-Definition class : mixin_of cT := let: Pack _ c as cT' := cT return mixin_of cT' in c.
-
-Definition pack T c := @Pack T c.
-
-Definition valid := valid_op class.
-Definition join := join_op class.
-Definition unit := unit_op class.
-
-End Packing.
-
-Module Exports.
-Notation pcm := pack_type.
-Notation PCMMixin := Mixin.
-Notation PCM T m := (@pack T m).
-Coercion sort : pack_type >-> Sortclass.
-
-
-
-Print pcm.
-
-
+Local Coercion type : pack_type >-> Sortclass.
 
 (**
 
-Here, we define the monoids and prove a number of properties about
-them. We will take natural numbers and lists as instances.
+%\index{Sortclass@\emph{Sortclass}}%
+
+The [>->] simply specifies the fact of the coercion, whereas
+[Srotclass] is an abstract class of sorts, so the whole command
+postulates that whenever an instance of [pack_type] should be coercerd
+into an element of an arbitrary sort, it should be done via referring
+to is [type] field.
+
+Next, in the same section, we provide a number of abbreviations to
+simplify the work with the PCM packed structure and prepare it to be
+exported by clients.
 
 *)
+Variable cT: pack_type.
+
+Definition pcm_struct : mixin_of cT := 
+    let: Pack _ c := cT return mixin_of cT in c.
+
+(** 
+
+The function [pcm_struct] simply extracts the PCM structure from the
+"packed" instance. Notice the use of dependent pattern matching
+%\index{dependent pattern matching}% in the [let:]-statement with the
+explicit [return]-statement, so Coq would be able to refine the result
+of the whole expression basing on the dependent type of the [c]
+component of the data structure [cT], which is being scrutinized. With
+the help of this definition, we can now define three aliases for the
+PCM's key components, "lifted" to the packed data structure.
+
+*)
+
+Definition valid := valid_op pcm_struct.
+Definition join := join_op pcm_struct.
+Definition unit := unit_op pcm_struct.
+
+End Packing.
+
+(** 
+
+Now, as the packing and the aliases are properly defined, we come to
+the last step of the PCM package description: preparing the batch of
+definitions, notations and facts to be exported to the
+client. Following the pattern of nesting modules, presented in
+%Section~\ref{sec:secmod}%, we put all the entities to be exported
+into the inner module [Exports].
+
+*)
+
+Module Exports.
+
+Notation pcm := pack_type.
+Notation PCMMixin := Mixin.
+Notation PCM T m := (@Pack T m).
+
+Notation "x \+ y" := (join x y) (at level 43, left associativity).
+Notation valid := valid.
+Notation Unit := unit.
+
+
+(** 
+
+We will have to define the coercion from the PCM structure with
+respect to its [type] field once again, as the previoud one was
+defined locally for the section [Packing], and, hence, is invisible in
+this submodule.
+
+*)
+
+Coercion type : pack_type >-> Sortclass.
+
 
 (** 
 
@@ -399,7 +490,6 @@ them. We will take natural numbers and lists as instances.
 
 *)
 
-Notation "x \+ y" := (join x y) (at level 43, left associativity).
 
 Section PCMLemmas.
 Variable U V : pcm.
@@ -431,12 +521,8 @@ Record mixin_of (U : pcm) := Mixin {
 
 Section Packing.
 
-Structure pack_type : Type := Pack {sort : pcm; _ : mixin_of sort}.
-Local Coercion sort : pack_type >-> pcm.
-
-Variables (T : Type) (cT : pack_type).
-
-Definition class : mixin_of cT := let: Pack _ c as cT' := cT return mixin_of cT' in c.
+Structure pack_type : Type := Pack {pcmT : pcm; _ : mixin_of pcmT}.
+Local Coercion pcmT : pack_type >-> pcm.
 
 End Packing.
 
@@ -444,7 +530,7 @@ Module Exports.
 Notation cancel_pcm := pack_type.
 Notation CancelPCMMixin := Mixin.
 Notation CancelPCM T m:= (@Pack T m).
-Coercion sort : pack_type >-> pcm.
+Coercion pcmT : pack_type >-> pcm.
 
 Lemma cancel_inv (U: cancel_pcm) (x y z: U): x \+ y = z \+ x -> y = z.
 Proof.
