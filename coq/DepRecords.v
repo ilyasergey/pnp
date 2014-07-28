@@ -37,10 +37,11 @@ the set itself and operations on them.
 
 From a working programmer's perspective, a notion of an mathematical
 abstract structure is reminiscent to a notion of class from
-object-oriented programming, modules from Standard ML and type classes
-%\index{type classes}\index{Haskell}% from Haskell: all these
-mechanisms are targeted to solve the same goal: _package_ a number of
-operations operationg on some data, while abstracting of a particular
+object-oriented programming, modules from Standard ML and type
+classes%~\cite{Wadler-Blott:POPL89}% %\index{type
+classes}\index{Haskell}% from Haskell: all these mechanisms are
+targeted to solve the same goal: _package_ a number of operations
+operationg on some data, while abstracting of a particular
 implementation of this data itself. What neither of these programming
 mechanisms is capable of doing is enforcing the requirement for one to
 provide the _proofs_ of properties, which restrict the operations on
@@ -87,13 +88,15 @@ provide not just the _carrier_ and implementations of the declared
 operations but also _proofs_ of propositions that constrain these
 operations and the carrier.
 
-In this chapter we will learn how to encode the reasoning about common
-algebraic data structures in Coq in a way very similar to how data
-structures are encoded in languages like C (with a bit of Haskell's
-type class-like machinery). In the process, we will meet some old
-friends from the course of abstract algebra: partial commutative
-monoids, and implement them using Coq's native constructs: dependent
-records and canonical structures.
+In this chapter we will learn how to encode common algebraic data
+structures in Coq in a way very similar to how data structures are
+encoded in languages like C (with a bit of Haskell's type class-like
+machinery), so the represintation, unlike the one in C or Haskell,
+would allow for flexible and generic reasoning about the structures'
+properties. In the process, we will meet some old friends from the
+course of abstract algebra: partial commutative monoids, and implement
+them using Coq's native constructs: dependent records and canonical
+structures.
 
 As usual, we will require a number of SSReflect package imported.
 
@@ -101,32 +104,91 @@ As usual, we will require a number of SSReflect package imported.
 
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
 
+(** 
+
+We will also require a number of commands, specific for SSReflect and
+simplifying the handling of implicit datatype arguments.
+
+%\ccom{Set Implicit Arguments}%
+%\ccom{Unset Strict Implicit}%
+%\ccom{Unset Printing Implicit}%
+
+*)
+
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
-
 
 (** 
 
 * Encoding partial commutative monoids
 
-TODO: describe what a PCM is
+We will be using partical commutative monoids (PCMs) as an
+illustrative example of a simple algebraic data structure, a subject
+of encoding and formalization.%\index{partial commutative monoid}
+\index{PCM|see {partial commutative monoid}}% A PCM is defined as an
+algebraic structure with a carrier set [U], abstract binary "join"
+operation $\join$ and a unit element $\unit$.%\footnote{Sometimes also
+referred to as an \emph{identity} or \emph{neutral}
+element.}%%\index{unit element}% %\index{join operation}% The join
+operation is required to be associative and commutative, and for the
+unit element the left and right identity equalities should
+hold. Moreover, partiality means that the operation $\join$ might be
+undefined for some pairs of elements $a$ and [b] (and in this case it
+is denoted as $a \join b = \bot$). PCMs are fairly ubiquitous: in
+particular, natural numbers with addition and multiplication, sets
+with a disjoin union, partially-defined functions with a point-wise
+union, form PCM. Furthermore, partial commutative monoids are
+omnipresent in program verification%~\cite{Nanevski-al:POPL10}%, as
+they capture exactly the properties of _heaps_, as well as the effect
+of programs that can be executed in
+parallel%~\cite{Nanevski-al:ESOP14}%. Therefore, it is useful to have
+PCMs formalized as a structure, so they could be employed for future
+reasoning.
 
-%\index{partial commutative monoid}%
-%\index{PCM|see {partial commutative monoid}}%
+%\index{identity element|see {unit element}}%
 
+** Describing algebraic data structures via dependent records
 
-** Describing basic structure via mixins
+*)
 
-TODO: recall sigma-types
+Section PCMDef.
 
+(**
 
+In %Section~\ref{sec:exists} of Chapter~\ref{ch:logic}% we have
+already seen a use of dependent pair type, exemlpified by the Coq's
+definition of the universal quantification.
 
+*)
+
+Print ex.
+
+(**
+[[
+Inductive ex (A : Type) (P : A -> Prop) : Prop :=
+    ex_intro : forall x : A, P x -> ex P
+]]
+
+The only constructor [ex_intro] of the predicate [ex], whose type is a
+dependent function type, is a way to encode a $\Sigma$-type of a
+dependent pair, whose second component's type _depends_ on the value
+of the first one.%\index{dependent pair}% More specifically, the
+result of the existential quantification's encoding in Coq is a
+dependendent pair $\Sigma x:A, (P x)$, such that the proposition in
+the second component is determined by the value of the first component
+[x].
+
+Coq provides an alternative way to encode _iterated_ dependent pairs
+via the mechanism of _dependent records_,%\index{dependent record}%
+also allowing one to give names to the subsequent
+components. Dependent records are defined using the [Record]
+command. getting back to our PCM example, we illustrate the use of
+dependent records below.
 
 %\index{mixins}%
-
-
 %\ccom{Record}%
+
 *)
 
 Record mixin_of (T : Type) := Mixin {
@@ -137,20 +199,136 @@ Record mixin_of (T : Type) := Mixin {
     _ : associative join_op;
     _ : left_id unit_op join_op;
     _ : forall x y, valid_op (join_op x y) -> valid_op x; 
-    _ : valid_op unit_op }.
+    _ : valid_op unit_op 
+}.
 
 (**
 
-We can now prove a number of facts about the structure, very much in
-the spirit of the facts that re being proven in the algebra course.
-For instance, the following lemma states that [unit_op] is alse the
-_right unit_. %\index{right unit}%
+[[
+mixin_of is defined
+mixin_of_rect is defined
+mixin_of_ind is defined
+mixin_of_rec is defined
+valid_op is defined
+join_op is defined
+unit_op is defined
+]]
+
+
+The syntax of Coq's dependent records is reminiscent to the one of
+records in C. Following SSReflect's naming
+pattern~\cite{Garillot-al:TPHOL09}, we call the record type (defined
+in a dedicated section) [mixin_of] and its only constructor
+[Mixin]. The reasons for such naming convention will be explained
+soon, and for now let's discuss the definition. The PCM record type is
+parametrized over the carrier type [T], which determines the carrier
+set of a PCM. It then lists three _named_ fields. [join_op] describes
+an implementation of the PCM's binary operation. [unit_op] defines the
+unit element. Finally, the [valid_op] predicate determines whether a
+particular element of the carrier set [T] is valid or not, and, thus,
+serves as a way to express the partiality of the [join_op] operation
+(the result is undefined, whenever the corresponding value of [T] is
+non-valid). Next, the PCM record lists five unnamed PCM _properties_,
+which should be satisfied whenever the recor is instantiated and are
+defined using the standard propositions from SSReflect's [ssrfun]
+%\ssrm{ssrfun}% module (see %Section~\ref{sec:funprops}%). In
+particular, the PCM type definition requires the operation to be
+[commutative] and [associative]. It also states that if $a \join b
+\neq \bot$ then $a \neq \bot$ (the same statement about $b$ can be
+proved by commutativity), and that the unit element is valid. 
+
+Upon describing the record, a number of auxiliary definitions has been
+generated by coq automatically. Along with the usual recursin and
+induction principles, the system also generated three _getters_,
+[valid_op], [join_op] and [unit_op] %\index{getters}% for the record's
+named fields. That is, similarly to Haskell's syntax, given an
+instance of a PCM, one can extract, for instance, its operation, via
+the following getter function.
 
 *)
+
+Check valid_op.
+
+(**
+[[
+valid_op
+     : forall T : Type, mixin_of T -> T -> bool
+]]
+
+Coq supports the syntax for anonymous record fields (via the the
+underscore [_]), so getters for them are not generated. We have
+decided to make the property fileds of [mixin_of] to be anonymous,
+since they will usually appear only in the proofs, where the structure
+is going to be decomposed by case analysis anyway, as we will soon
+see.
+
+We can now prove a number of facts about the structure, very much in
+the spirit of the facts that re being proven in the algebra course.
+For instance, the following lemma states that [unit_op] is also the
+_right unit_, in addition to it bein the left unit, as encoded by the
+structure's definition.
+
+%\index{right unit}%
+%\index{left unit}%
+
+*)
+
 
 Lemma r_unit T (pcm: mixin_of T) (t: T) : (join_op pcm t (unit_op pcm)) = t.
 Proof.
 case: pcm=>_ join unit Hc _ Hlu _ _ /=.
+
+(** 
+[[
+  T : Type
+  t : T
+  join : T -> T -> T
+  unit : T
+  Hc : commutative join
+  Hlu : left_id unit join
+  ============================
+   join t unit = t
+]]
+
+The first line of the proof demonstrates that dependent records in Coq
+are actually just product types in disguise, so the proof about them
+should be done by case analysis. In this particular case, we decompose
+the [pcm] argument of the lemma into its component, replacing those of
+no iterest with wildcards [_]. The [join] and [unit], therefore, bind
+the operation and the identity element, whereace [Hc] and [Hlu] are
+the commutativity and left-unit properties, named explicitly for the
+scope of the proof. The trailing SSReflect's simplification tactical
+%\texttt{/=}\ssrtl{/=}% replaces the calls to the getters in the goal
+(e.g., [join_op pcm]) by the bound identifiers. The proof can be now
+accomplished by a series of rewritings by the [Hc] and [Hlu]
+hypotheses.
+
+*)
+
+by rewrite Hc Hlu.
+Qed.
+
+
+(**
+
+** An alternative definition
+
+The PCM structure could be alternatively defined using the familiar
+syntax for inductive types, as a datatype with precisely one
+constructor:
+
+*)
+
+Inductive mixin_of' (T: Type) := 
+  Mixin' (valid_op: T -> bool) (join_op : T -> T -> T) (unit_op: T) of
+    commutative join_op &
+    associative join_op &
+    left_id unit_op join_op &
+    forall x y, valid_op (join_op x y) -> valid_op x &
+    valid_op unit_op.
+
+
+
 
 (** 
 [[
@@ -166,24 +344,20 @@ case: pcm=>_ join unit Hc _ Hlu _ _ /=.
 
 *)
 
-by rewrite Hc Hlu.
-Qed.
-
-(** TODO: emphasize the [:>] coercion *)
-Structure pack_type : Type := Pack {sort :> Type; _ : mixin_of sort; _ : Type}.
-
-
 (**
 
 TODO
 
 ** Packaging the structure
 
-
 *)
 
-Section Blah.
+(** TODO: emphasize the [:>] coercion *)
+
+Structure pack_type : Type := Pack {sort :> Type; _ : mixin_of sort; _ : Type}.
+
 Variables (T : Type) (cT : pack_type).
+
 Definition class : mixin_of cT := let: Pack _ c _ as cT' := cT return mixin_of cT' in c.
 
 Check class.
@@ -193,7 +367,8 @@ Definition pack c := @Pack T c T.
 Definition valid := valid_op class.
 Definition join := join_op class.
 Definition unit := unit_op class.
-End Blah.
+
+End PCMDef.
 
 Print join.
 

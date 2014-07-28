@@ -1125,6 +1125,7 @@ Qed.
 (** printing <-> %\texttt{<->}% *)
 
 (** * Existential quantification
+%\label{sec:exists}%
 
 Existential quantification in Coq, which is denoted by a notation
 "[exists x, P x]" is just yet another inductive predicate with exactly
@@ -1168,10 +1169,13 @@ traditional existential types (see %Chapter~24
 of~\cite{Pierce:BOOK02}%), which would serve as a good analogy.  Each
 inhabitant of the type [ex] is therefore an instance of a
 %\emph{dependent pair},\footnote{In the literature, dependent pairs
-are often referred to as \emph{dependent sums} or $\Sigma$-types.}%
-whose first element is a _witness_ for the following predicate [P],
-and the second one is a result of application of [P] to [x], yielding
-a particular proposition. 
+are often referred to as \emph{dependent sums} or
+$\Sigma$-types.\index{dependent sum}}% whose first element is a
+_witness_ for the following predicate [P], and the second one is a
+result of application of [P] to [x], yielding a particular
+proposition.
+
+%\index{Sigma-type|see {dependent sum}}%
 
 The proofs of propositions that assume existential quantification are
 simply the proofs by case analysis: destructing the only constructor

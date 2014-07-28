@@ -952,6 +952,7 @@ standrad SSReflect programming and naming policies, which will,
 hopefully, simplify their use in a standalone development.
 
 ** Notation and standard operation properties
+%\label{sec:funprops}%
 
 SSReflect's module [ssrbool] introduces convenient notation for
 predicate connectives, such as [/\] and [\/]. In particular, multiple
