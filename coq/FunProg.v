@@ -93,7 +93,11 @@ Import] %\ccom{Require Import}% command:
 Require Import ssreflect ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
-printing it: %\ccom{Print}% *)
+printing it: %\ccom{Print}% 
+
+%\ssrd{bool}%
+
+*)
 
 Print bool.
 (** 
@@ -152,6 +156,8 @@ Print nat.
 
 (**
 [Inductive nat : Set :=  O : nat | S : nat -> nat]
+
+%\ssrd{nat}%
 
 The definition of the type [nat] is _recursive_.  It postulates that
 [O] is a natural number (hence, the first constructor), and, if [n] is
@@ -634,6 +640,8 @@ prod : Type -> Type -> Type
 
 ]]
 
+%\ssrd{prod}%
+
 Pairs in Coq are defined as a higher-order datatype [prod] with just
 one constructor:
 
@@ -715,7 +723,11 @@ possible to find what a particular notation means.
 The arsenal of a functional programmer in Coq would be incomplete
 without proper sum and list datatypes:%\footnote{In SSReflect's
 enhanced library lists are paraphrased as the% [seq] % datatype, which
-is imported from the module% [seq] %}% *)
+is imported from the module% [seq] %}% 
+
+%\ssrd{sum}%
+
+*)
 
 Print sum.
 (**
@@ -731,6 +743,9 @@ Print seq.
 [[
 Notation seq := list
 ]]
+
+%\ssrd{list}%
+
 *)
 
 Print list.

@@ -61,6 +61,8 @@ Print eq.
 Inductive eq (A : Type) (x : A) : A -> Prop :=  eq_refl : eq x x
 ]]
 
+%\ssrd{eq}%
+
 As we can see, the equality is just yet another inductive predicate,
 similar to the logical connectives we've seen in
 %Chapter~\ref{ch:logic}%. However, there are differences, which are of
@@ -804,6 +806,8 @@ indexed type families considered as _rewriting rules_
 between [n] and [m], namely, [m <= n] and [n < m]. The table itself is
 encoded by the following inductive definition:
 
+%\ssrd{leq\_xor\_gtn}%
+
 *)
 
 Inductive leq_xor_gtn m n : bool -> bool -> Set :=
@@ -1056,6 +1060,8 @@ Qed.
 We conclude this section and the chapter by showing an instance of a
 more sophisticated rewriting rule, which now encodes a three-variant
 truth table for the ordering relations on natural numbers.
+
+%\ssrd{nat\_rels}%
 
 *)
 

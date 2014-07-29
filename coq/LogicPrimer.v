@@ -169,7 +169,11 @@ one constructor, taking no arguments:
 Print True.
 
 (**
-[Inductive True : Prop :=  I : True]
+[[
+Inductive True : Prop :=  I : True
+]]
+
+%\ssrd{True}%
 
 Such simplicity makes it trivial to construct an instance of the
 [True] proposition:%\footnote{In the context of propositional logic, we
@@ -249,7 +253,6 @@ command %\ccom{Qed}% [Qed].
 Qed.
 
 (**
-[true_is_true is defined]
 
 In fact, typing [Qed] invokes a series of additional checks, which
 ensure the well-formedness of the constructed proof term. Although the
@@ -364,7 +367,9 @@ Thinking by analogy, one can now guess how the falsehood can be encoded.
 Print False.
 
 (**
-[Inductive False : Prop :=  ]
+[[
+Inductive False : Prop :=  
+]]
 
 Unsurprisingly, the proposition [False] in Coq is just a Curry-Howard
 counterpart of the type [empty], which we have constructed in
@@ -845,6 +850,8 @@ Print and.
 
 (**
 
+%\ssrd{and}%
+
 [[
 Inductive and (A B : Prop) : Prop :=  conj : A -> B -> A /\ B
 
@@ -941,6 +948,8 @@ For or_introl, when applied to less than 1 argument:
   Arguments A, B are implicit
 ...
 ]]
+
+%\ssrd{or}%
 
 In order to prove disjunction of [P] and [Q], it is sufficient to
 provide a proof of just [P] or [Q], therefore appealing to the
@@ -1150,6 +1159,8 @@ Print ex.
 Inductive ex (A : Type) (P : A -> Prop) : Prop :=
     ex_intro : forall x : A, P x -> ex A P
 ]]
+
+%\ssrd{ex}%
 
 The notation for existentially quantified predicates conveniently
 allows one to existentially quantify over several variables,

@@ -404,6 +404,8 @@ number by means of the following inductive predicate, which ensures
 that [n] is [0], [1] or has no other natural divisors but [1] and [n]
 itself.
 
+%\ssrd{isPrime}%
+
 *)
 
 Inductive isPrime n : Prop := 
@@ -671,6 +673,8 @@ possible representation. SSReflect solves this problem by employing
 the familiar rewriting machinery (%see Section~\ref{sec:indexed} of
 Chapter~\ref{ch:eqrew}%) and introducing the inductive predicate
 family [reflect], which connects propositions an booleans:
+
+%\ssrd{reflect}%
 
 *)
 
@@ -1005,7 +1009,7 @@ Qed.
 Logical connectives are not the only class of inductive predicates
 that is worth building a [reflect]-based rewriting principle for.
 Another useful class of decidable propositions, which are often
-reflected are qualities. 
+reflected, are qualities.
 
 Postponing the description of a generic mechanism for declaring
 polymorphic decidable equalities until %Chapter~\ref{ch:depstruct}%,

@@ -217,6 +217,8 @@ over the alternative representations.
 One can defined the fact that the only natural number which is equalt
 to zero is the zero itself, as shown below:
 
+%\ssrd{isZero}%
+
 *)
 
 
@@ -258,6 +260,8 @@ The benefits of the computable definitions become even more obvious
 when considering the next example, the predicate defining whether a
 natural number is even or odd. Again, we define two versions, the
 inductive predicate and a boolean function.
+
+%\ssrd{evenP}%
 
 *)
 
@@ -748,6 +752,8 @@ the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
 %Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
 \textsf{MoreInd})%.
 
+%\ssrd{beautiful}%
+
 *)
 
 Inductive beautiful (n: nat) : Prop :=
@@ -851,6 +857,8 @@ To practice with proofs by induction, let us consider yet another
 inductive predicate, borrowed fro Pierce et al.'s course and defining
 which of natural numbers are _gorgeous_.  
 %\index{gorgeous numbers}%
+
+%\ssrd{gorgeous}%
 
 *)
 

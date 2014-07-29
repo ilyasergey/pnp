@@ -16,11 +16,14 @@ Module DepRecords.
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
 (** printing first %\texttt{{first}}% *)
-(** printing last %\texttt{{last}}% *)
+(** printing last %\texttt{\emph{last}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
 (** printing View %\texttt{\emph{View}}% *)
 (** printing >-> %\texttt{>->}% *)
+(** printing bot $\bot$ *)
+(** printing <== $\pre$ *)
+
 
 
 (**  
@@ -904,28 +907,122 @@ Proof. done. Qed.
 
 End PCMExamples.
 
-
 (**
+%\begin{exercise}[Partially ordered sets]%
+%\index{partially ordered set}%
 
-** Types with computable equalities
+A partially ordered set order is a triple $(T, \pre, \bot)$, such that
+$T$ is a set, $\pre$ is a relation on $T$ and $\bot$ is an element of
+$T$, such that
+
+%
+\begin{enumerate}
+\item $\forall x \in T, \bot \pre x$ ($\bot$ is a bottom element);
+
+\item $\forall x \in T, x \pre x$ (reflexivity);
+
+\item $\forall x, y \in T, x \pre y \wedge y \pre x \implies x = y$ (antisymmetry);
+
+\item $\forall x, y, z \in T, x \pre y \wedge y \pre z \implies x \pre z$ (transitivity).
+\end{enumerate}
+%
+
+Implement a data structure for partially-ordered set using mixins and
+packed classes. Prove the following laws:
+
+[[
+Lemma botP (x : T) : bot <== x.
+Lemma poset_refl (x : T) : x <== x.
+Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
+Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
+]]
+
+Provide canonical instances of partially ordered sets for types [nat]
+and [pair] and functions, whose codomain (range) is a partially
+ordered set.
+
+%\end{exercise}%
+
+** Types with decidable equalities
+%\index{decidable equality}%
+
+When working with SSReflect and its libraries, one will always come
+across multiple canonical instances of a particularly important
+dependent record type---a structure with decidable equality. As it has
+been already demonstrated in %Section~\ref{sec:eqrefl}%, for concrete
+datatypes, which enjoy the decidable boolean equality [(==)], the
+"switch" to Coq's propositional equality and back can be done
+seamlessly by means of using the view lemma [eqP], leveraging the
+[reflect] predicate instance of the form [reflect (b1 = b2) (b1 ==
+b2)].%\ssrd{reflect}% Let us now show how the decidable equality is
+defined and instantiated.
+
+The module [eqtype]%\ssrm{eqtype}% of SSReflect's standard library
+provides a definition of the equality mixin of the familiar shape,
+which, after some simplifications, boil to the following ones:
+
+[[
+Module Equality.
+
+Definition axiom T (e : rel T) := forall x y, reflect (x = y) (e x y).
+
+Structure mixin_of T := Mixin {op : rel T; _ : axiom op}.
+Structure type := Pack {sort; _ : mixin_of sort}.
+
+...
+
+Notation EqMixin := Mixin.
+Notation EqType T m := Pack T m.
+
+End Equality.
+]]
+
+That is, the mixin for equality is a dependent record, whose first
+field is a relation [op] on a particular carrier type [T] (defined
+internally as a function [T * T -> bool]), and the second argument is
+a proof of the definition [axiom], which postulates that the relation
+is in fact equivalent to the propositional equality (which is
+established by means of inhabiting the [reflect] predicate
+instance). Therefore, in order to make a relation [op] to be a
+decidable equality on [T], one needs to prove that, in fact, it is
+equivalent to the standard, propositional equality.
+
+Subsequently, SSReflect libraries deliver the canonical instances of
+the decidable equality structure to all commonly used concrete
+datatypes. For example, the decidable equality for natural numbers is
+implemented in the [ssrnat]%\ssrm{ssrnat}% module by the following
+recursive function:
+
+[[
+Fixpoint eqn m n {struct m} :=
+  match m, n with
+  | 0, 0 => true
+  | m'.+1, n'.+1 => eqn m' n'
+  | _, _ => false
+  end.
+]]
+
+The following lemma establishes that [eqn] correctly reflects the
+propositional equality.
+
+[[
+Lemma eqnP : Equality.axiom eqn.
+Proof.
+move=> n m; apply: (iffP idP) => [ | <- ]; last by elim n.
+by elim: n m => [ | n IHn] [| m ] //= /IHn ->.
+Qed.
+]]
+
+Finally the following two definitions establish the canonical instance
+of the decidable equality for [nat], which can be used whenever
+[ssrnat] is imported.
+
+[[
+Canonical nat_eqMixin := EqMixin eqnP.
+Canonical nat_eqType := EqType nat nat_eqMixin.
+]]
 
 *)
-
-
-
-(**
-
-* Summary of encoding patterns
-
-
-We recommend the interested authors to take a look at Chapter 1 of
-%Fran\c{c}ois% Garillot's PhD dissertation for more examples of
-mathematical data structure encoding in Coq/SSReflect%~\cite{Garillot:PhD}%. 
-
-More examples in%~\cite{Garillot-al:TPHOL09}%.
-
-*)
-
 
 (* begin hide *)
 End DepRecords.
