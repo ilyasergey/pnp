@@ -710,6 +710,12 @@ later ones to be instances of a PCM.
 
 ** Defining arbitrary PCM instances
 
+Natural numbers form a PCM, in particular, with addition as a join
+operation and zero as a unit element. The validity predicate is simply
+constant true, because the addition of two natural numbers is again a
+valid natural numbers. Therefore, we can instantiate the PCM structure
+for [nat] as follows, first by constructing the appropriate mixin.
+
 *)
 
 Definition natPCMMixin := 
@@ -717,18 +723,120 @@ Definition natPCMMixin :=
 
 (**
 
-%\ccom{Canonical}%
+The constructor [PCMMixin], defined in Section~%\ref{sec:packaging}%
+is invoked with five parameters, all of which correspond to the
+properties, ensured by the PCM definition. The rest of the arguments,
+namely, the validity predicate, the join operation and the zero
+element are soundly inferred by Coq's type inference engine from the
+types of lemmas, provided as propositional arguments. For instance,
+the first argument [addnC], whose type is [commutative addn] makes it
+possible to infer that the join operation is the addition. In the same
+spirit, the third argument, [add0n] makes it unambiguous that the unit
+element is zero.
+
+After defining the PCM mixin, we can instantiate the PCM packed class
+for [natq] by the following definition:
 
 *)
 
 Definition NatPCM := PCM nat natPCMMixin.
 
+(** 
+
+This definition will indeed work, although, somewhat
+unsatisfactory. For example, assume we want to prove the following
+lemma for natural numbers treated as elements of a PCM, which should
+trivially follow from the PCM properties of [nat] with addition and
+zero:
+
+[[
+Lemma add_perm (a b c : nat) : a \+ (b \+ c) = a \+ (c \+ b).
+]]
+
+
+[[
+The term "a" has type "nat" while it is expected to have type "PCMDef.type ?135".
+]]
+
+This error is due to the fact that Coq is unable to recognise natural
+numbers to be elements of the corresponding PCM, and one possible way
+to fix it is to decalre the parameters of the lemma [add_perm], [a],
+[b] and [c] to be of type [NatPCM] rather than [nat]. This is still
+awkward: it means that the lemmas cannot be just applied to mere
+natural numbers, instead they need to be _coerced_ to the [NatPCM]
+type whenever we need to apply this lemma. Coq suggests a better
+solution to this problem by providing a mechanism of _canonical
+structures_ %\index{canonical structures}% as a flexible way to
+specify _how exactly_ each concrete datatype should be embedded into
+an abstract mathematical structure%~\cite{Saibi:PhD}%.
+
+The Vernacular syntax for defining canonical structures is similar to
+the one of definitions and makes use of the [Canonical]
+command.%\footnote{The command \texttt{Cannonical Structure}
+\ccom{Canonical Structure} serves the same purpose.}\ccom{Canonical}%
+The following definition defines [natPCM] to be a canonical instance
+of the PCM structure for natural numbers.
+
+*)
+
 Canonical natPCM := PCM nat natPCMMixin.
+
+(** 
+
+To see what kind of effect it takes, we will print all _canonical
+projections_, currently available in the context of the module. 
+
+*)
 
 Print Canonical Projections.
 
-Export CancelPCM.Exports.
-Check CancelPCMMixin.
+(**
+
+[[
+...
+nat <- PCMDef.type ( natPCM )
+pred_of_mem <- topred ( memPredType )
+pred_of_simpl <- topred ( simplPredType )
+sig <- sub_sort ( sig_subType )
+number <- sub_sort ( number_subType )
+...
+]]
+
+The displayed list specifies, which implicit canonical structures are
+currently available and will be triggered implicitly. That is, for
+example, whenever an instance of [nat] is available, but in fact it
+should be treated as the [type] field of the [PCM] structure (with all
+getters typed properly), the canonical instance [natPCM] should be
+picked for such embedding. In other words, the canonical structures
+machinery allowed us to define the policy for finding an appropriate
+_dictionary_ of functions and propositions for an arbitrary concrete
+datatype, whenever it is supposed to have them. The mechanism of
+defining canonical structures for concrete data types is reminiscent
+to the resolution of type class constraints in
+Haskell%~\cite{Wadler-Blott:POPL89}%. However, unlike Haskell, where
+the resolution algorithm for type class instances is _hard-coded_, in
+the case of Coq one can actually _program_ the way the canonical
+instances are resolved.%\footnote{In addition to canonical structures,
+Coq also provides mechanism of type classe, which are even more
+similar to the ones from Haskell, and similarly to the later ones do
+not provide a way to program the resolution
+policy~\cite{Sozeau-Oury:TPHOL08}.}% This leads to a very powerful
+technique to automate the process of theorem proving by encoding the
+way to find and apply necessary lemmas, whenever it is required. These
+techniques are, however, outside of the scope of this course, so we
+direct the interested reader to the relevant publications that
+describe the patterns of programming with canonical
+structures%~\cite{Gontier-al:ICFP11,Mahboubi-Tassi:ITP13,Garillot:PhD}%.
+
+Similarly to the way we have defined a canonical instance of PCM for
+[nat], we can define a canonical instance of a PCM with
+cancellativity. In order to instantiate it, we will, however, need to
+prove the following lemma, which states that the addition on natural
+numbers is indeed cancellative, so this fact will be used as an
+argument for the [CancelPCMMixin] constructor.
+
+*)
+
 
 Lemma cancelNat : forall a b c: nat, true -> a + b = a + c -> b = c.
 Proof.
@@ -736,29 +844,63 @@ move=> a b c; elim: a=>// n /(_ is_true_true) Hn _ H.
 by apply: Hn; rewrite !addSn in H; move/eq_add_S: H.
 Qed.
 
+(** 
+
+Notice the first assumption [true] of the lemma. Here it serves as a
+placeholder for the general validity hypothesis [valid (a \+ b)],
+which is always [true] in the case of natural numbers.
+
+*)
+
 Definition cancelNatPCMMixin := CancelPCMMixin cancelNat.
+
 Canonical cancelNatPCM := CancelPCM natPCM cancelNatPCMMixin.
+
+(** 
+
+Let us now see the canonical instances in action, so we can prove a
+number of lemmas about natural numbers employing the general PCM
+machinery.
+
+*)
 
 Section PCMExamples.
 
 Variables a b c: nat.
 
-(* 
+Goal a \+ (b \+ c) =  c \+ (b \+ a).
+by rewrite joinA [c \+ _]joinC [b \+ _]joinC.
+Qed.
 
-TODO: can I use [+] here instead of [\+] ?
+(** 
+
+The next goal is proved by using the combined machinery of [PCM] and
+[CancelPCM].
 
 *)
 
-Goal a \+ b = a \+ b.
-by rewrite joinC.
-Qed.
-
-Lemma valid_nat: forall a b: nat, valid (a \+ b).
-Proof. by []. Qed.
-
 Goal c \+ a = a \+ b -> c = b.
-by rewrite [c \+ _]joinC; move/(cancel (valid_nat _ _)).
+by rewrite [c \+ _]joinC; apply: cancel.
 Qed.
+
+(** 
+
+It might look a bit cumbersome, though, to write the PCM join
+operation [\+] instead of the boolean addition when specifying the
+facts about natural numbers (even though they are treated as elements
+of the appropriate PCM). Unfortunately, it is not trivial to encode
+the mechanism, which will perform such conversion implicitly. Even
+though Coq is capable of figuring out what the PCM is necessary, and
+when seeing [(a b : nat)] being used, it infers the [natPCM]. Alas,
+it's not powerful enough to infer that the by writing the addition
+function [+] on natural numbers, we mean the PCM's join. However, if
+necessary, in most of the cases the conversion like this can be done
+by manual rewriting using the following "conversion" lemma.
+
+*)
+
+Lemma addn_join (x y: nat): x + y = x \+ y. 
+Proof. done. Qed.
 
 End PCMExamples.
 

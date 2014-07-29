@@ -96,7 +96,11 @@ Require Import ssreflect ssrbool.
 printing it: %\ccom{Print}% *)
 
 Print bool.
-(** [Inductive bool : Set :=  true : bool | false : bool] *)
+(** 
+[[
+Inductive bool : Set :=  true : bool | false : bool
+]] 
+*)
 
 (** 
 
@@ -216,7 +220,9 @@ reductions.}%
 
 Eval compute in my_plus 5 7. 
 (** 
-[ = 12 : nat] 
+[[ 
+= 12 : nat
+]] 
 
 The same function could be written quite a bit shorter via SSReflect's
 pattern-matching [if-is]-notation, which is a convenient alternative
@@ -238,11 +244,16 @@ following "buggy" addition function, which goes into an infinite
 recursion instead of producing the value, due to the fact that the
 recursion argument is not decreasing and remains to be [n]:
 
-[Fixpoint my_plus_buggy n m := if n is n'.+1 then (my_plus_buggy n m).+1 else m.]
+[[
+Fixpoint my_plus_buggy n m := 
+    if n is n'.+1 then (my_plus_buggy n m).+1 else m.
+]]
 
 we immediately get the following error out of the Coq interpreter:
 
-[Error: Cannot guess decreasing argument of fix.]
+[[
+Error: Cannot guess decreasing argument of fix.
+]]
 
 This is due to the fact that the recursion in [my_plus_buggy] is not
 _primitive_: that is there is a recursive call, whose argument is not
@@ -341,10 +352,11 @@ parameter is a result of type described by application of the function
 [P] to zero. The third parameter is a _family_ of functions, indexed
 by a natural number [n]. Each function from such a family takes an
 argument of type [P n] and returns a result of type [P n.+1]. The
-default recursion principle%\index{recursion principle}% for natural numbers is therefore a
-higher-order function (i.e., a combinator). If the three discussed
-arguments are provided, the result of [nat_rec] will be a function,
-mapping a natural number [n] to a value of type [P n].
+default recursion principle%\index{recursion principle}% for natural
+numbers is therefore a higher-order function (i.e., a combinator). If
+the three discussed arguments are provided, the result of [nat_rec]
+will be a function, mapping a natural number [n] to a value of type [P
+n].
 
 To see how [nat_rec] is implemented, let us explore its generalized
 version, [nat_rect]:
@@ -385,7 +397,7 @@ Definition my_plus1 n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
 Eval compute in my_plus1 16 12.
 
 (** 
-[  = 28 : (fun _ : nat => nat) 16]
+[    = 28 : (fun _ : nat => nat) 16]
 
 The result of invoking [my_plus1] is expectable. Notice, however, that
 when defining it we didn't have to use the keyword [Fixpoint] (or,
@@ -428,20 +440,18 @@ Eval compute in sum_no_zero 0.
 
 (** 
 
-[[ 
+[ 
      = tt
      : (fun n : nat => match n with
                        | 0 => unit
                        | _.+1 => nat
                        end) 0
-]]
+]
 
 *)
 
 Eval compute in sum_no_zero 5.
-
 (** 
-
 [[
      = 15
      : (fun n : nat => match n with
@@ -449,10 +459,6 @@ Eval compute in sum_no_zero 5.
                        | _.+1 => nat
                        end) 5
 ]]
-
-*)
-
-(** 
 
 The toy function [sum_no_zero] maps every natural number [n] to a sum
 of numbers [1] ... [n], except for [0], which is being mapped into the
@@ -621,11 +627,15 @@ parameters that can be possibly curried:
 *)
 
 Check prod.
+
 (**
-[ prod : Type -> Type -> Type]
+[[
+prod : Type -> Type -> Type
+
+]]
 
 Pairs in Coq are defined as a higher-order datatype [prod] with just
-one constructor [pair]:
+one constructor:
 
 *)
 Print prod.
@@ -648,7 +658,10 @@ be omitted in the following expression: *)
 Check pair 1 tt.
 
 (** 
-[ (1, tt) : nat * unit]
+[[
+(1, tt) : nat * unit
+
+]]
 
 If one wants to explicitly specify the type arguments of a
 constructor, the [@]-prefixed notation can be used:
@@ -657,8 +670,12 @@ constructor, the [@]-prefixed notation can be used:
 
 Check @pair nat unit 1 tt.
 
-(** 
-[ (1, tt) : nat * unit]
+(**
+[[
+
+(1, tt) : nat * unit
+
+]]
 
 Notice that the parameters of the datatype come first in the order
 they are declared, followed by the arguments of the constructor (often
@@ -678,12 +695,16 @@ as pair. For instance, the first and second components of a pair:
 
 Check fst.
 (**
-[fst : forall A B : Type, A * B -> A]
+[[
+fst : forall A B : Type, A * B -> A
+]]
 *)
 
 Check snd.
 (**
-[fst : forall A B : Type, A * B -> A]
+[[
+fst : forall A B : Type, A * B -> A
+]]
 
 Curiously, the notation "[_ * _]" is not hard-coded into Coq, but
 rather is defined as a lightweight syntactic sugar on top of standard
