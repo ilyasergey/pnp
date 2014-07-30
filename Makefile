@@ -25,9 +25,10 @@ define print_flag
 endef
 
 COQ_MK := coq_makefile
-COQ_MK_FLAGS := $(VS) COQC = "\$$(COQBIN)ssrcoq" COQLIBS = "$(foreach f,$(COQLIBS),$(call print_flag,$f)) -I ." COQFLAGS = "-q \$$(OPT) \$$(COQLIBS) -dont-load-proofs -compile"
+COQ_MK_FLAGS := $(VS) COQC = "\$$(COQBIN)ssrcoq" COQLIBS = "$(foreach f,$(COQLIBS),$(call print_flag,$f)) -I . -I ./htt" COQFLAGS = "-q \$$(OPT) \$$(COQLIBS) -dont-load-proofs -compile"
 
-$(MAKEFILE): Makefile 
+$(MAKEFILE): 
+	cd htt && make && cd ..
 	$(COQ_MK) $(COQ_MK_FLAGS) -o $(MAKEFILE)
 	$(call scrub,Makefile.coq)
 
@@ -46,14 +47,13 @@ latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/p
 latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
 	cd latex && pdflatex $* && pdflatex $* && bibtex $* && makeindex $* && pdflatex $* && pdflatex $*
 
+cleanhtt:
+	cd htt && make clean && cd ..
+
 clean:  $(MAKEFILE)
 	make -f $(MAKEFILE) clean
 	rm -f $(MAKEFILE)
 	cd latex; rm -f *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out
-
-
-# release: $(TARGET_DIR)
-# 	cp -i Makefile $(RELEASE) $(TARGET_DIR)
 
 
 

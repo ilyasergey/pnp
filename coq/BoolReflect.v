@@ -343,7 +343,7 @@ TS_neg =
 *)
 
 
-(** * %\texttt{Prop} versus \emph{bool}%
+(** * %\texttt{Prop} versus \textbf{\textsf{bool}}%
 %\label{sec:propbool}%
 
 As we have already explored in the previous chapters, in CIC, the

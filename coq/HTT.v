@@ -20,18 +20,36 @@ Module HTT.
 (** printing View %\texttt{\emph{View}}% *)
 (** printing >-> %\texttt{>->}% *)
 
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
-Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive.
-
 (** 
 
 * Specifications of imperative programs and Hoare triples
 
-* Basics of Separation Logic
+** Verifying programs in Hoare-style logic
 
-* Encoding program specifications as types
+** Basics of Separation Logic
+
+** Selected rules of separation logic
+
+* Monads in functional programming
+
+** State monad
+
+*)
+
+Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+
+Add LoadPath "./../htt".
+Require Import pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
+
+Set Implicit Arguments.
+Unset Strict Implicit.
+Unset Printing Implicit Defensive.
+
+(**
+
+* Basics of Hoare Type Theory
+
+** Encoding program specifications as types
 
 ** The Hoare monad
 
