@@ -991,7 +991,9 @@ Subsequently, SSReflect libraries deliver the canonical instances of
 the decidable equality structure to all commonly used concrete
 datatypes. For example, the decidable equality for natural numbers is
 implemented in the [ssrnat]%\ssrm{ssrnat}% module by the following
-recursive function:
+recursive function:%\footnote{Coq's %[{struct n}]% annotation
+explicitly specifies, which of the two arguments should be decreasing
+so the recursion would be well-founded and %[eqn]% would terminate.}%
 
 [[
 Fixpoint eqn m n {struct m} :=
