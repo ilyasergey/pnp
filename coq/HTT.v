@@ -150,7 +150,6 @@ Fixpoint fib_pure n :=
 Definition fib_inv (n x y : ptr) (N : nat) h : Prop := 
   exists n' x' y': nat, 
   [/\ h = n :-> n'.+1 \+ x :-> x' \+ y :-> y',
-      n'.+1 <= N,
       x' = fib_pure n' & y' = fib_pure (n'.+1)].
 
 Definition fib_tp n x y N := 
@@ -171,18 +170,13 @@ Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N :=
              loop tt)).
 
 Next Obligation.
-move=>h /=[n'][_][_][->{h}]Ne->->.
+move=>h /=[n'][_][_][->{h}]->->.
 heval; case X: (n'.+1 == N)=>//.
 - by apply: val_ret=>_; move/eqP: X=><-/=.
 heval; apply: val_doR=>//. (* This line takes a while due to automation. *)
 move=>_.
 exists (n'.+1), (fib_pure (n'.+1)), (fib_pure n'.+1.+1).
-rewrite addn1; split=>//.
-rewrite ltnNge; apply/negP; rewrite leq_eqVlt.
-case/orP=>//; first by rewrite eq_sym X.
-rewrite ltnS leq_eqVlt; case/orP.
-- by move/eqP=>Z; subst N; rewrite ltnn in Ne.
-by move/(ltn_trans Ne); rewrite ltnn.
+by rewrite addn1.
 Qed.
 
 Program Definition fib N : 
@@ -207,10 +201,9 @@ case N2: (N == 1)=>//; first by move/eqP: N2=>->; apply:val_ret.
 heval=>n; heval=>x; heval=>y; rewrite unitR joinC [x:->_ \+ _]joinC.
 apply: bnd_seq=>/=.
 apply: val_doR; last first=>//[res h|].
-- case; case=>n'[_][_][->{h}]Ne->->->_.
+- case; case=>n'[_][_][->{h}]->->->_.
   by heval; rewrite !unitR.
-- exists 1, 1, 1; split=>//=.  
-by case: N N1 N2=>//; case=>//.
+by exists 1, 1, 1.
 Qed.
 
 (**
