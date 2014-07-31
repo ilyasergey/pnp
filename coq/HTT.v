@@ -19,12 +19,18 @@ Module HTT.
 (** printing have %\texttt{\emph{have}}% *)
 (** printing View %\texttt{\emph{View}}% *)
 (** printing >-> %\texttt{>->}% *)
+(** printing LoadPath %\texttt{\emph{LoadPath}}% *)
+(** printing exists %\texttt{\emph{exists}}% *)
 
 (** 
 
-* Specifications of imperative programs and Hoare triples
+* Imperative programs and their specifications
 
-** Verifying programs in Hoare-style logic
+** The notion of Hoare triple
+
+** Partial correctness
+
+* Verifying programs in Hoare-style logic
 
 - simple imperative program
 
@@ -157,6 +163,7 @@ Definition fib_tp n x y N :=
      STsep (fib_inv n x y N, 
            [vfun (res : nat) h => fib_inv n x y N h /\ res = fib_pure N]).
 
+(*
 Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
   Fix (fun (loop : fib_tp n x y N) (_ : unit) => 
     Do (n' <-- !n;
@@ -205,6 +212,7 @@ apply: val_doR; last first=>//[res h|].
   by heval; rewrite !unitR.
 by exists 1, 1, 1.
 Qed.
+*)
 
 (**
 
