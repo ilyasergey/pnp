@@ -503,8 +503,8 @@ non-equality of certain pointers pollute all the specifications,
 rendering them unreadable and eventually useless. This was precisely
 the reason, why after being discovered in late '60s and investigated
 for a decade, Hoare-style logics we soon almost dismissed as a
-specification and verification method, due to the complexity of
-reasoning process. 
+specification and verification method, due to the immense complexity
+of the reasoning process nad overwhelming proof obligations.
 
 The situation has changed when in 2002 John C. Reynolds, Peter
 O'Hearn, Samin Ishtiaq and Hongseok Yang suggested an alternative way
