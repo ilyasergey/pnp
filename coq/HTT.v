@@ -145,19 +145,19 @@ will never reach the final state.%\footnote{This intuition is
 consistent with the one, enforced by Coq's termination checker, which
 allows only terminating programs to be written, since non-terminating
 program can be given any type and therefore compromise the consistency
-of the whole logic.}% Such interpretation of a Hoare triple "modulo
-termination" is referred to as _partial correctness_, and in this
-chapter we will focus on it. It is possible to give to a Hoare triple
-$\spec{P}~c~\spec{Q}$ a different interpretation, which would deliver
-a stronger property: "if right before the program $c$ is executed the
-state of mutable variables is described by a proposition $P$, then $c$
-terminates and the resulting state satisfies the proposition
-$Q$". Such property is called _total correctness_ and requires
-tracking some sort of "fuel" for the program in the assertions, so it
-could run further. We do not consider total correctness in this course
-and instead refer the reader to the relevant research results on
-Hoare-style specifications with resource
-bounds%~\cite{Dockins-Hobor:DS10}%.
+of the whole underlying logical framework of CIC.}% Such
+interpretation of a Hoare triple "modulo termination" is referred to
+as _partial correctness_, and in this chapter we will focus on it. It
+is possible to give to a Hoare triple $\spec{P}~c~\spec{Q}$ a
+different interpretation, which would deliver a stronger property: "if
+right before the program $c$ is executed the state of mutable
+variables is described by a proposition $P$, then $c$ terminates and
+the resulting state satisfies the proposition $Q$". Such property is
+called _total correctness_ and requires tracking some sort of "fuel"
+for the program in the assertions, so it could run further. We do not
+consider total correctness in this course and instead refer the reader
+to the relevant research results on Hoare-style specifications with
+resource bounds%~\cite{Dockins-Hobor:DS10}%.
 
 ** Specifying and verifying programs in the Hoare logic
 
@@ -176,6 +176,8 @@ Main motto logic about heaps and aliasing (a an b can in fact point to the same 
 TODO: example -- returning value of a pointer
 
 ** Selected rules of Separation Logic
+
+** Verifying programs in Separation Logic
 
 * Monads in functional programming
 
@@ -212,8 +214,8 @@ Fixpoint fact_pure n := if n is n'.+1 then n * (fact_pure n') else 1.
 
 Definition fact_inv (n acc : ptr) (N : nat) h : Prop := 
   exists n' a': nat, 
-  [/\ h = n :-> n' \+ acc :-> a',
-      n' <= N & (fact_pure n') * a' = fact_pure N].
+  [/\ h = n :-> n' \+ acc :-> a' & 
+      (fact_pure n') * a' = fact_pure N].
 
 Definition fact_tp n acc := 
   unit -> {N}, 
@@ -234,7 +236,7 @@ Next Obligation.
    A: It pulls out all the logical variables to the top level
 *)
 apply: ghR=>i N. 
-case=>n' [a'][->{i}]Ne Hi V. 
+case=>n' [a'][->{i}] Hi V. 
 heval. (* TODO: Some automation - explain *)
 case X: (n' == 0)=>//.
 (* TODO: explain search for tactics *)
@@ -244,8 +246,7 @@ case X: (n' == 0)=>//.
 heval. 
 apply: (gh_ex N); apply: val_doR=>// V1.
 - exists (n'-1), (a' * n'); split=>//=. 
-- by apply: (leq_trans (leq_subr 1 n') Ne).
-rewrite -Hi=>{Hi Ne V1 V}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
+rewrite -Hi=>{Hi V1 V}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
 case: n' X=>//= n' _.
 by rewrite subn1 -pred_Sn. 
 Qed.
@@ -277,7 +278,7 @@ Replace the call by its spec (substitution principle)
 val_doR preserves the heap.
 *)
 apply: val_doR=>//; first by exists N, 1; rewrite muln1.
-by move=>_ _ [[n'][a'][->] _ _ ->] _; heval.
+by move=>_ _ [[n'][a'][->] _ ->] _; heval.
 Qed.
 
 
