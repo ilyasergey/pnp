@@ -24,15 +24,146 @@ Module HTT.
 
 (** 
 
+In this chapter, we present a fairly large case study that makes use
+of many of Coq and SSReflect's features, which we have observed by
+this moment,---specification and verification of imperative programs.
+
+Programming language practitioners usuale elaborate on the dichotomy
+between _declarative_ and _imperative_ languages, emphasizing the fact
+%\index{declarative programming}\index{imperative programming}% that a
+program written in declarative language is pretty much documenting
+itself, as it already specifies the _result_ of a
+computation. Therefore, logic and constraint programming languages
+(such as Prolog and Ciao%~\cite{Hermenegildo-al:TPLP12}\index{Ciao}%)
+as well as data definition/manipulation languages (e.g., SQL), whose
+programs are just sets of constraints/logical clauses or queries
+describing the desired result, are naturally considered to be
+declarative. Very often, pure functional programming languages (e.g.,
+Haskell) are considered declarative as well, The reason for this is
+the _referential transparency_ property, which ensures that programs
+in such language %\index{referential transparency}% are in fact
+effect-free expressions, evaluating to some result (similar to
+mathematical functions). Therefore, such programs, whose outcome is
+only their result as an expression, but not some side effect (e.g.,
+output to a file), can be replaced safely by their result, if it's
+computable. This possibility provides a convenient way of algebraic
+reasoning about such programs by means of equality
+rewritings---precisely what we were observing and leveraging in
+%Chapters~\ref{ch:eqrew} and~\ref{ch:ssrstyle}% of this course in the
+context of Coq taken as a functional programming language.
+
+%\index{specification|see {program specification}}%
+
+That said, pure functional programs tend to be considered to be good
+specifications for themselves. Of course, the term "specification" (or
+simply, "spec") %\index{program specification}% is overloaded and in
+some context it might mean the result of the program, its effect or
+some algebraic properties. While a functional program is already a
+good description of its result (due to referential transparency), its
+algebraic properties (e.g., some equalities that hold over it) are
+usually a subject of separate statements, which should be proved. Good
+example of such properties are the commutativity and cancellation
+statements, which we proved for natural numbers on
+page%~\pageref{pg:addnprops} of Chapter~\ref{ch:depstruct}%. Another
+classical series of examples, which we did not focus in this course,
+are properties of list functions, such as appending and reversal
+(e.g., that the list reversal is an inverse to itself).%\footnote{A
+typical anti-pattern in dependently-typed languages and Coq in
+particular is to encode such algebraic properties into the definitions
+of the datatypes and functions themselves (a chrestomathic example of
+such approach are length-indexed lists). While this approach looks
+appealing, as it demonstrates the power of dependent types to capture
+certain properties of datatypes and functions on them, it is
+inherently non-scalable, as there will be always another property of
+interest, which has not been foreseen by a designer of the
+datatype/function, so it will have to be encoded as an external fact
+anyway. This is why we advocate the approach, in which datatypes and
+functions are defined as close to the way they would be defined by a
+programmer as possible, and all necessary properties are proved
+separately.}%
+
+The situation is different when it comes to imperative programs, whose
+outcome is typically their side-effect and is achieved by means of
+manipulating mutable state or performing input/output. While some of
+the modern programming languages (e.g., Scala, OCaml) allow one to mix
+imperative and declarative programming styles, it is significantly
+harder to reason about such programs, as now they cannot be simply
+replaced by their results: one should also take into account the
+effect of their execution (i.e., changes in the mutable state). A very
+distinct approach to incorporating both imperative and declarative
+programming is taken by Haskell, in which effectful programs can
+always be distinguished from pure ones by means of enforcing the
+former ones to have very specific
+types%~\cite{PeytonJones-Wadler:POPL93}%---the idea we will elaborate
+more on a bit further.
+
+In the following sections of this chapter, we will learn how Coq can
+be used to give specifications to imperative programs, written in a
+language, similar to C. Moreover, we will observe how the familiar
+proof construction machinery can be used to establish the correctness
+of these specifications, therefore, providing a way to _verify_ a
+program by means of checking, whether it satisfies a given spec. In
+particular, we will learn how the effects of state-manipulating
+programs can be specified via dependent types, and the specifications
+of separate effectful programs can be _composed_, therefore allowing
+us to structure the reasoning in the modular way, similarly to
+mathematics, where one needs to prove a theorem only once and then can
+just rely on its statement, so it can be employed in the proofs of
+other facts.
+
 * Imperative programs and their specifications
 
-** The notion of Hoare triple
+The first attempts to specify the behaviour of a state-manipulating
+imperative program with assignments originate in late '60s and are due
+to Tony Hoare%~\cite{Hoare:CACM69}%, who considered programs in a
+simple imperative language with mutable variables (but without
+pointers or procedures) and suggested to give a specification to a
+program $c$ in the form of the triple $\spec{P}~c~\spec{Q}$, where $P$
+and $Q$ are logical propositions, describing the values of the mutable
+programs and possible relations between them. $P$ and $Q$ are usually
+%\index{assertions}% referred to as _assertions_; more specifically,
+$P$ is called %\index{precondition}\index{postcondition}%
+_precondition_ of $c$ (or just "pre"), whereas $Q$ is called
+_postcondition_ (or simply "post"). The triple $\spec{P}~c~\spec{Q}$
+is traditionally referred to as _Hoare triple_.%\index{Hoare
+triple}%%\footnote{The initial syntax for the triples by Hoare, was
+$\specK{P}~\set{c}~\specK{Q}$. The notation $\spec{P}~c~\spec{Q}$,
+which is now used consistently is due to Wirth and emphasizes the
+comment-like nature of the assertion in the syntax reminiscent to the
+one of Pascal.}% Its intuitive semantics can be expressed as follows:
+"if right before the program $c$ is executed the state of mutable
+variables is described by a proposition $P$, then, _if $c$
+terminates_, the resulting state satisfies the proposition $Q$".
 
-** Partial correctness
+The reservation on termination of the program $c$ is important. In
+fact, while the Hoare triples in their simple form make sense only for
+terminating programs, it is possible to specify non-terminating
+programs as well. This is due to the fact that the semantics of a
+Hoare triple implies that a non-terminating program can be given _any_
+postcondition, as one won't be able to check it anyway, as the program
+will never reach the final state.%\footnote{This intuition is
+consistent with the one, enforced by Coq's termination checker, which
+allows only terminating programs to be written, since non-terminating
+program can be given any type and therefore compromise the consistency
+of the whole logic.}% Such interpretation of a Hoare triple "modulo
+termination" is referred to as _partial correctness_, and in this
+chapter we will focus on it. It is possible to give to a Hoare triple
+$\spec{P}~c~\spec{Q}$ a different interpretation, which would deliver
+a stronger property: "if right before the program $c$ is executed the
+state of mutable variables is described by a proposition $P$, then $c$
+terminates and the resulting state satisfies the proposition
+$Q$". Such property is called _total correctness_ and requires
+tracking some sort of "fuel" for the program in the assertions, so it
+could run further. We do not consider total correctness in this course
+and instead refer the reader to the relevant research results on
+Hoare-style specifications with resource
+bounds%~\cite{Dockins-Hobor:DS10}%.
 
-* Verifying programs in Hoare-style logic
+** Specifying and verifying programs in the Hoare logic
 
-- simple imperative program
+- simple imperative program assignment
+
+- rules
 
 - loop invariant
 
@@ -44,7 +175,7 @@ Main motto logic about heaps and aliasing (a an b can in fact point to the same 
 
 TODO: example -- returning value of a pointer
 
-** Selected rules of separation logic
+** Selected rules of Separation Logic
 
 * Monads in functional programming
 
@@ -71,7 +202,9 @@ TODO: repeat the factorial example
 
 ** The Hoare monad
 
-** Verifying the factorinal in HTT
+** On loops and recursive functions
+
+** Verifying the factorial in HTT
 
 *)
 

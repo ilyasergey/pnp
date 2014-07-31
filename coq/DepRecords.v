@@ -869,6 +869,8 @@ machinery.
 
 Section PCMExamples.
 
+(** %\label{pg:addnprops}% *)
+
 Variables a b c: nat.
 
 Goal a \+ (b \+ c) =  c \+ (b \+ a).
@@ -992,8 +994,9 @@ the decidable equality structure to all commonly used concrete
 datatypes. For example, the decidable equality for natural numbers is
 implemented in the [ssrnat]%\ssrm{ssrnat}% module by the following
 recursive function:%\footnote{Coq's %[{struct n}]% annotation
-explicitly specifies, which of the two arguments should be decreasing
-so the recursion would be well-founded and %[eqn]% would terminate.}%
+explicitly specifies, which of the two arguments should be considered
+by the system as a decreasing one, so the recursion would be
+well-founded and %[eqn]% would terminate.}%
 
 [[
 Fixpoint eqn m n {struct m} :=
