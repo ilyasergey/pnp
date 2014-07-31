@@ -20,7 +20,7 @@ Module HTT.
 (** printing View %\texttt{\emph{View}}% *)
 (** printing >-> %\texttt{>->}% *)
 (** printing LoadPath %\texttt{\emph{LoadPath}}% *)
-(** printing exists %\texttt{\emph{exists}}% *)
+(** printing exists %\texttt{{exists}}% *)
 
 (** 
 
