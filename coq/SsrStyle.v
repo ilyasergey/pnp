@@ -745,6 +745,7 @@ Qed.
 %\end{exercise}%
 
 * Inductive predicates that cannot be avoided
+%\label{sec:cannot}%
 
 Although formulating predicates as boolean functions is often
 preferable, it is not always trivial to do. Sometimes, it is much

@@ -218,7 +218,7 @@ join_op is defined
 unit_op is defined
 ]]
 
-%\index{record types| see {dependent records}}%
+%\index{record types|see {dependent records}}%
 
 The syntax of Coq's dependent records is reminiscent to the one of
 records in C. Following SSReflect's naming
