@@ -126,6 +126,7 @@ Unset Printing Implicit Defensive.
 (** 
 
 * Encoding partial commutative monoids
+%\label{sec:pcms}%
 
 We will be using partical commutative monoids (PCMs) as an
 illustrative example of a simple algebraic data structure, a subject

@@ -21,6 +21,7 @@ Module HTT.
 (** printing >-> %\texttt{>->}% *)
 (** printing LoadPath %\texttt{\emph{LoadPath}}% *)
 (** printing exists %\texttt{{exists}}% *)
+(** printing do %\texttt{{do}}% *)
 
 (** 
 
@@ -336,17 +337,18 @@ This universal quantification should give some hints that converting
 Hoare triples into types will, presumably, require to make some use of
 dependent types in order to express value-polymorphism, similarly to
 how the universal quantification has been previously used in Coq. Let
-us see a proof sketch of the above stated specification.
+us see a proof sketch of the above stated specification with
+explanations of the rules applied after each assertion.
 
 %
 \begin{alltt}
-\(\spec{x = a \wedge y = b}\) 
+\(\spec{x = a \wedge y = b}\) {\normalfont {The precondition}}
   t := \var{x}; 
-\(\spec{x = a \wedge y = b \wedge t = a} \text{\texttt{by \Rule{Assign} and equality}} \) 
+\(\spec{x = a \wedge y = b \wedge t = a} \) {\normalfont{by \Rule{Assign} and equality}}
   \var{x} := \var{y}; 
-\(\spec{x = b \wedge y = b \wedge t = a} \text{\texttt{by \Rule{Assign} and equality}} \) 
+\(\spec{x = b \wedge y = b \wedge t = a} \) {\normalfont{by \Rule{Assign} and equality}}
   \var{y} := t 
-\(\spec{x = b \wedge y = a} \text{\texttt{by \Rule{Assign} equality and weakening via \Rule{Conseq}}}\)
+\(\spec{x = b \wedge y = a} \) {\normalfont{by \Rule{Assign} equality and weakening via \Rule{Conseq}}}
 \end{alltt}
 %
 
@@ -481,7 +483,7 @@ is assumed to be a pointer value.  %\index{points-to assertions}%
 
 %
 \begin{alltt}
-\(\spec{x \mapsto - \wedge y \mapsto Y}\) \var{x} ::= 5 \(\spec{ x \mapsto 3 \wedge y \mapsto Y }\)
+\(\spec{x \mapsto - \wedge y \mapsto Y}\) \var{x} ::= 5 \(\spec{ x \mapsto 5 \wedge y \mapsto Y }\)
 \end{alltt}
 %
 
@@ -510,32 +512,532 @@ specification and verification method, due to the immense complexity
 of the reasoning process nad overwhelming proof obligations.
 
 The situation has changed when in 2002 John C. Reynolds, Peter
-O'Hearn, Samin Ishtiaq and Hongseok Yang suggested an alternative way
-to state assertions 
+%\index{separation logic|textbf}% O'Hearn, Samin Ishtiaq and Hongseok
+Yang suggested an alternative way to state Hoare-style assertions
+about heap-manipulating programs with
+pointers%~\cite{Reynolds:LICS02}%. The key idea was to make _explicit_
+the fact of disjuntion (or, _separation_) between different parts of a
+heap in the pre- and postconditions. This insight made it possible to
+reason about disjointness of heaps and absence of aliasing without the
+need to emit side conditions about equality of pointers. The resultgin
+formal system received the name _separation logic_, and below we
+consider a number of examples to specify and verify programs in it.
 
-TODO
+For instance, the program, shown above, which assigns $5$ to a pointer
+$x$ can now be given the following specification in the separation
+logic:
 
+%
+\begin{alltt}
+\(\spec{h | h = x \mapsto - \join y \mapsto Y}\) \var{x} ::= 5 \(\spec{\res, h | h = x \mapsto 5 \join y \mapsto Y}\)
+\end{alltt}
+%
 
-
-
-
-
-Main motto: logic about heaps and aliasing (a an b can in fact point
-to the same thing)
-
-TODO: example -- returning value of a pointer
+We emphasize the fact that the heaps, being just partial maps from
+natural numbers to arbitrary values are elements of a PCM
+%(Section~\ref{sec:pcms})% with the operation $\join$ taken to be a
+disjoint union and the unit element to be an empty heap (denoted
+$\hempty$). %\index{PCM}% The above assertions therefore ensure that,
+before the program starts, it operates in a heap $h$, such that $h$ is
+a partial map, consisting of two _different_ pointers, $x$ and $y$,
+such that $y$ points to some universally-quantified value $Y$, and the
+content of $x$ is of no importance (which is denoted by [-]). The
+postcondition makes it explicit that only the value of the pointer $x$
+has not changed, and the value of $y$ remained the same. The
+postcondition also mentions the result $\res$ of the whole
+ooperations, which is, however not constrained anyhow, since, as it
+has been stated, it is just a value of type [unit].%\footnote{The
+classical formulation of Separation Logic~\cite{Reynolds:LICS02}
+introduce the logical operator $\sep$, dubbed \emph{separating
+conjunction}, \index{separating conjunction} which allows to describe
+the split of a heap $h$ into two disjoin parts, without mentioning $h$
+explicitly. That is, the assertion $P \sep Q$ holds over a heap $h$,
+if there exist heaps $h_1$ and $h_2$, such that $h = h_1 \join h_2$,
+$P$ is satisfied by $h_1$ and $Q$ is satisfied by $h_2$. We will stick
+to the ``explicit'' notation, though, as it allows for greater
+flexibility when stating the assertions, mixing both heaps and
+values.}%
 
 ** Selected rules of Separation Logic
 
+Let us now revise some of the rules of Hoare logic and see how they
+will look in separation logic. The rules, stated over the heap, are
+typically given in the _small footprint_ %\index{small footprint}%,
+meaning that they are stated with the smalles possible heap and assume
+that the "rest" of the heap, which is unaffected by the program
+specified, can be safely assumed. The rules for assigning and reading
+the pointers are natural.
+
+%
+\begin{mathpar}
+\inferrule*[Right={(Assign)}]
+ {}
+ {\spec{h ~|~ h = x \mapsto -}~ x ::= e ~\spec{\res, h ~|~ h = x \mapsto e}}
+\and
+\inferrule*[Right={(Read)}]
+ {}
+ {\spec{h ~|~ h = x \mapsto v}~ !x ~\spec{\res, h ~|~ h = x \mapsto v \wedge \res = v}}
+\end{mathpar}
+%
+
+Notice, though, that, unlike the original Hoare logic for mutable
+variables, the rule for writing explicitly requires the pointer $x$ to
+be present in the heap. In other words, the corresponding memory cell
+should be already _allocated_. This is why the traditional separation
+logic assumes presence of an allocator, which can allocate new memory
+cells and dispose them via the effectful functions %\texttt{alloc()}%
+and %\texttt{dealloc()}%, correspondingly.
+
+%
+\begin{mathpar}
+\inferrule*[Right={(Alloc)}]
+ {}
+ {\spec{h ~|~ h = h'}~ \com{alloc}(v) ~\spec{\res, h ~|~ h = \res \mapsto v \join h'}}
+\and
+\inferrule*[Right={(Dealloc)}]
+ {}
+ {\spec{h ~|~ h = x \mapsto - \join h'}~ \com{dealloc}(x) ~\spec{\res, h ~|~ h = h'}}
+\end{mathpar}
+%
+
+For the sake of demonstration, the rules for $\com{alloc}()$ and
+$\com{dealloc}()$ are given in a _large footprint_, which, incontrast
+with %\index{large footprint}% small fottprint-specifications mentions
+the "additional" heap $h'$ in the pre- and pos-conditions, which can
+be arbitrarily instantiated, emphasizing that it remains unchanged
+(recall that $h'$ is implicitly universally-quantified over, and its
+scope is the whole triple), so the resulting is just being
+"increased"/"decreadsed" by a memory entry that has been
+allocated/deallocated.%\footnote{The classical separation logic
+provides a so-called \emph{frame rule}, which allows for the switch
+between the two flavours of footprint by attaching/removing the
+additional heap $h'$. In our reasoning we will be assuming it
+implicitly.}%
+
+The rule for binding is similar to the rule for sequential composition
+of programs $c_1$ and $c_2$ from the standard Hoare logic, although it
+specifies that the immutable variables can substituted in $c_2$.
+
+%
+\begin{mathpar}
+\inferrule*[Right={(Bind)}]
+ {\spec{h ~|~ P(h) }~c_1~\spec{\res, h ~|~ Q(\res, h)} \\
+ \spec{h ~|~ Q(x, h) }~c_2~\spec{\res, h ~|~ R(\res, h)}}
+ {\spec{h ~|~ P(h)}~ x \asgn c_1; c_2 ~\spec{\res, h ~|~ R(\res, h)}}
+\end{mathpar}
+%
+
+The predicates $P$, $Q$ and $R$ in the rule %\Rule{Bind}% are
+considered to be functions of the heap and result,
+correspondingly. This is why for the second program, $c_2$, the
+predicate $Q$ in a precondition is instantiated with $x$, which can
+occur as a free variable in $c_2$. The rule of weakening
+%\Rule{Conseq}% is similar to the one from Hoare logic module the
+technical details on how to weaken heap/result parametrized functions,
+so we omit it here as an intuitive one. The rule for conditional
+operator is the same one as in %Section~\ref{sec:hoare-primer}%, as
+well.
+
+In order to support functions in separation logic, we need to consider
+two additional rules---for function invocation and returning a value. 
+
+%
+\begin{mathpar}
+\inferrule*[Right={(Return)}]
+ {} 
+ {\spec{h ~|~ P(h)}~ \ret e ~\spec{\res, h ~|~ P(h) \wedge \res = e}}
+\and
+\inferrule*[Right={(Hyp)}]
+ {\forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)} \in \Gamma}
+ {\Gamma \vdash \forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)}}
+\and
+\inferrule*[Right={(App)}]
+ {\forall x, \spec{h ~|~ P(x, h) }~f(x)~\spec{\res, h ~|~ Q(x, \res, h)} \in \Gamma}
+ {\Gamma \vdash \spec{h ~|~ P(e, h) }~f(e)~\spec{\res, h ~|~ Q(e, \res, h)}}
+\end{mathpar}
+%
+
+The rule for returning simply constrants the dedicated variable $\res$
+to be equal to the expression $e$. The rule %\Rule{Hyp}% (for
+"hypothesis") introduce the assumption context $\Gamma$ that contains
+%\index{assumption context}\index{typing context}% specifications of
+available "library" functions (similarly to the typing context in
+typing relations%~\cite[Chapter~9]{Pierce:BOOK02}%) and until now was
+assumed to be empty. Notice that, similarly to dependently-type
+functions, in the rule %\Rule{Hyp}% the pre- and postcondition in the
+spec of the assumed function can depend on the value of its argument
+$x$. The rule %\Rule{App}% accounts for the function application and
+instantiates all occurrences of $x$ with the argument expression $e$.
+
+Finally, sometimes we might be able to infer two different
+specifications about the same program. In this case we should be able
+to combine them intor one, which is stronger, and this is what the
+rule of conjunction %\Rule{Conj}% serves for:
+
+%
+\begin{mathpar}
+\inferrule*[Right={(Conj)}]
+ {\spec{h ~|~ P_1(h) }~c~\spec{\res, h ~|~ Q_1(\res, h)} \\
+ \spec{h ~|~ P_2(h) }~c~\spec{\res, h ~|~ Q_2(\res, h)}}
+ {\spec{h ~|~ P_1(h) \wedge P_2(h)}~ c~\spec{\res, h ~|~ Q_1(\res, h) \wedge Q_2(\res, h)}}
+\end{mathpar}
+%
+
+
+
 ** On loops and recursive functions
+
+It is well-known in a programming language folklore that every
+imperative loop can be rewritten as a recursive function, which is
+tail-recursive, i.e., it performs the call of itself only as the very
+last statement in some possible execution branches and doesn't call
+itself at all in all other branches. Therefore, recursive functions
+%\index{tail recursion}% are a more expressive mechanism, as they also
+allow one to write non-tail recursive programs, in which recursive
+calls occur in any position.%\footnote{Although, such programs can be
+made tail-recursive via the continuation-passing style transformation
+(CPS)~\cite{Danvy:CPS}. They can be also converted into imperative
+loops via the subsequent transformation, known as
+\emph{defunctionalization}~\cite{Reynolds:ACM72}.}% Therefore, an
+imperative program of the form 
+
+%
+\begin{center}
+\texttt{while (e) do c}
+\end{center}
+% 
+
+%\noindent% can be rewritten using a recursive function, defined via
+the in-place fixport operator as
+
+%
+\begin{center}
+\texttt{(fix f(x: unit). if e then c ;; f(tt) else ret tt)(tt)}
+\end{center}
+% 
+
+That is, the function %\texttt{f}% is defined with an arumet of the
+unit type and is immediately invoked. If the condition %\texttt{e}% is
+satisfied, the body %\texttt{c}% is executed and the function calls
+itself recursively; otherwise the function just returns a unit result.
+
+Given this relation between imperative loops and effectful recursive
+functions, we won't be providing a rule for loops in separation logic,
+and rather provide one for recursive definitions.
+
+%
+{\small
+\hspace{-10pt}
+\begin{mathpar}
+\inferrule*[Right={(Fix)}]
+ {\Gamma, \forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)} \vdash \spec{h ~|~ P(x, h)}~c~\spec{\res, h ~|~ Q(x, \res, h)}}
+ {\Gamma \vdash \forall y, \spec{h ~|~ P(y, h)}~(\fix~f(x).c)(y)~\spec{\res, h ~|~ Q(y, \res, h)}}
+\end{mathpar}
+}
+%
+
+The premise of the rule %\Rule{Fix}% already _assumes_ the
+specification of a function $f$ (i.e., its _loop invariant_)
+%\index{loop invariant}% in the context $\Gamma$ and requires one to
+verify its body $c$ for the same specification, similarly to how
+recursive functions in some programming languges (e.g.,
+Scala%~\cite[\S~4.1]{Scala-spec}%) require explicit type annotations
+to be type-checked.
+
+In the remainder of this chapter we will be always implementing
+imperative loops via effectful recursive functions, whose
+specifications are stated explicitly, so the rule about would be
+directly applicable.
 
 ** Verifying heap-manipulating programs
 
-* Monads in functional programming
+Let us now see how a simple imperative program with conditionals and
+recursion would be verified in a version of separation logic that we
+presented here. A subject of our experiment will be an efficient
+imperative implementation of the factorial-computing function, which
+_accumulates_ the factorial value in a specific variable, while
+decreasing its argument in a loop, end returns the value of the
+accumulator when the iteration veriable becomse zero. In the
+pseudocode, the %\texttt{fact}% program is implemented as follows:
 
-** IO monad
+%
+\begin{alltt}
+fun fact (\var{N}: nat): Nat = {
+  n   <- alloc(\var{N});
+  acc <- alloc(1); 
+  res <-- 
+    (fix loop (_: unit). 
+      a' <-- !acc;
+      n' <-- !n;
+      if n' == 0 then ret a'
+      else acc ::= a' * n';;
+           n   ::= n' - 1;;
+           loop(tt) 
+    )(tt);
+  dealloc(n);;
+  dealloc(acc);;
+  ret res
+}
+\end{alltt}
+%
 
-** State monad
+The funciont %\texttt{fact}% first allocates two ponters, %\texttt{n}%
+and %\texttt{acc}% for the iteration variable and the accumulator,
+correspondingly. It will then initiate the loop, implemented by the
+recursive function %\texttt{loop}%, that reads the values of
+%\texttt{n}% and %\texttt{acc}% into local immutable variables
+%\texttt{n'}% and %\texttt{a'}%, correspondingly and then checks
+whether %\texttt{n'}% is zero, in which case it returns the value of
+the accumulator. Otherwise it stores into the accumulator the old
+value multiplied by %\texttt{n'}%, decreases %\texttt{n}% and
+re-iterates. After the loop terminates, the two pointers are
+deallocated and the function returns the result.
+
+Our goal for the reas of this section will to be verify this program
+semi-formally, using the rules for separation logic presented above,
+agains its _functional_ specification. In other words, we will have to
+check that the program %\texttt{fact}% returns precisely the factorial
+of its argument value $N$. To give such specification to
+%\texttt{fact}%, we define two auxiliary mathematical functions, $F$
+and $\finv$:
+
+%
+\[
+f(N) = \textsf{if}~N = N'+1~\textsf{then}~N \times f(N')~\textsf{else}~1
+\]
+\[
+\finv(n, acc, N, h) = \exists n', a', (h = n \mapsto n' \join acc \mapsto a') \wedge (f(n') \times a' = f(N))
+\]
+%
+
+It is not difficult to see that $f$ define exactly the factorial
+function as one would define it in a pure functional language (not
+very efficiently, though, but in the most declarative form). The
+$\finv$ second function is in fact a predicate, which we will use to
+give the loop invariant to the loop function %\texttt{loop}%. Now, the
+function %\texttt{fact}% can be given the following specification in
+separation logic, stating that it does not _leak_ memory and its
+result is the factorial of its argument $N$.
+
+%
+\[
+\spec{h ~|~ h = \empty} ~\com{fact}(N)~ \spec{\res, h ~|~ h = \empty \wedge \res = f(N)}
+\]
+%
+
+In the course of the proof of the above stated spec of $\com{fact}$,
+in order to apply the rule %\Rule{Fix}% we pose the specification of
+$\com{loop}$ (in the explicit assumption context $\Gamma$ from the
+rules) to be the following one. The specification states that the body
+of the loop preserves the invariant $\finv$, and, moreover its result
+is the factorial of $N$.
+
+%
+\[
+\spec{h ~|~ \finv(\com{n}, \com{acc}, N, h)} ~\com{loop}(\com{tt})~ \spec{\res, h ~|~ \finv(\com{n}, \com{acc}, N, h) \wedge \res = f(N)}
+\]
+%
+
+Below, we demonstrate a proof sketch of verification of the body of
+$\com{fact}$ against its specification by systematically applying all
+of the presented logic rules.
+
+%
+\begin{alltt}
+\(\spec{h | h = \hempty}\) {\normalfont ({by precondition})}
+ n   <- alloc(\var{N});
+\(\spec{h | h = \com{n} \mapsto N}\) {\normalfont ({by \Rule{Alloc} and PCM properties})}
+ acc <- alloc(1); 
+\(\spec{h | h = \com{n} \mapsto N \join \com{acc} \mapsto 1}\) {\normalfont ({by \Rule{Alloc}})}
+\(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont ({by definition of \(\finv\) and \Rule{Conseq}})}
+ res <-- 
+  (fix loop (_: unit). 
+\(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (precondition)}
+     a' <-- !acc;
+\(\spec{h | \exists{n'}, (h=\com{n}\mapsto{n'}\join\com{acc}\mapsto\com{a'})\wedge(f(n')\times{a'}=f(N))}\) {\normalfont (\(\finv\), \Rule{Read} and \Rule{Conj})}
+     n' <-- !n;
+\(\spec{h | (h=\com{n}\mapsto{\com{n'}}\join\com{acc}\mapsto\com{a'})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (\Rule{Read} and \Rule{Conj})}
+     if n' == 0 then ret a'
+\(\spec{\res, h | (h=\com{n}\mapsto{0}\join\com{acc}\mapsto{f(N)})\wedge(\res=f(N))}\) {\normalfont (defn. \(f\), (=) and \Rule{Return})}
+\(\spec{\res, h | \finv(\com{n}, \com{acc}, N, h)\wedge(\res=f(N))}\) {\normalfont (defn. of \(\finv\))}
+     else 
+\(\spec{ h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Cond})}
+          acc ::= a' * n';;
+\(\spec{ h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+          n   ::= n' - 1;;
+\(\spec{ h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+\(\spec{ h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'}-1)\times{\com{a'}\times\com{n'}}=f(N))}\) {\normalfont (by defn. of \(f\))}
+\(\spec{ h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (by defn. of \(f\))}
+          loop(tt) 
+\(\spec{\res, h | \finv(\com{n}, \com{acc}, N, h)\wedge(\res=f(N))}\) {\normalfont (by assumption and \Rule{Fix})}
+  )(tt);
+\(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\wedge(\com{res}=f(N))\) {\normalfont (by \Rule{Bind})}
+\(\spec{h | (h=\com{n}\mapsto{-}\join\com{acc}\mapsto{-})\wedge(\com{res}=f(N))}\) {\normalfont (by defn. of \(f\))}
+ dealloc(n);;
+\(\spec{h | (h=\com{acc}\mapsto{-}) \wedge (\com{res}=f(N))}\) {\normalfont (by \Rule{Dealloc})}
+ dealloc(acc);;
+\(\spec{h | (h=\hempty)\wedge \wedge (\com{res}=f(N))}\) {\normalfont (by \Rule{Dealloc})}
+ ret res
+\(\spec{\res, h | (h=\hempty)\wedge \wedge (\res=f(N))}\) {\normalfont (by \Rule{Ret})}
+\end{alltt}
+%
+
+Probably, the most tricky parts of the proof, which indeed require a
+human prover are (b) "decomposition" of the loop invariant $\finv$ at
+the beginning of the loop, when it falls into the components,
+constraining the values of $\com{n}$ and $\com{acc}$ in the heap and
+(b) the "re-composition" of the same invariant immediately before the
+recursive call of $\com{loop}$ in order to ensure its
+precondition. The later is possible because of algebraic properties of
+the factorial function $f$, namely the fact that if $n > 0$ then
+$f(n)\times a = f(n-1) \times n \times a$, the insight we have used in
+order to "re-distribute" the values between the two pointers,
+$\com{n}$ and $\com{acc}$ so the invariant $\finv$ could be restored.
+
+It should be clear by this moment that, even though the proof is
+proportional to the size of the program, it has combined some
+mathematical reasoning with a machinery of consistent rule
+application, until the postcondition has been reached. This proof
+process is very reminiscent to the proofs that we have seen so far in
+Coq, when one gradually applies the lemmas, assumptions and performs
+rewritings until the final goal is proved. This is why using Coq seems
+like a good idea to mechanize the process of proofs in separation
+logic, so one can be sure that there is nothing missed during the
+reasoning process and the specification is indeed correct. Employing
+Coq for this purpose is indeed our ultimate goal and the topic of this
+chapter, but before we reach that point, let us make a short detour to
+the world of pure functional programming and representations of
+effects in it by means of _types_.
+
+* Reperesenting effectful computations using monads
+
+It has been a long-standing problem for the functional programming
+community to reconcile the _pure_ functions, enjoying referential
+transparency, with effectful computations (e.g., mutating references,
+throwing exceptions, performing output or reading from input), until
+Eugenio Moggi suggested to use the mechanism of _monads_ to separate
+the results of pure computations from the possible effects they can
+produce%~\cite{Moggi:IC91}% and Phlip Wadler popularized this idea
+with a large number of examples%~\cite{Wadler:POPL92}%. There is a
+countless number of tutorials written and available on the Web that
+are targeted to help building the intuition about the "monad
+magic". Althogh, grasping some essense of monadic computations is
+desired for understanding how verification of the imperative programs
+can be structured in Coq, providing the reader with yet another "monad
+tutorial" is not the task of this course.  Luckily, in order to
+proceed to the verification, which is the topic of this chapter, we
+need only very basic intuition on what monads are and how are they
+typically used.
+
+** Programming with "passing-styles"
+
+Before the notion has been brought to the world of programmed to be
+soon main-streamed by Haskell, the programmers already required to
+combine effects with a functional paradigm. At ths time, such programs
+have been written in "passing styless". %\index{passing style}% 
+
+For instance, if someone needed to have a mutable _state_ around in a
+program, such state could be represented by an immutable record, which
+then would be passed from one function to another as an extra
+component. Every time the state was mutated (e.g., using a dedicated
+[put] function), a _new_ record describing it (with a change adopted)
+would be created and passed further instead of the aold version, which
+would be no longer used. Every time one woulod need to read from the
+state, it could be done via a dedicated [get] function, which would
+then return the value of the state, which is always present. Such
+programming style, which would allow one tor _emulate_ state with
+immutable records without the need to have mutable store and pointers,
+just by passing an extra value around and modifying it consistently,
+would be therefore referred to as a "state-passing style". 
+
+As another example, one can imagine of emulating exceptions by means
+of passing an extra argument to each function, which is checked at
+each "step" of the execution. Such argument would carry information
+about whether an exception has been thrown or not. And if it is thrown
+(so the argument is an exception value), the rest of the computation
+would be discarded and exception would be returned. Alternatively, the
+evaluation should proceed in a normal order. Such programming model
+can be, therefore, referred to as an "exception-passing style",
+stressing the pattern of constant passing of the exception pattern and
+checking it at each step of the program execution.
+
+It is not difficult to com up with more examples of passing style that
+would refere some programming concepts that have to do with
+computation in the presence of an "additional effect". For instance,
+continuation-passing style (CPS) assumes the presence of a
+%\index{continuation-passing style}%
+%\index{CPS|see{continuation-passing style}}% continuation value
+available, which is just an extra function, which can be inworke at an
+arbitrary moment, therefore interruption current execution
+flow. Input/output can be represented by passing around a "handler",
+to which the program can write and from which it can read via
+dedicated functions.
+
+Monads have been introduced to the world of programming as a way to
+unify the diversity of the "passing style" paradigm has been,
+essentially providing a solution of solving two problems:
+
+- providing a uniform interface to for the passing-style, eliminating
+  the need to implement the different machinery of "passing" the
+  "effectful" entity from one computation to the "next" one in each
+  particular case, as well as the need to instantiate the "effect"
+  with a default value;
+
+- implementing a programming language mechanism to statically
+  determine, which particular "effect" (or effects) is being passed
+  around in a particular program and resolve the calls to the
+  effect-specific functions (such as, for example, [put] and [get] in
+  the case of state-passing style).
+
+** Examples of monads
+
+Immediately after their introduction by Moggi and Wadler, monads were
+adopted by Haskell, and currently many dosens of them exist,
+facilitating programming with all kinds of effects and removing the
+need for programming in passing style. The common interface, provided
+by monads is implemented as a Haskell, which, slightly simplified,
+looks as follows.
+
+%
+\begin{alltt}
+class Monad m where
+    (>>=)            :: m a -> (a -> m b) -> m b
+    return           :: a -> m a
+\end{alltt}
+%
+
+The signature specifies that each instance of <<Monad m>> is
+parametrized by one type and requires two functions to be implemented.
+The %\texttt{>>=}% function is pronounced as _bind_ and describes how
+particular monad instance combines two computations, such that the
+second one, whose type is <<m b>>, may depend on the value of result
+of the first one, whose type is <<m a>>. The result of overall
+computation is then the one of the second component, namely, <<m
+b>>. The function <<return>> specifies how to provide a "default"
+value for an effectful computation, i.e., how to "pair" a value of
+type <<a>> with an "effect" entity in order to receive an element of
+%\texttt{m a}%. 
+
+Implementing monads for basic passing-styles is not particularly
+difficult. For instance, the "state-passing style" corresponds to a
+_state monad_, which pairs the result of the computation with a
+current state. This state can be, therefore, updated using the
+function [put] and queried via the function [get]. Internally, such
+monad's implementation is isomorphic to a space of functions of types
+[s -> (a, s)], where [s] is a type of the current state, and [a] is a
+type of the current value of the computation. 
+
+Haskell provides convenient [do]-notation to write programs in a
+%\index{do-notation}% monadic style (as an alternative for passing
+style), such that the invocation of the bind function in the
+expression of the form <<c1 >>= (\x -> c2)>> (such that <<x>> might
+occur in <<c2>>) can be written as <<do x <- c1; c2>>. For instance,
+using [do]-notation, in Haskell a computation <<fiddle>> with a state monad,
+which first reads from <<a>>, then computes the value of <<f a>>, then
+stores it back to the state and finally returns what was put, can be
+written as follows:
+
+TODO
 
 *)
 
@@ -543,6 +1045,8 @@ Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
 
 Add LoadPath "./../htt".
 Require Import pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
+
+
 
 Set Implicit Arguments.
 Unset Strict Implicit.
