@@ -441,21 +441,24 @@ assuming immutable assigned once variables, akin to those bound by the
 %\texttt{let}%-expression. Such variables can, however, have pointers
 as their values.
 
-We will be using the syntax %\texttt{x ::= e}% to denote the
-assignment of a value %\texttt{e}% to the pointer bound by
-%\texttt{x}%. Similarly, the syntax %\texttt{!e}% stands for
-dereferencing a pointer, whose address is a value obtained by
-evaluating a _pure_ expression %\texttt{e}%. Finally, the syntax
-%\texttt{x~<-~c1;~c2}% is a generalization of the sequential
-composition from %Section~\ref{sec:hoare-primer}%, which executes the
-program %\texttt{c1}% (which now can possibly return a result),
-_binds_ this %\index{binding}% result to an immutable variable
-%\texttt{x}% and proceeds to the execution of the program
+Let us first enrich the imperative programming language of interest to
+account for the presence of heap and pointers. We will be using the
+syntax %\texttt{x ::= e}% to denote the assignment of a value
+%\texttt{e}% to the pointer bound by %\texttt{x}%. Similarly, the
+syntax %\texttt{!e}% stands for dereferencing a pointer, whose address
+is a value obtained by evaluating a _pure_ expression %\texttt{e}%. We
+will assume that every program returns a result (and the result of a
+pointer assignment is of type [unit]). To account for this, we will be
+using the syntax %\texttt{x~<-~c1;~c2}% (pronounced "bind") as a
+generalization of the sequential composition from
+%Section~\ref{sec:hoare-primer}%. The bind first executes the program
+%\texttt{c1}%, _binds_ this %\index{binding}% result to an immutable
+variable %\texttt{x}% and proceeds to the execution of the program
 %\texttt{c2}%, which can possibly make use of the variable
 %\texttt{x}%, so all the occurrences of %\texttt{x}% in it are
-replaced by its value. If the result of %\texttt{c1}% is not used by
-%\texttt{c2}%, we will use the abbreviation %\texttt{c1;; c2}% to
-denote this case.
+replaced by its value before it starts evaluating. If the result of
+%\texttt{c1}% is not used by %\texttt{c2}%, we will use the
+abbreviation %\texttt{c1;; c2}% to denote this case.
 
 Specifications in the simple Hoare logic for mutable variables,
 demonstrated in %Section~\ref{sec:hoare-primer}% are stated over
@@ -524,9 +527,13 @@ TODO: example -- returning value of a pointer
 
 ** Selected rules of Separation Logic
 
+** On loops and recursive functions
+
 ** Verifying heap-manipulating programs
 
 * Monads in functional programming
+
+** IO monad
 
 ** State monad
 
@@ -551,8 +558,6 @@ Unset Printing Implicit Defensive.
 TODO: repeat the factorial example
 
 ** The Hoare monad
-
-** On loops and recursive functions
 
 ** Verifying the factorial in HTT
 

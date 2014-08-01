@@ -350,7 +350,7 @@ nat_rec : forall P : nat -> Set,
 ]]
 
 The type of [nat_rec] requires a bit of explanation. It is a
-polymorphic in the sense of Haskell and OCaml (i.e., it is parametrize
+polymorphic in the sense of Haskell and OCaml (i.e., it is parametrized
 over another type). More precisely, its first parameter, bound by the
 [forall] quantifier is a function, which maps natural numbers to types
 (hence the typo if this parameter is [nat -> Set]). The second
