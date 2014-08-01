@@ -25,10 +25,10 @@ Module HTT.
 
 (** 
 
-In this chapter, we will be working with a fairly large case study
-that makes use of most of Coq's features as a programming languages
-with dependent types and as a framework to build proofs and reason
-about mathematical theories.
+In this chapter, we will consider a fairly large case study that makes
+use of most of Coq's features as a programming languages with
+dependent types and as a framework to build proofs and reason about
+mathematical theories.
 
 Programming language practitioners usuale elaborate on the dichotomy
 between _declarative_ and _imperative_ languages, emphasizing the fact
@@ -683,9 +683,7 @@ rule of conjunction %\Rule{Conj}% serves for:
 \end{mathpar}
 %
 
-
-
-** On loops and recursive functions
+** Representing loops as recursive functions
 
 It is well-known in a programming language folklore that every
 imperative loop can be rewritten as a recursive function, which is
@@ -762,7 +760,7 @@ pseudocode, the %\texttt{fact}% program is implemented as follows:
 
 %
 \begin{alltt}
-fun fact (\var{N}: nat): Nat = {
+fun fact (\var{N}: nat): Nat = \{
   n   <- alloc(\var{N});
   acc <- alloc(1); 
   res <-- 
@@ -777,7 +775,7 @@ fun fact (\var{N}: nat): Nat = {
   dealloc(n);;
   dealloc(acc);;
   ret res
-}
+\}
 \end{alltt}
 %
 
@@ -851,7 +849,7 @@ of the presented logic rules.
 \(\spec{h | h = \com{n} \mapsto N \join \com{acc} \mapsto 1}\) {\normalfont ({by \Rule{Alloc}})}
 \(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont ({by definition of \(\finv\) and \Rule{Conseq}})}
  res <-- 
-  (fix loop (_: unit). 
+  (fix loop (_ : unit). 
 \(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (precondition)}
      a' <-- !acc;
 \(\spec{h | \exists{n'}, (h=\com{n}\mapsto{n'}\join\com{acc}\mapsto\com{a'})\wedge(f(n')\times{a'}=f(N))}\) {\normalfont (\(\finv\), \Rule{Read} and \Rule{Conj})}
@@ -905,98 +903,55 @@ like a good idea to mechanize the process of proofs in separation
 logic, so one can be sure that there is nothing missed during the
 reasoning process and the specification is indeed correct. Employing
 Coq for this purpose is indeed our ultimate goal and the topic of this
-chapter, but before we reach that point, let us make a short detour to
-the world of pure functional programming and representations of
-effects in it by means of _types_.
+chapter. However, before we reach that point, let us recall that in a
+nutshell Coq is in fact a _functional_ programming language and make a
+short detour to the world of pure functional programming, to see how
+effects might be specified by means of _types_.
 
-* Reperesenting effectful computations using monads
+* Specifying effectful computations using types
+
+In imperative programs there is a significant distinction between
+_expressions_ and _programs_ (or _commands_). While the former ones
+are _pure_, i.e., will always evaluate to the same result, by which
+they can be replaced, the later ones are _effectful_, as their result
+and the ultimate outcome may produce some irrevertibale effect (e.g.,
+mutating references, throwing exceptions, performing output or reading
+from input), which one should account for. Hoare logics, and, in
+particular, separation logic focus on specifying effectful programs
+taking expressions for granted and assuming their referential
+transparency, which makes it not entirely straightforward to embed
+such reasoning into the purely functional setting of the Coq
+framework.
 
 It has been a long-standing problem for the functional programming
-community to reconcile the _pure_ functions, enjoying referential
-transparency, with effectful computations (e.g., mutating references,
-throwing exceptions, performing output or reading from input), until
-Eugenio Moggi suggested to use the mechanism of _monads_ to separate
-the results of pure computations from the possible effects they can
-produce%~\cite{Moggi:IC91}% and Phlip Wadler popularized this idea
-with a large number of examples%~\cite{Wadler:POPL92}%. There is a
-countless number of tutorials written and available on the Web that
-are targeted to help building the intuition about the "monad
-magic". Althogh, grasping some essense of monadic computations is
-desired for understanding how verification of the imperative programs
-can be structured in Coq, providing the reader with yet another "monad
-tutorial" is not the task of this course.  Luckily, in order to
-proceed to the verification, which is the topic of this chapter, we
-need only very basic intuition on what monads are and how are they
-typically used.
+community to reconcile the _pure_ expressions, enjoying referential
+transparency, with effectful computations, until Eugenio Moggi
+suggested to use the mechanism of _monads_ to separate the _results_
+of computations from the possible _effects_ they can
+produce%~\cite{Moggi:IC91}%, and Philip Wadler popularized this idea
+with a large number of examples%~\cite{Wadler:POPL92}%, immediately
+adopted by Haskell programming language. There is a countless number
+of tutorials written and available on the Web that are targeted to
+help building the intuition about the "monad magic". Althogh, grasping
+some essense of monadic computations is desirable for understanding
+how verification of the imperative programs can be structured in Coq,
+providing the reader with yet another "monad tutorial" is not the task
+of this course. Luckily, in order to proceed to the verification,
+which is the topic of this chapter, we need only very basic intuition
+on what monads are, and how are they typically used to capture the
+essence of computations and their effects.
 
-** Programming with "passing-styles"
+** On monads and computations
 
-Before the notion has been brought to the world of programmed to be
-soon main-streamed by Haskell, the programmers already required to
-combine effects with a functional paradigm. At ths time, such programs
-have been written in "passing styless". %\index{passing style}% 
+%\index{monads}%
 
-For instance, if someone needed to have a mutable _state_ around in a
-program, such state could be represented by an immutable record, which
-then would be passed from one function to another as an extra
-component. Every time the state was mutated (e.g., using a dedicated
-[put] function), a _new_ record describing it (with a change adopted)
-would be created and passed further instead of the aold version, which
-would be no longer used. Every time one woulod need to read from the
-state, it could be done via a dedicated [get] function, which would
-then return the value of the state, which is always present. Such
-programming style, which would allow one tor _emulate_ state with
-immutable records without the need to have mutable store and pointers,
-just by passing an extra value around and modifying it consistently,
-would be therefore referred to as a "state-passing style". 
+TODO: computations are about _binging_
 
-As another example, one can imagine of emulating exceptions by means
-of passing an extra argument to each function, which is checked at
-each "step" of the execution. Such argument would carry information
-about whether an exception has been thrown or not. And if it is thrown
-(so the argument is an exception value), the rest of the computation
-would be discarded and exception would be returned. Alternatively, the
-evaluation should proceed in a normal order. Such programming model
-can be, therefore, referred to as an "exception-passing style",
-stressing the pattern of constant passing of the exception pattern and
-checking it at each step of the program execution.
+TODO: return is for embedding
 
-It is not difficult to com up with more examples of passing style that
-would refere some programming concepts that have to do with
-computation in the presence of an "additional effect". For instance,
-continuation-passing style (CPS) assumes the presence of a
-%\index{continuation-passing style}%
-%\index{CPS|see{continuation-passing style}}% continuation value
-available, which is just an extra function, which can be inworke at an
-arbitrary moment, therefore interruption current execution
-flow. Input/output can be represented by passing around a "handler",
-to which the program can write and from which it can read via
-dedicated functions.
+TODO: monad type indicates that something fishy is going on
 
-Monads have been introduced to the world of programming as a way to
-unify the diversity of the "passing style" paradigm has been,
-essentially providing a solution of solving two problems:
-
-- providing a uniform interface to for the passing-style, eliminating
-  the need to implement the different machinery of "passing" the
-  "effectful" entity from one computation to the "next" one in each
-  particular case, as well as the need to instantiate the "effect"
-  with a default value;
-
-- implementing a programming language mechanism to statically
-  determine, which particular "effect" (or effects) is being passed
-  around in a particular program and resolve the calls to the
-  effect-specific functions (such as, for example, [put] and [get] in
-  the case of state-passing style).
-
-** Examples of monads
-
-Immediately after their introduction by Moggi and Wadler, monads were
-adopted by Haskell, and currently many dosens of them exist,
-facilitating programming with all kinds of effects and removing the
-need for programming in passing style. The common interface, provided
-by monads is implemented as a Haskell, which, slightly simplified,
-looks as follows.
+TODO: divergence
 
 %
 \begin{alltt}
@@ -1006,38 +961,28 @@ class Monad m where
 \end{alltt}
 %
 
-The signature specifies that each instance of <<Monad m>> is
+The signature specifies that each instance of %\texttt{Monad m}% is
 parametrized by one type and requires two functions to be implemented.
 The %\texttt{>>=}% function is pronounced as _bind_ and describes how
-particular monad instance combines two computations, such that the
-second one, whose type is <<m b>>, may depend on the value of result
-of the first one, whose type is <<m a>>. The result of overall
-computation is then the one of the second component, namely, <<m
-b>>. The function <<return>> specifies how to provide a "default"
-value for an effectful computation, i.e., how to "pair" a value of
-type <<a>> with an "effect" entity in order to receive an element of
-%\texttt{m a}%. 
+particular monad instance _combines_ two computations, such that the
+second one, whose type is %\texttt{m b}%, may depend on the value of
+result of the first one, whose type is %\texttt{m a}%. The result of
+overall computation is then the one of the second component, namely,
+%\texttt{m b}%. The function %\texttt{return}% specifies how to
+provide a "default" value for an effectful computation, i.e., how to
+"pair" a value of type %\texttt{a}% with an "effect" entity in order
+to receive an element of %\texttt{m a}%.
 
-Implementing monads for basic passing-styles is not particularly
-difficult. For instance, the "state-passing style" corresponds to a
-_state monad_, which pairs the result of the computation with a
-current state. This state can be, therefore, updated using the
-function [put] and queried via the function [get]. Internally, such
-monad's implementation is isomorphic to a space of functions of types
-[s -> (a, s)], where [s] is a type of the current state, and [a] is a
-type of the current value of the computation. 
+** Monadic do-notation
 
 Haskell provides convenient [do]-notation to write programs in a
 %\index{do-notation}% monadic style (as an alternative for passing
 style), such that the invocation of the bind function in the
-expression of the form <<c1 >>= (\x -> c2)>> (such that <<x>> might
-occur in <<c2>>) can be written as <<do x <- c1; c2>>. For instance,
-using [do]-notation, in Haskell a computation <<fiddle>> with a state monad,
-which first reads from <<a>>, then computes the value of <<f a>>, then
-stores it back to the state and finally returns what was put, can be
-written as follows:
+expression of the form %\texttt{c1 >>= (fun x => c2)}%, where
+%\texttt{x}% might occur in %\texttt{c2}%, can be written as
+%\texttt{do x <- c1; c2}%.
 
-TODO
+TODO: example of IO monad
 
 *)
 
@@ -1054,14 +999,18 @@ Unset Printing Implicit Defensive.
 
 (**
 
-* Basics of Hoare Type Theory
+* Elements of Hoare Type Theory
 %\label{sec:htt-intro}%
 
-** Encoding program specifications as types
+** The Hoare monad
+
+** On shallow and depp embedding
+
+** Encoding program specifications as types in Coq
 
 TODO: repeat the factorial example
 
-** The Hoare monad
+
 
 ** Verifying the factorial in HTT
 
