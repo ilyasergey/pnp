@@ -1574,11 +1574,13 @@ Qed.
 
 (**
 
-** On shallow and deep embedding
+** On shallow and deep embeddings
 
 TODO: mention adequacy of HTT and its semantics
 
 * Specifying and verifying single-linked lists
+
+TODO: insert and remove
 
 *)
 
