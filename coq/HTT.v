@@ -21,9 +21,12 @@ Module HTT.
 (** printing >-> %\texttt{>->}% *)
 (** printing LoadPath %\texttt{\emph{LoadPath}}% *)
 (** printing exists %\texttt{{exists}}% *)
+(** printing :-> %\texttt{:->}% *)
+(** printing vfun %\texttt{\emph{vfun}}% *)
 (** printing do %\texttt{{do}}% *)
 (** printing putStrLn %\texttt{\emph{putStrLn}}% *)
 (** printing getChar %\texttt{\emph{getChar}}% *)
+(** printing heval %\textsf{\emph{heval}}% *)
 
 (** 
 
@@ -203,6 +206,8 @@ logicians, however, prefer to write inference rules as "something with
 a bar". Therefore, an inference rule for conjunction introduction in
 the constructive logic looks as follows:
 
+%\index{inference rules|seealso {Hoare/Separation Logic rules}}%
+
 %
 \begin{mathpar}
 \inferrule*[Right={($\wedge$-{Intro})}]
@@ -241,6 +246,7 @@ Hoare triple for a variable assignment is formed by the following rule:
  {}
  {\spec{Q[e/x]}~ x := e ~\spec{Q}}
 \end{mathpar}
+\spr{Assign}
 %
 
 The rule %\Rule{Assign}% is in fact an axiom (since it does not assume
@@ -261,6 +267,7 @@ ensuring that the postcondition of $c_1$ matches the precondition of $c_2$.
   \spec{R}~ c_2 ~\spec{Q}}
  {\spec{P}~ c_1; c_2 ~\spec{Q}}
 \end{mathpar}
+\spr{Seq}
 %
 
 The rule %\Rule{Seq}% is in fact too "tight", as it requires the two
@@ -275,6 +282,7 @@ terminates in a postcondition $Q'$, it would not hurt to weaken this
 postcondition to $Q$, such that $Q'$ implies $Q$.
 
 %
+\spr{Conseq}
 \begin{mathpar}
 \inferrule*[Right={(Conseq)}]
  {P \implies P' \\
@@ -368,6 +376,7 @@ incomplete without conditional operators.
  {\spec{I \wedge e}~ c~\spec{I}}
  {\spec{I}~ \mathtt{while}~e~\mathtt{do}~c~\spec{I \wedge \neg e }}
 \end{mathpar}
+\spr{Cond}\spr{While}
 %
 
 The inference rule for a conditional statement should be intuitively
@@ -514,7 +523,7 @@ specification and verification method, due to the immense complexity
 of the reasoning process nad overwhelming proof obligations.
 
 The situation has changed when in 2002 John C. Reynolds, Peter
-%\index{separation logic|textbf}% O'Hearn, Samin Ishtiaq and Hongseok
+%\index{Separation Logic|textbf}% O'Hearn, Samin Ishtiaq and Hongseok
 Yang suggested an alternative way to state Hoare-style assertions
 about heap-manipulating programs with
 pointers%~\cite{Reynolds:LICS02}%. The key idea was to make _explicit_
@@ -528,8 +537,8 @@ consider a number of examples to specify and verify programs in it.
 For instance, the program, shown above, which assigns $5$ to a pointer
 $x$ can now be given the following specification in the separation
 logic:
-
 %
+\label{pg:alterx}
 \begin{alltt}
 \(\spec{h | h = x \mapsto - \join y \mapsto Y}\) \var{x} ::= 5 \(\spec{\res, h | h = x \mapsto 5 \join y \mapsto Y}\)
 \end{alltt}
@@ -561,6 +570,7 @@ flexibility when stating the assertions, mixing both heaps and
 values.}%
 
 ** Selected rules of Separation Logic
+%\label{sec:seplog-rules}%
 
 Let us now revise some of the rules of Hoare logic and see how they
 will look in separation logic. The rules, stated over the heap, are
@@ -571,8 +581,9 @@ specified, can be safely assumed. The rules for assigning and reading
 the pointers are natural.
 
 %
+\spr{Write}\spr{Read}
 \begin{mathpar}
-\inferrule*[Right={(Assign)}]
+\inferrule*[Right={(Write)}]
  {}
  {\spec{h ~|~ h = x \mapsto -}~ x ::= e ~\spec{\res, h ~|~ h = x \mapsto e}}
 \and
@@ -591,6 +602,7 @@ cells and dispose them via the effectful functions %\texttt{alloc()}%
 and %\texttt{dealloc()}%, correspondingly.
 
 %
+\spr{Alloc}\spr{Dealloc}
 \begin{mathpar}
 \inferrule*[Right={(Alloc)}]
  {}
@@ -621,6 +633,7 @@ of programs $c_1$ and $c_2$ from the standard Hoare logic, although it
 specifies that the immutable variables can substituted in $c_2$.
 
 %
+\spr{Bind}
 \begin{mathpar}
 \inferrule*[Right={(Bind)}]
  {\spec{h ~|~ P(h) }~c_1~\spec{\res, h ~|~ Q(\res, h)} \\
@@ -645,9 +658,10 @@ two additional rules---for function invocation and returning a value.
 
 %
 \begin{mathpar}
+\spr{Return}\spr{Hyp}\spr{App}
 \inferrule*[Right={(Return)}]
  {} 
- {\spec{h ~|~ P(h)}~ \ret e ~\spec{\res, h ~|~ P(h) \wedge \res = e}}
+ {\spec{h ~|~ P(h)}~ \ret~e ~\spec{\res, h ~|~ P(h) \wedge \res = e}}
 \and
 \inferrule*[Right={(Hyp)}]
  {\forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)} \in \Gamma}
@@ -663,13 +677,14 @@ The rule for returning simply constrants the dedicated variable $\res$
 to be equal to the expression $e$. The rule %\Rule{Hyp}% (for
 "hypothesis") introduce the assumption context $\Gamma$ that contains
 %\index{assumption context}\index{typing context}% specifications of
-available "library" functions (similarly to the typing context in
-typing relations%~\cite[Chapter~9]{Pierce:BOOK02}%) and until now was
-assumed to be empty. Notice that, similarly to dependently-type
-functions, in the rule %\Rule{Hyp}% the pre- and postcondition in the
-spec of the assumed function can depend on the value of its argument
-$x$. The rule %\Rule{App}% accounts for the function application and
-instantiates all occurrences of $x$ with the argument expression $e$.
+available "library" functions (bearing the reminischence with the
+typing context in typing relations%~\cite[Chapter~9]{Pierce:BOOK02}%)
+and until now was assumed to be empty. Notice that, similarly to
+dependently-typed functions, in the rule %\Rule{Hyp}% the pre- and
+postcondition in the spec of the assumed function can depend on the
+value of its argument $x$. The rule %\Rule{App}% accounts for the
+function application and instantiates all occurrences of $x$ with the
+argument expression $e$.
 
 Finally, sometimes we might be able to infer two different
 specifications about the same program. In this case we should be able
@@ -677,6 +692,7 @@ to combine them intor one, which is stronger, and this is what the
 rule of conjunction %\Rule{Conj}% serves for:
 
 %
+\spr{Conj}
 \begin{mathpar}
 \inferrule*[Right={(Conj)}]
  {\spec{h ~|~ P_1(h) }~c~\spec{\res, h ~|~ Q_1(\res, h)} \\
@@ -686,6 +702,7 @@ rule of conjunction %\Rule{Conj}% serves for:
 %
 
 ** Representing loops as recursive functions
+%\label{sec:loops}%
 
 It is well-known in a programming language folklore that every
 imperative loop can be rewritten as a recursive function, which is
@@ -712,7 +729,7 @@ the in-place fixport operator as
 
 %
 \begin{center}
-\texttt{(fix f(x: unit). if e then c ;; f(tt) else ret tt)(tt)}
+\texttt{(fix~f(x:~unit).~if~e~then~c;;~f(tt)~else~ret~tt)(tt)}
 \end{center}
 % 
 
@@ -726,6 +743,7 @@ functions, we won't be providing a rule for loops in separation logic,
 and rather provide one for recursive definitions.
 
 %
+\spr{Fix}
 {\small
 \hspace{-10pt}
 \begin{mathpar}
@@ -750,6 +768,7 @@ specifications are stated explicitly, so the rule about would be
 directly applicable.
 
 ** Verifying heap-manipulating programs
+%\label{sec:fact-logic}%
 
 Let us now see how a simple imperative program with conditionals and
 recursion would be verified in a version of separation logic that we
@@ -863,9 +882,9 @@ of the presented logic rules.
      else 
 \(\spec{h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Cond})}
           acc ::= a' * n';;
-\(\spec{h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Write})}
           n   ::= n' - 1;;
-\(\spec{h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Write})}
 \(\spec{h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'}-1)\times{\com{a'}\times\com{n'}}=f(N))}\) {\normalfont (by defn. of \(f\))}
 \(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (by defn. of \(f\))}
           loop(tt) 
@@ -964,24 +983,25 @@ distinct from the programming with pure functions:
   strictly _before_ the computation $c_2$ is executed. Following its
   name this program constructor also performs binding of the (pure)
   result of the first computation, so it can be substituted to all
-  occurrences of $x$ in the second command, $c_2$. In this sence,
-  binding is different from expressions of the form [let x = e1 in
-  e2], omnipresent in fucntional programs, as later ones might allow
-  for both strict and lazy evaluation of the right-hand side
-  expression [e1] depending on a semantics of the language (e.g.,
-  Standard ML vs. Haskell). This flexibility does not affect the
-  result of a pure program (modulo divergence), since [e1] and [e2]
-  are expressions, and, hence, are pure. However, in the case of
-  computations, the order should be fixed and this is what the binding
-  construct serves for.
+  %\index{binding}% occurrences of $x$ in the second command,
+  $c_2$. In this sence, binding is different from expressions of the
+  form [let x = e1 in e2], omnipresent in fucntional programs, as
+  later ones might allow for both strict and lazy evaluation of the
+  right-hand side expression [e1] depending on a semantics of the
+  language (e.g., Standard ML vs. Haskell). This flexibility does not
+  affect the result of a pure program (modulo divergence), since [e1]
+  and [e2] are expressions, and, hence, are pure. However, in the case
+  of computations, the order should be fixed and this is what the
+  binding construct serves for.
 
 - _Returning_ a value is a command constructor (which we typeset as
   $\ret$), which allows one to embed a pure expression into the realm
   of computations. Again, intuitively, this is explained by the fact
   that expressions and commands should be distinguished
   semantically,%\footnote{Although some mainstream languages prefer to
-  blur this distinction to save on syntax~\cite{Scala-spec}, at the
-  price of loosing the ability to reason about effects.}% but
+  blur the distinction between commands and expressions in order to
+  save on syntax~\cite{Scala-spec}, at the price of losing the ability
+  to make a distinction between effectful and pure code.}% but
   sometimes an expression should be treated as a command (with a
   trivial effect or none of it at all), whose result is the very same
   expression.
@@ -1038,9 +1058,9 @@ Since composing effectful/monadic computations is a very common
 operation in Haskell, the language provides convenient [do]-notation
 to write programs in a %\index{do-notation}% monadic style (as an
 alternative for passing style), such that the invocation of the bind
-function in the expression of the form %\texttt{c1 >>= (fun x =>
-c2)}%, where %\texttt{x}% might occur in %\texttt{c2}%, can be written
-as %\texttt{\{do x <- c1; c2\}}%.
+function in the expression of the form %\texttt{c1 >>= (\textbackslash
+x -> c2)}%, where %\texttt{x}% might occur in %\texttt{c2}%, can be
+written as %\texttt{\{do x <- c1; c2\}}%.
 
 %\index{IO monad@\texttt{IO} monad}%
 For example, a program below is composed of several computations
@@ -1067,14 +1087,76 @@ inferred to be %\texttt{IO~()}%.
 * Elements of Hoare Type Theory
 %\label{sec:htt-intro}%
 
+At this point we have acquired a number of important insights that
+should lead us to the idea of implementing verification of effectful
+imperative programs in Coq:
+
+- Hoare specifications in separation logic behave like types of the
+  computations they specify, which is witnessed by the rules of
+  weakening %\Rule{Conseq}%, function and application specification
+  inference %\Rule{Hyp}% and %\Rule{App}% and recursive functions
+  %\Rule{Fix}% %(Section~\ref{sec:seplog-rules}).% Moreover, since
+  pre- adn postconditions can depend on the values of logical
+  universally-quantified variables as well as on the values of the
+  command's arguments, Hoare-style specs are in fact instances of
+  _dependent_ types.
+
+- Hoare triples in separation logic specify _effectful_ computations
+  that are composed by means of _binding_ with pure expression being
+  injected into them by means of "wrapping" them with a $\ret$
+  operator. This makes Hoare triples behave exactly like instances of
+  _monads_ from functional programming, whose composition is described
+  by, e.g., the $\com{Monad}$ typ class from Haskell.
+
+- Effectful computations can take effects, which should be accounted
+  for in their specifications. The effects (or observation of an
+  effectful state) are due to some dedicated operations, such as
+  _pointer assignment_, _pointer reading_, _allocation_ or
+  _deallocation_. These operations come with dedicated specifications,
+  similarly to how operations $\com{putStrLn}$ and $\com{getChar}$ in
+  Haskell are typed with respect to the $\com{IO}$ monad, whose state
+  they modify.
+
+- Another important effect, which has no explicit handling in the
+  mainstream programming languages like Haskell, but should be dealt
+  with in the context of pure, strongly-normalizing language of Coq is
+  _divergence_. We cannot allow on to have potentially non-terminating
+  computations as expressions in Coq (i.e., those implemented by means
+  of the general recurion operator $\fix$ from
+  %Section~\ref{sec:loops}%), but we can afford having a monadic type
+  of computations such that they might possibly diverge _if_ they are
+  executed (and, even thouugh, they will not be executed within Coq,
+  they can still be type-chacked, and, hence verified). Therefore,
+  monadic encoding of the fixpoint operator provides a way to escape
+  the termination-checking conundrum and encode nonterminating
+  programs in Coq.
+
+%\index{Hoare Type Theory}%
+%\index{HTT|see {Hoare Type Theory}}%
+
+All these observation resulted in a series of works on _Hoare Type
+Theory_ (or just HTT), which defines a notion of an _indexed Hoare
+monad_ as a mechanism to encode Hoare-style specifications as
+dependent types and reduce the verification of effectful progress to
+proving propositions in
+Coq%~\cite{Nanevski-al:ICFP08,Nanevski-al:JFP08,Nanevski-al:POPL10}%.
+
+In the rest of this chapter we will consider a number of important
+concepts of HTT, so the necessary files should be imported from the
+library folder [htt], which contains the compiled modules.
+
 *)
 
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
 
+(** 
+
+%\ccom{Add LoadPath}%
+
+*) 
+
 Add LoadPath "./../htt".
 Require Import pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
-
-
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -1084,31 +1166,285 @@ Unset Printing Implicit Defensive.
 
 ** The Hoare monad
 
-TODO: heap and divergence
+%\index{Hoare monad}%
 
-** On shallow and depp embedding
+The Hoare monad, wihch is a type of result-returning effectful
+computations with pre- and postconditions is represented in HTT by the
+type [STsep], which is, in fact, just a notation for a more
+general but less tractable type [STspec], whose details we do not
+present here, as they are quite technical and are not necessary in
+order to verify programs in HTT.%\footnote{A curious reader can take a
+look at the definitions in the module %[stmod]% of the HTT library.}%
 
-** Encoding program specifications as types in Coq
+%\httn{STsep}%
 
-TODO: repeat the factorial example
+The Hoare type is usually specified using the HTT-provided notation as
+[{x1 x2 ...}, STsep (p, q)], where [p] and [q] are the predicates,
+corresponding to the pre and postcondition with [p] being of type
+[heap -> Prop] and [q] of type [A -> heap -> Prop], such that [A] is
+the type of the result of the command being specified. The identifiers
+[x1], [x2] etc. bind the logical variables that are assumed to be
+universally quantified and can appear freely in [p] and [q], similarly
+to the free variables in the specifications in Hoare logics
+(%Section~\ref{sec:imp-spec}%). For example, the $\com{alloc}$
+function has the following (simplified compared to the original one)
+small footprint specification in the [STsep]-notation:
 
+[[
+alloc :
+  forall A : Type, (v : A),
+    STsep (fun h => h = Unit,
+          [vfun (res : ptr) h => h = res :-> v])
+]]
 
+That is, alloc is a procedure, which starts in an ampty heap [Unit]
+and whose artument [v] of type [A] becomes referenced by the pointer
+(which is alsso the alloc's result) in the resulting singleton-pointer
+heap. The notation [x :-> y] corresponds to the the points-to
+assertion $x \mapsto y$ in the mathematical representation of
+separation logic, and [[vfun x => ...]] notation accounts for the fact
+%\httn{vfun}%
+that the computation can throw an
+exception%~\cite{Nanevski-al:JFP08}%, the possibility we do not
+consider in this course.
 
-** Verifying the factorial in HTT
+** Structuring the program verification in HTT 
+
+Let us now consider how the examples from %Section~\ref{sec:seplog}%
+can be given specifications and verified in Coq.  The program on
+page%~\pageref{pg:alterx}%, which modifies a pointer [x] and kees a
+different pointe [y] intact can be given the following spec:
+
+%\newpage%
+
+*)
+
+(* Note to self: the current implementation of HTT does not support
+value/type depedndencies in the logical variables (e.g., {T (x: T)}),
+so such cases won't be properly handled by the ghR lemma. *)
+
+Program Definition alter_x A (x : ptr) (v : A): 
+  {y (Y : nat)}, 
+  STsep (fun h => exists B (w : B), h = x :-> w \+ y :-> Y,
+        [vfun (_: unit) h => h = x :-> v \+ y :-> Y]) := 
+  Do (x ::= v).
+
+(**
+
+%\ccom{Program Definition}%
+
+The Coq's command [Program Defitition] is similar to the standard
+definition [Definition] except for the fact that it allows the
+expression being defined to have a type, whose some components haven't
+yet been type-checked and remain to be filled by the programmer,
+similarly to Agda's %\index{Agda}% incremental
+development%~\cite{Sozeau:TYPES06}%. That is, bading on the expression
+itself ([Do (x ::= v)]), Coq will infer the most general type that the
+expression can be allowed to have, and then it becomes a programmer's
+_obligation_ to show that the declared type is actually a
+specialization of the inferred type. In the context of the Hoare
+theory the type, inferred by Coq based on the definition can be seen
+as a specification with the _weakest pre_ and _strongest
+postconditions_, which can be then weakened via the %\Rule{Conseq}%
+rule. The program itself is wrapped into the [Do]-notation, which is
+%\httn{Do}% provided by the HTT library and indicates that the
+computations inside always deal with the [STsep] type, similar to the
+Haskell's treatment of [do]-notation.
+
+The type of the program [alter_x] is specified explicitly via the
+[STsep]-notation. There are two logical variables: the value of the
+[y] and the value [Y] of type [n], which is referenced by [y].  The
+precondition states the existence of some type [B] and value [w], such
+that [x] points to it. The postcondition states that the result is of
+type [unit] (and, therefore, is unconstrained), and the content of the
+pointer [x] became [v], which the content of the pointer [y] remained
+unchanged. Notice that we make explicit use of the PCM notation
+(%Section~\ref{sec:pcms}%) for the empty heap, which is paraphrased as
+[Unit] and for the disjoint uinont of heaps, which is epressed through
+the join operator [\+]. 
+
+After stating the definition, Coq generates a series
+of obligations to prove in order to establish the defined program
+well-typed with respect to the stated type.
+
+[[
+alter_x has type-checked, generating 1 obligation(s)
+Solving obligations automatically...
+1 obligation remaining
+Obligation 1 of alter_x:
+forall (A : Type) (x : ptr) (v : A),
+conseq (x ::= v)
+  (logvar
+     (fun y : ptr =>
+      logvar
+        (fun Y : nat =>
+         binarify
+           (fun h : heap => exists (B : Type) (w : B), h = x :-> w \+ y :-> Y)
+           [vfun _ h => h = x :-> v \+ y :-> Y]))).
+]]
+
+The statement looks rather convoluted due to a number of type
+definitions and notations use and essentially postulates that from the
+proposition, corresponding to the specification inferred by Coq from
+the program definition, we should be able to prove the specification
+that we have declared explicitly. Instead of explaining each component
+of the goal, we will proceed directly to the proof and will build the
+necessary inutition on demand.
+
+The proof mode for each of the remaining obligations is activated by
+Vernacular command [Next Obligation] %\ccom{Next Obligation}%, which
+automatically moves some of the assumptions to the context.
+
+*)
+
+Next Obligation.
+
+(**
+
+[[
+  A : Type
+  x : ptr
+  v : A
+  ============================
+   conseq (x ::= v)
+     (logvar
+        (fun y : ptr =>
+         logvar
+           (fun Y : nat =>
+            binarify
+              (fun h : heap =>
+               exists (B : Type) (w : B), h = x :-> w \+ y :-> Y)
+              [vfun _ h => h = x :-> v \+ y :-> Y])))
+]]
+
+A usual first step in every HTT proof, which deals with a spec with
+logical variables is to "pull them out", so they would just become
+simple assumptions, allowing one to get rid of the [logvar] and
+[binarify] calls in the goal.%\footnote{In fact, the proper handling
+of the logical variables is surprisingly tricky in a type-based
+encoding, which is what HTT delivers. It is due to the fact that the
+\emph{same} variables can appear in both pre- and
+postconditions. Earlier implementations of HTT used \emph{binary}
+postconditions for this
+purpose~\cite{Nanevski-al:JFP08,Nanevski-al:POPL10}, which was a cause
+of some code duplication in specifications and made the spec looks
+different from one familiar with the standard hoare logic would
+expect. Current implementation uses an encoding with recursive
+notations to circumvent the duplication problem, This encoding is a
+source of the observed occurrences of %[logvar]% and %[binarify]%
+definitions in the goal.}% This is what is done by applying the lemma
+[ghR] %\httl{ghR}% to the goal.
+
+*)
+
+apply: ghR. 
+
+(**
+[[
+  A : Type
+  x : ptr
+  v : A
+  ============================
+   forall (i : heap) (x0 : ptr * nat),
+   (exists (B : Type) (w : B), i = x :-> w \+ x0.1 :-> x0.2) ->
+   valid i -> verify i (x ::= v) [vfun _ h => h = x :-> v \+ x0.1 :-> x0.2]
+]]
+
+We can now move a number of assumptions, arising from the "brushed"
+specification, to the context, along with some rewriting by equality
+and simplifcations.
+
+*)
+
+move=>h1 [y Y][B][w]->{h1} _ /=.
+
+(**
+
+[[
+  ...
+  B : Type
+  w : B
+  ============================
+   verify (x :-> w \+ y :-> Y) (x ::= v) [vfun _ h => h = x :-> v \+ y :-> Y]
+]]
+
+The resulting goal is stated using the [verify]-notation, which means
+%\httn{verify}% in this particular case that in the heap of the shape
+[x :-> w \+ y :-> Y] we need to be able to prove that the result and
+the produced heap of the command [x ::= v] satisfy the predicate
+[[vfun _ h => h = x :-> v \+ y :-> Y]]. This goal can be proved using
+one of the numerous [verify]-lemmas that HTT provides (try executing
+[Search _ (verify _ _ _)] to see the full list), however in this
+particular case the program and the goal are so simple and are
+obviously correct that the statement can be proved by means of simple
+automation, implemented in HTT by a brute-force tactic [heval], which
+just tries a [verify]-lemmas qnumber of lemmas applicatble in this
+case modulo the shape of the heap.  %\httt{heval}%
+
+*)
+
+by heval.
+Qed.
+
+(**
+
+** Verifying the factorial procedure mechanically
+
+Proving a simple assignment for two non-aliased pointer was a simple
+exercise, so we proveed to a more interesting program, which features
+loops and conditional expressions, namely, imperative implementation
+of the factorial function.
+
+Our specification and verification process will follow precisely the
+story of %Section~\ref{sec:fact-logic}%. We start by defining the
+factorial in the most declarative way---as a recursive pure function
+in Coq itself.
 
 *)
 
 Fixpoint fact_pure n := if n is n'.+1 then n * (fact_pure n') else 1.
+
+(** 
+
+Next, we define the loop invariant [fact_inv], which constraints the
+heap shape and the values of the involved pointers, [n] and [acc],
+mimicking precisely the definition of $\finv$:
+
+*)
 
 Definition fact_inv (n acc : ptr) (N : nat) h : Prop := 
   exists n' a': nat, 
   [/\ h = n :-> n' \+ acc :-> a' & 
       (fact_pure n') * a' = fact_pure N].
 
+(** 
+
+To show how Separation logic in general and its particular
+implementation in HTT allow one to build the reasoning
+_compositionally_ (i.e., by building the proofs about larg programs
+from the fact of the small ones), we will first provide and prove a
+specification for the internal factorial loop, which, in fact,
+performs all of the interesting computations, so the rest of the
+"main" function only takes care of allocation/deallocation of the
+pointers [n] and [acc]. The loop will be just a function, taking an
+argument of the type unit and ensuring the invariant [fact_inv] in its
+pre- and postcondition, as defined by the following type [fact_tp],
+parametrized by the pointers [n] and [acc].
+
+*)
+
 Definition fact_tp n acc := 
   unit -> {N}, 
      STsep (fact_inv n acc N, 
            [vfun (res : nat) h => fact_inv n acc N h /\ res = fact_pure N]).
+
+(** 
+
+The type [fact_tp] ensures additionally that the resulting value is in
+fact a factorial of [N], which is expressed by the conjunct [res =
+fact_pure N].
+
+*)
 
 Program Definition fact_acc (n acc : ptr): fact_tp n acc := 
   Fix (fun (loop : fact_tp n acc) (_ : unit) => 
@@ -1237,6 +1573,10 @@ Qed.
 *)
 
 (**
+
+** On shallow and deep embedding
+
+TODO: mention adequacy of HTT and its semantics
 
 * Specifying and verifying single-linked lists
 

@@ -167,11 +167,11 @@ generated or no more goals is left to prove.%\footnote{Be careful,
 though, as such proof script might never terminate is more and more
 new goals will be generated.  That said, while Coq itselfs enjoys the
 strong normalization property (i.e., the programs in it always
-terminate), its tactic meta-language is genuinely Turing-complete, so
-the tactics, while constructing Coq programs/proofs, might never in
-fact terminate. Specifying the behavior of tactics and their possible
-effects (including non-termination and failures) is a topic of an
-ungoing active
+%\index{stron normalization}% terminate), its tactic meta-language is
+genuinely Turing-complete, so the tactics, while constructing Coq
+programs/proofs, might never in fact terminate. Specifying the
+behavior of tactics and their possible effects (including
+non-termination and failures) is a topic of an ungoing active
 research~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10}.}% The
 [do]-tactical can be also combined with the [[|...|]] tactical, so it
 will try to apply all of the enumerated tactics as alternatives. The

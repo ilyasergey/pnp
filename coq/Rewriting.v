@@ -259,7 +259,7 @@ Now, proving [D 1] is [True] can be accomplished by simple executing
 [D] with appropriate arguments (recall that [D] is an
 always-terminating just a function, whose result is a computable
 value). That SSReflect's tactic [have]%\ssrt{have}% allows to declare
-the local fact, which can be then proving on-site by simple
+the local fact, which can be then proving in-place by simple
 computation (which is performed via [by []]).
 
 *)
@@ -384,8 +384,8 @@ and, occasionally, other assumptions in the context. All rewriting
 machinery is handled by SSReflect's enhanced [rewrite]%\ssrt{rewrite}%
 tactics, and in this section we focus on its particular uses.
 
-** Unfolding definitions and on-site rewritings
-%\label{sec:on-site}%
+** Unfolding definitions and in-place rewritings
+%\label{sec:in-place}%
 
 One of the common uses of the [rewrite] tactic is to fold/unfold
 transparent definitions. In general, Coq is capable to perform the
