@@ -22,6 +22,8 @@ Module HTT.
 (** printing LoadPath %\texttt{\emph{LoadPath}}% *)
 (** printing exists %\texttt{{exists}}% *)
 (** printing do %\texttt{{do}}% *)
+(** printing putStrLn %\texttt{\emph{putStrLn}}% *)
+(** printing getChar %\texttt{\emph{getChar}}% *)
 
 (** 
 
@@ -760,11 +762,11 @@ pseudocode, the %\texttt{fact}% program is implemented as follows:
 
 %
 \begin{alltt}
-fun fact (\var{N}: nat): Nat = \{
+fun fact (\var{N} : nat): nat = \{
   n   <- alloc(\var{N});
   acc <- alloc(1); 
   res <-- 
-    (fix loop (_: unit). 
+    (fix loop (_ : unit). 
       a' <-- !acc;
       n' <-- !n;
       if n' == 0 then ret a'
@@ -859,37 +861,37 @@ of the presented logic rules.
 \(\spec{\res, h | (h=\com{n}\mapsto{0}\join\com{acc}\mapsto{f(N)})\wedge(\res=f(N))}\) {\normalfont (defn. \(f\), (=) and \Rule{Return})}
 \(\spec{\res, h | \finv(\com{n}, \com{acc}, N, h)\wedge(\res=f(N))}\) {\normalfont (defn. of \(\finv\))}
      else 
-\(\spec{ h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Cond})}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Cond})}
           acc ::= a' * n';;
-\(\spec{ h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
           n   ::= n' - 1;;
-\(\spec{ h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
-\(\spec{ h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'}-1)\times{\com{a'}\times\com{n'}}=f(N))}\) {\normalfont (by defn. of \(f\))}
-\(\spec{ h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (by defn. of \(f\))}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'})\times{\com{a'}}=f(N))}\) {\normalfont (by \Rule{Assign})}
+\(\spec{h | (h=\com{n}\mapsto\com{n'}-1\join\com{acc}\mapsto{\com{a'}\times\com{n'}})\wedge(f(\com{n'}-1)\times{\com{a'}\times\com{n'}}=f(N))}\) {\normalfont (by defn. of \(f\))}
+\(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont (by defn. of \(f\))}
           loop(tt) 
 \(\spec{\res, h | \finv(\com{n}, \com{acc}, N, h)\wedge(\res=f(N))}\) {\normalfont (by assumption and \Rule{Fix})}
   )(tt);
-\(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\wedge(\com{res}=f(N))\) {\normalfont (by \Rule{Bind})}
+\(\spec{h | \finv(\com{n}, \com{acc}, N, h) \wedge (\com{res}=f(N))}\) {\normalfont (by \Rule{Bind})}
 \(\spec{h | (h=\com{n}\mapsto{-}\join\com{acc}\mapsto{-})\wedge(\com{res}=f(N))}\) {\normalfont (by defn. of \(f\))}
  dealloc(n);;
 \(\spec{h | (h=\com{acc}\mapsto{-}) \wedge (\com{res}=f(N))}\) {\normalfont (by \Rule{Dealloc})}
  dealloc(acc);;
-\(\spec{h | (h=\hempty)\wedge \wedge (\com{res}=f(N))}\) {\normalfont (by \Rule{Dealloc})}
+\(\spec{h | (h=\hempty)\wedge(\com{res}=f(N))}\) {\normalfont (by \Rule{Dealloc})}
  ret res
-\(\spec{\res, h | (h=\hempty)\wedge \wedge (\res=f(N))}\) {\normalfont (by \Rule{Ret})}
+\(\spec{\res, h | (h=\hempty)\wedge(\res=f(N))}\) {\normalfont (by \Rule{Ret})}
 \end{alltt}
 %
 
 Probably, the most tricky parts of the proof, which indeed require a
-human prover are (b) "decomposition" of the loop invariant $\finv$ at
-the beginning of the loop, when it falls into the components,
-constraining the values of $\com{n}$ and $\com{acc}$ in the heap and
-(b) the "re-composition" of the same invariant immediately before the
-recursive call of $\com{loop}$ in order to ensure its
-precondition. The later is possible because of algebraic properties of
-the factorial function $f$, namely the fact that if $n > 0$ then
-$f(n)\times a = f(n-1) \times n \times a$, the insight we have used in
-order to "re-distribute" the values between the two pointers,
+human prover's insight, are (a) "decomposition" of the loop invariant
+$\finv$ at the beginning of the loop, when it falls into the
+components, constraining the values of $\com{n}$ and $\com{acc}$ in
+the heap and (b) the "re-composition" of the same invariant
+immediately before the recursive call of $\com{loop}$ in order to
+ensure its precondition. The later is possible because of algebraic
+properties of the factorial function $f$, namely the fact that if $n >
+0$ then $f(n)\times a = f(n-1) \times n \times a$, the insight we have
+used in order to "re-distribute" the values between the two pointers,
 $\com{n}$ and $\com{acc}$ so the invariant $\finv$ could be restored.
 
 It should be clear by this moment that, even though the proof is
@@ -910,14 +912,17 @@ effects might be specified by means of _types_.
 
 * Specifying effectful computations using types
 
+%\index{computational effects}%
+%\index{effects|see{computational effects}}%
+
 In imperative programs there is a significant distinction between
 _expressions_ and _programs_ (or _commands_). While the former ones
 are _pure_, i.e., will always evaluate to the same result, by which
-they can be replaced, the later ones are _effectful_, as their result
-and the ultimate outcome may produce some irrevertibale effect (e.g.,
-mutating references, throwing exceptions, performing output or reading
-from input), which one should account for. Hoare logics, and, in
-particular, separation logic focus on specifying effectful programs
+they can be safely replaced, the later ones are _effectful_, as their
+result and the ultimate outcome may produce some irrevertibale effect
+(e.g., mutating references, throwing exceptions, performing output or
+reading from input), which one should account for. Hoare logics, and,
+in particular, separation logic focus on specifying effectful programs
 taking expressions for granted and assuming their referential
 transparency, which makes it not entirely straightforward to embed
 such reasoning into the purely functional setting of the Coq
@@ -938,20 +943,53 @@ how verification of the imperative programs can be structured in Coq,
 providing the reader with yet another "monad tutorial" is not the task
 of this course. Luckily, in order to proceed to the verification,
 which is the topic of this chapter, we need only very basic intuition
-on what monads are, and how are they typically used to capture the
+on what monads are, and how they are typically used to capture the
 essence of computations and their effects.
 
 ** On monads and computations
 
 %\index{monads}%
 
-TODO: computations are about _binging_
+While presenting rules for Hoare and separation logic, we have seen a
+number of operators, allowing to construct larger programs from
+smaller ones: conditionals, loops, binding etc. However, only two of
+the connective are inherent to imperative programming and make it
+distinct from the programming with pure functions:
 
-TODO: return is for embedding
+%\index{imperative commands}%
+%\index{commands|see {imperative commands}}%
 
-TODO: monad type indicates that something fishy is going on
+- _Binding_ (i.e., a program of the form $x \asgn c_1; c_2$) is a way
+  to specify that the effect of the computation $c_1$ takes place
+  strictly _before_ the computation $c_2$ is executed. Following its
+  name this program constructor also performs binding of the (pure)
+  result of the first computation, so it can be substituted to all
+  occurrences of $x$ in the second command, $c_2$. In this sence,
+  binding is different from expressions of the form [let x = e1 in
+  e2], omnipresent in fucntional programs, as later ones might allow
+  for both strict and lazy evaluation of the right-hand side
+  expression [e1] depending on a semantics of the language (e.g.,
+  Standard ML vs. Haskell). This flexibility does not affect the
+  result of a pure program (modulo divergence), since [e1] and [e2]
+  are expressions, and, hence, are pure. However, in the case of
+  computations, the order should be fixed and this is what the binding
+  construct serves for.
 
-TODO: divergence
+- _Returning_ a value is a command constructor (which we typeset as
+  $\ret$), which allows one to embed a pure expression into the realm
+  of computations. Again, intuitively, this is explained by the fact
+  that expressions and commands should be distinguished
+  semantically,%\footnote{Although some mainstream languages prefer to
+  blur this distinction to save on syntax~\cite{Scala-spec}, at the
+  price of loosing the ability to reason about effects.}% but
+  sometimes an expression should be treated as a command (with a
+  trivial effect or none of it at all), whose result is the very same
+  expression.
+
+These two connectives, allowing one to construct the programs by means
+of binding and embedding expressions into them are captured precisely
+by the $\com{Monad}$ interface, expressed, fo instance, in Haskell via
+the following type class:
 
 %
 \begin{alltt}
@@ -973,16 +1011,61 @@ provide a "default" value for an effectful computation, i.e., how to
 "pair" a value of type %\texttt{a}% with an "effect" entity in order
 to receive an element of %\texttt{m a}%.
 
+%\index{computational effects}%
+%\index{Haskell}%
+
+In this specification, the type $\com{m}$ serves as a generic
+placeholder of the effect, whose nature captured by the monad. As it
+has been already pointed out, such effect might be a mutable state,
+exceptions, explicit control, concurrency or input/output (all
+captured by specific instances of monads in
+Haskell%~\cite{PeytonJones:squad}%), as well as the fact of program
+%\index{divergence}% non-termination (i.e., _divergence_), which
+Haskell deliberately does not capture. In a more informal language,
+the monadic type $\com{m}$ indicates that in the program that has some
+type "something fishy is going on, besides the result being computed",
+and this type serves as a mechanism, which is used for the type
+checker to make sure that only programs with the _same_ effect are
+composed together by means of binding (hence the type of the bind
+operator in the $\com{Monad}$ type class). This is an important
+insight, which will be directly used in the design of the verification
+methodology of imperative programs using dependent types, as we will
+see in %Section~\ref{sec:htt-intro}%.
+
 ** Monadic do-notation
 
-Haskell provides convenient [do]-notation to write programs in a
-%\index{do-notation}% monadic style (as an alternative for passing
-style), such that the invocation of the bind function in the
-expression of the form %\texttt{c1 >>= (fun x => c2)}%, where
-%\texttt{x}% might occur in %\texttt{c2}%, can be written as
-%\texttt{do x <- c1; c2}%.
+Since composing effectful/monadic computations is a very common
+operation in Haskell, the language provides convenient [do]-notation
+to write programs in a %\index{do-notation}% monadic style (as an
+alternative for passing style), such that the invocation of the bind
+function in the expression of the form %\texttt{c1 >>= (fun x =>
+c2)}%, where %\texttt{x}% might occur in %\texttt{c2}%, can be written
+as %\texttt{\{do x <- c1; c2\}}%.
 
-TODO: example of IO monad
+%\index{IO monad@\texttt{IO} monad}%
+For example, a program below is composed of several computations
+winthin the IO monad, which indicates that the possible effect of the
+program that has it as its type can be reading from or writing into
+the output stream%~\cite{PeytonJones-Wadler:POPL93}%.
+
+<<
+main = do putStrLn "Enter a character"
+          c <- getChar 
+          putStrLn $ "\nThe character was: " ++ [c] 
+          return ()
+>>
+
+The computations involved into the program, are represented, in
+particular, by the Haskell command (i.e., monadically-typed function
+call) [putStrLn "Enter a character"], which prints a string or the
+call to [getChar], which writes a caracter from the input stream. All
+these computations are bound using the %\texttt{<-}% syntax and
+[do]-notation, and the last one returns and embedded unit value
+%\texttt{()}%, so the type of the whole program $\com{main}$ is
+inferred to be %\texttt{IO~()}%.
+
+* Elements of Hoare Type Theory
+%\label{sec:htt-intro}%
 
 *)
 
@@ -999,10 +1082,9 @@ Unset Printing Implicit Defensive.
 
 (**
 
-* Elements of Hoare Type Theory
-%\label{sec:htt-intro}%
-
 ** The Hoare monad
+
+TODO: heap and divergence
 
 ** On shallow and depp embedding
 
@@ -1157,8 +1239,6 @@ Qed.
 (**
 
 * Specifying and verifying single-linked lists
-
-* Further reading 
 
 *)
 
