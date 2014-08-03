@@ -22,6 +22,7 @@ Module HTT.
 (** printing LoadPath %\texttt{\emph{LoadPath}}% *)
 (** printing exists %\texttt{{exists}}% *)
 (** printing :-> %\texttt{:->}% *)
+(** printing <-- $\mathtt{<--}$ *)
 (** printing vfun %\texttt{\emph{vfun}}% *)
 (** printing do %\texttt{{do}}% *)
 (** printing putStrLn %\texttt{\emph{putStrLn}}% *)
@@ -1442,9 +1443,26 @@ Definition fact_tp n acc :=
 
 The type [fact_tp] ensures additionally that the resulting value is in
 fact a factorial of [N], which is expressed by the conjunct [res =
-fact_pure N].
+fact_pure N]. 
 
+%\index{fixed-point combinator}%
+%\index{Y-combinator}|see {fixed-point combinator}%
+
+The definition of the factorial "accumulator" loop is then represented
+as a recursive function, taking as arguments the two pointers, [n] and
+[acc], and the unit value. The body of the function is defined using
+the monadic fixpoint operator [Fix]%\httn{Fix}%, whose semantics is
+similar to the semantics of the classical _Y-combinator_, defined
+usually by the equation [Y f = f (Y f)], where [f] is a fixpoint
+operator argument that should be though of as a recursive function
+being defined. Similarly, the fixpoint operator [Fix], provided by
+HTT, takes as arguments a function, which is going to be called
+recursively ([loop, in this case]), its argument and _body_. The named
+function (i.e., [loop]) can be then called from the body recrusively.
+In the similar spirit, one can define nested loops in HTT as nested
+calls of the fixpoint operator.
 *)
+
 
 Program Definition fact_acc (n acc : ptr): fact_tp n acc := 
   Fix (fun (loop : fact_tp n acc) (_ : unit) => 
@@ -1455,22 +1473,93 @@ Program Definition fact_acc (n acc : ptr): fact_tp n acc :=
              n ::= n' - 1;;
              loop tt)).
 
-Next Obligation. 
-(* Q: what ghR does precisely? 
-   A: It pulls out all the logical variables to the top level
+(** 
+
+The body of the accumulator loop function reproduces precisely the
+factorial implementation in pseudocode. It first reads the values of
+the pointers [acc] and [n] into the local variables [a1] and [n']. It
+then uses Coq's standard conditional operator and returns a value of
+[a1] if [n'] is zero using the monadic [ret] operator. %\httl{ret}% In
+the case of [else]-branch, the new values are written to the pointers
+[acc] and [n], after which the function recurs. 
+
+Stating the looping function like this leaves us with one obligation
+to prove.
 *)
+
+Next Obligation. 
+
+(** 
+
+As in the previous example, we start by transforming the goal, so the
+logical variable [N], coming from the specification of [fact_tp] would
+be exposed as an assumption. We immediately move it to the context
+along with the initial heap [i].%\httl{ghR}%
+
+*)
+
 apply: ghR=>i N. 
-case=>n' [a'][->{i}] Hi V. 
-heval. (* TODO: Some automation - explain *)
+
+(**
+[[
+  n : ptr
+  acc : ptr
+  loop : fact_tp n acc
+  H : unit
+  i : heap
+  N : nat
+  ============================
+   fact_inv n acc N i ->
+   valid i ->
+   verify i
+     (a1 <-- !acc;
+      n' <-- !n;
+      (if n' == 0 then ret a1 else acc ::= a1 * n';; n ::= n' - 1;; loop tt))
+     [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
+]]
+
+We next case-analyse on the top assumption with the invariant
+[fact_inv] to acquire the equality describing the shape of the heap
+[i]. We then rewrite [i] in place and move a number of hypotheses to
+the context.
+
+*)
+
+case=>n' [a'][->{i}] Hi _. 
+
+(**
+
+Now the goal has the shape [verify (n :-> n' \+ acc :-> a') ...],
+which is suitable to be hit with the automation by means of the
+[heval] %\httt{heval}% tactic, progressing the goal to the state when
+we should reason about the conditional operator.
+
+*)
+
+heval. 
+
+(**
+[[
+  ...
+  n' : nat
+  a' : nat
+  Hi : fact_pure n' * a' = fact_pure N
+  ============================
+   verify (n :-> n' \+ acc :-> a')
+     (if n' == 0 then ret a' else acc ::= a' * n';; n ::= n' - 1;; loop tt)
+     [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
+]]
+*)
+
 case X: (n' == 0)=>//.
 (* TODO: explain search for tactics *)
 - apply: val_ret=>/= _; move/eqP: X=>Z; subst n'.
   split; first by exists 0, a'=>//.
   by rewrite mul1n in Hi.
 heval. 
-apply: (gh_ex N); apply: val_doR=>// V1.
+apply: (gh_ex N); apply: val_doR=>// _.
 - exists (n'-1), (a' * n'); split=>//=. 
-rewrite -Hi=>{Hi V1 V}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
+rewrite -Hi=>{Hi}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
 case: n' X=>//= n' _.
 by rewrite subn1 -pred_Sn. 
 Qed.
@@ -1478,13 +1567,12 @@ Qed.
 Program Definition fact (N : nat) : 
   STsep ([Pred h | h = Unit], 
          [vfun res h => res = fact_pure N /\ h = Unit]) := 
-  Do (
-    n   <-- alloc N;
-    acc <-- alloc 1;
-    res <-- fact_acc n acc tt;
-    dealloc n;;
-    dealloc acc;;
-    ret res).
+  Do (n   <-- alloc N;
+      acc <-- alloc 1;
+      res <-- fact_acc n acc tt;
+      dealloc n;;
+      dealloc acc;;
+      ret res).
 
 Next Obligation.
 rewrite /conseq.
@@ -1505,7 +1593,7 @@ apply: val_doR=>//; first by exists N, 1; rewrite muln1.
 by move=>_ _ [[n'][a'][->] _ ->] _; heval.
 Qed.
 
-
+(* begin hide *)
 Fixpoint fib_pure n := 
   if n is n'.+1 then
     if n' is n''.+1 then fib_pure n' + fib_pure n'' else 1
@@ -1520,6 +1608,7 @@ Definition fib_tp n x y N :=
   unit ->
      STsep (fib_inv n x y N, 
            [vfun (res : nat) h => fib_inv n x y N h /\ res = fib_pure N]).
+(* end hide *)
 
 (*
 Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
@@ -1575,6 +1664,8 @@ Qed.
 (**
 
 ** On shallow and deep embeddings
+
+TODO: definition of the [Fix] opeartor
 
 TODO: mention adequacy of HTT and its semantics
 
