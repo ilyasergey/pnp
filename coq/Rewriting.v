@@ -1010,8 +1010,8 @@ Prove the following lemmas about [maxn].
  module. Use the [Search] command to find propositions that might help
  you to deal with the goal.
 
-%\hint% Sometimes, the forward-style reasoning via [suff] and [have]
- might be more intuitive.
+%\hint% Forward-style reasoning via [suff] and [have] might be more
+ intuitive.
 
 %\hint% A hypothesis of the shape [H: n < m] is a syntactic sugar for
  [H: n < m = true], since [n < m] in fact has type [bool], as will be

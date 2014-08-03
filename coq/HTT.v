@@ -79,8 +79,8 @@ are properties of list functions, such as appending and reversal
 (e.g., that the list reversal is an inverse to itself).%\footnote{A
 typical anti-pattern in dependently-typed languages and Coq in
 particular is to encode such algebraic properties into the definitions
-of the datatypes and functions themselves (a chrestomathic example of
-such approach are length-indexed lists). While this approach looks
+of the datatypes and functions themselves (a canonical example of such
+approach are length-indexed lists). While this approach looks
 appealing, as it demonstrates the power of dependent types to capture
 certain properties of datatypes and functions on them, it is
 inherently non-scalable, as there will be always another property of
@@ -564,10 +564,10 @@ classical formulation of Separation Logic~\cite{Reynolds:LICS02}
 introduce the logical operator $\sep$, dubbed \emph{separating
 conjunction}, \index{separating conjunction} which allows to describe
 the split of a heap $h$ into two disjoin parts, without mentioning $h$
-explicitly. That is, the assertion $P \sep Q$ holds over a heap $h$,
-if there exist heaps $h_1$ and $h_2$, such that $h = h_1 \join h_2$,
-$P$ is satisfied by $h_1$ and $Q$ is satisfied by $h_2$. We will stick
-to the ``explicit'' notation, though, as it allows for greater
+explicitly. That is, the assertion $P~\sep~Q$ holds for a heap $h$, if
+there exist heaps $h_1$ and $h_2$, such that $h = h_1 \join h_2$, $P$
+is satisfied by $h_1$ and $Q$ is satisfied by $h_2$. We will stick to
+the ``explicit'' notation, though, as it allows for greater
 flexibility when stating the assertions, mixing both heaps and
 values.}%
 
@@ -1217,8 +1217,6 @@ can be given specifications and verified in Coq.  The program on
 page%~\pageref{pg:alterx}%, which modifies a pointer [x] and kees a
 different pointe [y] intact can be given the following spec:
 
-%\newpage%
-
 *)
 
 (* Note to self: the current implementation of HTT does not support
@@ -1391,6 +1389,7 @@ Qed.
 (**
 
 ** Verifying the factorial procedure mechanically
+%\label{sec:factver}%
 
 Proving a simple assignment for two non-aliased pointer was a simple
 exercise, so we proveed to a more interesting program, which features
@@ -1478,11 +1477,14 @@ Program Definition fact_acc (n acc : ptr): fact_tp n acc :=
 
 The body of the accumulator loop function reproduces precisely the
 factorial implementation in pseudocode. It first reads the values of
-the pointers [acc] and [n] into the local variables [a1] and [n']. It
-then uses Coq's standard conditional operator and returns a value of
-[a1] if [n'] is zero using the monadic [ret] operator. %\httl{ret}% In
-the case of [else]-branch, the new values are written to the pointers
-[acc] and [n], after which the function recurs. 
+the pointers [acc] and [n] into the local variables [a1] and
+[n']. Notice that the binding of the local immutable variables is
+represented by the [<--] notation, which corresponds to the _bind_
+operation of the Hoare monad [STsep]. The function then uses Coq's
+standard conditional operator and returns a value of [a1] if [n'] is
+zero using the monadic [ret] operator. %\httl{ret}% In the case of
+[else]-branch, the new values are written to the pointers [acc] and
+[n], after which the function recurs.
 
 Stating the looping function like this leaves us with one obligation
 to prove.
@@ -1754,20 +1756,44 @@ from the implicit application of the %\Rule{Bind}% rule.
 move=>_ ->.
 heval=>n; heval=>acc; rewrite joinC unitR.
 
-(* 
+(**
 
-Intuition behind bnd_seq: decomposing sequential composition with a
-user-defined function.
+We have now came to the point when the function [fact_acc], which we
+have previously verified, is going to be invoked, so we need to make
+use of what corresponds to the rule %\Rule{App}% again. In this case,
+however, the tactic [val_doR] will not work immediately, so we will
+first need to reduce the program to be verified from the binding
+command to a mere function call be means of HTT's [bnd_seq] lemma,
+which tackles the binding combined with a call to a user-defined
+function, which is exactly our case. %\httl{bnd\_seq}%.  Next, we
+instantiate [fact_acc] specification's logical variable by applying
+[gh_ex] and proceed with the application of [val_doR].
 
- *)
-apply: bnd_seq; apply: (gh_ex N).
-(* 
-Replace the call by its spec (substitution principle)
-val_doR preserves the heap.
 *)
-apply: val_doR=>//; first by exists N, 1; rewrite muln1.
-by move=>_ _ [[n'][a'][->] _ ->] _; heval.
+
+apply: bnd_seq=>/=. apply: (gh_ex N); apply: val_doR=>//.
+
+(** 
+
+The first of the resulting two goals is an obligation arising from the
+need to prove [fact_acc]'s precondition.
+
+*)
+
+ - by exists N, 1; rewrite muln1.
+
+(**
+
+The second goal is the remainder of the program's body, which performs
+deallocation, so the proof for it is accomplished mostly by applying
+[heval] tactic.
+
+*)
+
+by move=>_ _ [[n'][a'][->] _ ->] _; heval.  
 Qed.
+
+
 
 (* begin hide *)
 Fixpoint fib_pure n := 
@@ -1839,17 +1865,421 @@ Qed.
 
 (**
 
-** On shallow and deep embeddings
+* On shallow and deep embeddings
 
-TODO: definition of the [Fix] opeartor
+A noteworthy trait of HTT's approach to the verification of imperative
+program is its use of _shallow embedding_ of the imperative language
+%\index{shallow embedding}% to the programming language of Coq. In
+fact, the imperative programs that we have written, e.g., the
+factorial procedure, are mere Coq programs, written in Coq syntax with
+a number of HTT-specific notations. Moreover, the Hoare triples, by
+means of which we have provided specifications to the
+heap-manipulating programs are nothing but specific types defined in
+Coq. This is what makes the way imperative programs encoded _shallow_:
+the new programming language of imperative programs and their
+Hoare-style specifications has been defined as a subset of Coq
+programming language, so most of the Coq's infrastructure for parsing,
+type-checking, name binding and computations could be reused right
+away. In particular, it made it possible to represent the variables in
+imperative programs as Coq's variables, make use of Coq's conditional
+operator and provide specifications to higher-order procedures without
+going into the need to design a higher-order version of a Hoare logic
+first (since the specifications in HTT are just types of
+monadically-typed expressions). Furthermore, shallow embedding made it
+possible to take advantage of Coq's name binding machinery, so we
+could avoid the problem of _name capturing_ by means using the
+approach known as %\emph{Higher-Order Abstract
+Syntax}~\cite{Pfenning-Elliott:PLDI88}%, representing immutable
+variables by Coq's native variables (disguised by the binding notation
+[<--]).
 
-TODO: mention adequacy of HTT and its semantics
+To summarize, shallow embedding is an approach of implementing
+programming languages (not necessarily in Coq), characterized by
+representation of the language of interest (usually called a
+_domain-specific language_ or DSL) as a subset of another
+general-purpose _host_ language, so the programs in the former one are
+simply the programs in the latter one. The idea of shallow embedding
+originates at early '60s with the beginning of era of the Lisp
+programming language%~\cite{Graham:BOOK}%, which, thanks to its macro-expansion system,
+serves as a powerful platform to implement DSLs by means of shallow
+embedding (such DSLs are sometimes called _internal_ or _embedded_).
+%\index{DSL|see{domain-specific language}}% 
+%\index{domain-specific language}% %\index{internal DSL}%
+%\index{embedded DSL}%
+Shallow embedding in the world of practical programming is advocated
+for a high speed of language prototyping and the ability to re-use
+most of the host language machinery.
 
-* Specifying and verifying single-linked lists
+An alternative approach of implementing and encoding programming
+languages in general and in Coq in particular is called _deep
+embedding_, and amounts to the implementation of a language of
+interest from scratch, essentially, writing its parser, interpreter
+and type-checker in a general=purpose language. In practice, deep
+embedding is preferable when the overall performance of the
+implemented language runtime is of more interest than the speed of DSL
+implementation, since then a lot of intermediate abstractions, which
+are artefacts of the host language, can be avoided.
 
-TODO: insert and remove
+In the world of mechanized program verification, both approaches, deep
+and shallow embedding, have their own strengths and
+weaknesses. 
+
+Although implementations of deeply embedded languages and calculi
+naturally tend to be more verbose, design choices in them are usually
+simpler to explain and motivate. Furthermore, deep embedding approach
+makes the problem of name binding to be explicit, so it would be
+appreciated as an important aspect in the design and reasoning about
+programming languages%~\cite{Weirich-al:ICFP11,Chargueraud:JAR12}%. We
+believe, these are the reason why this approach is typically chosen as
+a preferable one when teaching program verification in
+Coq%~\cite{Pierce-al:SF}%.
+
+Importantly, deep embedding gives the programming language implementor
+the _full control_ over its syntax and semantics.%\footnote{This
+observation is reminiscent to the reasond of using deep embedding in
+the practical world.}% In particular, the expressivity limits of a
+defined logic or a type system are not limited by expressivity of
+Coq's (or any other host language's) type system. Moreover, deep
+embedding makes it much more straightforward to reason about _pairs_
+of programs by means of defining the relations as propositions on
+pairs of syntactic trees, which are implemented as elements of
+corresponding datatypes.  This point, which we deliberately chose not
+to discuss in detail in this course, becomes crucial when one needs to
+reason about the correctness of program transformations and optimizing
+compilers%~\cite{Appel:BOOK14}%. In contrast, the choice of shallow
+embedding, while sparing one the labor of implementing the parser,
+name binder and type checker, may limit the expressivity of the
+logical calculus or a type system to be defied. In the case of HTT,
+for instance, it amounts to the impossibility to specify programs that
+store _effectful functions_ and their specifications into a heap.
+
+In the past decade Coq has been used in a large number of projects
+targeting formalization of logics and type systems of various
+programming languages and proving their soundness, with most of them
+preferring the deep embedding approach to the shallow one. We believe
+that the explanation of this phenomenon is the fact that it is much
+more straightforward to define semantics of a deeply-embedded
+"featherweight" calculus%~\cite{Igarashi-al:TOPLAS01}% and prove
+soundness of its type system or program logic, given that it is the
+ultimate goal of the project. However, in order to use the implemented
+framework to type or verify realistic programs, a significant
+implementation effort is required to extend the deep implementation
+beyond the "core language", which makes shallow embedding more
+preferable in this case---a reason why this way has been chosen by
+HTT.
+
+* Soundness of Hoare Type Theory
+
+Because of shallow embedding, every valid Coq program is also a valid
+HTT program. However, as it has been hinted at the beginning of
+%Section~\ref{sec:htt-intro}%, imperative programs written in HTT
+cannot be simply executed, as, due to presence of general loops and
+recursion, they simply may not terminate. At this point, a reader may
+wonder, what good is verification of programs that cannot be run and
+what is it that we have verified?
+
+To answer this question, let us revise how the _soundness_ of a Hoare
+logic is defined. HTT takes definition of a Hoare triple (or, rather,
+a Hoare type, since in HTT specs are types) from
+page%~\pageref{pg:triple}% literally but implements it not via an
+operation semantics, defining how a program _should be run_, but using
+a denotational semantics%~\cite{Winskel:BOOK}%, i.e., defining what a
+program _is_. The HTT library comes with a module [stmod] that defines
+denotational semantics of HTT commands%\footnote{I.e., monadic values
+constructed by means of the write/alloc/dealloc/read/return commands
+and standard Coq connectives, such as conditional expression.}% and
+Hoare triples, defined as types. Each command is represented by a
+function, which sometimes referred to as _state transformer_, in the
+sense that it takes a particular heap and transforms it to another
+heap, also returning some result. The denotational semantics of HTT
+commands in terms of state-transforming functions makes it also
+possible to define what is a semantics of a program resulting from the
+use of the [Fix] operator (%Section~\ref{sec:factver}%).%\footnote{In
+fact, the standard construction from domain theory is used by
+employing Knaster–Tarski theorem on a lattice of monotone functions,
+which is, however, outside of the scope of these notes, so we redirect
+the reader to the relevant literature: Glynn Winskel's book for
+theory~\cite{Winskel:BOOK} or implementation
+papers~\cite[\S~7.2]{Chlipala:BOOK}.}% The semantics of Hoare types
+$\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$ is defined as _sets_ of
+state transforming functions, taking a heap satisfying $P$ to the
+result and heap satisfying $Q$. Therefore, the semantic account of the
+verification (which is implemented by means of type-checking in Coq)
+is checking that semantics of a particular HTT program (i.e., a
+state-transforming function) lies within the semantics of its type.
+
+If execution of programs verified in HTT is of interest, it can be
+implemented by means of extraction of HTT commands into programs in an
+external language, which supports general recursion natively (e.g.,
+Haskell). In fact, such extraction has been implemented in the first
+release of HTT%~\cite{Nanevski-al:JFP08}%, but was not ported to the
+latest release.
+
+* Specifying and verifying programs with linked lists
+
+We conclude this chapter with a _tour de force_ of separation logic
+HTT by considering specification verification of programs operating
+with single-linked lists. Unlike the factorial example an
+implementation of single-linked truly relies on pointers, and
+specifying such datatypes and programs is where separation logic
+shines.
+
+%\index{single-linked lists}%
+
+On a surface, a single-linked list can be represented by a pointer,
+which points to its head.
 
 *)
+
+Definition llist (T : Type) := ptr.
+
+Section LList.
+Variable T : Type.
+Notation llist := (llist T).
+
+(** 
+
+However, in order to prove interesting facts about imperative lists,
+similarly to the previous examples, we need to establish a connection
+between what is storen in a list heap and a purely mathematical
+sequence of elements. This is done using the recursive predicate
+[lseg], which relates two pointers, [p] and [q], pointing
+correspondingly to the head and to the tail of the list and a logical
+sequence [xs] of elements stored in the list.
+
+*)
+
+Fixpoint lseg (p q : ptr) (xs : seq T) := 
+  if xs is x::xt then 
+    [Pred h | exists r h', 
+       h = p :-> x \+ (p .+ 1 :-> r \+ h') /\ h' \In lseg r q xt]
+  else [Pred h | p = q /\ h = Unit].
+
+(** 
+
+The notation [[Pred h | ...]] is just an abbreviation for a function
+of type [heap -> Prop], where [h] is assumed to be of type [heap]. The
+notation [h \In f] is a synonym for [f h] assuming [f] is a predicate
+of type [heap -> Prop].
+
+The following lemma [lseg_null] states a fact, which is
+almost obvious: give that the heap [h], corresponding to a linked
+list, is a valid one (according to its notion of validity as a PCM)
+and the head pointer of a list structure is [null], then its tail
+pointer is [null] as well, and the overall list is empty.
+
+*)
+
+Lemma lseg_null xs q h : 
+         valid h -> h \In lseg null q xs -> 
+         [/\ q = null, xs = [::] & h = Unit].
+Proof.
+case: xs=>[|x xs] D /= H; first by case: H=><- ->.
+case: H D=>r [h'][->] _. 
+(**
+[[
+  ...
+  r : ptr
+  h' : heap
+  ============================
+   valid (null :-> x \+ (null.+1 :-> r \+ h')) ->
+   [/\ q = null, x :: xs = [::] & null :-> x \+ (null.+1 :-> r \+ h') = Unit]
+]]
+
+In the process of the proof we are forced to use the validity of a
+heap in order to derive a contradiction. In the case of heap's
+validity, one of the requirements is that every pointer in it is not
+[null]. We can make it explicit by rewriting the top assumption with
+one of numerous HTT's heap validity lemmas (use the [Search] machinery
+to find the others).
+
+*)
+
+rewrite hvalidPtUn. 
+(**
+[[
+  ...
+  ============================
+   [&& null != null, valid (null.+1 :-> r \+ h')
+     & null \notin dom (null.+1 :-> r \+ h')] ->
+   [/\ q = null, x :: xs = [::] & null :-> x \+ (null.+1 :-> r \+ h') = Unit]
+]]
+
+The conjunct [null != null] in the top assumption is enough to
+complete the proof by implicit discrimination.
+
+*)
+
+done.
+Qed. 
+
+(**  
+
+We can now define a particular case of linked
+lists---_null-terminating_ lists and prove the specification of a
+simple insertion program, which allocates a new memory for an element
+[x] and makes it to be a new head of a list pointed by [p]. The
+allocation is performed via the primitive [allocb], which allocates a
+number of subsequent heap pointers (two in this case, as defined by
+its second argument) and sets all of them to point to the value
+provided.
+
+*)
+
+Definition lseq p := lseg p null.
+
+Program Definition insert p x : 
+  {xs}, STsep (lseq p xs, [vfun y => lseq y (x::xs)]) :=
+  Do (q <-- allocb p 2; 
+      q ::= x;;
+      ret q). 
+Next Obligation. 
+apply: ghR=>i xs H _; heval=>x1; rewrite unitR -joinA; heval. 
+Qed.
+
+(** 
+
+Next, we are going to give a specification to the list
+"beheading"---removing the head element of a list. For this, we will
+need a couple of auxiliary lemmas involving the list heap predicate
+[lseg_neq]. The first one, [lseq_null] is just a specialization of the
+previously proved [lseg_null.]
+
+*)
+
+
+Lemma lseq_null xs h : valid h -> h \In lseq null xs -> xs = [::] /\ h = Unit.
+Proof. by move=>D; case/(lseg_null D)=>_ ->. Qed.
+
+(** 
+
+The next lemma, [lseq_pos], states that is a head of a linked list,
+defined by a heap [h], is not [null], then it can be "beheaded". That
+is, there will exist a head value [x], a "next" [r] and a residual
+heap [h'], such that the heap [h'] corresponds to the list's tail,
+which is expressed by SSReflect's [behead] function.
+
+*)
+
+Lemma lseq_pos xs p h : 
+        p != null -> h \In lseq p xs -> 
+        exists x, exists r, exists h', 
+          [/\ xs = x :: behead xs, 
+              p :-> x \+ (p .+ 1 :-> r \+ h') = h & h' \In lseq r (behead xs)].
+Proof.
+case: xs=>[|x xs] /= H []; first by move=>E; rewrite E eq_refl in H.
+by move=>y [h'][->] H1; heval.
+Qed.
+
+(* 
+
+TODO: difference between heval, hauto and step?
+
+*)
+
+(** 
+
+We can finally define and specify the HTT procedure [remove], which
+returns the current head of the list and returns the pointer to its
+next element (or [null]) if the list is empty.
+
+*)
+
+
+Program Definition 
+remove p : {xs}, STsep (lseq p xs, [vfun y => lseq y (behead xs)]) :=
+  Do (if p == null then ret p 
+      else pnext <-- !(p .+ 1);
+           dealloc p;; 
+           dealloc p .+ 1;;
+           ret pnext). 
+
+(** 
+
+The proof is straightforward and employs both lemmas [lseq_null] to
+prove the "[null]" case and [lseq_pos] for the case when the list has
+at least one element.
+
+*)
+
+Next Obligation.
+apply: ghR=>i xs H V; case: ifP H=>H1.
+- by rewrite (eqP H1); case/(lseq_null V)=>->->; heval. 
+case/(lseq_pos (negbT H1))=>x [q][h][->] <- /= H2.
+by heval; rewrite 2!unitL.
+Qed.
+
+(** 
+%\begin{exercise}%
+
+Define an verify function [remove_val] which is similar to remove, but
+also returns the value of the last "head" of the list before
+removal. Use Coq's [option] type to account for the possibility of an
+empty list in the result.
+
+%\end{exercise}%
+*)
+
+(**
+
+%\begin{exercise}%
+
+Let us define the following auxiliary predicates, where [shape_rev]
+splits the heap into two disjoint linked lists (by means of the
+separating conjunction [#]).
+
+*)
+
+Definition shape_rev p s := [Pred h | h \In lseq p.1 s.1 # lseq p.2 s.2].
+
+(** 
+
+Then the in-place list reversal is implemented by means of the
+recursive function [reverse] with a loop invariant expressed using the
+type [revT].
+
+*)
+
+Definition revT : Type := 
+  forall p, {ps}, STsep (shape_rev p ps, [vfun y => lseq y (rev ps.1 ++ ps.2)]).
+
+Program Definition 
+reverse p : {xs}, STsep (lseq p xs, [vfun y => lseq y (rev xs)]) :=
+  Do (let: reverse := Fix (fun (reverse : revT) p => 
+                        Do (if p.1 == null then ret p.2 
+                            else xnext <-- !p.1 .+ 1;
+                                 p.1 .+ 1 ::= p.2;;
+                                 reverse (xnext, p.1)))
+      in reverse (p, null)).
+
+(** 
+
+We invite the reader to conduct the verification proof for [reverse].
+
+%\hint% Try to design a proof on a paper first.
+
+%\hint% It might be a good idea to make use of the previously proved
+ lemmas [lseq_null] and [leq_pos], used as _views_.
+
+*)
+
+(* begin hide *)
+Next Obligation. 
+apply: ghR=>i [x1 x2][i1][i2][->] /= [H1 H2] V; case: eqP H1=>[->|E].
+- by case/(lseq_null (validL V))=>->->; rewrite unitL; heval. 
+case/lseq_pos=>[|xd [xn][h'][->] <- /= H1]; first by case: eqP.
+heval; rewrite -!joinA -!(joinCA h'); apply: (gh_ex (behead x1, xd::x2)).
+by apply: val_doR=>//; [heval | move=>x m; rewrite rev_cons cat_rcons]. 
+Qed.
+Next Obligation.
+apply: ghR=>i xs H _; apply: (gh_ex (xs, Nil T)).
+by apply: val_doR=>//; [exists i; heval | move=>x m /=; rewrite cats0]. 
+Qed.
+(* end hide *)
+
+(** %\end{exercise}% *)
+
+End LList.
 
 (* begin hide *)
 End HTT.
