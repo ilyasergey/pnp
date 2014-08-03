@@ -2093,6 +2093,8 @@ validity, one of the requirements is that every pointer in it is not
 one of numerous HTT's heap validity lemmas (use the [Search] machinery
 to find the others).
 
+%\httl{hvalidPtUn}%
+
 *)
 
 rewrite hvalidPtUn. 
@@ -2124,6 +2126,7 @@ number of subsequent heap pointers (two in this case, as defined by
 its second argument) and sets all of them to point to the value
 provided.
 
+%\httl{allocb}%
 *)
 
 Definition lseq p := lseg p null.
