@@ -515,22 +515,22 @@ of the cases dependent pattern matching can be avoided. We address the
 curious reader to the Chapter 8 of Adam Chlipala's book for more
 examples on the subject%~\cite{Chlipala:BOOK}%.
 
-%\index{dependent function type}%
-Dependent function types, akin to those of [nat_rec] and our
-[sum_no_zero], which allow the type of the result to vary depending
-on the value of a function's argument are a powerful way to specify
-the behaviour of functions, and therefore, are often used to "enforce"
-the dependently-typed programs. In Coq, dependent function types are
-omnipresent, and are syntactically specified using the
-[forall]-binder, similarly to the way _parametric_ types are specified
-in Haskell or type calculi like polymorphic lambda calculus (also
-known as System F%~\cite{Reynolds:SP74,Girard:PhD}%). The crucial
-difference beween Coq's core calculus and System F is that in Coq the
-types can be parametrised not just by _types_ but also by
-_values_. While the utility of this language "feature" can be already
-demonstrated for constructing and type-checking _programs_ (for
-example, [sum_no_zero]), its true strength is best demonstrated when
-using Coq as a system to construct _proofs_, which is the topic of the
+%\index{dependent function type}% Dependent function types, akin to
+those of [nat_rec] and our [sum_no_zero], which allow the type of the
+result to vary depending on the value of a function's argument are a
+powerful way to specify the behaviour of functions, and therefore, are
+often used to "enforce" the dependently-typed programs. In Coq,
+dependent function types are omnipresent, and are syntactically
+specified using the [forall]-binder, similarly to the way _parametric_
+types are specified in Haskell or type calculi like polymorphic lambda
+calculus (also known as System
+$F$%~\cite{Reynolds:SP74,Girard:PhD}%). The crucial difference beween
+Coq's core calculus and System $F$ is that in Coq the types can be
+parametrised not just by _types_ but also by _values_. While the
+utility of this language "feature" can be already demonstrated for
+constructing and type-checking _programs_ (for example,
+[sum_no_zero]), its true strength is best demonstrated when using Coq
+as a system to construct _proofs_, which is the topic of the
 subsequents chapters.
 
 ** Recursion principle and non-inhabited types

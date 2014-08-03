@@ -42,18 +42,19 @@ between _declarative_ and _imperative_ languages, emphasizing the fact
 program written in declarative language is pretty much documenting
 itself, as it already specifies the _result_ of a
 computation. Therefore, logic and constraint programming languages
-(such as Prolog and Ciao%~\cite{Hermenegildo-al:TPLP12}\index{Ciao}%)
-as well as data definition/manipulation languages (e.g., SQL), whose
-programs are just sets of constraints/logical clauses or queries
-describing the desired result, are naturally considered to be
-declarative. Very often, pure functional programming languages (e.g.,
-Haskell) are considered declarative as well, The reason for this is
-the _referential transparency_ property, which ensures that programs
-in such language %\index{referential transparency}% are in fact
-effect-free expressions, evaluating to some result (similar to
-mathematical functions). Therefore, such programs, whose outcome is
-only their result as an expression, but not some side effect (e.g.,
-output to a file), can be replaced safely by their result, if it's
+(such as Prolog%~\cite{Lloyd:87}% %\index{Prolog}% and
+Ciao%~\cite{Hermenegildo-al:TPLP12}\index{Ciao}%) as well as data
+definition/manipulation languages (e.g., SQL), whose programs are just
+sets of constraints/logical clauses or queries describing the desired
+result, are naturally considered to be declarative. Very often, pure
+functional programming languages (e.g., Haskell) are considered
+declarative as well, The reason for this is the _referential
+transparency_ property, which ensures that programs in such language
+%\index{referential transparency}% are in fact effect-free
+expressions, evaluating to some result (similar to mathematical
+functions). Therefore, such programs, whose outcome is only their
+result as an expression, but not some side effect (e.g., output to a
+file), can be replaced safely by their result, if it's
 computable. This possibility provides a convenient way of algebraic
 reasoning about such programs by means of equality
 rewritings---precisely what we were observing and leveraging in
@@ -1502,10 +1503,7 @@ apply: ghR=>i N.
 
 (**
 [[
-  n : ptr
-  acc : ptr
-  loop : fact_tp n acc
-  H : unit
+  ...
   i : heap
   N : nat
   ============================
@@ -1549,20 +1547,155 @@ heval.
      (if n' == 0 then ret a' else acc ::= a' * n';; n ::= n' - 1;; loop tt)
      [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
 ]]
+
+The goal, containing a use of the conditional operator is natural to
+be proved on case analysis on the condition [n' == 0].
+
 *)
 
-case X: (n' == 0)=>//.
-(* TODO: explain search for tactics *)
-- apply: val_ret=>/= _; move/eqP: X=>Z; subst n'.
+case X: (n' == 0). 
+
+(** 
+
+Now, the first goal has the form 
+
+[[
+  ...
+  Hi : fact_pure n' * a' = fact_pure N
+  X : (n' == 0) = true
+  ============================
+   verify (n :-> n' \+ acc :-> a') (ret a')
+     [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
+]]
+
+To prove it, we will need one of the numerous [val]-lemmas, delivered
+as a part of HTT libraries and directly corresponding to the rules of
+separation logic (%Section~\ref{sec:seplog-rules}%). The general
+recipe on acquiring intuition for lemmas applicable for each
+particular [verify]-goal is to make use of SSReflect's [Search]
+machinery. For instance, in this particular case, given that the
+command to be verified (i.e., the second argument of [verify]) is [ret
+a'], let us try the following query.
+
+*)
+
+Search _ (verify _ _ _) (ret _).
+
+(**
+
+The request results report, in particular, on the following lemma found:
+
+[[
+val_ret
+   forall (A : Type) (v : A) (i : heapPCM) (r : cont A),
+   (valid i -> r (Val v) i) -> verify i (ret v) r
+]]
+
+The lemma has a statement in its goal, which seems like it can be
+unified with our goal, so we proceed by applying it.
+%\httl{val\_ret}%
+*)
+
+- apply: val_ret=>/= _. 
+
+(** 
+
+The remaining part of the proof of this goal has absolutely nothing to
+do with program verification and separation logic and accounts to
+combining a number of arithmetical facts in the goal via the
+hypotheses [Hi] and [X]. We proceed by first turing the boolean
+equality in [X] into the propositional on via the view [eqP] and then
+substituting all occurrences of [n'] in the goal and other assumptions
+via Coq's tactic [subst]. %\ssrt{subst}% The rest of the proof is by
+providing existential witnesses and rewriting [1 * a'] to [a'] in [Hi].
+
+*)
+
+  move/eqP: X=>Z; subst n'.
   split; first by exists 0, a'=>//.
   by rewrite mul1n in Hi.
+
+(** 
+
+The second goal requires to satisfy the specification of a sequence of
+assignments, which can be done automatically using the [heval] tactic.
+
+*)
+
 heval. 
-apply: (gh_ex N); apply: val_doR=>// _.
+
+(** 
+[[
+  loop : fact_tp n acc
+  ...
+  Hi : fact_pure n' * a' = fact_pure N
+  X : (n' == 0) = false
+  ============================
+   verify (n :-> (n' - 1) \+ acc :-> (a' * n')) (loop tt)
+     [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
+]]
+
+The next step is somewhat less obvious, as we need to prove the
+specification of the recursive call to [loop], whose spec is also
+stored in our assumption context. Before we can apply a lemma, which
+is an analogue of the %\Rule{App}%, we need to _instantiate_ the
+logical variables of [loop]'s specification (which is described by the
+type [fact_tp]). The spec [fac_tp] features only one logical variable,
+namely [N], so we provide it using the HTT lemma [gh_ex].%\footnote{In
+a case of several logical variables, the lemma should have been
+applied the corresponding number of times with appropriate
+arguments.}%%\httl{gh\_ex}%
+
+*)
+
+apply: (gh_ex N). 
+
+(**
+
+Now to verify the call to [loop], we can apply the lemma [val_doR],
+corresponding to the rule %\Rule{App}%, which will replace the goal by
+the precondition from the spec [fact_tp n acc]. In HTT there are
+several lemmas tackling this kind of a goal, all different in the way
+they treat the postconditions, so in other cases it is recommended to
+run [Search "val_do"] to see the full list and chose the most
+appropriate one.
+%\httl{val\_doR}%
+
+*)
+
+apply: val_doR=>// _.
+
+(**
+[[
+  ...
+  Hi : fact_pure n' * a' = fact_pure N
+  X : (n' == 0) = false
+  ============================
+   fact_inv n acc N (n :-> (n' - 1) \+ acc :-> (a' * n'))
+]]
+
+As in the case of the previous goal, the remaining proof is focused on
+proving a statement about a heap and natural numbers, so we just
+present its proof below without elaborating on the details, as they
+are standard and mostly appeal to propositional reasoning
+(Chapter%~\ref{ch:logic}%) and rewriting by lemmas from SSReflect's
+[ssrnat] module.
+
+*)
+
 - exists (n'-1), (a' * n'); split=>//=. 
 rewrite -Hi=>{Hi}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
 case: n' X=>//= n' _.
 by rewrite subn1 -pred_Sn. 
 Qed.
+
+(** 
+
+We can now implement the main body of the factorial function, which
+allocates the necessary pointers, calls the accumulator loop and then
+frees the memory.
+
+*)
 
 Program Definition fact (N : nat) : 
   STsep ([Pred h | h = Unit], 
@@ -1574,10 +1707,53 @@ Program Definition fact (N : nat) :
       dealloc acc;;
       ret res).
 
+(** 
+
+The specification of [fact] explicitly states that its execution
+starts and terminates in the empty memory; it also constraints its
+result to be a factorial of [N]. 
+
+*)
+
 Next Obligation.
-rewrite /conseq.
-move=>h /= Z; subst h.
+
+(** 
+
+Since the spec of [fact] does not have any logical variables (its
+postcondition only mentions its argument [N]), there is no need to
+make use of the [ghR] lemma. However, the current goal is somewhat
+obscure, so to clarify it let us unfold the definition of [conseq]
+(which simply states that the consequence between the inferred type of
+the program and the stated spec should be proved) and simplify the goal.
+
+*)
+
+rewrite /conseq =>/=.
+
+(** 
+[[
+  N : nat
+  ============================
+   forall i : heap,
+   i = Unit ->
+   verify i
+     (n <-- alloc N;
+      acc <-- alloc 1;
+      res <-- fact_acc n acc tt; dealloc n;; dealloc acc;; ret res)
+     (fun (y : ans nat) (m : heap) =>
+      i = Unit -> [vfun res h => res = fact_pure N /\ h = Unit] y m)
+]]
+
+Next, we can rewrite the equality on the heap (which is [Unit]) and
+proceed by two runs of the [heval] tactic, which will take care of the
+allocated pointers yielding new assumptions [n] and [acc], arising
+from the implicit application of the %\Rule{Bind}% rule.
+
+*)
+
+move=>_ ->.
 heval=>n; heval=>acc; rewrite joinC unitR.
+
 (* 
 
 Intuition behind bnd_seq: decomposing sequential composition with a
