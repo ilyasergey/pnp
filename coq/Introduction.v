@@ -42,6 +42,8 @@ terminating functions, returning [true] or [false].
 
 %\emph{(Ilya: more to be said here.)}%
 
+** What this course is about
+
 More specifically, these notes focus on the following concepts and
 topics, to the best of our knowledge, not covered in other course on Coq:
 
@@ -68,17 +70,23 @@ topics, to the best of our knowledge, not covered in other course on Coq:
     programs, introducing the readers to the concepts of Hoare Type
     Theory.
 
- *)
+** What this course is not about
 
-(**
+** Why using SSReflect on top of Coq?
 
-* Why SSReflect?
+* Prerequisites
 
-* Setup
+* Course overview and Setup
 
-TODO
+** Outline and contents
 
-** Building Coq from sources
+** Naming conventions
+
+TODO: elaborate on difference between Vernacular, Gallina, Coq and CIC
+
+TODO: explain different fonts used
+
+** Installing Coq, SSReflect and HTT libaries
 
 TODO
 
@@ -86,11 +94,7 @@ TODO
 
 TODO
 
-** Installing and using SSReflect
-
-TODO
-
-* Naming conventions
+* Accompanying files
 
 *)
 

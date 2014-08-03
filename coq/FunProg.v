@@ -1013,7 +1013,7 @@ manual%~\cite{Coq-manual}% for the details of the [Notation]
 
 
 * Sections and modules
-\label{sec:secmod}
+%\label{sec:secmod}%
 
 We conclude this chapter by a very brief overview of Coq's module
 system.%\index{sections}\index{modules}%

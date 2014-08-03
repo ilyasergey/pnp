@@ -67,7 +67,6 @@ understanding the concept of "truth" and proving propositions in CIC
 form of a motto:
 
 %
-\newpage
 \begin{center}
 Only those propositions are considered to be \emph{true}, which are
 provable \emph{constructively},\\ i.e., by providing an \emph{explicit} proof term,

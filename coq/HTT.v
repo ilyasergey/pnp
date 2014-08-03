@@ -1982,31 +1982,33 @@ To answer this question, let us revise how the _soundness_ of a Hoare
 logic is defined. HTT takes definition of a Hoare triple (or, rather,
 a Hoare type, since in HTT specs are types) from
 page%~\pageref{pg:triple}% literally but implements it not via an
-operation semantics, defining how a program _should be run_, but using
-a denotational semantics%~\cite{Winskel:BOOK}%, i.e., defining what a
-program _is_. The HTT library comes with a module [stmod] that defines
-denotational semantics of HTT commands%\footnote{I.e., monadic values
-constructed by means of the write/alloc/dealloc/read/return commands
-and standard Coq connectives, such as conditional expression.}% and
-Hoare triples, defined as types. Each command is represented by a
-function, which sometimes referred to as _state transformer_, in the
-sense that it takes a particular heap and transforms it to another
-heap, also returning some result. The denotational semantics of HTT
-commands in terms of state-transforming functions makes it also
-possible to define what is a semantics of a program resulting from the
-use of the [Fix] operator (%Section~\ref{sec:factver}%).%\footnote{In
-fact, the standard construction from domain theory is used by
-employing Knaster–Tarski theorem on a lattice of monotone functions,
-which is, however, outside of the scope of these notes, so we redirect
-the reader to the relevant literature: Glynn Winskel's book for
-theory~\cite{Winskel:BOOK} or implementation
-papers~\cite[\S~7.2]{Chlipala:BOOK}.}% The semantics of Hoare types
-$\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$ is defined as _sets_ of
-state transforming functions, taking a heap satisfying $P$ to the
-result and heap satisfying $Q$. Therefore, the semantic account of the
-verification (which is implemented by means of type-checking in Coq)
-is checking that semantics of a particular HTT program (i.e., a
-state-transforming function) lies within the semantics of its type.
+operational semantics, i.e., defining how a program _should be run_,
+but using a denotational semantics%~\cite{Winskel:BOOK}%, i.e.,
+defining what a program _is_. The HTT library comes with a module
+[stmod] that defines denotational semantics of HTT
+commands%\footnote{I.e., monadic values constructed by means of the
+write/alloc/dealloc/read/return commands and standard Coq connectives,
+such as conditional expression.}% and Hoare triples, defined as
+types. Each command is represented by a function, which sometimes
+referred to as _state transformer_, in the sense that it takes a
+particular heap and transforms it to another heap, also returning some
+result. The denotational semantics of HTT commands in terms of
+state-transforming functions makes it also possible to define what is
+a semantics of a program resulting from the use of the [Fix] operator
+(%Section~\ref{sec:factver}%).%\footnote{In fact, the standard
+construction from domain theory is used by employing Knaster-Tarski
+theorem on a lattice of monotone functions, which is, however, outside
+of the scope of these notes, so we redirect the reader to the relevant
+literature: Glynn Winskel's book for the theoretical
+construction~\cite{Winskel:BOOK} or Adam Chlipala's manuscript
+covering a similar implementation~\cite[\S~7.2]{Chlipala:BOOK}.}% The
+semantics of Hoare types $\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$
+is defined as _sets_ of state transforming functions, taking a heap
+satisfying $P$ to the result and heap satisfying $Q$. Therefore, the
+semantic account of the verification (which is implemented by means of
+type-checking in Coq) is checking that semantics of a particular HTT
+program (i.e., a state-transforming function) lies within the
+semantics of its type.
 
 If execution of programs verified in HTT is of interest, it can be
 implemented by means of extraction of HTT commands into programs in an

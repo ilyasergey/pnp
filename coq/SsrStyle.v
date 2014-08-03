@@ -497,7 +497,7 @@ Proof.
 elim: n=>[|n Hn]; first by rewrite add0n.
 
 (** 
-%\pageref{pg:evenbplus}%
+%\label{pg:evenbplus}%
 
 [[
   m : nat

@@ -1049,7 +1049,7 @@ The rewriting rule/view lemma [eqP], imported from [eqtype] allows us
 to switch from the propositional equality to the boolean one, which
 makes the assumption to be [x == y]. Next, we combine the implicit
 fact that [x == y] in the assumption of a proposition is in fact [(x
-== y) = true] to perform on-site (see %Section~\ref{sec:on-site}%)
+== y) = true] to perform in-place (see %Section~\ref{sec:in-place}%)
 rewriting by means of the %\texttt{->}\ssrtl{->}% tactical, so the
 rest of the proof is simply by computation.
 
