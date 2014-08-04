@@ -278,7 +278,14 @@ reader's machine in order to build the necessary libraries and tools.
 In order to be able to follow the manuscripts with the examples
 provided the reader is supposed to have Coq with SSReflect installed
 at her machine. This section contains some general instructions on the
-installation and set-up.
+installation and set-up. Most of the mentioned binaries can be
+downloaded from the following URL.
+
+%
+\begin{center}
+\url{http://racky.imdeasoftware.org/constructive/pnp/}
+\end{center}
+%
 
 ** Installing Coq, SSReflect and HTT libraries
 
@@ -288,8 +295,8 @@ same examples will work seamlessly with different versions. Therefore,
 there are several recipes on how to install the necessary software. 
 
 - Windows users are encouraged to use Pierre-Yves Strub's installer
-  with the Coq bundle,%\footnote{Available at
-  \url{http://pierre-yves.strub.nu/}}% which already contains all the
+  with the Coq bundle,%\footnote{Available from
+  \url{http://pierre-yves.strub.nu/}.}% which already contains all the
   necessary components including Coq v8.4pl2, SSreflect v1.4 and Emacs
   with Proof General installed.
 
@@ -298,14 +305,7 @@ there are several recipes on how to install the necessary software.
   time.%\footnote{Getting Coq 8.4 using a system specific package
   manager, such as aptitude of MacPorts is another option, although
   the Coq version acquired this way is not guaranteed to work with
-  SSReflect 1.4.}% Both Coq and SSReflect packages can be downloaded
-  from the following URL.
-
-%
-\begin{center}
-\url{http://racky.imdeasoftware.org/constructive/pnp/}
-\end{center}
-%
+  SSReflect 1.4.}% 
 
   In order to be compiled, Coq requires Objective Caml version 3.11.2
   or later, Camlp5, GNU Make version 3.81 or later (see the file
@@ -315,14 +315,17 @@ there are several recipes on how to install the necessary software.
   respective paths chosen during the Coq's installation):
 
 <<
-    export COQBIN="/urs/local/bin/"
-    export COQ_MK="/urs/local/bin/coq_makefile"
+    export COQBIN="/usr/local/bin/"
+    export COQ_MK="/usr/local/bin/coq_makefile"
 >>
 
-  After compiling SSReflect, it is recommended to keep it sources
-  easily accessible as reading them might be helpful when working with
-  libraries (see the files in the folder
-  <<ssreflect-1.4/theories/>>). The following environment 
+  After compiling SSReflect, the file <<bin/ssrcoq>> should be created
+  in the <<ssreflect-1.4>> folder. It should be then manually copied
+  to the same folder where the Coq binaries are located (e.g.,
+  <</usr/local/bin>> in the default case of Unix-like systems). It is
+  also recommended to keep it sources easily accessible as reading
+  them might be helpful when working with libraries (see the files in
+  the folder <<ssreflect-1.4/theories/>>). The following environment
   variable should be also set up:
 
 <<
@@ -335,8 +338,8 @@ Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or
 Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X) users
 provides a convenient environment for Coq development, thanks to the
 Proof General mode. After downloading and installing Emacs, download
-and install Proof General,%\footnote{Available at
-\url{http://proofgeneral.inf.ed.ac.uk/download}}% following the
+and install Proof General,%\footnote{Available from
+\url{http://proofgeneral.inf.ed.ac.uk/download}.}% following the
 instructions. After downloading and unpacking, add the following lines
 into the <<.emacs>> configuration file located in the home directory
 in Unix and in <<C:\>> root in Windows (possibly replacing the
@@ -362,17 +365,50 @@ done by adding the following lines into the <<.emacs>> file:
     (setq cua-keep-region-after-copy t) 
 >>
 
+Every Coq file has the extension extension %\texttt{.v}%. Opening any
+%\texttt{.v}% file will automatically trigger the ProofGeneral. Once
+the mode is launched, in the menu <<ProofGeneral>>, choose the item:
+<<
+    Advanced -> Customize -> Coq -> Coq Prog Name
+>> 
+and change the value of the variable to
+<<
+    ssreflect-location/bin/ssrcoq
+>> 
+or
+<<
+    ssreflect-location\\bin\\ssrcoq
+>>
+for Windows/Cygwin users, where %\texttt{ssreflect-location}% is the
+location of your SSReflect directory with compiled binaries (or,
+alternatively, a parent catalogue of the %\texttt{bin}% folder
+containing Coq and SSReflect's binaries, where %\texttt{ssrcoq}% has
+been previously copied, as suggested).
+
 ** Getting HTT sources
 
 For the Chapter%~\ref{ch:htt}% the sources of the Hoare Type Theory
 will be required. The archive <<htt.zip>> with sources and the make
-script can be downloaded from the course
-page.%\footnote{\url{http://racky.imdeasoftware.org/constructive/pnp/}}%
-After downloading and unpacking, the sources should be compiled via
-the <<make>> command, given that Coq and SSReflect are properly
+script can be downloaded from the course url given above. After
+downloading and unpacking, the sources should be compiled via the
+%\texttt{make}% command, given that Coq and SSReflect are properly
 installed, as described previously.
 
 ** Using a virtual machine 
+
+If compiling and installing Coq and SSReflect from scratch looks like
+too much hassle, there is also a possibility to use a virtual machine
+image with all libraries preinstalled (including HTT) and Emacs set up
+to work with SSReflect. The image can be obtained from the same course
+page as other artifacts (look for
+%\texttt{ubuntu-CoqSSR-PnP.???}%). The image requires Oracle
+VirtualBox to be used.%\footnote{Available from
+\url{https://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu
+14.04 and automatically logs in when started with the user
+%\texttt{coquser}% (use the password %\texttt{coquser}% whenever
+necessarry). The folder %\texttt{\textasciitilde/misc}% contains the
+sources of SSReflect and Proof General, and HTT files are located in
+%\texttt{\textasciitilde/htt}%.
 
 * Naming conventions
 
