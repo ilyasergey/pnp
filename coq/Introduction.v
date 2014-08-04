@@ -100,13 +100,13 @@ Although all the three books have been used in numerous introductory
 courses for Coq with a large success, it is the author's opinion that
 there are still some topics essential for grasping the intuition
 behind rigorous and boilerplate-free mathematical reasoning via a
-proof assistant that are left underrepresented, and this is a gap,
-which this course is targeted to fill, while giving the reader enough
-background to proceed as a Coq hacker on her own. In particular, this
-manuscript describes in detail the following aspects of proof
-engineering, most of which are enabled or empowered by Georges
-Gonthier et al.'s _small-scale reflection_ extension (SSReflect) to
-Coq%~\cite{Gontier-al:TR}%.
+proof assistant that are left underrepresented. This course is
+targeted to fill these gaps, while giving the reader enough background
+to proceed as a Coq hacker on her own. In particular, this manuscript
+describes in detail the following aspects of proof engineering, most
+of which are enabled or empowered by Georges Gonthier et al.'s
+_small-scale reflection_ extension (SSReflect) to
+Coq%~\cite{Gontier-al:TR}%:
 
 - Special treatment is given to the _computational_ nature of
   inductive reasoning of decidable propositions, which makes it
@@ -139,8 +139,8 @@ Coq%~\cite{Gontier-al:TR}%.
   mathematical operations using the mechanism of _canonical instances_.
 
 - Explaining the basics of type-based reasoning about imperative
-  programs by means of _shallow embedding_, introducing the readers
-  to the concepts of Hoare Type Theory.
+  programs by means of _shallow embedding_, introducing the readers to
+  the concepts of Hoare Type Theory.
 
 ** What this course is about
 
