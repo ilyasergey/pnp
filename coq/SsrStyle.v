@@ -29,8 +29,8 @@ consider in more details the proofs that employ inductive reasoning as
 their main component. We will see how such proofs are typically
 structure in SSReflect, so the corresponding scripts would become very
 concise and yet readable and maintainable. We will also learn a few
-common tricks that help to adapt the induction hypothesis for the
-goal.
+common techniques that will help to adapt the induction hypothesis for
+a goal, so it would become suitable.
 
 In the rest of the chapter we will be constantly relying on a series
 of standard SSReflect modules, such as [ssrbool], [ssrnat] and

@@ -11,8 +11,9 @@ Module FunProg.
 
 (** 
 
-We start our short journey with observing the capabilities of Coq as
-a programming language. 
+Our journey to the land of mechanized reasoning and interactive
+theorem proving starts from observing the capabilities of Coq as a
+programming language.
 
 Coq is often described as a _functional_ programming language, since
 its programs are always pure (i.e., not producing any sort of side

@@ -1829,7 +1829,6 @@ fun fib (\var{N} : nat): nat = \{
 \}
 \end{alltt}
 %
-
 Your task will be to prove its correctness with respect to the
 "pure" function [fib_pure] (which you should define in plain Coq) as
 well as the fact that it starts and ends in an empty heap.
@@ -1917,7 +1916,8 @@ Qed.
 
 (**
 
-* On shallow and deep embeddings
+* On shallow and deep embedding
+%\label{sec:shallowdeep}%
 
 A noteworthy trait of HTT's approach to verification of imperative
 programs is its use of _shallow embedding_ of the imperative language
@@ -2040,15 +2040,15 @@ defining what a program _is_. The HTT library comes with a module
 [stmod] that defines denotational semantics of HTT
 commands%\footnote{I.e., monadic values constructed by means of the
 write/alloc/dealloc/read/return commands and standard Coq connectives,
-such as conditional expression.}% and Hoare triples, defined as
-types. Each command is represented by a function, which sometimes
-referred to as _state transformer_, in the sense that it takes a
-particular heap and transforms it to another heap, also returning some
-result. The denotational semantics of HTT commands in terms of
-state-transforming functions makes it also possible to define what is
-a semantics of a program resulting from the use of the [Fix] operator
-(%Section~\ref{sec:factver}%).%\footnote{In fact, the standard
-construction from domain theory is used by employing Knaster-Tarski
+such as conditional expression or pattern matching.}% and Hoare
+triples, defined as types. Each command is represented by a function,
+which sometimes referred to as _state transformer_, in the sense that
+it takes a particular heap and transforms it to another heap, also
+returning some result. The denotational semantics of HTT commands in
+terms of state-transforming functions makes it also possible to define
+what is a semantics of a program resulting from the use of the [Fix]
+operator (%Section~\ref{sec:factver}%).%\footnote{In fact, a standard
+construction from domain theory is used: employing Knaster-Tarski
 theorem on a lattice of monotone functions, which is, however, outside
 of the scope of these notes, so we redirect the reader to the relevant
 literature: Glynn Winskel's book for the theoretical
@@ -2308,10 +2308,9 @@ reverse p : {xs}, STsep (lseq p xs, [vfun y => lseq y (rev xs)]) :=
                                  p.1 .+ 1 ::= p.2;;
                                  reverse (xnext, p.1)))
       in reverse (p, null)).
-
 (** 
-
-We invite the reader to conduct the verification proof for [reverse].
+We invite the reader to conduct the verification of [reverse], proving
+that it satisfies the given specification.
 
 %\hint% Try to design a proof on a paper first.
 
