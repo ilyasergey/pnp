@@ -401,12 +401,13 @@ too much hassle, there is also a possibility to use a virtual machine
 image with all libraries preinstalled (including HTT) and Emacs set up
 to work with SSReflect. The image can be obtained from the same course
 page as other artifacts (look for
-%\texttt{ubuntu-CoqSSR-PnP.???}%). The image requires Oracle
+%\texttt{ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
+%\index{VirtualBox}%
 VirtualBox to be used.%\footnote{Available from
 \url{https://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu
 14.04 and automatically logs in when started with the user
 %\texttt{coquser}% (use the password %\texttt{coquser}% whenever
-necessarry). The folder %\texttt{\textasciitilde/misc}% contains the
+necessary). The folder %\texttt{\textasciitilde/misc}% contains the
 sources of SSReflect and Proof General, and HTT files are located in
 %\texttt{\textasciitilde/htt}%.
 
