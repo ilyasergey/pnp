@@ -6,25 +6,60 @@
 Module Intro.
 (* end hide *)
 
+(** remove printing ~ *)
+(** printing ~ %\textasciitilde% *)
+(** printing R $R$ *)
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
+(** printing of %\texttt{\emph{of}}% *)
+(** printing first %\texttt{{first}}% *)
+(** printing last %\texttt{\emph{last}}% *)
+(** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
-
-
+(** printing View %\texttt{\emph{View}}% *)
+(** printing >-> %\texttt{>->}% *)
+(** printing LoadPath %\texttt{\emph{LoadPath}}% *)
+(** printing exists %\texttt{{exists}}% *)
+(** printing :-> %\texttt{:->}% *)
+(** printing <-- $\mathtt{<--}$ *)
+(** printing vfun %\texttt{\emph{vfun}}% *)
+(** printing do %\texttt{{do}}% *)
+(** printing putStrLn %\texttt{\emph{putStrLn}}% *)
+(** printing getChar %\texttt{\emph{getChar}}% *)
+(** printing heval %\textsf{\emph{heval}}% *)
 
 (**
 
-The goal of this short course is to demonstrate how mathematical
-reasoning can benefit from the recent advances in computer science and. 
+These lecture notes offer a brief and comprehensive introduction to
+the basic concepts of mechanized reasoning and interactive theorem
+proving using the Coq proof assistant.
 
-In particular, we are demonstrating how the concepts familiar from the
-mainstream programming languages and employed in everyday programming
-practice provide illuminating insights about the nature of reasoning
-in constructive logic and make it possible to reduce the burden of mechanical theorem
+The primary audience of this text are the readers with solid
+background in software development and programming and a knowledge of
+mathematic disciplines on the level of an undergraduate university
+program. The high-level goal of the course, thus, is to demonstrate
+how much the rigorous mathematical reasoning and development of robust
+and intellectually manageable programs have in common, and how
+understanding of common programming language concepts provides a solid
+background for building mathematical abstractions and proving theorems
+formally. The low-level goal of this course is to provide an overview
+of the Coq proof assistant, taken in its both incarnations: as an
+expressive functional programming language with dependent types and as
+a proof assistant providing support for mechanized interactive theorem
 proving.
 
-%\emph{Ilya: I'm planning to expand this section further by providing
- more historical background to strengthen the motivation.}%
+By aiming these these two goals, this manuscript, thus is intended to
+provide a demonstration how the concepts familiar from the mainstream
+programming languages and employed in as parts of good programming
+practices can provide illuminating insights about the nature of
+reasoning in Coq's logical foundations and make it possible to reduce
+the burden of mechanical theorem proving. These insighsts will
+eventually give the reader a freedom to focus solely on the
+_essential_ part of the formal development instead of fighting with a
+proof assistant in futile attempts to encode the "obvious"
+mathematical intuition---a reason that made many of the new-comers
+abandon their attempts to apply the machine-assisted appropach for
+formal reasoning as an everyday practice.
 
 * Why yet another course on Coq?
 

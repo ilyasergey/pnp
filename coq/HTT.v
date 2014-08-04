@@ -784,8 +784,8 @@ pseudocode, the %\texttt{fact}% program is implemented as follows:
 %
 \begin{alltt}
 fun fact (\var{N} : nat): nat = \{
-  n   <- alloc(\var{N});
-  acc <- alloc(1); 
+  n   <-- alloc(\var{N});
+  acc <-- alloc(1); 
   res <-- 
     (fix loop (_ : unit). 
       a' <-- !acc;
@@ -866,9 +866,9 @@ of the presented logic rules.
 %
 \begin{alltt}
 \(\spec{h | h = \hempty}\) {\normalfont ({by precondition})}
- n   <- alloc(\var{N});
+ n   <-- alloc(\var{N});
 \(\spec{h | h = \com{n} \mapsto N}\) {\normalfont ({by \Rule{Alloc} and PCM properties})}
- acc <- alloc(1); 
+ acc <-- alloc(1); 
 \(\spec{h | h = \com{n} \mapsto N \join \com{acc} \mapsto 1}\) {\normalfont ({by \Rule{Alloc}})}
 \(\spec{h | \finv(\com{n}, \com{acc}, N, h)}\) {\normalfont ({by definition of \(\finv\) and \Rule{Conseq}})}
  res <-- 
@@ -1793,6 +1793,57 @@ deallocation, so the proof for it is accomplished mostly by applying
 by move=>_ _ [[n'][a'][->] _ ->] _; heval.  
 Qed.
 
+
+(** 
+
+%\begin{exercise}[Fibonacci numbers]%
+%\index{Fibonacci numbers}%
+Let us consider the following efficient imperative implementation of
+the function $\com{fib}$ that computes the [N]th Fibonacci number and
+is defined in pseudocode as follows.
+
+%
+\begin{alltt}
+fun fib (\var{N} : nat): nat = \{
+  if \var{N} == 0 then ret 0
+   else if \var{N} == 1 then ret 1
+   else n <-- alloc 2;
+        x <-- alloc 1;
+        y <-- alloc 1;
+        res <-- 
+          (fix loop (_ : unit). 
+             n' <-- !n;
+             y' <-- !y;
+             if n' == \var{N} then ret y'
+             else tmp <-- !x;
+                  x ::= y';;
+                  x' <-- !x;
+                  y ::= x' + tmp;;
+                  n ::= n' + 1;;
+                  loop(tt))(tt).
+        dealloc n;;
+        dealloc x;;
+        dealloc y;;
+        ret res    
+\}
+\end{alltt}
+%
+
+Your task will be to prove its correctness with respect to the
+"pure" function [fib_pure] (which you should define in plain Coq) as
+well as the fact that it starts and ends in an empty heap.
+
+%\hint% What is the loop invariant of the recursive computation
+ defined by means of the [loop] function?
+
+%\hint% Try to decompose the reasoning into verification of several
+ code pieces as in the factorial example and then composing them
+ together in the "main" function.
+
+%\end{exercise}%
+
+
+*)
 
 
 (* begin hide *)
