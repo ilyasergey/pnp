@@ -9,7 +9,6 @@ Module FunProg.
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
 
-
 (** 
 
 We start our short journey with observing the capabilities of Coq as
@@ -885,7 +884,7 @@ When working with someone's Coq development, sometimes it might be not
 entirely obvious what particular notation means: Coq's extensible
 parser is very simple to abuse by defining completely intractable
 abbreviations, which might say a lot to the library developer, but not
-to its client. Coq provide the [Locate] %\ccom{Locate}% command to
+to its client. Coq provide the %\texttt{Locate}% %\ccom{Locate}% command to
 help in demystifying notations as well as locating the position of
 particular definitions.  For example, the following query will show
 all the definitions of the notation "[_ + _]" as well as the scopes
@@ -907,10 +906,10 @@ Notation            Scope
 
 We can see now that the plsu-notation is used in particular for the
 addition of natural numbers (in [nat_scope]) and the declaration of a
-sum type (in [type_scope]). Similarly to the notations, the [Locate]
-command can help finding the definition in the source modules they
-defined:%\footnote{The module system of Coq is similar to OCaml and
-will be discussed further in this chapter.}% *)
+sum type (in [type_scope]). Similarly to the notations, the
+%\texttt{Locate}% command can help finding the definition in the
+source modules they defined:%\footnote{The module system of Coq is
+similar to OCaml and will be discussed further in this chapter.}% *)
 
 Locate map.
 

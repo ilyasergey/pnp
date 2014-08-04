@@ -3,10 +3,11 @@
 \usepackage[backref=true,
                      backrefstyle=two,
                      backend=bibtex,
-                     style=numeric,
+                     style=numeric-comp,
                      maxbibnames=99,
                      mincrossrefs=99,
-                     sortcites]{biblatex}
+                     sortcites=true
+                     ]{biblatex}
 \usepackage[citecolor=blue]{hyperref}
 \usepackage[]{inputenc}
 \usepackage[T1]{fontenc}
@@ -93,7 +94,6 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography
-\textcolor{white}{\lipsum[1-4]}
 
 \clearpage
 \phantomsection

@@ -346,9 +346,9 @@ Although this definition seems more principle and is closer to what we
 have seen before, the record notation is more convenient, as it
 defined getters automatically as well as allows one to express
 inheritance between data structures by means of the coercion operator
-%\texttt{:>}\gop{:>}%
-operator%~\cite{Garillot-al:TPHOL09}%.%\footnote{In the next section
-will show a different way to encode implicit inheritance, though.}%
+%\texttt{:>}% operator%~\cite{Garillot-al:TPHOL09}%.%\footnote{In the
+next section will show a different way to encode implicit inheritance,
+though.}%
 
 ** Packaging the structure from mixins
 %\label{sec:packaging}%

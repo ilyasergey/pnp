@@ -1142,7 +1142,7 @@ Theory_ (or just HTT), which defines a notion of an _indexed Hoare
 monad_ as a mechanism to encode Hoare-style specifications as
 dependent types and reduce the verification of effectful progress to
 proving propositions in
-Coq%~\cite{Nanevski-al:ICFP08,Nanevski-al:JFP08,Nanevski-al:POPL10}%.
+Coq%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08,Nanevski-al:POPL10}%.
 
 In the rest of this chapter we will consider a number of important
 concepts of HTT, so the necessary files should be imported from the
@@ -1980,7 +1980,8 @@ naturally tend to be more verbose, design choices in them are usually
 simpler to explain and motivate. Moreover, the deep embedding approach
 makes the problem of name binding to be explicit, so it would be
 appreciated as an important aspect in the design and reasoning about
-programming languages%~\cite{Weirich-al:ICFP11,Chargueraud:JAR12}%. We
+programming
+languages%~\cite{Aydemir-al:POPL08,Weirich-al:ICFP11,Chargueraud:JAR12}%. We
 believe, these are the reason why this approach is typically chosen as
 a preferable one when teaching program verification in
 Coq%~\cite{Pierce-al:SF}%.

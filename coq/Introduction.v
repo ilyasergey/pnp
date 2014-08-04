@@ -168,31 +168,241 @@ Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 
 ** What this course is not about
 
-TODO
+There is a range of topics that this course does not cover, although
+it is the author's belief that the provided material should be
+sufficient for the reader to proceed to these more advanced subjects
+on her own. Some of the exciting topcis, which are certainly worth
+studying but lie beyond the scope of this manuscript, are listed below
+together with some pointer to the relevant bibliographic references.
 
-** Why using SSReflect on top of Coq?
+- Reasoning about infinite objects in Coq by means of co-induction
+  (see Chapters 5 and 7 of the book%~\cite{Chlipala:BOOK}% as well as
+  the research papers%~\cite{Hur-al:POPL13,Leroy-Grall:IC09}%).
+
+- Proof automation by means of tactic engineering (see%~\cite[Chapters
+  13--15]{Chlipala:BOOK}% and the
+  papers%~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10,Stampoulis-Shao:POPL12}%)
+  or lemma overloading%~\cite{Gontier-al:ICFP11}%.
+
+- Using a proof assistant in the verification of program
+  calculi%~\cite{Pierce-al:SF,Aydemir-al:POPL08}% and optimizing
+  compilers%~\cite{Appel:BOOK14}% as well as employing Coq to specify
+  and verify low-level and concurrent
+  programs%~\cite{Nanevski-al:ESOP14,Chlipala:PLDI11,Feng-al:PLDI06,Cai-al:PLDI07}%.
+
+** Why SSReflect?
+
+%\index{SSReflect|textbf}%
+
+A significant part of this course's material is presented using the
+SSReflect extension of Coq%~\cite{Gontier-al:TR}%, developed as a part
+of the Mathematical Components
+project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}%
+in order to facilitate the automated reasoning in very large
+mathematical developments, in particular, the fully formal
+machine-checked proofs of the %\emph{four color
+theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson
+theorem}~\cite{Gonthier-al:ITP13}%.
+
+%\index{four color theorem}%
+%\index{Feit-Thompson theorem}%
+%\index{odd order theorem|see {Feit-Thompson theorem}}%
+
+SSReflect includes a small but complete set of novel primitives
+(tactics) for interactive proof construction, different from the
+traditional set provided by Coq. It also comes with a large library of
+different algebraic structures, ranging from natural numbers to
+graphs, finite sets and algebras, formalized and shipped with
+exhaustive sets of lemmas about them. Finally, SSReflect introduces
+some mild modification to Coq's syntax and the semantics of proof
+script interpreter, which makes the produced proofs a significantly
+more concise.
+
+Using SSReflect for the current development is not the goal by itself:
+a large part of the manuscript could be presented using traditional
+Coq without any loos in the insights but, perhaps, some loss in
+brevity. However, what is more important, using SSReflect's libraries
+and tactics makes it much easier to stress the main points of this
+course, namely, that (a) the proof construction process should rely on
+Coq's native computational machinery as much as possible and (b)
+rewriting (in particular, by equality) is one of the most important
+proof techniques, which should be mastered and leveraged in the
+proofs. Luckily, the way most of the lemmas in SSReflect libraries are
+implemented makes them immediately suitable to use for rewritings,
+which directly follows the natural mathematical intuition. The
+enhancements SSReflect brings over the standard Coq rewriting
+machinery also come in handy.
+
+Last, but not least, SSReflect comes with a much improved [Search]
+tool (comparing to the standard one of Coq). Given that a fair part of
+time spend in development (either programs and proofs) is typically
+spent reading and understanding the code written by other developers,
+the [Search] tool turns out to be invaluable when it comes to looking
+for necessary facts to employ in one's implementation.
+
+In the further chapters of this course, we will not be making
+distinction between native Coq and SSReflect-introduced commands,
+tactics and tacticals, and will keep the combined lists of them in the
+Index section at the end of the manuscript.
 
 * Prerequisites
 
-* Course overview and Setup
+The reader is expected to have some experience with mainstream
+object-oriented and functional programming languages, such as Scala,
+Haskell, OCaml or Standard ML. While strong knowledge of any of the
+mentioned languages is not mandatory, it might be useful, as many of
+the Coq's concepts making appearance in the course are explained using
+the analogies with constructs adopted in programming, such as
+algebraic datatypes, higher-order functions, records and monads. 
 
-** Outline and contents
+While this manuscript is aiming to be self-containing in its
+presentation of a subset of Coq, it would be %\naive% to expect it to
+be the _only_ Coq reference used for setting-up a formal
+development. That said, we encourage the reader to use the standard
+Coq manual%~\cite{Coq-manual}% as well as SSReflect
+documentation%~\cite{Gontier-al:TR}% whenever a unknown tactic, piece
+of syntax or obscure notation is encountered. Coq's [Search],
+%\texttt{Locate}% and [Print] tools, explained in
+%Chapter~\ref{ch:funprog}% are usually of great help when it comes to
+investigating what someone's Coq code does, so don't hesitate to use
+them.
 
-** Naming conventions
+Finally, we assume that the Emacs text editor %\index{Emacs}% with a
+Proof General mode installed %\index{Proof General}% (as explained
+further in this chapter) will be used as an environment for writing
+code scripts, and the GNU [make] machinery is available at the
+reader's machine in order to build the necessary libraries and tools.
 
-TODO: elaborate on difference between Vernacular, Gallina, Coq and CIC
+* Setup
 
-TODO: explain different fonts used
+In order to be able to follow the manuscripts with the examples
+provided the reader is supposed to have Coq with SSReflect installed
+at her machine. This section contains some general instructions on the
+installation and set-up.
 
-** Installing Coq, SSReflect and HTT libaries
+** Installing Coq, SSReflect and HTT libraries
 
-TODO
+The sources of this manuscript have been compiler and tested with Coq
+version 8.4 and SSReflect version 1.4. It is not guaranteed that the
+same examples will work seamlessly with different versions. Therefore,
+there are several recipes on how to install the necessary software. 
+
+- Windows users are encouraged to use Pierre-Yves Strub's installer
+  with the Coq bundle,%\footnote{Available at
+  \url{http://pierre-yves.strub.nu/}}% which already contains all the
+  necessary components including Coq v8.4pl2, SSreflect v1.4 and Emacs
+  with Proof General installed.
+
+- Linux and Mac OS X users can compile Coq 8.4 and SSReflect from
+  sources, which would take around two hours of
+  time.%\footnote{Getting Coq 8.4 using a system specific package
+  manager, such as aptitude of MacPorts is another option, although
+  the Coq version acquired this way is not guaranteed to work with
+  SSReflect 1.4.}% Both Coq and SSReflect packages can be downloaded
+  from the following URL.
+
+%
+\begin{center}
+\url{http://racky.imdeasoftware.org/constructive/pnp/}
+\end{center}
+%
+
+  In order to be compiled, Coq requires Objective Caml version 3.11.2
+  or later, Camlp5, GNU Make version 3.81 or later (see the file
+  <<INSTALL>>) for more details. Once compiled, the following
+  environment variables should be set (e.g., in <<~/.bashrc>> or
+  <<~/.profile>> configuration files) to build SSReflect (with the
+  respective paths chosen during the Coq's installation):
+
+<<
+    export COQBIN="/urs/local/bin/"
+    export COQ_MK="/urs/local/bin/coq_makefile"
+>>
+
+  After compiling SSReflect, it is recommended to keep it sources
+  easily accessible as reading them might be helpful when working with
+  libraries (see the files in the folder
+  <<ssreflect-1.4/theories/>>). The following environment 
+  variable should be also set up:
+
+<<
+    export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/Ssreflect/" 
+>>
 
 ** Emacs set-up
 
-TODO
+Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or
+Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X) users
+provides a convenient environment for Coq development, thanks to the
+Proof General mode. After downloading and installing Emacs, download
+and install Proof General,%\footnote{Available at
+\url{http://proofgeneral.inf.ed.ac.uk/download}}% following the
+instructions. After downloading and unpacking, add the following lines
+into the <<.emacs>> configuration file located in the home directory
+in Unix and in <<C:\>> root in Windows (possibly replacing the
+%\texttt{\textasciitilde/misc/}% part with the path where Proof
+General and SSReflect sources were unpacked).
 
-* Accompanying files
+<<
+    ;; Proof General support
+    (load-file "~/misc/ProofGeneral-4.2/generic/proof-site.el") 
+
+    ;; SSReflect support 
+    (load-file "~/misc/ssreflect-1.4/pg-ssr.el")
+>>
+
+Linux users, more used to the standard Copy/Paste/Undo keystrokes can
+also find it convenient to enable the Cua mode in Emacs, which can be
+done by adding the following lines into the <<.emacs>> file:
+
+<<
+    (cua-mode t)
+    (setq cua-auto-tabify-rectangles nil)
+    (transient-mark-mode 1)
+    (setq cua-keep-region-after-copy t) 
+>>
+
+** Getting HTT
+
+For the Chapter%~\ref{ch:htt}% the sources of the Hoare Type Theory
+will be required. The archive <<htt.zip>> with sources and the make
+script can be downloaded from the course
+page.%\footnote{\url{http://racky.imdeasoftware.org/constructive/pnp/}}%
+After downloading and unpacking, the sources should be compiled via
+the <<make>> command, given that Coq and SSReflect are properly
+installed, as described previously.
+
+** Using a virtual machine 
+
+* Naming conventions
+
+Coq as a tool and environment for interactive theorem proving
+incorporates a number of entities in itself. As a programming and
+specification language, Coq implements of a dependently-type
+_calculus_ (i.e., a small formal programming language) _Gallina_,
+%\index{Gallina}% which is an extension of the _Calculus of Inductive
+Constructions_ (CIC) explained in Chapter%~\ref{ch:logic}%. Therefore,
+all the expressions and programs in Coq, including standard
+connectives (e.g., %\texttt{if-then-else}% or %\texttt{let-in}%) are
+usually referred to as _Gallina terms_. In the listing, keywords of
+Gallina terms will be usually spelled using %\texttt{typewriter
+monospace font}%. The defined entities, such as functions, datatypes
+theorems and local variables will be usually spelled in the
+%\emph{italic}% or %\textsf{sans serif}% fonts.
+
+On top of the language of programs in Coq there is a language of
+_commands_ and _tactics_, which help to manage the proof scripts,
+define functions and datatypes and perform queries, sucha as searching
+and printing. The language of Coq commands, such as [Search] and
+[Print], is called _Vernacular_. %\index{Vernacular}% Commands and
+tactics, similarly to the keywords, are spelled in %\texttt{typewriter
+monospace font}%.
+
+In the rest of the manuscripts we will be abusing the terminology and
+blur the distinction between entities that belong to Galina,
+Vernacular or Coq as a framework, and will be referring on them as
+"Coq terms", "Coq tactics" and "Coq commands".
+
 
 *)
 
