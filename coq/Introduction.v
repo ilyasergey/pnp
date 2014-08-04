@@ -362,7 +362,7 @@ done by adding the following lines into the <<.emacs>> file:
     (setq cua-keep-region-after-copy t) 
 >>
 
-** Getting HTT
+** Getting HTT sources
 
 For the Chapter%~\ref{ch:htt}% the sources of the Hoare Type Theory
 will be required. The archive <<htt.zip>> with sources and the make
