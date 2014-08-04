@@ -1919,8 +1919,8 @@ Qed.
 
 * On shallow and deep embeddings
 
-A noteworthy trait of HTT's approach to the verification of imperative
-program is its use of _shallow embedding_ of the imperative language
+A noteworthy trait of HTT's approach to verification of imperative
+programs is its use of _shallow embedding_ of the imperative language
 %\index{shallow embedding}% to the programming language of Coq. In
 fact, the imperative programs that we have written, e.g., the
 factorial procedure, are mere Coq programs, written in Coq syntax with

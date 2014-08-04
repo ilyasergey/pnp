@@ -63,53 +63,112 @@ formal reasoning as an everyday practice.
 
 * Why yet another course on Coq?
 
+The Coq proof assistant%~\cite{Coq-manual}% has been developed since
+1983, and by now there is a number of courses that provide excellent
+introductions into Coq-powered interactive theorem proving and
+software development. Among the others publicly available manuscripts,
+the author finds the following three to be the most suitable for
+teaching purposes.
 
+- The classical book _Interactive Theorem Proving and Program
+  Development. Coq'Art: The Calculus of Inductive Constructions_ by
+  Yves Bertot and Pierre %Cast\'{e}ran~\cite{Bertot-Casteran:BOOK}% is
+  a great and exhaustive overview of Coq as formal system and a tool,
+  covering both logical foundations, reasoning methodologies,
+  automation tools and offering large number of examples and exercises
+  (from which this course borrows some).
 
+- Benjamin Pierce et al.'s _Software Foundations_ electronic
+  book%~\cite{Pierce-al:SF}% introduces Coq development from an angle
+  of the basic research in programming language, focusing on
+  formalization of program language semantics and type systems, which
+  serve both as main motivating examples of Coq usage and a source of
+  intuition for explaining Coq's logical foundations.
 
-Unlike other courses on machine-assisted theorem proving in Coq, these
-notes focus on _computational_ nature of inductive reasoning, which
-makes it possible to compute a vast majority of the desired results,
-given that they are formulated as computable properties, rather than
-inductive predicates, which is the spirit of the traditional Coq
-school.
+- The most recent book, _Certified Programming with Dependent Types_
+  by Adam Chlipala%~\cite{Chlipala:BOOK}% provides a gentle
+  introduction to Coq from the perspective of writing programs that
+  manipulate with _certificates_, i.e., first-class proofs of the
+  program's correctness. The idea of certified programming is a
+  natural fit for a programming language with dependent types, which
+  Coq offers, and the book is structured as a series of examples that
+  make the dependently-typed aspect of Coq shine along with intuition
+  behind these examples and an exhaustive overview of state of the art
+  _proof automation_ techniques.
 
-In this course, we rely on the SSReflect extension of Coq, as a tool,
-which takes the computational reasoning to the whole new level by
-means of employing _small-scale reflection_ when it comes to reasoning
-about computable properties, which therefore can be considered as
-terminating functions, returning [true] or [false].
+Although all the three books have been used in numerous introductory
+courses for Coq with a large success, it is the author's opinion that
+there are still some topics essential for grasping the intuition
+behind rigorous and boilerplate-free mathematical reasoning via a
+proof assistant that are left underrepresented, and this is a gap,
+which this course is targeted to fill, while giving the reader enough
+background to proceed as a Coq hacker on her own. In particular, this
+manuscript describes in detail the following aspects of proof
+engineering, most of which are enabled or empowered by Georges
+Gonthier et al.'s _small-scale reflection_ extension (SSReflect) to
+Coq%~\cite{Gontier-al:TR}%.
 
-%\emph{(Ilya: more to be said here.)}%
+- Special treatment is given to the _computational_ nature of
+  inductive reasoning of decidable propositions, which makes it
+  possible to _compute_ a vast majority of them (as opposed to prove
+  them constructively), given that they are formulated as computable
+  recursive Coq functions, rather than inductive predicates (which is
+  more the spirit of the traditional Coq school).
+
+- Instead of supplying the reader with a large vocabulary of tactics
+  necessary for everyday Coq hacking, this course focuses on a _very
+  small_ but powerful and _complete_ set (about a dozen) of proof
+  constructing primitives, supplied by SSReflect or inherited from
+  the vanilla Coq with notable enhancements.
+
+- Advocating inductive types' _parameters_ as an alternative to
+  _indices_ as a way of reasoning about explicit equalities.
+
+- Presenting the reasoning by rewriting from the perspective of Coq's
+  definition of propositional equality and elaborating on the idea of
+  using _datatype indices_ as a tool to define client-specific
+  conditional _rewriting rules_.
+
+- Explaining the essentials of SSReflect's _boolean reflection_
+  between the sort [Prop] and the datatype [bool] as a particular case
+  of conditional rewriting, following the spirit of the computational
+  approach to the proofs of decidable propositions.
+
+- Formulating familiar mathematical structures (e.g., monoids and
+  lattices) by means of Coq's _dependent records_ and overloading
+  mathematical operations using the mechanism of _canonical instances_.
+
+- Explaining the basics of type-based reasoning about imperative
+  programs by means of _shallow embedding_, introducing the readers
+  to the concepts of Hoare Type Theory.
 
 ** What this course is about
 
-More specifically, these notes focus on the following concepts and
-topics, to the best of our knowledge, not covered in other course on Coq:
-
-  - Structuring the reasoning with a small but complete set of
-    tactics: [move], [elim], [case], [have], [apply], [set], [rewrite]
-    and [congr].
-
-  - Explaining the essentials of boolean reflection and relation
-    between the type [bool] and the sort [Prop];
-
-  - Leveraging inductive type's _parameters_ as an alternative to
-    _indices_ by means of reasoning about explicit equalities;
-
-  - Using datatype indices as a tool to define conditional rewriting
-    rules;
-
-  - Formulating familiar mathematical structures (e.g., monoids and
-    lattices) by means of Coq's dependent records;
-
-  - Reducing the clutter when reasoning with the mathematical
-    structures be means of employing Coq's _canonical constructions_;
-
-  - Explaining the basics of type-based reasoning about imperative
-    programs, introducing the readers to the concepts of Hoare Type
-    Theory.
+Besides the enumerated above list of topics, which are described in
+detail and supported by a number of examples, this course supplies som
+amount of "standard" material, necessary to introduce a reader with a
+background in programming and classical mathematical disciplines to
+proof engineering and program development in Coq. It starts from
+explaining how simple functional programs can be written in the
+programming environment of Coq, proceeding to the definition of
+propositional logic connectives and elements of interactive proof
+construction. Building further on the programming intuitions of
+algebraic datatype definitions, this manuscript introduces the
+definition equality and the way to encode custom rewriting rules,
+which the culminates with a discussion on the boolean reflection and
+reasoning by means of computation. This discussion is continued by
+revising important principles of reasoning by induction in Coq and
+providing pointers to the standard SSReflect libraries, which should
+be used as a main component for basic mathematical reasoning. The
+course concludes by reconciling all of the described concepts and
+Coq/SSReflect reasoning principles by tacking a large case
+study---verifying imperative programs within the framework of Nanevski
+et al.'s Hoare Type
+Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 
 ** What this course is not about
+
+TODO
 
 ** Why using SSReflect on top of Coq?
 
