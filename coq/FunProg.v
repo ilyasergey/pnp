@@ -8,6 +8,7 @@ Module FunProg.
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
+(** printing is %\texttt{\emph{is}}% *)
 
 (** 
 
@@ -32,9 +33,14 @@ tour of Coq's syntax and define a couple of simple programs.
 
 (** 
 
-The simplest datatype once can imagine is [unit], a type inhabited by
-exactly one element. %\ccom{Inductive}% In Coq, one can define such a
-type in the following manner:
+Let us create an empty %\texttt{.v}% file---a standard extension for
+Coq files, recognized, in particular, by Proof General and define our
+first Coq datatype. The simplest datatype once can imagine is [unit],
+a type inhabited by exactly one element. %\ccom{Inductive}% In Coq,
+one can define such a type in the following manner:%\footnote{Use the
+%<<Ctrl-C Ctrl-Enter>>% keyboard shortcut to initiate the interactive
+\index{interactive proof mode} programming/proof mode in Proof General
+and gradually compile the file.}%
 
 *)
 
@@ -226,9 +232,7 @@ reductions.}%
 
 Eval compute in my_plus 5 7. 
 (** 
-[[ 
-= 12 : nat
-]] 
+[  = 12 : nat] 
 
 The same function could be written quite a bit shorter via SSReflect's
 pattern-matching [if-is]-notation, which is a convenient alternative

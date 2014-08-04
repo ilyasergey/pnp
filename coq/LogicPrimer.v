@@ -5,6 +5,7 @@
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
+(** printing admit %\texttt{\emph{admit}}% *)
 
 
 (** %
@@ -1501,6 +1502,11 @@ Qed.
  use the SSReflect tactic [suff: P], %\ssrt{suff:}% where [P] is
  an arbitrary proposition. The system will then require you to prove
  that [P] implies the goal _and_ [P] itself.
+
+%\hint% Stuck with a tricky proof? Use the Coq [admit] tactic as a
+  %\ssrt{admit}% "stub" for an unfinished proof of a goal, which,
+  %nevertheless will be considered completed by Coq. You can always
+  %get back to it later.
 
 %\end{exercise}%
 
