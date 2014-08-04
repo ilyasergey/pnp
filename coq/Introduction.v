@@ -63,11 +63,15 @@ formal reasoning as an everyday practice.
 
 * Why yet another course on Coq?
 
+
+
+
 Unlike other courses on machine-assisted theorem proving in Coq, these
 notes focus on _computational_ nature of inductive reasoning, which
 makes it possible to compute a vast majority of the desired results,
 given that they are formulated as computable properties, rather than
-inductive predicates, which is the spirit of the traditional Coq school. 
+inductive predicates, which is the spirit of the traditional Coq
+school.
 
 In this course, we rely on the SSReflect extension of Coq, as a tool,
 which takes the computational reasoning to the whole new level by

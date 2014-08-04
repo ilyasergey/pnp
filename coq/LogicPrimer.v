@@ -53,6 +53,8 @@ is just programming in disguise.
 The _Calculus of Inductive Constructions_
 %\index{Calculus of Inductive Constructions}%
 %\index{CIC|see {Calculus~of~Inductive~Constructions}}%
+%\index{Intuitionistic type theory}%
+%\index{Martin-\loef's type theory|see {Intuitionistic type theory}}%
 (CIC)%~\cite{Bertot-Casteran:BOOK,Coquand-Huet:IC88}%, a logical
 foundation of Coq, similarly to its close relative, Martin-%\loef%'s
 _Intuitionistic Type Theory_ %\cite{Martin-Loef:84}%, considers proofs
@@ -1450,7 +1452,7 @@ Lemma peirce_dn: peirce -> double_neg.
 Proof. by move=>H P Hn; apply: (H _ False)=> /Hn. Qed.
 
 Lemma dn_em : double_neg -> excluded_middle.
-Proof.
+Proof. 
 rewrite /double_neg /excluded_middle=> Dn P. 
 apply: (Dn (P \/ ~ P))=>H1; apply: (H1).
 by left; apply: (Dn)=> H2; apply: H1; right.

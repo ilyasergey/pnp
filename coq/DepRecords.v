@@ -1018,6 +1018,7 @@ move=> n m; apply: (iffP idP) => [ | <- ]; last by elim n.
 by elim: n m => [ | n IHn] [| m ] //= /IHn ->.
 Qed.
 ]]
+%\ssrtl{//=}%
 
 Finally the following two definitions establish the canonical instance
 of the decidable equality for [nat], which can be used whenever

@@ -990,11 +990,12 @@ distinct from the programming with pure functions:
   form [let x = e1 in e2], omnipresent in fucntional programs, as
   later ones might allow for both strict and lazy evaluation of the
   right-hand side expression [e1] depending on a semantics of the
-  language (e.g., Standard ML vs. Haskell). This flexibility does not
-  affect the result of a pure program (modulo divergence), since [e1]
-  and [e2] are expressions, and, hence, are pure. However, in the case
-  of computations, the order should be fixed and this is what the
-  binding construct serves for.
+  language (e.g., call-by-value in Standard ML vs. call-by-need in
+  Haskell). This flexibility does not affect the result of a pure
+  program (modulo divergence), since [e1] and [e2] are expressions,
+  and, hence, are pure. However, in the case of computations, the
+  order should be fixed and this is what the binding construct serves
+  for.
 
 - _Returning_ a value is a command constructor (which we typeset as
   $\ret$), which allows one to embed a pure expression into the realm
@@ -1104,7 +1105,7 @@ imperative programs in Coq:
   _dependent_ types.
 
 - Hoare triples in separation logic specify _effectful_ computations
-  that are composed by means of _binding_ with pure expression being
+  that are composed by means of _binding_, with pure expressions being
   injected into them by means of "wrapping" them with a $\ret$
   operator. This makes Hoare triples behave exactly like instances of
   _monads_ from functional programming, whose composition is described
@@ -1446,7 +1447,7 @@ fact a factorial of [N], which is expressed by the conjunct [res =
 fact_pure N]. 
 
 %\index{fixed-point combinator}%
-%\index{Y-combinator}|see {fixed-point combinator}%
+%\index{Y-combinator|see {fixed-point combinator}}%
 
 The definition of the factorial "accumulator" loop is then represented
 as a recursive function, taking as arguments the two pointers, [n] and
@@ -1951,21 +1952,20 @@ _domain-specific language_ or DSL) as a subset of another
 general-purpose _host_ language, so the programs in the former one are
 simply the programs in the latter one. The idea of shallow embedding
 originates at early '60s with the beginning of era of the Lisp
-programming language%~\cite{Graham:BOOK}%, which, thanks to its macro-expansion system,
-serves as a powerful platform to implement DSLs by means of shallow
-embedding (such DSLs are sometimes called _internal_ or _embedded_).
-%\index{DSL|see{domain-specific language}}% 
-%\index{domain-specific language}% %\index{internal DSL}%
-%\index{embedded DSL}%
-Shallow embedding in the world of practical programming is advocated
-for a high speed of language prototyping and the ability to re-use
-most of the host language machinery.
+programming language%~\cite{Graham:BOOK}\index{Lisp}%, which, thanks
+to its macro-expansion system, serves as a powerful platform to
+implement DSLs by means of shallow embedding (such DSLs are sometimes
+called _internal_ or _embedded_).  %\index{DSL|see{domain-specific
+language}}% %\index{domain-specific language}% %\index{internal DSL}%
+%\index{embedded DSL}% Shallow embedding in the world of practical
+programming is advocated for a high speed of language prototyping and
+the ability to re-use most of the host language machinery.
 
 An alternative approach of implementing and encoding programming
 languages in general and in Coq in particular is called _deep
 embedding_, and amounts to the implementation of a language of
 interest from scratch, essentially, writing its parser, interpreter
-and type-checker in a general=purpose language. In practice, deep
+and type-checker in a general-purpose language. In practice, deep
 embedding is preferable when the overall performance of the
 implemented language runtime is of more interest than the speed of DSL
 implementation, since then a lot of intermediate abstractions, which
@@ -1977,7 +1977,7 @@ weaknesses.
 
 Although implementations of deeply embedded languages and calculi
 naturally tend to be more verbose, design choices in them are usually
-simpler to explain and motivate. Furthermore, deep embedding approach
+simpler to explain and motivate. Moreover, the deep embedding approach
 makes the problem of name binding to be explicit, so it would be
 appreciated as an important aspect in the design and reasoning about
 programming languages%~\cite{Weirich-al:ICFP11,Chargueraud:JAR12}%. We
@@ -1990,13 +1990,13 @@ the _full control_ over its syntax and semantics.%\footnote{This
 observation is reminiscent to the reasond of using deep embedding in
 the practical world.}% In particular, the expressivity limits of a
 defined logic or a type system are not limited by expressivity of
-Coq's (or any other host language's) type system. Moreover, deep
-embedding makes it much more straightforward to reason about _pairs_
-of programs by means of defining the relations as propositions on
-pairs of syntactic trees, which are implemented as elements of
-corresponding datatypes.  This point, which we deliberately chose not
-to discuss in detail in this course, becomes crucial when one needs to
-reason about the correctness of program transformations and optimizing
+Coq's (or any other host language's) type system. Deep embedding makes
+it much more straightforward to reason about _pairs_ of programs by
+means of defining the relations as propositions on pairs of syntactic
+trees, which are implemented as elements of corresponding datatypes.
+This point, which we deliberately chose not to discuss in detail in
+this course, becomes crucial when one needs to reason about the
+correctness of program transformations and optimizing
 compilers%~\cite{Appel:BOOK14}%. In contrast, the choice of shallow
 embedding, while sparing one the labor of implementing the parser,
 name binder and type checker, may limit the expressivity of the

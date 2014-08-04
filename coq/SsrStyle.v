@@ -167,7 +167,7 @@ generated or no more goals is left to prove.%\footnote{Be careful,
 though, as such proof script might never terminate is more and more
 new goals will be generated.  That said, while Coq itselfs enjoys the
 strong normalization property (i.e., the programs in it always
-%\index{stron normalization}% terminate), its tactic meta-language is
+\index{strong normalization} terminate), its tactic meta-language is
 genuinely Turing-complete, so the tactics, while constructing Coq
 programs/proofs, might never in fact terminate. Specifying the
 behavior of tactics and their possible effects (including
