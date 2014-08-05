@@ -29,55 +29,55 @@ Module DepRecords.
 (**  
 
 Long before programming has been established as a discipline,
-mathematics became to be perceived as a science to build abstractions
-and summarize important properties of various entities necessary for
-describing nature's phenomenons.%\footnote{In addition to being a
-science of rewriting, as we have already covered in
-Chapter~\ref{ch:eqrew}.}% From the basic course of algebra, we are
+mathematics became to be perceived as a science of building
+abstractions and summarizing important properties of various entities
+necessary for describing the nature's phenomenons.%\footnote{In
+addition to being a science of rewriting, as we have already covered
+in Chapter~\ref{ch:eqrew}.}% From the basic course of algebra, we are
 familiar with a number of mathematical structures, such as monoids,
-groups, rings, fields etc., coupling a set (or a number of sets), a
-number of operations on it (them), and a collection of properties of
-the set itself and operations on them. 
+groups, rings, fields etc., the couple a _carrier_ set (or a number of
+sets), a number of operations on it (them), and a collection of
+properties of the set itself and operations on them.
 
-From a working programmer's perspective, a notion of an mathematical
-abstract structure is reminiscent to a notion of class from
+From a working programmer's perspective, a notion of a mathematical
+abstract structure is reminiscent to a notion of a class from
 object-oriented programming, modules from Standard ML and type
 classes%~\cite{Wadler-Blott:POPL89}% from Haskell: all these
 mechanisms are targeted to solve the same goal: _package_ a number of
 operations manipulating with some data, while abstracting of a
 particular implementation of this data itself. What neither of these
-programming mechanisms is capable of doing is enforcing the
-requirement for one to provide the _proofs_ of properties, which
-restrict the operations on the data structure. For instance, one can
-implement a type class for a _lattice_ in Haskell as follows:
-%\index{type classes}\index{Haskell}%
+programming mechanisms is capable of doing, comparing to mathematics,
+is enforcing the requirement for one to provide the _proofs_ of
+properties, which restrict the operations on the data structure. For
+instance, one can implement a type class for a _lattice_ in Haskell as
+follows: %\index{type classes}\index{Haskell}%
 
 <<
-class Lattice a where
-  bot :: a
-  top :: a
-  pre :: a -> a -> Bool
-  lub :: a -> a -> a
-  glb :: a -> a -> a
+  class Lattice a where
+    bot :: a
+    top :: a
+    pre :: a -> a -> Bool
+    lub :: a -> a -> a
+    glb :: a -> a -> a
 >>
 
 That is, the class %\texttt{Lattice}% is parametrized by a _carrier_
 type %\texttt{a}%, and provides the abstract interfaces for top and
 bottom elements of the lattice, as well as for the ordering predicate
 %\texttt{pre}% and the binary _least-upper-bound_ and
-_greates-low-bound_ operations. What this class cannot capture is the
-restriction on the operation that, for instance, the %\texttt{pre}%
-relation should be transitive, reflexive and antisymmetric. That said,
-one can instantiate the %\texttt{Lattice}% class, e.g., for integers,
+_greatest-lower-bound_ operations. What this class cannot capture is a
+number of restrictions, for instance, that the %\texttt{pre}% relation
+should be transitive, reflexive and antisymmetric. That said, one can
+instantiate the %\texttt{Lattice}% class, e.g., for integers,
 %\index{lattice}% providing an implementation of %\texttt{pre}%, which
 is _not_ a partial order (e.g., just constant %\texttt{true}%). While
 this relaxed approach is supposedly fine for the programming needs, as
 the type classes are used solely for computing, not the reasoning
-about the correctness of the computations, this is certainly not
-satisfactory from the mathematical perspective. Without the
+about the correctness of the computations, this is certainly
+unsatisfactory from the mathematical perspective. Without the
 possibility to establish and enforce the necessary properties of a
-mathematical structure's operation, we would not be able to carry out
-any sort of sound formal reasoning, as we simply could not distinguis
+mathematical structure's operations, we would not be able to carry out
+any sort of sound formal reasoning, as we simply could not distinguish
 a "correct" implementation from a flawed one.
 
 Luckily, Coq's ability to work with dependent types and combine
@@ -94,7 +94,7 @@ operations and the carrier.
 
 In this chapter we will learn how to encode common algebraic data
 structures in Coq in a way very similar to how data structures are
-encoded in languages like C (with a bit of Haskell's type class-like
+encoded in languages like C (with a bit of Haskell-ish type class-like
 machinery), so the represintation, unlike the one in C or Haskell,
 would allow for flexible and generic reasoning about the structures'
 properties. In the process, we will meet some old friends from the
