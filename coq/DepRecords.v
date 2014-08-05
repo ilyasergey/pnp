@@ -223,7 +223,7 @@ unit_op is defined
 
 The syntax of Coq's dependent records is reminiscent to the one of
 records in C. Following SSReflect's naming
-pattern~\cite{Garillot-al:TPHOL09}, we call the record type (defined
+pattern%~\cite{Garillot-al:TPHOL09}%, we call the record type (defined
 in a dedicated module for the reasons explained further) [mixin_of]
 and its only constructor [Mixin]. The reasons for such naming
 convention will be explained soon, and for now let's discuss the

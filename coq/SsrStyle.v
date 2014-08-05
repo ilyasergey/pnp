@@ -27,8 +27,8 @@ SSReflect. However, the proofs we have seen so far are mostly done by
 case analysys, application of hypotheses and various forms of
 rewriting. In this chapter we will consider in more details the proofs
 that employ inductive reasoning as their main component. We will see
-how such proofs are typically structure in SSReflect, so the
-corresponding scripts would become very concise and yet readable and
+how such proofs are typically structured in SSReflect, so the
+corresponding scripts would become very concise, yet readable and
 maintainable. We will also learn a few common techniques that will
 help to adapt the induction hypothesis for a goal, so it would become
 suitable.
@@ -52,16 +52,16 @@ syntactic primitives that help to maintain such a layout, and in this
 section we give a short overview of them. As usual, the SSReflect
 reference manual%~\cite{Gontier-al:TR}% (Chapter 6) provides an
 exhaustive formal definition of each primitive's semantics, so we will
-just cover the base cases here, hoping that the subsequent proof will
-provide more intuition on typical use-cases.
+just cover the base cases here, hoping that the subsequent proofs will
+provide more intuition on typical usage scenarios.
 
 ** Bullets and terminators
 
-Typically the proofs proceeding by induction and case analysis require
-to prove several goals, one by one in a sequence picked by the system.
-It is considered to be a good practice to indent the subgoals (except
-for the last one) whene there are several to prove. For instance, let
-us consider the following almost trivial lemma:
+The proofs proceeding by induction and case analysis typically require
+to prove several goals, one by one, in a sequence picked by the
+system.  It is considered to be a good practice to indent the subgoals
+(except for the last one) when there are several to prove. For
+instance, let us consider the following almost trivial lemma:
 
 *)
 
@@ -69,11 +69,11 @@ Lemma andb_true_elim b c: b && c -> c = true.
 
 (**
 
-Indeed, the reflection machinery presented in
+Indeed, the reflection machinery, presented in
 %Section~\ref{sec:reflect} of Chapter~\ref{ch:boolrefl}%, makes this
 proof to be a one liner ([by case/andP.]). However, for the sake of
 demonstration, let us not appeal to it this time and do the proof as
-it would be done in traditional Coq style: by mere case analysis.
+it would be done in a traditional Coq style: by mere case analysis.
 
  *)
 
@@ -88,33 +88,34 @@ subgoal 2 (ID 15) is:
  b && false -> false = true
 ]]
 
-Case analysis on [c] (which is firs moved to the bottom to become an
-assumption) immediately gives us two goals to prove. Each of them can
-be subsequently proved by the _inner_ cases analysis on [b], so we do,
-properly indenting the goals.
- *)
+Case analysis on [c] (which is first moved down to the goal to become
+an assumption) immediately gives us two subgoals to prove. Each of
+them can be subsequently proved by the _inner_ cases analysis on [b],
+so we do, properly indenting the goals.
+
+*)
 
 - by case: b.
 
 (** 
 
-The proof script above successfully solves the first goal, which is
-ensured by the _terminator_ tactical %\index{terminators}\ssrtl{by}%
-[by], which we have seen previously. More precisely, [by tac.] first
-runs the script [tac] and then applies a number of simplifications and
+The proof script above successfully solves the first goal, as ensured
+by the _terminator_ tactical %\index{terminators}\ssrtl{by}% [by],
+which we have seen previously. More precisely, [by tac.] first runs
+the script [tac] and then applies a number of simplifications and
 discriminations to see if the proof can be completed. If the current
 goal is solved, [by tac.] simply terminates and proceeds to the next
 goal; otherwise it reports a proof script error. Alternative
 equivalent uses of the same principle would be [tac; by [].] or [tac;
-done], %\ssrt{done}%, which do exactly the same. 
+done], %\ssrt{done}%, which do exactly the same.
 
 Notice that the first goal was indented and preceded by the _bullet_
 [-]. %\index{bullets}% The bullet token, preceding a tactic
-invocation, has no operational effect to the proof and servers solely
+invocation, has no operational effect to the proof and serves solely
 for the readability purposes. Alternative forms of tokens are
 %\texttt{+}% and %\texttt{*}%.
 
-** Selectors and discharging subgoals
+** Using selectors and discharging subgoals
 
 Let us restart this proof and show an alternative way to structure the
 proof script, which should account for multiple cases.
