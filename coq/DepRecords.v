@@ -155,6 +155,8 @@ reasoning.
 
 %\index{identity element|see {unit element}}%
 
+%\newpage%
+
 ** Describing algebraic data structures via dependent records
 
 *)
@@ -179,19 +181,21 @@ Inductive ex (A : Type) (P : A -> Prop) : Prop :=
 
 The only constructor [ex_intro] of the predicate [ex], whose type is a
 dependent function type, is a way to encode a $\Sigma$-type of a
-dependent pair, whose second component's type _depends_ on the value
-of the first one.%\index{dependent pair}% More specifically, the
+dependent pair, such that its second component's type _depends_ on the
+value of the first one.%\index{dependent pair}% More specifically, the
 result of the existential quantification's encoding in Coq is a
 dependendent pair $(\Sigma x:A, P~x)$, such that the proposition in
-the second component is determined by the value of the first component
-[x].
+the second component is determined by the value of the first
+component%~%[x].
+
+%\index{dependent records}%
 
 Coq provides an alternative way to encode _iterated_ dependent pairs
-via the mechanism of _dependent records_,%\index{dependent records}%
-also allowing one to give names to the subsequent
-components. Dependent records are defined using the [Record]
-command. Getting back to our PCM example, we illustrate the use of
-dependent records below.
+via the mechanism of _dependent records_, also allowing one to give
+names to the subsequent components. Dependent records are defined
+using the [Record] command. Getting back to our PCM example, we
+illustrate the use of dependent records by the following definition of
+the abstract PCM structure.
 
 %\index{mixins}%
 %\ccom{Record}%
@@ -228,7 +232,7 @@ records in C. Following SSReflect's naming
 pattern%~\cite{Garillot-al:TPHOL09}%, we call the record type (defined
 in a dedicated module for the reasons explained further) [mixin_of]
 and its only constructor [Mixin]. The reasons for such naming
-convention will be explained soon, and for now let's discuss the
+convention will be explained soon, and for now let us discuss the
 definition. The PCM record type is parametrized over the carrier type
 [T], which determines the carrier set of a PCM. It then lists three
 _named_ fields. [join_op] describes an implementation of the PCM's
