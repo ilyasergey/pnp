@@ -124,10 +124,10 @@ constructed in Coq are a subject of immediate _automated_ check, since
 they are just programs to be verified for well-typedness. Therefore,
 the process of proof construction in Coq is _interactive_ and assumes
 the constant interoperation between a human prover, who constructs a
-proof term for a proposition (i.e., writes a program) and, Coq the
+proof term for a proposition (i.e., writes a program), and Coq, the
 proof assistant, which carries out the task of _verifying_ the proof
 (i.e., type-checking the program). This largely defines our agenda for
-the rest of these notes: we are going to see how to _prove_ logical
+the rest of this course: we are going to see how to _prove_ logical
 statements by means of writing _programs_, that have the types
 corresponding to these statements.
 
@@ -149,14 +149,15 @@ as higher-order propositions.
 * The truth and the falsehood in Coq
 
 We start our acquaintance with propositional logic in Coq by
-demonstrating how one the two simplest propositions, the truth and the
+demonstrating how the two simplest propositions, the truth and the
 falsehood, are encoded. Once again, let us remind that, unlike in the
-Propositional Logic, in Coq these two are _not_ the only possible
+propositional logic, in Coq these two are _not_ the only possible
 propositional _values_, and soon we will see how a wide range of
 propositions different from mere truth or falsehood are
-implemented. From now on, we will be always including the standard
-SSREflect's module [ssreflect], %\ssrm{ssreflect}% which imports some
-necessary machinery for dealing with propositions and proofs.
+implemented. From now on, we will be always including to the
+development the standard SSReflect's module [ssreflect],
+%\ssrm{ssreflect}% which imports some necessary machinery for dealing
+with propositions and proofs.
 
 *)
 
@@ -223,16 +224,17 @@ Proof.
 
 (**
 
-In the interactive proof mode, the [goals] display shows a _goal_ of
-the proof---the type of the value to be constructed ([True] in this
-case), which is located below the double line. Above the line one can
-usually see the context of _assumptions_, which can be used in the
-process of constructing the proof. Currently, the assumption context
-is empty, as theorem we stated does not make any and ventures to proof
-[True] out of thin air. Fortunately, this is quite easy to do, as from
-the formulation of the [True] type we already know that it is
-inhabited by its only constructor [I]. The next line proved the
-_exact_ value of the type of the goal.%\ttac{exact:}%
+%\index{goal}% In the interactive proof mode, the [goals] display
+shows a _goal_ of the proof---the type of the value to be constructed
+([True] in this case), which is located below the double line. Above
+the line one can usually see the context of _assumptions_, which can
+be used in the %\index{assumption}% process of constructing the
+proof. Currently, the assumption context is empty, as theorem we
+stated does not make any and ventures to proof [True] out of thin
+air. Fortunately, this is quite easy to do, as from the formulation of
+the [True] type we already know that it is inhabited by its only
+constructor [I]. The next line proved the _exact_ value of the type of
+the goal.%\ttac{exact:}%
 
 *)
 
@@ -240,7 +242,8 @@ exact: I.
 
 (** 
 
-This completes the proof, which is indicated by the display [*response*]:
+This completes the proof, as indicated by the Proof General's
+%\texttt{*response*}% display:
 
 [[
 No more subgoals.
@@ -248,7 +251,7 @@ No more subgoals.
 ]]
 
 The only thing left to complete the proof is to inform Coq that now
-the Theorem [true_is_true] is proved, which is achieved by typing the
+the theorem [true_is_true] is proved, which is achieved by typing the
 command %\ccom{Qed}% [Qed].
 
 *)
@@ -262,7 +265,7 @@ ensure the well-formedness of the constructed proof term. Although the
 proof of [true_is_true] is obviously valid, in general there is a
 number of proof term properties to be checked _a posteriori_ and
 particularly essential in the case of proofs about infinite objects,
-which we do not cover in these notes (see %Chapter~13%
+which we do not cover in these course (see %Chapter~13%
 of%~\cite{Bertot-Casteran:BOOK}% for a detailed discussion on such
 proofs).
 
@@ -287,14 +290,14 @@ process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
 _tactics_ in Coq jargon),%\index{Coq/SSReflect tactics}%
 %\index{tactics|see {Coq/SSReflect tactics}}% the result of such
-script, given that it eliminates all goals, is a valid well-typed
-program. In comparison, in some other dependently-typed frameworks,
-the construction of proof terms does not obscure the fact that what is
-being constructed is a program, so the resulting interactive proof
-process is formulated as "filling the holes" in a program (i.e., a
-proof-term), which is being gradually refined. We step away from the
-discussion on which of these two views to the proof term construction
-is more appropriate.
+script, given that it eliminates all of the goals, is a valid
+well-typed Coq program. In comparison, in some other dependently-typed
+frameworks (e.g., in Agda%\index{Agda}%), the construction of proof terms does not obscure the fact
+that what is being constructed is a program, so the resulting
+interactive proof process is formulated as "filling the holes" in a
+program (i.e., a proof-term), which is being gradually refined. We
+step away from the discussion on which of these two views to the proof
+term construction is more appropriate.
 
 There is one more important difference between values defined by as
 [Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
@@ -310,8 +313,9 @@ irrelevance_, which, informally, states that (ideally) one shouldn't
 be able to distinguish between two proofs of the same statement as
 long as they both are valid.%\footnote{Although, in fact, proof terms
 in Coq can be very well distinguished.}% Conversely, the programs
-(that is what is bound by means of [Definition]) are typically of
-interest by themselves, not only because of the type they return.
+(that is, what is created using the [Definition] command) are
+typically of interest by themselves, not only because of the type they
+return.
 
 The difference between the two definitions of the truth's validity,
 which we have just constructed, can be demonstrated by means of the
@@ -329,7 +333,9 @@ Eval compute in true_is_true'.
 [ = I : True]
 
 As we can see now, the theorem is evaluated to itself, whereas the
-definition evaluates to it body.
+definition evaluates to it body, i.e., the value of the constructor
+[I].  
+
 *)
 
 
@@ -345,7 +351,7 @@ appeal to their types (statement) without exploring the
 proof.%\footnote{While we consider this to be a valid analogy to the
 process of functioning of the mathematical community, it is only true
 in spirit. In the real life, the statements proved once, are usually
-re-proved by students by didactical reasons, in order to understand
+re-proved by students for didactical reasons, in order to understand
 the proof principles and be able to produce other proofs. Furthermore,
 the history of mathematics witnessed a number of proofs that have been
 later invalidated as being non-valid. Luckily, the
@@ -358,7 +364,7 @@ semesters, but is not expected to reproduce their proofs.
 At this point, an attentive reader can notice that the definition of
 [True] in Coq is strikingly similar to the definition of the type
 [unit] from %Chapter~\ref{ch:funprog}%. This is a fair observation,
-which brings us again to the Curry-Howard analogy, at makes it
+which brings us again to the Curry-Howard analogy, and makes it
 possible to claim that the trivial truth proposition is isomorphic to
 the [unit] type from functional programming. Indeed, both have just
 one way to be constructed and can be constructed in any context, as
@@ -392,9 +398,9 @@ False_ind
 ]]
 
 That is, _any_ proposition can be derived from the falsehood by means
-of implication.%\footnote{In the light of Curry-Howard analogy, at
-\index{Curry-Howard correspondence} this moment it shouldn't be
-surprising that Coq uses the arrow notation \texttt{->} both for
+of implication.%\footnote{In the light of the Curry-Howard analogy, at
+\index{Curry-Howard correspondence} this moment it shouldn't come as a
+surprise that Coq uses the arrow notation \texttt{->} both for
 function types and for propositional implication: after all, they both
 are just particular cases of functional abstraction, in sorts
 \texttt{Set} or \texttt{Prop}, correspondingly.}% For instance, we can
@@ -442,15 +448,15 @@ apply: False_ind.
 
 The following thing just happened: the tactic [apply:] supplied with
 an argument [False_ind], tried to figure out whether our goal [False
--> (1 = 2)] matches any _head_ type of the theorem [False_ind]. By
-_head type_ we mean a component of type (in this case, [forall P :
-Prop, False -> P]), which is a type by itself and possibly contains
-free variables. For instance, recalling that [->] is
-right-associative, head-types of [False_ind] would be [P], [False ->
-P] and [forall P : Prop, False -> P] itself. 
-
+-> (1 = 2)] matches any _head_ type of the theorem [False_ind].
+%\index{head type}% By _head type_ we mean a component of type (in
+this case, [forall P : Prop, False -> P]), which is a type by itself
+and possibly contains free variables. For instance, recalling that
+[->] is right-associative, head-types of [False_ind] would be [P],
+[False -> P] and [forall P : Prop, False -> P] itself.
+ 
 So, in our example, the call to the tactics [apply: False_ind] makes
-Coq realise that the goal we are trying to prove matches the type
+Coq realize that the goal we are trying to prove matches the type
 [False -> P], where [P] is taken to be [(1 = 2)]. Since in this case
 there is no restrictions on what [P] can be (as it is
 universally-quantified in the type of [False_ind]), Coq assigns [P] to
