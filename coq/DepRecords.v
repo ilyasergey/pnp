@@ -128,25 +128,27 @@ Unset Printing Implicit Defensive.
 * Encoding partial commutative monoids
 %\label{sec:pcms}%
 
+%\index{partial commutative monoid}%
+%\index{PCM|see {partial commutative monoid}}%
+
 We will be using partical commutative monoids (PCMs) as an
 illustrative example of a simple algebraic data structure, a subject
-of encoding and formalization.%\index{partial commutative monoid}
-\index{PCM|see {partial commutative monoid}}% A PCM is defined as an
-algebraic structure with a carrier set [U], abstract binary "join"
-operation $\join$ and a unit element $\unit$.%\footnote{Sometimes also
-referred to as an \emph{identity} or \emph{neutral}
-element.}%%\index{unit element}% %\index{join operation}% The join
-operation is required to be associative and commutative, and for the
-unit element the left and right identity equalities should
-hold. Moreover, partiality means that the operation $\join$ might be
-undefined for some pairs of elements $a$ and [b] (and in this case it
-is denoted as $a \join b = \bot$). PCMs are fairly ubiquitous: in
-particular, natural numbers with addition and multiplication, sets
-with a disjoin union, partially-defined functions with a point-wise
-union, form PCM. Furthermore, partial commutative monoids are
-omnipresent in program verification%~\cite{Nanevski-al:POPL10}%, as
-they capture exactly the properties of _heaps_, as well as the effect
-of programs that can be executed in
+of encoding and formalization. A PCM is defined as an algebraic
+structure with a carrier set [U], abstract binary "join" operation
+$\join$ and a unit element $\unit$.%\footnote{Sometimes also referred
+to as an \emph{identity} or \emph{neutral} element.}%%\index{unit
+element}% %\index{join operation}% The join operation is required to
+be associative and commutative, and for the unit element the left and
+right identity equalities should hold. Moreover, partiality means that
+the operation $\join$ might be undefined for some pairs of elements
+[a] and [b] (and in this case it is denoted as $a \join b =
+\bot$). PCMs are fairly ubiquitous: in particular, natural numbers
+with addition and multiplication, sets with a disjoin union,
+partially-defined functions with a point-wise union, form
+PCM. Furthermore, partial commutative monoids are omnipresent in
+program verification%~\cite{Nanevski-al:POPL10}%, as they capture
+exactly the properties of _heaps_, as well as the effect of programs
+that can be executed in
 parallel%~\cite{Nanevski-al:ESOP14}%. Therefore, it is useful to have
 PCMs formalized as a structure, so they could be employed for future
 reasoning.
@@ -162,7 +164,7 @@ Module PCMDef.
 (**
 
 In %Section~\ref{sec:exists} of Chapter~\ref{ch:logic}% we have
-already seen a use of dependent pair type, exemlpified by the Coq's
+already seen a use of dependent pair type, exemplified by the Coq's
 definition of the universal quantification.
 
 *)
