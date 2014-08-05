@@ -1,6 +1,11 @@
-(** %
+(** 
 
-\chapter{Introduction}% *)
+%
+\chapter{Introduction}
+\label{ch:intro}
+%
+
+ *)
 
 (* begin hide *)
 Module Intro.

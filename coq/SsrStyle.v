@@ -162,18 +162,19 @@ then solves the second one via [by case: b].
 ** Iteration and alternatives
 
 Yet another possible way to prove the statement of our subject lemma
-is by employing Coq/SSReflect's _repetition_ tactical
-[do]%\ssrtl{do}%. The script of the form [do !tac.] tries to apply the
-tactic [tac] as many times as possible, as long as new goals are
-generated or no more goals is left to prove.%\footnote{Be careful,
-though, as such proof script might never terminate is more and more
-new goals will be generated.  That said, while Coq itselfs enjoys the
-strong normalization property (i.e., the programs in it always
-\index{strong normalization} terminate), its tactic meta-language is
-genuinely Turing-complete, so the tactics, while constructing Coq
-programs/proofs, might never in fact terminate. Specifying the
-behavior of tactics and their possible effects (including
-non-termination and failures) is a topic of an ungoing active
+is by employing Coq's _repetition_ tactical [do]%\ssrtl{do}%. The
+script of the form [do !tac.] tries to apply the tactic [tac] as many
+times as possible, as long as new goals are generated or no more goals
+is left to prove.%\footnote{Be careful, though, as such proof script
+might never terminate if more and more new goals will be generated
+after each application of the iterated tactic. That said, while Coq
+itselfs enjoys the strong normalization property (i.e., the programs
+in it always \index{strong normalization} terminate), its tactic
+meta-language is genuinely Turing-complete, so the tactics, while
+constructing Coq programs/proofs, might never in fact
+terminate. Specifying the behavior of tactics and their possible
+effects (including non-termination and failures) is a topic of an
+ungoing active
 research~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10}.}% The
 [do]-tactical can be also combined with the [[|...|]] tactical, so it
 will try to apply all of the enumerated tactics as alternatives. The
@@ -193,8 +194,9 @@ nevertheless, has succeeded, as the remaining two tactics, [case: b]
 and [case: c], did all the job. Lastly, notice that the [do]-tactical
 can be specified _how many_ times should it try to run each tactic
 from the list by using the restricted form [do n!tac], where [n] is
-the number of attempts. The lemma above could be completed by the
-script of the form [by do 2![...]] with the same list of alternatives.
+the number of attempts (similarly to iterating the [rewrite]
+tactics). The lemma above could be completed by the script of the form
+[by do 2![...]] with the same list of alternatives.
 
 *)
 
@@ -204,19 +206,20 @@ Qed.
 
 %\section{Inductive predicates that should be functions}%
 
-It has been already discussed in this manuscript that, even though, a
-lot of interesting propositions are inherently undecidable and should
-be, therefore, represented in Coq as instances of the sort [Prop], one
-should strive to implement as many of _decidable_ propositions as
-possible as [bool]-returning function. Such "computational" approach
-to the propositions turns out to pay off drastically in the long-term
-persepective, as most of the usual proof burdent will be carried out
-by Coq's computational component. In this section we will browse
-through a series of predicates defined both as inductive datatypes and
-boolean functions and compare the proofs of various properties stated
-over the alternative representations.
+It has been already discussed in %Chapter~\ref{ch:boolrefl}% that,
+even though a lot of interesting propositions are inherently
+undecidable and should be, therefore, represented in Coq as instances
+of the sort [Prop], one should strive to implement as many of
+_decidable_ propositions as possible as [bool]-returning
+function. Such "computational" approach to the propositions turns out
+to pay off drastically in the long-term perspective, as most of the
+usual proof burden will be carried out by Coq's computational
+component. In this section we will browse through a series of
+predicates defined both as inductive datatypes and boolean functions
+and compare the proofs of various properties stated over the
+alternative representations.
 
-One can defined the fact that the only natural number which is equalt
+One can defined the fact that the only natural number which is equal
 to zero is the zero itself, as shown below:
 
 %\ssrd{isZero}%
@@ -293,7 +296,7 @@ two goals (for the zero and the successor cases) are then simplified
 via %\texttt{//}% and the induction variable and hypothesis are given
 the names [n] and [Hn], respectively, in the second goal (as described
 in %Section~\ref{sec:naming-subgoals}%). Then, the first goal (the
-[0]-case) is discharged by simplified the sum via two rewritings by
+[0]-case) is discharged by simplifying the sum via two rewritings by
 [addn0] and [add0n] lemmas from the [ssrnat] module and case-analysis
 on the assumption of the form [evenP 1], which delivers the
 contradiction.
@@ -347,7 +350,7 @@ case=>// m /eqP.
 
 Only now we can make use of the rewriting lemma to "strip off" the
 constant summands from the equality in the assumption, so it could be
-employed for brushing the goal, so it would match the hypothesis
+employed for brushing the goal, which would then match the hypothesis
 exactly.
 
 *)
@@ -671,8 +674,8 @@ move=> H0 H1 H n.
 Unsurprisingly, the proof of this induction principle follows the same
 pattern as the proof of [evenb_plus]---generalizing the hypothesis. In
 this particular case, we generalize it in the way that it would
-provide an "impedance matcher" between the 1-step of the defaul
-induction on natural numbers and the 2-step induction in the
+provide an "impedance matcher" between the 1-step "default" induction
+principle on natural numbers and the 2-step induction in the
 hypothesis [H]. We show that for the proof it is sufficient to
 establish [(P n /\ P (n.+1))]:
 
@@ -750,7 +753,7 @@ Qed.
 %\label{sec:cannot}%
 
 Although formulating predicates as boolean functions is often
-preferable, it is not always trivial to do. Sometimes, it is much
+preferable, it is not always trivial to do so. Sometimes, it is much
 simpler to come up with an inductive predicate, which witnesses the
 property of interest. As an example for such property, let us consider
 the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
@@ -772,9 +775,9 @@ Inductive beautiful (n: nat) : Prop :=
 The number is beautiful %\index{beautiful numbers}% if it's either
 [0], [3], [5] or a sum of two beautiful numbers. Indeed, there are
 many ways to decompose some numbers into the sum $3 \times n + 5
-\times n$.%\footnote{In fact, the solution of this simple Diophantine 
+\times n$.%\footnote{In fact, the solution of this simple Diophantine
 equation are all natural numbers, greater than $7$.}% Encoding a
-function, which checks whether a number is beautiful or not, although,
+function, which checks whether a number is beautiful or not, although
 not impossible, is not entirely trivial (and, in particular, it's not
 trivial to prove the correctness of such function with respect to the
 definition above). Therefore, if one decides to stick with the
@@ -821,7 +824,7 @@ hypothesis [H]:
 *)
 
 elim: H E=>n'; do?[by move=>->].
-move=> n1 m' _ H2 _ H4->{n' n}.
+move=> n1 m' _ H2 _ H4 -> {n' n}.
 
 (** 
 
@@ -839,7 +842,7 @@ Qed.
 
 %\begin{exercise}%
 
-Proof the following theorem about beautiful and gorgeous numbers.
+Proof the following theorem about beautiful numbers.
 
 *)
 
@@ -948,21 +951,21 @@ necessary rewriting lemmas from the [ssrnat] module.
 
 * Working with SSReflect libraries
 
-SSReflect extension to Coq%\footnote{In this version of the course we
-stick to using the version 1.4 of SSReflect}% comes with an impressive
-number of libraries for reasoning about the vas majority of discrete
-data types and structures, including but not limited to booleans,
-natural numbers, sequences, finite functions and sets, graphs,
-algebras, matrices, permutations etc. As discussed in this and prevous
-chapters, all these libraries give preference to the computable
-functions rather than inductive predicates and leverage the reasoning
-via rewriting by equality. They also introduce a lot of notations that
-are worth being re-used in order to make the proof scripts tractable,
-yet concise.
+As it was mentioned in %Chapter~\ref{ch:intro}%, SSReflect extension
+to Coq comes with an impressive number of libraries for reasoning
+about the large collection of discrete datatypes and structures,
+including but not limited to booleans, natural numbers, sequences,
+finite functions and sets, graphs, algebras, matrices, permutations
+etc. As discussed in this and prevous chapters, all these libraries
+give preference to the computable functions rather than inductive
+predicates and leverage the reasoning via rewriting by equality. They
+also introduce a lot of notations that are worth being re-used in
+order to make the proof scripts tractable, yet concise.
 
-We would like to conclude this chapter with a short overview of
-standrad SSReflect programming and naming policies, which will,
-hopefully, simplify their use in a standalone development.
+We would like to conclude this chapter with a short overview of a
+subset of the standard SSReflect programming and naming policies,
+which will, hopefully, simplify the use of the libraries in a
+standalone development.
 
 ** Notation and standard operation properties
 %\label{sec:funprops}%
@@ -990,13 +993,13 @@ right-associated conjunctions, which was done by means of the _product
 naming_ pattern [[...]],%\footnote{The same introduction pattern works
 in fact for \emph{any} product type with one constructor, e.g., the
 existential quantification (see Chapter~\ref{ch:logic}).}% so
-eventually all levels vere peeled off, and we got the necessary
+eventually all levels vere "peeled off", and we got the necessary
 hypothesis [p3]. In the second formulation, [conj4'], the case
 analysis immediately decomposed the whole 4-conjunction into the
-separate assumptions. 
+separate assumptions.
 
-For functions of arity bigger than 1, SSReflect's module [ssrfun] also
-introduces convenient notation, allowing them to be curried with
+For functions of arity bigger than one, SSReflect's module [ssrfun]
+also introduces convenient notation, allowing them to be curried with
 respect to the second argument:%\index{currying}%
 
 *) 
@@ -1056,7 +1059,7 @@ Lists, being one of the most basic inductive datatypes, are ususally a
 subject of a lot of exercises for the fresh Coq hackers. SSReflect's
 modules [seq] %\ssrm{seq}% collect a number of the most commonly used
 procedures on lists and their properties, as well as some non-standard
-inductive principles, drastically simplifying the reasoning.
+induction principles, drastically simplifying the reasoning.
 
 For instance, properties of some of the functions, such as _list
 reversal_ are simpler to prove not by the standard "direct" induction
@@ -1091,13 +1094,12 @@ reasoning by the [last_ind] induction principle.
 
 Another commonly used SSReflect module [finset] %\ssrm{finset}%
 implements a functionality of sets of elements of %\index{finite
-types}% of _finite_ types (i.e., types with a finite number of
-elements), providing operation, such as intersection, union,
-complement as well as a number of lemmas about them. Notice, though,
-that assuming a type to be finite is quite a restriction; for
-instance, whereas [bool] is a finite type, [nat] is not (however, a
-finite segment of natural numbers is), and we will consider such
-declaring finite types in detail in the next chapter.
+types}% of _finite_ types, i.e., types with a finite number of
+elements, providing operations such as intersection, union, complement
+as well as a number of lemmas about them. Notice, though, that
+assuming a type to be finite is quite a restriction; for instance,
+whereas [bool] is a finite type, [nat] is not (however, a finite
+segment of natural numbers%~%is).
 
 *)
 
