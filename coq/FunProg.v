@@ -36,9 +36,9 @@ programs.
 
 Let us create an empty %\texttt{.v}% file---a standard extension for
 Coq files, recognized, in particular, by Proof General, and define our
-first Coq datatype. The simplest datatype once can imagine is [unit],
-a type inhabited by exactly one element. %\ccom{Inductive}% In Coq,
-one can define such a type in the following manner:%\footnote{Use the
+first Coq datatype. The simplest datatype one can imagine is [unit], a
+type inhabited by exactly one element. %\ccom{Inductive}% In Coq, one
+can define such a type in the following manner:%\footnote{Use the
 %<<Ctrl-C Ctrl-Enter>>% keyboard shortcut to initiate the interactive
 \index{interactive proof mode} programming/proof mode in Proof General
 and gradually compile the file.}%
@@ -49,7 +49,7 @@ Inductive unit : Set := tt.
 
 (** 
  
-The definition above postulates the type [unit] that has _exactly_ one
+The definition above postulates that the type [unit] has _exactly_ one
 constructor, namely, [tt]. In the type theory jargon, which we will
 adopt, it is said that the expression [tt] _inhabits_ the [unit]
 type. Naturally, it is the only inhabitant of the set, corresponding
@@ -61,12 +61,21 @@ to the [unit] type. We can now check the [tt]'s affiliation via the
 Check tt.
 
 (**
+[[
+tt
+     : unit
+]]
+
 Moreover, we can make sure that the [unit] datatype itself defines a set:
 *)
 
 Check unit.
 
 (**
+[[
+unit
+     : Set
+]]
 
 In fact, since Coq makes the analogy between sets and types so
 transparent, it is not difficult to define a type, describing the
@@ -78,22 +87,22 @@ Inductive empty : Set := .
 
 (**
 
-That is the empty set is precisely described by the type, values of
+That is, the empty set is precisely described by the type, values of
 which we simply _cannot construct_, as the type itself does _not_
-provide any constructors! 
-In fact, this observation about inhabitance of types/sets and the
-definition of an empty type will come in quite handy very soon when we
-will be talking about the truth and falsehood in the setting of
-Curry-Howard correspondence.
-Unfortunately, at this moment there is not so much we can do with such simple types as [unit] or
-[empty], so we proceed by defining some more interesting datatypes.
+provide any constructors!  In fact, this observation about inhabitance
+of types/sets and the definition of an empty type will come in quite
+handy very soon when we will be talking about the truth and falsehood
+in the setting of Curry-Howard correspondence in
+Chapter%~\ref{ch:logic}%. Unfortunately, at this moment there is not
+so much we can do with such simple types as [unit] or [empty], so we
+proceed by defining some more interesting datatypes.
 
 The type [bool] is familiar to every programmer. In Coq, it is
 unsurprisingly defined by providing exactly two constructors: [true]
-and [false]. Since [bool] is already provided by the standard
-Coq/SSReflect library, we do not need to define it ourselves. Instead,
-we include the following modules into our file using the [Require
-Import] %\ccom{Require Import}% command:
+and [false]. Since [bool] is already provided by the standard Coq
+library, we do not need to define it ourselves. Instead, we include
+the following modules into our file using the [Require Import]
+%\ccom{Require Import}% command:
 
 *)
 
@@ -134,13 +143,13 @@ The syntax of Coq as programming language is very similar to Standard
 ML. The keyword [Definition] %\ccom{Definition}% is used to define
 non-recursive values, including functions. In the example above, we
 defined a function with one argument [b], which is being scrutinized
-agains two possibles value patterns ([true] and [false]),
-respectively, and the results are returned. Notice that thanks to its
-very powerful type inference algorithm, Coq didn't require us to
-annotate neither the argument [b] with its type, nor the function
-itself with its result type: these types were soundly inferred, which
-might be confirmed by checking the overall type of [negate], which
-states that it is a function from [bool] to [bool]:
+against two possible value patterns ([true] and [false]),
+respectively, and the corresponding results are returned. Notice that,
+thanks to its very powerful type inference algorithm, Coq didn't
+require us to annotate neither the argument [b] with its type, nor the
+function itself with its result type: these types were soundly
+inferred, which might be confirmed by checking the overall type of
+[negate], stating that it is a function from [bool] to [bool]:
 
 *)
 
@@ -155,9 +164,11 @@ At this point we have seen only very simple forms of inductive types,
 such that all their inhabitants are explicitly enumerated (e.g.,
 [unit] and [bool]). The next type used ubiquitously in the
 computations and mathematical reasoning are natural numbers, the first
-_truly_ inductive datatype. Following the Peano axioms the type [nat]
-natural numbers are defined by induction, i.e., via the following two
-constructors: *)
+_truly_ inductive datatype. Following the Peano axioms, the type [nat]
+of natural numbers is defined by induction, i.e., via the following
+two constructors: 
+
+*)
 
 Print nat.
 
@@ -172,7 +183,7 @@ a natural number then [S n] is a natural number as well (hence, the
 name [S], which is a shortcut for _successor_). At this point, the
 reader can recall the notion of _mathematical induction_, usually
 introduced in school and postulating that if a statement [P] has to be
-proven to hold over all natural numbers, it should be proven to hold
+proven to hold over _all_ natural numbers, it should be proven to hold
 on zero _and_ if it holds for [n], then it should hold for [n +
 1]. The very same principle is put into the definition of the natural
 numbers themselves. In the future, we will see many other interesting
@@ -182,8 +193,12 @@ that in Coq recursive definitions/computations and inductive proofs
 are in fact two sides of the same coin.
 
 For now, let us write some functions dealing with natural numbers.  In
-order to work conveniently with naturals, we will import yet another
-SSReflect library: *)
+order to work conveniently with the elements of type [nat], we will
+import yet another SSReflect library:
+
+%\ssrm{ssrnat}%
+
+*)
 
 Require Import ssrnat.
 
@@ -218,16 +233,16 @@ computations within expressions.%\footnote{The same example also
 demonstrates the use of SSReflect alternative to Coq's standard
 \texttt{let} command, not trailed with a colon. We will be making use
 of SSReflect's \texttt{let:} consistently, as it provides additional
-benefits with respect to in-place pattern matchin, which we will show
+benefits with respect to in-place pattern matching, which we will see
 further.}% The function [my_plus] is recursive on its _first_
 argument, which is being decreased in the body, so [n'] is a
-predecessor of [n] is passed to the recursive call. We can now check
-the result of evaluation of [my_plus] via Coq's [Eval compute in]
-%\ccom{Eval}% command:%\footnote{The command in evaluation might look
-a bit verbose in this form, but it is only because of its great
-flexibility, as it allows for different evaluation strategies. In this
-case we employed \texttt{compute}, as it performs all possible
-reductions.}%
+_predecessor_ of [n], which is passed as an argument to the recursive
+call. We can now check the result of evaluation of [my_plus] via Coq's
+[Eval compute in] %\ccom{Eval}% command:%\footnote{The command in
+evaluation might look a bit verbose in this form, but it is only
+because of its great flexibility, as it allows for different
+evaluation strategies. In this case we employed \texttt{compute}, as
+it performs all possible reductions.}%
 
 *)
 
@@ -267,14 +282,14 @@ Error: Cannot guess decreasing argument of fix.
 ]]
 
 This is due to the fact that the recursion in [my_plus_buggy] is not
-_primitive_: that is there is a recursive call, whose argument is not
-"smaller" comparing to the initial function's argument, which makes
-this procedure to fall into a larger class of _generally recursive_
-programs. Unlike primitively-recursive programs, generally-recursive
-programs may not terminate or terminate only on a subset of their
-inputs, and checking termination statically in general is an
-undecidable problem (that is, such checking will not terminate by
-itself, which is known under the name of Turing's _halting
+_primitive_: that is, there is a recursive call, whose argument is not
+"smaller" comparing to the initial function's arguments [n] or [m],
+which makes this procedure to fall into a larger class of _generally
+recursive_ programs. Unlike primitively-recursive programs,
+generally-recursive programs may not terminate or terminate only on a
+subset of their inputs, and checking termination statically in general
+is an undecidable problem (that is, such checking will not terminate
+by itself, which is known under the name of Turing's _halting
 problem_).%\footnote{The computability properties of primitively and
 generally recursive functions is a large topic, which is essentially
 orthogonal to our development, so we omit a detailed discussion on the
@@ -282,12 +297,16 @@ theory of recursion.}\index{halting problem}%
 
 The check for primitive recursion, which implies termination, is
 performed by Coq _syntactically_, and the system makes sure that there
-is least one argument of an inductively-defined datatype, which is
-being consistently decreased at each function call. This criteria is
-sufficient to insure the termination of all functions in Coq. Of
-course, such termination check is a severe restriction to the
-computation power of Coq, which therefore is not Turing-complete as a
-programming language (as it supports only primitive recursion).
+is at least one argument of an inductively-defined datatype, which is
+being consistently decreased at each function
+call.%\footnote{Sometimes, it is possible to ``help'' Coq to guess
+such argument using the explicit annotation \texttt{struct} right
+after the function parameter list, e.g., %[{struct n}]% in the case of
+%[my_plus]%.}% This criteria is sufficient to insure the termination
+of all functions in Coq. Of course, such termination check is a severe
+restriction to the computation power of Coq, which therefore is not
+Turing-complete as a programming language (as it supports only
+primitive recursion).
 
 Although Coq is equipped with a number of machinery to _reason_ about
 potentially non-terminating programs and prove some useful facts about
@@ -298,26 +317,28 @@ datatype as its argument.}% (for example, Chapter 7 of Adam Chlipala's
 book%~\cite{Chlipala:BOOK}% provides a broad overview of methods to
 encode potentially non-terminating programs in Coq and reason about
 them), it usually requires some ingenuity to execute
-generally-recursive computations withit Coq. Fortunately, even
-without the possibility to _execute_ any possible program in the
-system, Coq provides a reach tool-set to _encode_ such programs, so a
-number of statements could be proved about them, and the encoded
-programs themselves could be later _extracted_ into a general-purpose
-language, such as Haskell or OCaml in order to be executed
-(see%~\cite[Chapter 10]{Bertot-Casteran:BOOK}% for detailed
-description of the extraction).
+generally-recursive computations withit Coq. Fortunately, even without
+the possibility to _execute_ any possible program in the system, Coq
+provides a reach tool-set to _encode_ such programs, so a number of
+statements could be proved about them (as we will see in
+%Chapter~\ref{ch:htt}%), and the encoded programs themselves could be
+later _extracted_ into a general-purpose language, such as Haskell or
+OCaml in order to be executed (see%~\cite[Chapter
+10]{Bertot-Casteran:BOOK}% for detailed description of the
+extraction).
 
 So, why ensuring termination in Coq is so important? The reason for
 this will be better understood once we introduce the way Coq works
 with logical statements and propositions. For now, it should be enough
 to accept the fact that in order to ensure the logical calculus
-underlying Coq sound, all values in it (even possibly infinite,
-e.g., streams defined co-inductively) should be computable in a
-finite number of steps. A bit further we will see that the proofs of
-propositions in Coq are just ordinary values in its computational
-language, and the construction of the proofs naturally should
-terminate, hence computation of _any_ value in Coq should terminate,
-since each value can be involved into a proof of some statement.
+underlying Coq sound, the results of all functions in it (even
+operating with infinite values, e.g., streams defined co-inductively)
+should be computable in a finite number of steps. A bit further we
+will see that the proofs of propositions in Coq are just ordinary
+values in its computational language, and the construction of the
+proofs naturally should terminate, hence computation of _any_ value in
+Coq should terminate, since each value can be involved into a proof of
+some statement.
 
 Postponing the discussion on the nature of propositions and proofs in
 Coq, we will continue our overview of programming principles in Coq.
@@ -355,19 +376,20 @@ nat_rec : forall P : nat -> Set,
 ]]
 
 The type of [nat_rec] requires a bit of explanation. It is a
-polymorphic in the sense of Haskell and OCaml (i.e., it is parametrized
-over another type). More precisely, its first parameter, bound by the
-[forall] quantifier is a function, which maps natural numbers to types
-(hence the typo if this parameter is [nat -> Set]). The second
-parameter is a result of type described by application of the function
-[P] to zero. The third parameter is a _family_ of functions, indexed
-by a natural number [n]. Each function from such a family takes an
-argument of type [P n] and returns a result of type [P n.+1]. The
-default recursion principle%\index{recursion principle}% for natural
-numbers is therefore a higher-order function (i.e., a combinator). If
-the three discussed arguments are provided, the result of [nat_rec]
-will be a function, mapping a natural number [n] to a value of type [P
-n].
+polymorphic in the sense of Haskell and OCaml (i.e., it is
+parametrized over another type). More precisely, its first parameter,
+bound by the [forall] quantifier is a function, which maps natural
+numbers to types (hence the type of this parameter is [nat ->
+Set]). The second parameter is a result of type described by
+application of the function [P] to zero. The third parameter is a
+_family_ of functions, indexed by a natural number [n]. Each function
+from such a family takes an argument of type [P n] and returns a
+result of type [P n.+1]. The default recursion
+principle%\index{recursion principle}% for natural numbers is
+therefore a higher-order function (i.e., a combinator). If the three
+%\index{combinator}% discussed arguments are provided, the result of
+[nat_rec] will be a function, mapping a natural number [n] to a value
+of type [P n].
 
 To see how [nat_rec] is implemented, let us explore its generalized
 version, [nat_rect]:
@@ -378,14 +400,14 @@ Print nat_rect.
 (** 
 [[
 nat_rect = 
-fun (P : nat -> Type) (f : P 0) (f0 : forall n : nat, P n -> P n.+1) =>
-fix F (n : nat) : P n :=
-  match n as n0 return (P n0) with
-  | 0 => f
-  | n0.+1 => f0 n0 (F n0)
-  end
-     : forall P : nat -> Type,
-       P 0 -> (forall n : nat, P n -> P n.+1) -> forall n : nat, P n
+ fun (P : nat -> Type) (f : P 0) (f0 : forall n : nat, P n -> P n.+1) =>
+ fix F (n : nat) : P n :=
+   match n as n0 return (P n0) with
+   | 0 => f
+   | n0.+1 => f0 n0 (F n0)
+   end
+      : forall P : nat -> Type,
+        P 0 -> (forall n : nat, P n -> P n.+1) -> forall n : nat, P n
 ]]
 
 Abstracting away from the details, we can see that [nat_rect] is
@@ -475,20 +497,22 @@ The toy function [sum_no_zero] maps every natural number [n] to a sum
 of numbers [1] ... [n], except for [0], which is being mapped into the
 value [tt] of type [unit]. We define it via the [nat_rec] combinator
 by providing it a function [P], which defines the type contract
-described just above.  Importantly, as the first parameter.  The
-"step" function, which is a third parameter, of this [nat_rec] call,
-makes use of the _dependent_ pattern matching, which now explicitly
-_refines_ explicit the return type [P n' -> _] of the whole [match e
-with ps end] expression. This small addition allows the Coq type
-checker to relate the expected type of [my_plus]' first argument in
-the second branch to the the type of the pattern matching scrutinee
-[n']. Without the explicit [return] in the pattern matching, in some
-cases when its result type depends on the value of the scrutinee, the
-Coq type checking engine will fail to unify the type of the branch and
-the overall type. In particular, had we omitted the [return] clauses
-in the pattern matching, we would get the following type-checking
-error, indicating that Coq cannot infer that the type of [my_plus]'
-argument is always [nat], so it complains:
+described just above.  Importantly, as the first parameter to
+[nat_rec], we pass a type-level function [P], which maps [0] to the
+[unit] type and all other values to the type [nat]. The "step"
+function, which is a third parameter, of this [nat_rec] call, makes
+use of the _dependent_ pattern matching, which now explicitly
+_refines_ the return type [P n' -> _] of the whole [match e with ps
+end] expression. This small addition allows the Coq type checker to
+relate the expected type of [my_plus]' first argument in the second
+branch to the the type of the pattern matching scrutinee [n']. Without
+the explicit [return] in the pattern matching, in some cases when its
+result type depends on the value of the scrutinee, the Coq type
+checking engine will fail to unify the type of the branch and the
+overall type. In particular, had we omitted the [return] clauses in
+the pattern matching, we would get the following type-checking error,
+indicating that Coq cannot infer that the type of [my_plus]' argument
+is always [nat], so it complains:
 
 [[
 Definition sum_no_zero' n := 
@@ -523,20 +547,25 @@ examples on the subject%~\cite{Chlipala:BOOK}%.
 %\index{dependent function type}% Dependent function types, akin to
 those of [nat_rec] and our [sum_no_zero], which allow the type of the
 result to vary depending on the value of a function's argument are a
-powerful way to specify the behaviour of functions, and therefore, are
-often used to "enforce" the dependently-typed programs. In Coq,
-dependent function types are omnipresent, and are syntactically
-specified using the [forall]-binder, similarly to the way _parametric_
-types are specified in Haskell or type calculi like polymorphic lambda
-calculus (also known as System
-$F$%~\cite{Reynolds:SP74,Girard:PhD}%). The crucial difference beween
-Coq's core calculus and System $F$ is that in Coq the types can be
-parametrised not just by _types_ but also by _values_. While the
-utility of this language "feature" can be already demonstrated for
-constructing and type-checking _programs_ (for example,
-[sum_no_zero]), its true strength is best demonstrated when using Coq
-as a system to construct _proofs_, which is the topic of the
-subsequents chapters.
+powerful way to _specify the behaviour_ of functions, and therefore,
+are often used to "enforce" the dependently-typed programs to work in
+a particular expected way. In Coq, dependent function types are
+omnipresent, and are syntactically specified using the
+[forall]-binder, similarly to the way _parametric_ types are specified
+in Haskell or type calculi like polymorphic lambda calculus (also
+known as System
+$F$%~\cite{Reynolds:SP74,Girard:PhD}%).%\footnote{Although, generally
+speaking, Coq abuses the $\forall$-notation using it for what is
+denoted in other type calculi by means of quantifiers $\Lambda$ (terms
+parametrized by types), $\forall$ (types parametrized by types) and
+$\Pi$ (types parametrized by terms)~\cite{Pierce:BOOK02}.}% The
+crucial difference beween Coq's core calculus and System $F$ is that
+in Coq the types can be parametrised not just by _types_ but also by
+_values_. While the utility of this language "feature" can be already
+demonstrated for constructing and type-checking _programs_ (for
+example, [sum_no_zero]), its true strength is best demonstrated when
+using Coq as a system to construct _proofs_, which is the topic of the
+subsequent chapters.
 
 ** Recursion principle and non-inhabited types
 
@@ -544,9 +573,10 @@ Automatically-generated recursion principles for inductively-defined
 datatypes provide a generic (although not universal) scheme to define
 recursive functions for the corresponding values. But what if a type
 is not inhabited, i.e., there are no values in it. We have already
-seen such a type---it's [empty], which defined the empty set. As any
-inductive datatype in Coq, it comes with an automatically generated
-generalized recursion principle, so let us check its type: *)
+seen such a type---it's [empty], which corresponds to the empty
+set. As any inductive datatype in Coq, it comes with an automatically
+generated generalized recursion principle, so let us check its type:
+*)
 
 Check empty_rect.
 
@@ -556,12 +586,12 @@ empty_rect
      : forall (P : empty -> Type) (e : empty), P e
 ]]
 
-Very curiously, the type signature of [empty_rec] postulates that it
+Very curiously, the type signature of [empty_rect] postulates that it
 is sufficient to provide a function from [empty] to any type (which
-can very well be just a constant type, e.g., nat), and an argument [e]
-of type [empty], so the result of the call to [empty_ret] will bee of
-type [P e]. More concisely, empty_rect allows us to produce a result
-of _any_ type, given that we can provide an argument of type
+can very well be just a constant type, e.g., [nat]), and an argument
+[e] of type [empty], so the result of the call to [empty_rect] will be
+of type [P e]. More concisely, [empty_rect] allows us to produce a
+result of _any_ type, given that we can provide an argument of type
 [empty]. While it might sound very surprising at the first moment,
 upon some reflection it seems like a perfectly valid principle, since
 we will _never_ be able to construct the required value of type
@@ -578,7 +608,7 @@ we will be able to construct \emph{anything}.
 %
 
 This is a very important insight, which will become illuminating when
-we will be discussing reasoning with negation in the next chapter.
+we will be discussing the reasoning with negation in the next chapter.
 
 To conclude this section, we only mention that defining a datatype
 with no constructors is not the only way to get a type, which is not
@@ -618,8 +648,9 @@ value of type [empty] and, therefore a value of _any_ type, as was
 previously demonstrated. 
 
 To summarize, designing a datatype, which is not inhabited, while not
-trivial, is not impossible, and it is a task of a designer of the type
-to make sure that its values in fact can be constructed.
+trivial, is not impossible, and it is a task of a designer of a
+particular type to make sure that its values in fact can be
+constructed.
 
 *)
 
@@ -691,8 +722,7 @@ Check @pair nat unit 1 tt.
 ]]
 
 Notice that the parameters of the datatype come first in the order
-they are declared, followed by the arguments of the constructor (often
-also referred to as _indices_).
+they are declared, followed by the arguments of the constructor.
 
 The last two lines following the definition of [prod] specify that the
 notation for pairs is overloaded (in particular, the "[_ * _]"
