@@ -289,15 +289,15 @@ definition. It is worth noticing, thought, that even though the
 process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
 _tactics_ in Coq jargon),%\index{Coq/SSReflect tactics}%
-%\index{tactics|see {Coq/SSReflect tactics}}% the result of such
+%\index{tactics|seealso {Coq/SSReflect tactics}}% the result of such
 script, given that it eliminates all of the goals, is a valid
 well-typed Coq program. In comparison, in some other dependently-typed
-frameworks (e.g., in Agda%\index{Agda}%), the construction of proof terms does not obscure the fact
-that what is being constructed is a program, so the resulting
-interactive proof process is formulated as "filling the holes" in a
-program (i.e., a proof-term), which is being gradually refined. We
-step away from the discussion on which of these two views to the proof
-term construction is more appropriate.
+frameworks (e.g., in Agda%\index{Agda}%), the construction of proof
+terms does not obscure the fact that what is being constructed is a
+program, so the resulting interactive proof process is formulated as
+"filling the holes" in a program (i.e., a proof-term), which is being
+gradually refined. We step away from the discussion on which of these
+two views to the proof term construction is more appropriate.
 
 There is one more important difference between values defined by as
 [Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
@@ -516,7 +516,7 @@ Coq: it is just a functional type, represented by the "arrow" notation
 of type [A -> B] is a program that takes an argument value of type [A]
 and returns a result value of type [B], then the propositional
 implication [P -> Q] is, ... a program that takes an argument proof
-term of type [P] to a proof of [Q].
+term of type [P] and returns a proof of the proposition [Q].
 
 Unlike most of the value-level functions we have seen so far,
 propositions are usually parametrized by other propositions, which
@@ -537,14 +537,13 @@ the following proposition:
 %\end{center}%
 
 The proposition is therefore _parametrized_ over three propositional
-variables, [P], [Q] and [R] and states that from the proof term of
+variables, [P], [Q] and [R], and states that from the proof term of
 type [P -> Q] and a proof term of type [Q -> R] one can receive a
 proof term of type [P -> R].%\footnote{Recall that the arrows have
 right associativity, just like function types in Haskell and OCaml,
 which allows one to apply functions partially, specifying their
-arguments one by one}% Let us now prove these statement in the form
-of theorem.
-*)
+arguments one by one}% Let us now prove these statement in the form of
+theorem.  *)
 
 Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
 Proof.
@@ -560,16 +559,20 @@ since it does not directly contribute to reducing the goal, but
 instead moves some of the values from the goal to assumption, as a
 preparatory step for the future reasoning.
 
-SSReflect offers a tactic a small bu powerful toolkit of _tacticals_
-(i.e., higher-order tactics) for bookkeeping. In particular, for
-moving the bound variables from "bottom to the top", one should use a
-combination of the "no-op" tactic [move]%\ssrt{move}% and the tactical
-[=>] %\ssrtl{=>}%(spelled <<=>>>). The following command moves the
-next three assumptions from the goal, [P], [Q] and [R] to the
-assumption context, simultaneously renaming them to [A], [B] and
-[C]. The renaming is optional, so we just show it here to demonstrate
-the possibility to give arbitrary (and, preferably, more meaningful)
-names to the assumption variables "on the fly".
+%\index{tacticals}%
+%\index{bookkeeping}%
+%\index{tacticals|seealso {Coq/SSReflect tacticals}}%
+SSReflect offers a tactic and small but powerful toolkit of
+_tacticals_ (i.e., higher-order tactics) for bookkeeping. In
+particular, for moving the bound variables from "bottom to the top",
+one should use a combination of the "no-op" tactic [move]%\ssrt{move}%
+and the tactical [=>] %\ssrtl{=>}%(spelled <<=>>>). The following
+command moves the next three assumptions from the goal, [P], [Q] and
+[R] to the assumption context, simultaneously renaming them to [A],
+[B] and [C]. The renaming is optional, so we just show it here to
+demonstrate the possibility to give arbitrary (and, preferably, more
+meaningful) names to the assumption variables "on the fly" while
+constructing the proof via a script.
 
 *)
 
