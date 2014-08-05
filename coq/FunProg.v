@@ -15,17 +15,18 @@ Module FunProg.
 Our journey to the land of mechanized reasoning and interactive
 theorem proving starts from observing the capabilities of Coq as a
 programming language.
-
-Coq is often described as a _functional_ programming language, since
-its programs are always pure (i.e., not producing any sort of side
-effects), possibly higher-order functions, which means that they might
-take other functions as parameters and return functions as
-results. Similarly to other functional programming languages, such as
-Haskell, OCaml or Scala, Coq makes heavy use of algebraic datatypes,
-represented by a number of possibly recursive constructors.  Very
-soon, we will see how _programming_ with inductive algebraic datatypes
-incorporates _reasoning_ about them, but for now let us take a short
-tour of Coq's syntax and define a couple of simple programs.
+ 
+Coq's programming component is often described as a _functional_
+programming language, since its programs are always pure (i.e., not
+producing any sort of side effects), possibly higher-order functions,
+which means that they might take other functions as parameters and
+return functions as results. Similarly to other functional programming
+languages, such as Haskell, OCaml or Scala, Coq makes heavy use of
+algebraic datatypes, represented by a number of possibly recursive
+constructors.  Very soon, we will see how _programming_ with inductive
+algebraic datatypes incorporates _reasoning_ about them, but for now
+let us take a short tour of Coq's syntax and define a number of simple
+programs.
 
 *)
 
@@ -34,7 +35,7 @@ tour of Coq's syntax and define a couple of simple programs.
 (** 
 
 Let us create an empty %\texttt{.v}% file---a standard extension for
-Coq files, recognized, in particular, by Proof General and define our
+Coq files, recognized, in particular, by Proof General, and define our
 first Coq datatype. The simplest datatype once can imagine is [unit],
 a type inhabited by exactly one element. %\ccom{Inductive}% In Coq,
 one can define such a type in the following manner:%\footnote{Use the
