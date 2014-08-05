@@ -14,20 +14,20 @@
 %
 
 In the previous chapter we have seen how main connectives from
-Propositional Logic. However, the mathematical reasoning by means of
-propositional logic only is still quite limited. In particular, by
-this moment we are still unable to state what does it mean for two
-objects to be _equal_. In this chapter we are going to see how
-equality can be implemented in Coq. Moreover, the statement "_x_ is
-equal to _y_" automatically gives us a way to replace _y_ by _x_ and
-vice versa in the process of reasoning, therefore implementing a
-discipline of _rewriting_---one of the key ingredients of the
-mathematical proof.%\footnote{The reader could have, probably, heard
-how mathematics sometimes is referred to as a "science of
-rewritings".}% Later in the chapter, we will see how rewriting by
-equality is just a particular case of a general proof pattern, which
-allows one to define arbitrary _rewriting rules_ by exploiting Coq's
-mechanism of _indexed type families_.
+propositional logic. However, the mathematical reasoning only by means
+of propositional logic is still quite limited. In particular, by this
+moment we are still unable to state what does it mean for two objects
+to be _equal_. In this chapter we are going to see how equality can be
+implemented in Coq. Moreover, the statement "_x_ is equal to _y_"
+automatically gives us a way to replace _y_ by _x_ and vice versa in
+the process of reasoning, therefore implementing a discipline of
+_rewriting_---one of the key ingredients of the mathematical
+proof.%\footnote{The reader could have, probably, heard how
+mathematics sometimes is referred to as a "science of rewritings".}%
+Later in the chapter, we will see how rewriting by equality is just a
+particular case of a general proof pattern, which allows one to define
+arbitrary _rewriting rules_ by exploiting Coq's mechanism of _indexed
+type families_.
 
 *)
 

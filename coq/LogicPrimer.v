@@ -1351,10 +1351,10 @@ establish that _all_ propositions [P1 ... Pn] hold, which in the
 finite case can be done by proving [n] goal, for each statement
 separately (and this is what the [split] tactic helps to
 do). Similarly, in order to prove the propositions [forall x: A, P x],
-one need to prov that [P x] holds for _any_ [x] of type [A]. Since the
-type itself can define an infinite set, there is no way to enumerate
-all conjuncts, however, an explicit handle [x] gives a way to
-effective _index_ them, so proving [P x] for an arbitrary [x] would
+one needs to prove that [P x] holds for _any_ [x] of type [A]. Since
+the type [A] itself can define an infinite set, there is no way to
+enumerate all conjuncts, however, an explicit handle [x] gives a way
+to effective _index_ them, so proving [P x] for an arbitrary [x] would
 establish the validity of the universal quantification itself. Another
 useful insight is that in Coq [forall x: A, P x] is a type of a
 dependent function that maps [x] of type [A] to a value of type [P
@@ -1367,8 +1367,8 @@ In order to prove the [n]-ary disjunction [P1 \/ ... \/ Pn] in Coq, it
 is sufficient to provide a proof for just one of the disjunct _as well
 as_ a "tag" --- an indicator, which disjunct exactly is being proven
 (this is what tactics [left] and [right] help to achieve). In the case
-of infinitary disjunction, the existential quantification "exists x, P
-x", the existentially quantified variable plays role of the tag
+of infinitary disjunction, the existential quantification "[exists x,
+P x]", the existentially quantified variable plays role of the tag
 indexing all possible propositions [P x]. Therefore, in order to prove
 such a proposition, one needs first to deliver a witness [x] (usually,
 by means of calling the tactics [exists]), and then prove that for
@@ -1440,9 +1440,9 @@ classic
 Another axiom from the classical logic, which coincides with the type
 of Scheme's [call/cc]
 operator%\footnote{\url{http://community.schemewiki.org/?call-with-current-continuation}}%
-(pronounced as _{call with current continuation_) modulo Curry-Howard
+(pronounced as _call with current continuation_) modulo Curry-Howard
 isomorphism is _Peirce's law_:
-
+%\index{Peirce's law}%
 *)
 
 Definition peirce_law := forall P Q: Prop, ((P -> Q) -> P) -> P.
@@ -1457,7 +1457,7 @@ function and should be added as an external operator, the Peirce's law
 is an axiom in the constructive logic.
 
 The classical double negation principle is easily derivable from
-Peirce's law, and corresponds to the type of [call/cc], which alway
+Peirce's law, and corresponds to the type of [call/cc], which always
 invokes its continuation parameter, aborting the current computation.
 
 *)
@@ -1489,8 +1489,8 @@ imply_to_or
 Curiously, none of these axioms, if added to Coq, makes its logic
 unsound: it has been rigorously proven (although, not within Coq, due
 to %\Godel%'s incompleteness result) that all classical logic axioms
-are consistent with CIC, do not make it possible to derive the
-falsehood%~\cite{Werner:TACS97}%.
+are consistent with CIC, and, therefore, don't make it possible to
+derive the falsehood%~\cite{Werner:TACS97}%.
 
 The following exercise reconcile most of the familiar axioms of the
 classical logic.
@@ -1567,10 +1567,12 @@ Qed.
  an arbitrary proposition. The system will then require you to prove
  that [P] implies the goal _and_ [P] itself.
 
+%\ssrt{admit}%
+
 %\hint% Stuck with a tricky proof? Use the Coq [admit] tactic as a
-  %\ssrt{admit}% "stub" for an unfinished proof of a goal, which,
-  %nevertheless will be considered completed by Coq. You can always
-  %get back to it later.
+ "stub" for an unfinished proof of a goal, which, nevertheless will be
+ considered completed by Coq. You can always get back to an admitted
+ proof later.
 
 %\end{exercise}%
 
@@ -1598,15 +1600,14 @@ propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
 particular, %System~$F$% (which is impredicative), allowing for the
 expressive reasoning in the higher-order propositional logic.
 
-_Impredicativity_ as a property of definitions is a very powerful
-tool, as it allows one to define domains that are _self-recursive_---a
-feature of [Prop] that we recently observed. Unfortunately, when
-restated in the classical set theory, impredicativity immediately
-leads to the famous Russel's paradox, which arises from the attempt to
-define a set of all sets that do not belong to themselves. In the
-terms of programming, the Russel's paradox provides a recipe to encode
-a fixpoint combinator in the calculus itself and write
-generally-recursive programs.
+_Impredicativity_ as a property of definitions allows one to define
+domains that are _self-recursive_---a feature of [Prop] that we
+recently observed. Unfortunately, when restated in the classical set
+theory, impredicativity immediately leads to the famous Russel's
+paradox, which arises from the attempt to define a set of all sets
+that do not belong to themselves. In the terms of programming, the
+Russel's paradox provides a recipe to encode a fixpoint combinator in
+the calculus itself and write generally-recursive programs.
 
 %System~$F$% is not a dependently-typed calculus and it has been
 proven to contain no paradoxes%~\cite{Girard:PhD}%, as it reasons only
@@ -1633,7 +1634,7 @@ _universes_.%\index{universes}%
 
 A similar stratification is also implemented in Coq, which has its own
 universe hierarchy, although with an important twist. The two
-universes, [Set] and [Prop] cohabit at the 1th level of the universe
+universes, [Set] and [Prop] cohabit at the first level of the universe
 hierarchy with [Prop] being impredicative. The universe containing
 both [Set] and [Prop] is called [Type(1)], and it is _predicative_, as
 well as all universes that are above it in the hierarchy. CIC
@@ -1652,6 +1653,8 @@ Coq is denoted as [Type(1)], but in the displays is usually presented
 simply as [Type], as well as all the higher universes. We can enable
 the explicit printing of the universe levels to see how they are
 assigned:
+
+%\ccom{Set Printing Universes}%
 
 *)
 
