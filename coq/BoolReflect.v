@@ -361,59 +361,59 @@ propositions are considered to be _true_, whose proof term can be
 constructed. And, of course, there is no such thing as a "proof term
 of [true]", as [true] is simply a value.
 
-A more interesting question, though, is for which propositions [P] the
-proofs can be computed _automatically_ by means of running a program,
-whose result will be an answer to the question "Whether [P]
-holds?". Therefore, such program should always _terminate_ and, upon
-terminating, say "true" or "false". The propositions, for which a
-construction of such program (even a very inefficient one) is
-possible, are referred to %\index{decidability}% as _decidable_
-ones. Alas, as it was discussed in %Section~\ref{sec:propsort} of
-Chapter~\ref{ch:logic}%, quite a lot of interesting propositions are
-undecidable. Such properties include the classical halting problem
-%\index{halting problem}% ("Whether the program [p] terminates or
-not?") and any higher-order formulae, i.e., such that contain
-quantifiers. For instance, it is not possible to implement a
-higher-order function, which would take two arbitrary functions $f_1$
-and $f_2$ of type [nat -> nat] and return a boolean answer, which
-would indicate whether these two functions are equal (point-wise) or
-not, as it would account to checking the result of the both on each
-natural number, which, clearly, wouldn't terminate. Therefore, the
-function equality is a good example of a proposition, which is is
-undecidable in general, so we cannot provide a terminating procedure
-for any values of its arguments (i.e., $f_1$ and $f_2$)
+A more interesting question, though, is for which propositions [P]
+from the sort [Prop] the proofs can be computed _automatically_ by
+means of running a program, whose result will be an answer to the
+question "Whether [P] holds?". Therefore, such program should always
+_terminate_ and, upon terminating, say "true" or "false". The
+propositions, for which a construction of such program (even a very
+inefficient one) is possible, are referred to %\index{decidability}%
+as _decidable_ ones. Alas, as it was discussed in
+%Section~\ref{sec:propsort} of Chapter~\ref{ch:logic}%, quite a lot of
+interesting propositions are undecidable. Such properties include the
+classical halting problem %\index{halting problem}% ("Whether the
+program [p] terminates or not?") and any higher-order formulae, i.e.,
+such that contain quantifiers. For instance, it is not possible to
+implement a higher-order function, which would take two arbitrary
+functions $f_1$ and $f_2$ of type [nat -> nat] and return a boolean
+answer, which would indicate whether these two functions are equal
+(point-wise) or not, as it would account to checking the result of the
+both function on each natural number, which, clearly, wouldn't
+terminate. Therefore, the definitional equality of functions is a good
+example of a proposition, which is is undecidable in general, so we
+cannot provide a terminating procedure for any values of its arguments
+(i.e., $f_1$ and $f_2$).
 
 However, the _undecidability_ of higher-order propositions (like the
-functional equality) does not make them _non-provable_ for particular
-cases, as we have clearly observed thorough the past few chapters. It
-usually take a human intuition, though, to construct a proof of an
-undecidable proposition by means of combining a number of hypotheses
-(i.e., constructing a proof terms), which is what one does when
-building a proof using tactics in Coq. For instance, if we have some
-extra insight about the two functions $f_1$ and $f_2$, which are
-checked for equality, we might be able to construct the proof of them
-being equal or not, in the similar ways as we have carried the proofs
-so far. Again, even if the functions are unknown upfront, it does not
-seem possible to implement an always-terminating procedure that would
-automatically decide whether they are equal or not.
+definitional equality of functions) does not make them _non-provable_
+for particular cases, as we have clearly observed thorough the past
+few chapters. It usually takes a human intuition, though, to construct
+a proof of an undecidable proposition by means of combining a number
+of hypotheses (i.e., constructing a proof terms), which is what one
+does when building a proof using tactics in Coq. For instance, if we
+have some extra insight about the two functions $f_1$ and $f_2$, which
+are checked for equality, we might be able to construct the proof of
+them being equal or not, in the similar ways as we have carried the
+proofs so far. Again, even if the functions are unknown upfront, it
+does not seem possible to implement an always-terminating procedure
+that would automatically decide whether they are equal or not.
 
 The above said does not mean that all possible propositions should be
 implemented as instances of [Prop], making their clients to construct
 the always construct their proofs, when it is necessary, since,
-fortunately, some propositions as _decidable_, so it is possible to
+fortunately, some propositions are _decidable_, so it is possible to
 construct a decision procedure for them. A good example of such
 proposition is a predicate, which ensures that a number [n] is
 prime. Of course, in Coq one can easily encode primality of a natural
 number by means of the following inductive predicate, which ensures
-that [n] is [0], [1] or has no other natural divisors but [1] and [n]
-itself.
+that [n] is prime if it is [1] or has no other natural divisors but
+[1] and [n] itself.
 
 %\ssrd{isPrime}%
 
 *)
 
 Inductive isPrime n : Prop := 
- | IsZero of n = 0
  | IsOne of n = 1
  | IsOther of forall n1 n2, n = n1 * n2 -> (n1 = 1 /\ n2 = n) \/ (n1 = n /\ n2 = 1).
 
@@ -449,18 +449,18 @@ Eval compute in prime 239.
 Therefore, we can summarize that the _decidability_ is what draws the
 line between propositions encoded by means of Coq's [Prop] datatypes
 and procedures, returning a [bool] result. [Prop] provides a way to
-encode a larger class of logical statements, in particular, thanks to
-the fact that it allows to use quantifiers and, therefore encode
-higher-order propositions. The price to pay for the expressivity is
-the necessity to explicitly construct the proofs of the encoded
-statements, which might lead to series of tedious and repetitive
-scripts. [bool]-returning functions, when implemented in Coq, are
-decidable by construction (as Coq enforces termination), and,
+encode a _larger_ class of logical statements, in particular, thanks
+to the fact that it allows one to use quantifiers and, therefore
+encode higher-order propositions. The price to pay for the
+expressivity is the necessity to explicitly construct the proofs of
+the encoded statements, which might lead to series of tedious and
+repetitive scripts. [bool]-returning functions, when implemented in
+Coq, are decidable by construction (as Coq enforces termination), and,
 therefore, provide a way to compute the propositions they
-implement. Of course, in order to be reduce to [true] or [false], all
+implement. Of course, in order to be reduced to [true] or [false], all
 quantifiers should be removed by means of instantiated the
 corresponding bound variables, after which the computation becomes
-possible. 
+possible.
 
 For instance, while the expression [(prime 239) || (prime 42)] can be
 evaluated to [true] right away, whereas the expression
@@ -479,17 +479,17 @@ comparing the boolean expresion with [true] using the propositional
 equality
 
 [[
-forall n, ((prime n) || prime (n +1) = true)
+forall n, ((prime n) || prime (n + 1) = true)
 ]]
 
 which makes the whole expression to be of type [Prop]. This last
 example brings us to the insight that the [bool]-returning functions
 (i.e., decidable predicates) can be naturally _injected_
 %\index{injection}% into propositions of sort [Prop] by simply
-comparing their result with [true] via propositional equality. This is
-what is done by SSReflect automatically using the implicit
-%\index{coercion}\ccom{Coercion}% _coercion_, imported by the
-[ssrbool] module:%\ssrm{ssrbool}%
+comparing their result with [true] via propositional equality, defined
+in Chapter%~\ref{ch:eqrew}%. This is what is done by SSReflect
+automatically using the implicit %\index{coercion}\ccom{Coercion}%
+_coercion_, imported by the [ssrbool] module:%\ssrm{ssrbool}%
 
 [[
 Coercion is_true (b: bool) := b = true
@@ -498,7 +498,7 @@ Coercion is_true (b: bool) := b = true
 This coercion can be seen as an implicit type conversion, familiar
 from the languages like Scala or Haskell
 %\index{Scala}\index{Haskell}%, and it inserted by Coq automatically
-every time it expect to see a value of sort [Prop], but instead
+every time it expects to see a proposition of sort [Prop], but instead
 encounters a boolean value. Let us consider the following goal as an
 example:
 
@@ -578,9 +578,9 @@ outcome of a particular predicate, one can always consider two
 possibilities: when it returned [true] or [false].%\footnote{We have
 already seen an instance of such case analysis inf the proof of the
 %[leqP]% lemma in Section~\ref{sec:enccustom} of
-Chapter~\ref{ch:eqrew}, although deliberately did not elaborate on
-it back then.}% This makes is particularly pleasant to reason about
-the programs and specifications that use conditional, which is
+Chapter~\ref{ch:eqrew}, although deliberately did not elaborate on it
+back then.}% This makes is particularly pleasant to reason about the
+programs and specifications that use conditionals, which is
 demonstrated by the following example.
 
 *)
@@ -620,18 +620,20 @@ Qed.
 
 (**
 
-Another commonly used case of a boolean predicate to perform a case
-analysis on is _computable equality_, which can be employed in the
-proof proceeding by an argument "let us assume [a] to be equal to [b]
-(or not)". As already hinted by the example with the function equality
-earlier in this section, the computable equality is not always
-possible to implement. Fortunately, it can be implemented for a large
-class of datatypes, such as booleans, natural numbers, lists and sets
-(of elements with computable equality), and it was implemented in
+Another common use case of boolean predicates comes from the
+possibility to perform a case analysis on the boolean _computable
+equality_, which can be employed in the proof proceeding by an
+argument "let us assume [a] to be equal to [b] (or not)". As already
+hinted by the example with the function equality earlier in this
+section, the computable equality is not always possible to
+implement. Fortunately, it can be implemented for a large class of
+datatypes, such as booleans, natural numbers, lists and sets (of
+elements with computable equality), and it was implemented in
 SSReflect, so one can take an advantage of it in the
 proofs.%\footnote{The way the computable equality is encoded so it
-would work uniformly for different types is a lar topic by itself, so
-we postpone its explanation until Chapter~\ref{ch:depstruct}}%
+would work uniformly for different types is an interesting topic by
+itself, so we postpone its explanation until
+Chapter~\ref{ch:depstruct}}%
 
 *)
 
@@ -641,9 +643,9 @@ we postpone its explanation until Chapter~\ref{ch:depstruct}}%
 
 Being able to state all the properties of interest in a way that they
 are decidable is a true blessing. However, even though encoding
-everything in terms of [bool]-returning functions and connectives comes
-with the obvious benefits, reasoning in terms of props might be more
-convenient when the information of the structure of the proofs
+everything in terms of [bool]-returning functions and connectives
+comes with the obvious benefits, reasoning in terms of [Prop]s might
+be more convenient when the information of the structure of the proofs
 matters. For instance, let us consider the following situation:
 
 *)
@@ -657,10 +659,10 @@ Lemma check_prime n : (do_check1 n) && (do_check2 n) -> prime n.
 
 The lemma [check_prime] employs the boolean conjunction [&&] from the
 [ssrbool] module in its assumption, so we know that its result is some
-boolean. However simply case-analysing on its component does not bring
-any results. What we want indeed is a way to _decompose_ the boolean
-conjunction into the components and then use the hypothesis [H]. This
-is what could be accomplished easily had we employed the
+boolean value. However simply case-analysing on its component does not
+bring any results. What we want indeed is a way to _decompose_ the
+boolean conjunction into the components and then use the hypothesis
+[H]. This is what could be accomplished easily had we employed the
 _propositional conjunction_ [/\] instead, as it comes with a
 case-analysis principle.
 
@@ -757,11 +759,11 @@ case: andP=>//.
    do_check1 n /\ do_check2 n -> true -> prime n
 ]]
 
-Case analysis on the rewriting rule [andP] immediately generates two
-goals, and the second one has [false] as an assumption, so it is
-discharged immediately by using %\texttt{//}\ssrtl{//}%. The remaining
-goal has a shape that we can work with, so we conclude the proof by
-applying the hypothesis [H] declared above.
+Case analysis on the rewriting rule [andP] generates two goals, and
+the second one has [false] as an assumption, so it is discharged
+immediately by using %\texttt{//}\ssrtl{//}%. The remaining goal has a
+shape that we can work with, so we conclude the proof by applying the
+hypothesis [H] declared above.
 
 *)
 
@@ -824,7 +826,7 @@ implicitly "wrapped" into the call of hints [elimTF] and [introTF],
 correspondingly. Defined by via the conditional operator, both these
 view hints allowed to avoid the second redundant goal, which would be
 had to deal with, had we simply gone with case analysis on [andP] and
-[orP].
+[orP] as rewriting rules.
 
 *)
 
@@ -847,7 +849,7 @@ Let us define a propositional version of the _exclusive or_
 Definition XOR (P Q: Prop) := (P \/ Q) /\ ~(P /\ Q).
 
 (** 
-
+%\noindent%
 as well as its boolean version (in a curried form, so it takes just
 one argument and returns a function):
 
@@ -856,7 +858,7 @@ one argument and returns a function):
 Definition xorb b := if b then negb else fun x => x.
 
 (** 
-
+%\noindent%
 Now, prove the following _generalized_ reflection lemma [xorP_gen] and
 its direct consequence, the usual reflection lemma [xorP]:
 
@@ -880,11 +882,12 @@ Qed.
 (* end hide *)
 
 Lemma xorP (b1 b2 : bool): reflect (XOR b1 b2) (xorb b1 b2).
-Proof.
 (* begin hide *)
+Proof.
 by apply: xorP_gen; case:b1=>//=; case:b2=>//=; constructor.
-(* end hide *)
 Qed.
+(* end hide *)
+
 
 (** 
 %\end{exercise}%
@@ -898,7 +901,7 @@ means of the predicate [XOR']:
 
 Definition XOR' (P Q: Prop) := (P /\ ~Q) \/ (~P /\ Q).
 (** 
-
+%\noindent%
 Prove the following equivalence lemma between to versions of [XOR]:
 
 *)
@@ -919,7 +922,7 @@ Qed.
 (* end hide *)
 
 (** 
-
+%\noindent%
 The final step is to use the equivalence we have just proved in order
 to establish an alternative version of the reflective correspondence
 of exclusive disjunction.
@@ -1013,7 +1016,7 @@ Qed.
 Logical connectives are not the only class of inductive predicates
 that is worth building a [reflect]-based rewriting principle for.
 Another useful class of decidable propositions, which are often
-reflected, are qualities.
+reflected, are equalities.
 
 Postponing the description of a generic mechanism for declaring
 polymorphic decidable equalities until %Chapter~\ref{ch:depstruct}%,
@@ -1053,9 +1056,9 @@ The rewriting rule/view lemma [eqP], imported from [eqtype] allows us
 to switch from the propositional equality to the boolean one, which
 makes the assumption to be [x == y]. Next, we combine the implicit
 fact that [x == y] in the assumption of a proposition is in fact [(x
-== y) = true] to perform in-place (see %Section~\ref{sec:in-place}%)
-rewriting by means of the %\texttt{->}\ssrtl{->}% tactical, so the
-rest of the proof is simply by computation.
+== y) = true] to perform in-place rewriting (see
+%Section~\ref{sec:in-place}%) by means of the %\texttt{->}\ssrtl{->}%
+tactical, so the rest of the proof is simply by computation.
 
 *)
 
