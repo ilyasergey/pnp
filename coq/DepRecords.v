@@ -29,9 +29,9 @@ Module DepRecords.
 (**  
 
 Long before programming has been established as a discipline,
-matchematics became to be perceived as a science to build abstractions
+mathematics became to be perceived as a science to build abstractions
 and summarize important properties of various entities necessary for
-describing nature's phenonemnons.%\footnote{In addition to being a
+describing nature's phenomenons.%\footnote{In addition to being a
 science of rewriting, as we have already covered in
 Chapter~\ref{ch:eqrew}.}% From the basic course of algebra, we are
 familiar with a number of mathematical structures, such as monoids,
@@ -42,15 +42,15 @@ the set itself and operations on them.
 From a working programmer's perspective, a notion of an mathematical
 abstract structure is reminiscent to a notion of class from
 object-oriented programming, modules from Standard ML and type
-classes%~\cite{Wadler-Blott:POPL89}% %\index{type
-classes}\index{Haskell}% from Haskell: all these mechanisms are
-targeted to solve the same goal: _package_ a number of operations
-operationg on some data, while abstracting of a particular
-implementation of this data itself. What neither of these programming
-mechanisms is capable of doing is enforcing the requirement for one to
-provide the _proofs_ of properties, which restrict the operations on
-the data structure. For insnace, one can implement a type class for a
-_lattice_ in Haskell as follows:
+classes%~\cite{Wadler-Blott:POPL89}% from Haskell: all these
+mechanisms are targeted to solve the same goal: _package_ a number of
+operations manipulating with some data, while abstracting of a
+particular implementation of this data itself. What neither of these
+programming mechanisms is capable of doing is enforcing the
+requirement for one to provide the _proofs_ of properties, which
+restrict the operations on the data structure. For instance, one can
+implement a type class for a _lattice_ in Haskell as follows:
+%\index{type classes}\index{Haskell}%
 
 <<
 class Lattice a where
@@ -74,8 +74,8 @@ is _not_ a partial order (e.g., just constant %\texttt{true}%). While
 this relaxed approach is supposedly fine for the programming needs, as
 the type classes are used solely for computing, not the reasoning
 about the correctness of the computations, this is certainly not
-satisfactory from the mathematical perspective. Whithout the
-possibility to establish and enforse the necessary properties of a
+satisfactory from the mathematical perspective. Without the
+possibility to establish and enforce the necessary properties of a
 mathematical structure's operation, we would not be able to carry out
 any sort of sound formal reasoning, as we simply could not distinguis
 a "correct" implementation from a flawed one.
