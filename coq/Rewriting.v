@@ -4,6 +4,7 @@
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
+(** printing is %\texttt{\emph{is}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
 
@@ -69,7 +70,7 @@ similar to the logical connectives we've seen in
 importance. First, equality as a predicate is _parametrized_
 %\index{datatype parameters}% over two arguments: a [Type] [A] of an
 unspecified universe (so, it can be [Set], [Prop] or any of higher
-universes, but not prop) and an element [x] of type [A]. There is
+universes) and an element [x] of type [A]. There is
 nothing particularly new here: we have seen parametrized inductive
 predicates before, for instance, conjunction and disjunction in
 %Section~\ref{sec:conjdisj}%. The novel part of this definition is
@@ -98,13 +99,13 @@ to do with rewriting, let us take a close look at the definition of
 [eq]. The type of its only constructor [eq_refl] is a bit misleading,
 as it looks like it is applied to two arguments: [x] and ... [x]. To
 disambiguate it, we shall put some parentheses, so, it fact, it should
-read as
+read%~%as
 
 [[
 Inductive eq (A : Type) (x : A) : A -> Prop :=  eq_refl : (eq x) x
 ]]
 
-That is, the constructor [eq_refl] delivers an element of type [eq],
+That is, the constructor [eq_refl] delivers an element of type [(eq x)],
 whose _parameter_ is some [x] (and [eq] is directly applied to it),
 and its _index_ (which comes second) is constrained to be [x] as
 well. That is, case-analysing on an instance of [eq x y] in the
@@ -138,14 +139,14 @@ standard equality predicate, so the case-analysis on its instances is
 completely superseded by the powerful [rewrite] tactics, which we will
 see in %Section~\ref{sec:rewriting}% of this chapter. Alas, this
 special treatment also leads to a non-standard behavior of
-case-analysis on equality. This is why, for didactical purposes we
+case-analysis on equality. This is why, for didactical purposes, we
 will have to stick with or own home-brewed definition until the end of
 this section.
 
 Let us now prove some interesting properties of the freshly-defined
-equalities. We start with symmetry of [===] by formulating the following
-lemma:%\footnote{The Coq's command \texttt{Lemma} is identical to
-\texttt{Theorem}.\ccom{Lemma}}%
+equalitiy. We start with symmetry of [===] by formulating the
+following lemma:%\footnote{The Coq's command \texttt{Lemma} is
+identical to \texttt{Theorem}.\ccom{Lemma}}%
 
 *)
 
@@ -153,7 +154,8 @@ Lemma my_eq_sym A (x y: A) : x === y -> y === x.
 
 (**
 
-First, we analyse on the top assumption of the goal, [x === y].
+First, we perform the case analysis on the top assumption of the goal,
+[x === y].
 
 *)
 
@@ -169,7 +171,7 @@ case.
    x === x
 ]]
 
-This leads to the goal, being switched from [y === x] to [x === y], as
+This leads to the goal, being switched from [y === x] to [x === x], as
 all occurrences of [y] are now replaced by [x], exactly as advertised.
 We can now finish the proof by applying the constructor ([apply:
 my_refl_eq]) or simply by [done], which is powerful enough to figure
@@ -184,9 +186,9 @@ Qed.
 
 Our next exercise will be to show that the predicate we have just
 defined implies Leibniz equality. The proof is accomplished in one
-line by first moving the assumption [P x] to the top and then
-case-analysing on the equality, which leads to the automatic
-replacements of [y] by [x].
+%\index{Leibniz equality}% line by first moving the assumption [P x]
+to the top and then case-analysing on the equality, which leads to the
+automatic replacements of [y] by [x].
 
 *)
 
@@ -201,7 +203,7 @@ Proof. by move=>H; case. Qed.
 Another important application of the equality predicate family and
 similar ones %\index{discrimination}% are _proofs by discrimination_,
 in which the contradiction is reached (i.e., the falsehood is derived)
-our of the fact that two clearly non-equal elements are assumed to be
+out of the fact that two clearly non-equal elements are assumed to be
 equal. The next lemma demonstrates the essens of the proof by
 discrimination using the [my_eq] predicate.
 
@@ -257,14 +259,15 @@ pose D x := if x is 2 then False else True.
 
 Now, proving [D 1] is [True] can be accomplished by simple executing
 [D] with appropriate arguments (recall that [D] is an
-always-terminating just a function, whose result is a computable
-value). That SSReflect's tactic [have]%\ssrt{have}% allows to declare
-the local fact, which can be then proving in-place by simple
-computation (which is performed via [by []]).
+always-terminating function, whose result is a computable value). That
+SSReflect's tactic [have]%\ssrt{have}% allows to declare the local
+fact, which can be then proved in-place by simple computation (which
+is performed via [by []]).
 
 *)
 
-have D1: D 1 by [].
+have D1: D 1. 
+by [].
 
 (**
 
@@ -318,15 +321,15 @@ Qed.
 Let us provide a bit more explanation how did it happen that we
 managed to derive the falsehood in the process of the proof. The
 discrimination function [D] is a function from [nat] to [Prop], and,
-indeed it can return [True] and [False], so it contains no
+indeed, it can return [True] and [False], so it contains no
 contradictions by itself. We also managed to prove easily a trivial
-proposition [D 1], which is just [True], so it's derivable. The true
-twist happened when we managed to turn the assumption [D 1] (which was
-[True]) to [D 2] (which is [False]). This was only possible because of
-the assumed equality [2 === 1], which contained the "falsehood" from
-the very beginning and forced Coq to substitute the occurrence of [1]
-in the goal by [2], so the discrimination function in the assumption
-finished the job.
+proposition [D 1], which is just [True], so it's derivable. The
+genuine twist happened when we managed to turn the assumption [D 1]
+(which was [True]) to [D 2] (which is [False]). This was only possible
+because of the assumed equality [2 === 1], which contained the
+"falsehood" from the very beginning and forced Coq to substitute the
+occurrence of [1] in the goal by [2], so the discrimination function
+in the assumption finished the job.
 
 %\begin{exercise}%
 Let us change the statement of a previous lemma for a little bit:
@@ -336,7 +339,7 @@ Let us change the statement of a previous lemma for a little bit:
 Lemma disaster2 : 1 === 2 -> False.
 
 (**
-
+%\noindent%
 Now, try to prove it using the same scheme. What goes wrong and how to
 fix it?
 
@@ -375,7 +378,7 @@ the whole new level and is a subject of the next section.
 * Proofs by rewriting %\label{sec:rewriting}%
 
 The vast majority of the steps when constructing real-life proofs in
-Coq are _rewriting_ step. The general flow of the interactive
+Coq are _rewriting_ steps. The general flow of the interactive proof
 (considered in more detail in %Chapter~\ref{ch:ssrstyle}%) is
 typically targeted on formulating and proving small auxiliary
 hypotheses about equalities in the forward-style reasoning and then
@@ -403,7 +406,7 @@ Proof.
 
 (**
 
-The first thing to do in this proof is to get read of the auxiliary
+The first thing to do in this proof is to get rid of the auxiliary
 variable [t], as it does not occur in any of the assumptions, but just
 in the subsequent goal. This can be done using the following sequence
 of tactics that first moves the equality assumption to the top and
@@ -433,9 +436,14 @@ as any other rewritings.
  *)
 
 rewrite /double /nat_iter.
-done.
 
 (**
+[[
+  x : A
+  f : A -> A
+  ============================
+   f (f (f (f x))) = f (f (f (f x)))
+]]
 
 An alternative way to prove the same statement would be to use the
 %\texttt{->}% %\ssrtl{->}% tactical, which is usually combined with
@@ -508,8 +516,8 @@ congr (_ + _).
 ]]
 
 Now, the only thing left to prove is that the addition is commutative,
-so at this point we will just make use of SSReflect's library lemma
-for integer addition.
+so at this point we will just make use of SSReflect's [ssrnat] library
+lemma for integer addition.
 
 *)
 
@@ -533,8 +541,8 @@ Print ssrfun.commutative.
 (** 
 [[
 ssrfun.commutative = 
-fun (S T : Type) (op : S -> S -> T) => forall x y : S, op x y = op y x
-     : forall S T : Type, (S -> S -> T) -> Prop
+  fun (S T : Type) (op : S -> S -> T) => forall x y : S, op x y = op y x
+       : forall S T : Type, (S -> S -> T) -> Prop
 ]]
 
 As we can see, the definition of the [commutative] predicate ensures
@@ -566,8 +574,8 @@ subexpression of the goal should be a subject of rewriting. When
 non-ambiguous, some parts of the expressions can be replaced by
 wildcard %\index{wildcards}% underscores [_]. In this particular case,
 it does not matter that much, since any single rewriting by
-commutativity in any of the sums, ont the left or on the right, would
-make the proof go through. However, in a more sophisticated goal it
+commutativity in any of the sums, on the left or on the right, would
+make the proof to go through. However, in a more sophisticated goal it
 makes sense to specify explicitly, what should be rewritten:
 
 *)
@@ -583,16 +591,16 @@ Proofs of "obvious" equalities that hold modulo, e.g., commutativity
 and subjectivity, usually require several rewriting to be established,
 which might be tedious.  There are ways to automate such proofs by
 means of overloaded lemmas via _canonical structures_. These
-techniques, hinted briefly in %Chapter~\ref{ch:depstruct}% are mostly
-outside of the scope of this notes, so we address the reader to a
+techniques, hinted briefly in %Chapter~\ref{ch:depstruct}%, are mostly
+outside of the scope of this course, so we address the reader to a
 number of papers, presenting the state of the art in this
 direction%~\cite{Gontier-al:ICFP11,Mahboubi-Tassi:ITP13}%.
 
-** Naming in subgoals and conditional rewritings
+** Naming in subgoals and optional rewritings
 %\label{sec:naming-subgoals}%
 
 When working with multiple cases, it is possible to "chain" the
-executing of several tactics. Then, in the case of a script [tac1;
+execution of several tactics. Then, in the case of a script [tac1;
 tac2], if the goal is replaced by several after applying [tac1], then
 [tac2] will be applied to _all_ subgoals, generated by [tac1]. For
 example, let us consider a proof of the following lemma from the
@@ -651,7 +659,7 @@ forall n0 : nat,
   [Hm], in the second goal. It then next names the assumption [p] in
   _both_ goals and moves it to the top.
 
-The first goal can now be proved by multiple rewriting via the lemma
+The first goal can now be proved by multiple rewritings via the lemma
 [add0n], stating that [0] is the left unit with respect to the
 addition:
 
@@ -670,11 +678,11 @@ about the [(_ + 1)] function:
 by rewrite !addSnnS -addnS.
 
 (**
-
-The conclusion of the [addnS] lemma is rewritten right-to-left.
+%\noindent%
+Notice that the conclusion of the [addnS] lemma is rewritten right-to-left.
 
 The whole proof could be, however, accomplished in one line using the
-_conditional_ rewritings. The intuitions is to _chain_ the rewritings
+_optional_ rewritings. The intuitions is to _chain_ the rewritings
 in the goals, generated by [elim] in a way that the unsuccessful
 rewriting would not fail the whole proof construction, as they are
 irrelevant for some goals anyway. This is how it can be done:
@@ -687,7 +695,7 @@ Qed.
 
 (** 
 
-Notice that the conditional rewritings (e.g., [?addSnnS]) are
+Notice that the optional rewritings (e.g., [?addSnnS]) are
 performed as many times as they can be.
 
 ** Selective occurrence rewritings
@@ -732,11 +740,11 @@ In %Section~\ref{sec:propeq}% of this chapter we have already seen how
 defining indexed datatype families %\index{indexed type families}%
 makes it possible for Coq to provide a convenient rewriting machinery,
 which is implicitly invoked by case analysis on such families' refined
-types, thanks to sophisticated Coq's unification machinery.
+types, thanks to sophisticated Coq's unification procedure.
 
 Although so far this approach has been demonstrated by only one
 indexed type family example---propositional equality, defined by means
-of the [eq] family, in this Section, concluding the chapter, we will
+of the [eq] family, in this section, concluding the chapter, we will
 show how to define other client-specific rewriting rules. Let us start
 from a motivating example in the form of an "obvious" lemma.
 
@@ -754,7 +762,7 @@ our development. The need for them is due to the smooth combination of
 reasoning with [Prop]ositions and [bool]eans, which is a subject of
 the next chapter. Even though in SSReflect's library, relations on
 natural numbers, such as [<=] and [>], are defined as _boolean_
-functions, we recommend to the reader to think of them as of
+functions, so far we recommend to the reader to think of them as of
 predicates defined in [Prop] and, therefore, valid arguments to the
 [/\] connective.
 
@@ -793,8 +801,8 @@ Lemma max_is_max m n: n <= maxn m n /\ m <= maxn m n.
 ]]
 
 The stated lemma [max_is_max] can be, indeed, proved by induction on
-[m] and [n], which is rather tedious exercise, so we will not be
-following this path. 
+[m] and [n], which is a rather tedious exercise, so we will not be
+following this path.
 
 ** Encoding custom rewriting rules
 %\label{sec:enccustom}%
@@ -814,11 +822,12 @@ Inductive leq_xor_gtn m n : bool -> bool -> Set :=
   | LeqNotGtn of m <= n : leq_xor_gtn m n true false
   | GtnNotLeq of n < m  : leq_xor_gtn m n false true.
 
+
 (** 
 
 However, this is not yet enough to enjoy the custom rewriting and case
 analysis on these two variant. At this moment, the datatype family
-[leq_xor_gtn], whose constructors' indices encode a truth table
+[leq_xor_gtn], whose constructors' indices encode a truth table's
 "rows", specifies two substitutions in the case when [m <= n] and [n <
 m], respectively and diagrammatically looks as follows:
 
@@ -844,15 +853,15 @@ of %\texttt{C1}% and %\texttt{C2}% "makes sense".
 Lemma leqP m n : leq_xor_gtn m n (m <= n) (n < m).
 Proof.
 rewrite ltnNge. 
-by case le_mn: (m <= n); constructor; rewrite // ltnNge le_mn.
+by case le_mn: (m <= n); constructor=>//; rewrite ltnNge le_mn.
 Qed.
 ]]
 
 Moreover, the lemma [leqP], which we have just proved, delivers the
 necessary instance of the "truth" table, which we can now case-analyse
-against.%\footnote{%In fact, a different lemma could be proved for the
-same table but for different values of indices, which would give us a
-_different_ rewriting principle. However, the datatype family
+against.%\footnote{%In theory, a different lemma could be proven for
+the same table but for different values of indices, which would give
+us a _different_ rewriting principle. However, the datatype family
 [leq_xor_gtn], as it's currently specified, is too "tight" to admit
 other instances than the one provided by the lemma [leqP], thanks to
 the explicit constructors' arguments: [m <= n] and [n < m].%}%
@@ -889,7 +898,6 @@ move/andP.
 
 The top assumption [m <= n < m] of the goal is just a syntactic sugar
 for [(m <= n) && (n < m)]. 
-
 It is time now to make use of our rewriting rule/truth table,
 constructed by means of [leqP].
 
@@ -910,7 +918,7 @@ subgoal 2 (ID 638) is:
 ]]
 
 We would recommend to try stepping this line several times, back and
-forth to see, what is happening. Two goals were generated. Let us
+forth to see, what is happening. Two goals were generated, so let us
 focus on the first one, as the second one will proceed by
 analogy. Case-analysing on the statement of the lemma [eqP] resulted
 in two different "options", as one would expect from the shape of the
@@ -979,44 +987,32 @@ case: leqP=>//.
    m < n -> n <= n /\ m <= n
 ]]
 
-The res of the proof employs some trivial lemmas from [ssrnat],
+The res of the proof employs rewriting by some trivial lemmas from [ssrnat],
 %\ssrm{ssrnat}% but conceptually is very easy.
 
 *)
 
-move=>H; split; first by apply:leqnn.
+move=>H; split.
+by apply: leqnn.
 by rewrite ltn_neqAle in H; case/andP: H.
 Qed.
 
 (** 
 
 The key advantage we got out of using the custom rewriting rule,
-defined as an indexed datatype family is lifting the need to prove
-_by induction_ a statement, which one would intuitively prove by means
-of _case analysis_. In fact, al inductive reasoning was conveniently
-"sealed" by the proof of [leqP] and the lemmas it made use of, so the
-just the tailored "truth table"-like interface for case analysis was
-given to the client.
+defined as an indexed datatype family is lifting the need to prove _by
+induction_ a statement, which one would intuitively prove by means of
+_case analysis_. In fact, all inductive reasoning was conveniently
+"sealed" by the proof of [leqP] and the lemmas it made use of, so just
+the tailored "truth table"-like interface for case analysis was given
+to the client.
 
-We invite the reader to exercise in using the custom rewriting rule by
-proving a series of properties of [maxn].
+We invite the reader to exercise in using the custom rewriting rules
+by proving a series of properties of [maxn].
 
 %\begin{exercise}\label{ex:maxn-props}% 
 
 Prove the following lemmas about [maxn].
-
-%\hint% It might be useful to employ the lemmas [ltnNge], [leqNgt],
- [ltnS] and similar to them from SSReflect's [ssrnat] %\ssrm{ssrnat}%
- module. Use the [Search] command to find propositions that might help
- you to deal with the goal.
-
-%\hint% Forward-style reasoning via [suff] and [have] might be more
- intuitive.
-
-%\hint% A hypothesis of the shape [H: n < m] is a syntactic sugar for
- [H: n < m = true], since [n < m] in fact has type [bool], as will be
- explained in %Chapter~\ref{ch:boolrefl}%.
-
 
 *)
 
@@ -1053,13 +1049,26 @@ Qed.
 (* end hide *)
 
 (** 
+%\hint% It might be useful to employ the lemmas [ltnNge], [leqNgt],
+ [ltnS] and similar to them from SSReflect's [ssrnat] %\ssrm{ssrnat}%
+ module. Use the [Search] command to find propositions that might help
+ you to deal with the goal.
+
+%\hint% Forward-style reasoning via [suff] and [have] might be more
+ intuitive.
+
+%\hint% A hypothesis of the shape [H: n < m] is a syntactic sugar for
+ [H: n < m = true], since [n < m] in fact has type [bool], as will be
+ explained in %Chapter~\ref{ch:boolrefl}%.
+
 %
 \end{exercise}
 %
 
 We conclude this section and the chapter by showing an instance of a
-more sophisticated rewriting rule, which now encodes a three-variant
-truth table for the ordering relations on natural numbers.
+more sophisticated custom rewriting rule, which now encodes a
+three-variant truth table for the ordering relations on natural
+numbers.
 
 %\ssrd{nat\_rels}%
 

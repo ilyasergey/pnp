@@ -21,7 +21,7 @@ Module BoolReflect.
 
 (** 
 
-In %Chapter~\ref{ch:eqrew}% we have seen how custom rewriting rules
+In %Chapter~\ref{ch:eqrew}%, we have seen how custom rewriting rules
 and truth tables can be encoded in Coq using its support for indexed
 datatype families, so they offer great support for constructing the
 proofs by case analysis and rewriting. In this chapter, we will show
@@ -29,15 +29,14 @@ how the custom rewriting machinery can be taken to the whole new level
 and be used to facilitate the reasoning about _computable_ properties
 and predicates. We will consider a series of insights that lead to the
 idea of the _small-scale reflection_, the heart of the SSReflect
-%\index{small-scale reflection|textbf}%
-%\index{reflection|see {small-scale reflection}}%
-framework, which blurs the boundaries between computable predicates
-defined in the sort [Prop] (see %Chapter~\ref{ch:logic}%) and Coq's
-recursive functions returning a result of type [bool] (in the spirit
-of the definitions that we have seen in
-%Chapter~\ref{ch:funprog}%). That said, in the vast number of cases
-these two are just two sides of the same coin and, hence, should be
-treated uniformly, serving to facilitate the reasoning in two
+%\index{small-scale reflection|textbf}% %\index{reflection|see
+{small-scale reflection}}% framework, which blurs the boundaries
+between computable predicates defined in the sort [Prop] (see
+%Chapter~\ref{ch:logic}%) and Coq's recursive functions returning a
+result of type [bool] (in the spirit of the definitions that we have
+seen in %Chapter~\ref{ch:funprog}%). That said, in the vast number of
+cases these two are just two sides of the same coin and, hence, should
+be treated uniformly, serving to facilitate the reasoning in two
 different directions: %\index{reflection|see {small-scale
 reflection}}%
 
