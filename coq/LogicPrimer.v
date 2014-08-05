@@ -66,10 +66,9 @@ defines. Therefore, the process of constructing the proofs of Coq is
 very similar to the process of writing the programs. Intuitively, when
 one asks a question "Whether the proposition [P] is _true_?", what is
 meant in fact is "Whether the _proof_ of [P] can be constructed?" This
-is an unusual twist, which is crucial for understanding the process of
-understanding the concept of "truth" and proving propositions in CIC
-(and, equivalently, in Coq), so we specifically outline it here in the
-form of a motto:
+is an unusual twist, which is crucial for understanding the concept of
+the "truth" and proving propositions in CIC (and, equivalently, in Coq),
+so we specifically outline it here in the form of a motto:
 
 %
 \begin{center}
@@ -110,8 +109,8 @@ to the corresponding second-order logic (which is not even
 propositional, as it quantifies over arbitrary natural values, not
 just propositions). Higher-order logics%~\cite{Church:JSL40}% are
 known to be undecidable in general, and, therefore, there is no
-automatic way to reduce an arbitrary second-order formula to [true] or
-[false].
+automatic way to reduce an arbitrary second-order formula to one of
+the two values: [true] or [false].
 
 CIC as a logic is expressive enough to accommodate propositions with
 quantifications of an arbitrary order and over arbitrary values. On
