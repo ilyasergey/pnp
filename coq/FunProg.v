@@ -758,7 +758,7 @@ possible to find what a particular notation means.
 The arsenal of a functional programmer in Coq would be incomplete
 without proper sum and list datatypes:%\footnote{In SSReflect's
 enhanced library lists are paraphrased as the% [seq] % datatype, which
-is imported from the module% [seq] %}% 
+is imported from the module% [seq].%}% 
 
 %\ssrd{sum}%
 
@@ -787,7 +787,7 @@ Print list.
 
 (**
 [[
-Inductive list (A : Type) : Type := nil : list A | cons : A -> list A -> list A]
+Inductive list (A : Type) : Type := nil : list A | cons : A -> list A -> list A
 ]]
 
 %\begin{exercise}[Fun with lists in Coq]%
@@ -920,11 +920,11 @@ When working with someone's Coq development, sometimes it might be not
 entirely obvious what particular notation means: Coq's extensible
 parser is very simple to abuse by defining completely intractable
 abbreviations, which might say a lot to the library developer, but not
-to its client. Coq provide the %\texttt{Locate}% %\ccom{Locate}% command to
-help in demystifying notations as well as locating the position of
-particular definitions.  For example, the following query will show
-all the definitions of the notation "[_ + _]" as well as the scopes
-they defined in.
+to its client. Coq provides the %\texttt{Locate}% %\ccom{Locate}%
+command to help in demystifying notations as well as locating the
+position of particular definitions.  For example, the following query
+will show all the definitions of the notation "[_ + _]" as well as the
+scopes they defined in.
 
 *)
 
@@ -936,11 +936,9 @@ Notation            Scope
 "x + y" := sum x y   : type_scope
                       
 "m + n" := addn m n  : nat_scope
-                      (default interpretation)
-...
 ]]
 
-We can see now that the plsu-notation is used in particular for the
+We can see now that the plus-notation is used in particular for the
 addition of natural numbers (in [nat_scope]) and the declaration of a
 sum type (in [type_scope]). Similarly to the notations, the
 %\texttt{Locate}% command can help finding the definition in the
@@ -1055,12 +1053,12 @@ system.%\index{sections}\index{modules}%
 
 Sections are the simplest way to structure the programs in Coq. In
 particular, sections allow the programmer to limit the scope of
-packages imported to the current file (each compiled [*.v] file in the
-scope of the interpreter is considered as a package), as well as to
-defined _locally-scoped_ variables. To see how it works, let us
+modules imported to the current file (each compiled %\texttt{.v}% file
+in the scope of the interpreter is considered as a module), as well as
+to defined _locally-scoped_ variables. To see how it works, let us
 construct a section containing an utility function for natural
-numbers.  Declaring a section starts from the keyword [Section],%\ccom{Section}%
-followed by the name of the section:
+numbers.  Declaring a section starts from the keyword
+[Section],%\ccom{Section}% followed by the name of the section:
 
  *)
 
@@ -1081,9 +1079,9 @@ Variable n: nat.
 (** 
 
 We can now define a function, implementing a multiplication of natural
-numbers by mean of addition. For this we assume the variable [n] to be
-fixed, so the multiplication can be formulated just as a function of
-_one_ parameter:
+numbers by means of addition. To do this, we assume the variable [n]
+to be fixed, so the multiplication can be formulated just as a
+function of _one_ parameter:
 
 *)
 
@@ -1104,11 +1102,12 @@ End NatUtilSection.
 (** 
 
 Unlike Haskell or Java's modules, sections in Coq are transparent:
-their internal definitions is visible outside of their bodies, and the
-definitions' names need not be qualified. The same _does not_ apply to
-sections' variables. Instead, they become _parameters_ of definitions
-they happened to be used in. This can be seen by printing the
-implementation of [my_mult] outside of the section [NatUtilSection].
+their internal definitions are visible outside of their bodies, and
+the definitions' names need not be qualified. The same _does not_
+apply to sections' variables. Instead, they become _parameters_ of
+definitions they happened to be used in. This can be seen by printing
+the implementation of [my_mult] outside of the section
+[NatUtilSection].
 
 *)
 
@@ -1140,8 +1139,9 @@ encapsulation, are _modules_. A module, %\ccom{Module}% similarly to a
 section, can contain locally-declared variables, sections and modules
 (but not modules within sections!). However, the internals of a module
 are not implicitly exposed to the outside, instead they should be
-exported explicitly by means of putting them into a submodule and via
-the command [Export]%\ccom{Export}%, just as demonstrated below:
+either referred to by _qualified_ names or exported explicitly by
+means of putting them into a submodule and via the command
+[Export]%\ccom{Export}%, just as demonstrated below:
 
 *)
 
@@ -1158,10 +1158,11 @@ End NatUtilModule.
 
 (**
 
-The submodule [ToExport] creates a synonym [fact] for the function
-[my_fact], defined outside of it. The following command explicitly
-exports all internals of the module [NatUtilModule.ToExport],
-therefore making [fact] visible outside of [NatUtilModule].
+The submodule %\textsc{Exports}% creates a synonym [fact] for the
+function [my_fact], defined outside of it. The following command
+explicitly exports all internals of the module
+%\textsc{NatUtilModule.Exports}%, therefore making [fact] visible
+outside of [NatUtilModule].
 
  *)
 

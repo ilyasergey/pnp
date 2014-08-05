@@ -22,13 +22,13 @@ Module LogicPrimer.
 
 In the previous chapter we had an opportunity to explore Coq as a
 functional programming language and learn how to define inductive
-datatypes and program that operate on them, implementing the later one
-directly or using the automatically-generated recursion
+datatypes and programs that operate with them, implementing the later
+ones directly or using the automatically-generated recursion
 combinators. Importantly, most of the values that we met until this
 moment, inhabited the types, which were defined as elements of the
 sort [Set]. The types [unit], [empty], [nat], [nat * unit] etc. are
 good examples of _first-order_ types inhabiting the sort [Set] and,
-therefore , contributing to the analogy between sets and first-order
+therefore, contributing to the analogy between sets and first-order
 types, which we explored previously.  In this chapter, we will be
 working with a new kind of entities, incorporated by Coq:
 _propositions_.
@@ -40,7 +40,7 @@ In Coq, propositions bear a lot of similarities with types,
 demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
 sort [Prop], similarly to how first-order types inhabit
 [Set].%\footnote{In the Coq community, the datatypes of % [Prop] %
-sort ar usually referred to as \emph{inductive
+sort are usually referred to as \emph{inductive
 predicates}.\index{inductive predicates}}% The "values" that have
 elements of [Prop] as their types are usually referred to as _proofs_
 or _proof terms_, the naming convention which stems out of the ide of
@@ -51,12 +51,14 @@ _proofs-as-programs_, which is truly illuminating when it comes to the
 intuition behind the formal proof construction in Coq, which, in fact,
 is just programming in disguise.
 
-The _Calculus of Inductive Constructions_
 %\index{Calculus of Inductive Constructions}%
 %\index{CIC|see {Calculus~of~Inductive~Constructions}}%
 %\index{Intuitionistic type theory}%
 %\index{Martin-\loef's type theory|see {Intuitionistic type theory}}%
-(CIC)%~\cite{Bertot-Casteran:BOOK,Coquand-Huet:IC88}%, a logical
+%\index{Prop sort@\texttt{Prop} sort}%
+
+The _Calculus of Inductive Constructions_
+(CIC)%~\cite{Bertot-Casteran:BOOK,Coquand-Huet:IC88}% a logical
 foundation of Coq, similarly to its close relative, Martin-%\loef%'s
 _Intuitionistic Type Theory_ %\cite{Martin-Loef:84}%, considers proofs
 to be just regular values of the "programming" language it

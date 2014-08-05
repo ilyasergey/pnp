@@ -42,10 +42,10 @@ latex/%.v.tex: Makefile coq/%.v coq/%.glob
 		$*.v -o ../latex/$*.v.tex
 
 latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib latex/defs.tex 
-	cd latex && pdflatex $(COQNOTES) && pdflatex $(COQNOTES) && bibtex $(COQNOTES) && makeindex $(COQNOTES) && pdflatex $(COQNOTES) && pdflatex $(COQNOTES)
+	cd latex && pdflatex $(COQNOTES) && pdflatex $(COQNOTES) && bibtex $(COQNOTES) -min-crossrefs=99 && makeindex $(COQNOTES) && pdflatex $(COQNOTES) && pdflatex $(COQNOTES)
 
 latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
-	cd latex && pdflatex $* && pdflatex $* && bibtex $* && makeindex $* && pdflatex $* && pdflatex $*
+	cd latex && pdflatex $* && pdflatex $* && bibtex $* -min-crossrefs=99 && makeindex $* && pdflatex $* && pdflatex $*
 
 cleanhtt:
 	cd htt && make clean && cd ..
