@@ -577,8 +577,14 @@ constructing the proof via a script.
 *)
 
 move=> A B C.
-
 (**
+[[
+  A : Prop
+  B : Prop
+  C : Prop
+  ============================
+   (A -> B) -> (B -> C) -> A -> C
+]]
 
 We can now move the three other arguments to the top using the same
 command: the [move=>] combination works uniformly for [forall]-bound
@@ -587,8 +593,14 @@ variables as well as for the propositions on the left of the arrow.
 *)
 
 move=> H1 H2 a.
-
 (**
+[[
+  H1 : A -> B
+  H2 : B -> C
+  a : A
+  ============================
+   C
+]]
 
 Again, there are multiple ways to proceed now. For example, we can
 recall the functional programming and get the result of type [C] just
@@ -609,26 +621,35 @@ tactics.
 Undo.
 
 (**
-
+%\noindent%
 The first use of [apply:] will replace the goal [C] by the goal [B],
 since this is what it takes to get [C] by using [H2]:
 
 *)
 
 apply: H2.
-
 (** 
-
+[[
+  H1 : A -> B
+  a : A
+  ============================
+   B
+]]
+%\noindent%
 The second use of [apply:] reduces the proof of [B] to the proof of
 [A], demanding an appropriate argument for [H1].
 
 *)
 
 apply: H1.
-
 (**
+[[
+  a : A
+  ============================
+   A
+]]
 
-Notice that both calls to apply: removed the appropriate hypotheses,
+Notice that both calls to [apply:] removed the appropriate hypotheses,
 [H1] and [H2] from the assumption context. If one needs a hypothesis
 to stay in the context (to use it twice, for example), then the
 occurrence of the tactic argument hypothesis should be parenthesised:
@@ -636,18 +657,18 @@ occurrence of the tactic argument hypothesis should be parenthesised:
 
 Finally, we can see that the only goal left to prove is to provide a
 proof term of type [A]. Luckily, this is exactly what we have in the
-assumption by the name [a], so the following demonstation of the exact
-[a] finishes the proof:
+assumption by the name [a], so the following demonstration of the
+exact [a] finishes the proof:
 
 *)
 
-exact a.
+exact: a. 
 Qed.
 
 (**
 
 In the future, we will replace the use of trivial tactics, such as
-[exact] by SSReflect's much more powerful tactics [done],%\ssrt{done}% which
+[exact:] by SSReflect's much more powerful tactics [done],%\ssrt{done}% which
 combines a number of standard Coq's tactics in an attempt to finish
 the proof of the current goal and reports an error if it fails to do
 so. 
@@ -663,7 +684,7 @@ distributivity of universal quantification with respect to implication:
 \]
 
 \hint Be careful with the scoping of universally-quantified variables
-and use parenthesis to resolve ambiguities!
+and use parentheses to resolve ambiguities!
 
 \end{exercise}
 %
@@ -685,13 +706,12 @@ Let us check now the actual value of the proof term of theorem
 *)
 
 Print imp_trans. 
-
 (** 
 [[
 imp_trans = 
-fun (A B C : Prop) (H1 : A -> B) (H2 : B -> C) (a : A) =>
-(fun _evar_0_ : B => H2 _evar_0_) ((fun _evar_0_ : A => H1 _evar_0_) a)
-     : forall P Q R : Prop, (P -> Q) -> (Q -> R) -> P -> R
+  fun (A B C : Prop) (H1 : A -> B) (H2 : B -> C) (a : A) =>
+  (fun _evar_0_ : B => H2 _evar_0_) ((fun _evar_0_ : A => H1 _evar_0_) a)
+       : forall P Q R : Prop, (P -> Q) -> (Q -> R) -> P -> R
 
 Argument scopes are [type_scope type_scope type_scope _ _ _]
 ]]
@@ -706,14 +726,15 @@ direct application of [H1] and [H2] is the same (modulo eta-expansion)
 as the proof obtained by means of using the [apply:] tactic.
 
 These two styles of proving: by providing a direct proof to the goal
-or some part of it, and by reducing the goal via tactics, are usually
-referred in the mechanized proof community as _forward_ and _backward_
-proof styles%\index{forward proof style}\index{backward proof style}%.
+or some part of it, and by first reducing the goal via tactics, are
+usually referred in the mechanized proof community as _forward_ and
+_backward_ proof styles%\index{forward proof style}\index{backward
+proof style}%.
 
 - The _backward_ proof style assumes that the goal is being gradually
   transformed by means of applying some tactics, until its proof
   becomes trivial and can be completed by means of a basic tactics,
-  like [exact] or [done].
+  like [exact:] or [done].
 
 - The _forward_ proof style assumes that the human prover has some
   "foresight" with respect to the goal he is going to prove, so she
@@ -725,9 +746,9 @@ proof styles%\index{forward proof style}\index{backward proof style}%.
   lemmas are applied in a concert in order to prove an important
   theorem.
 
-While the standard Coq is very well with a large number of tactics
-that support reasoning in the backward style, it is less convenient
-for the forward-style reasoning. This aspect of the tool is
+While the standard Coq is very well supplied with a large number of
+tactics that support reasoning in the backward style, it is less
+convenient for the forward-style reasoning. This aspect of the tool is
 significantly enhanced by SSReflect, which introduces a small number
 of helping tactics, drastically simplifying the forward proofs, as we
 will see in the subsequent chapters.
@@ -754,38 +775,55 @@ use. We are now in the position to apply it directly, as the current
 goal matches its conclusion. However, let us do something slightly
 different: _move_ the statement of [imp_trans] into the goal,
 simultaneously with specifying it (or, equivalently, partially
-applying) to the assumptions H1 H2. Such move "to the bottom part" in
-SSReflect is implemented by means of the %\ssrtl{:}% [:] tactical,
-following the [move] command:
+applying) to the assumptions [H1] and [H2]. Such move "to the bottom
+part" in SSReflect is implemented by means of the %\ssrtl{:}% [:]
+tactical, following the [move] command:
 
 *)
 
 move: (imp_trans P Q R)=> H.
-
 (** 
+[[
+  H1 : Q -> R
+  H2 : P -> Q
+  H : (P -> Q) -> (Q -> R) -> P -> R
+  ============================
+   P -> R
+]]
 
-What is happened now is a good example of the forward reasoning: the
-specialised version of [(imp_trans P Q R)], namely, [(P -> Q) -> (Q ->
+What has happened now is a good example of the forward reasoning: the
+specialized version of [(imp_trans P Q R)], namely, [(P -> Q) -> (Q ->
 R) -> P -> R], has been moved to the goal, so it became [((P -> Q) ->
 (Q -> R) -> P -> R) -> P -> R]. Immediately after that, the top
-assumption (that is what has been just "pushed" to the goal stack) was
-moved to the top and given the name [H]. Now we have the assumption
-[H] that can be applied in order to reduce the goal.  *)
+assumption (that is, what has been just "pushed" to the goal stack)
+was moved to the top and given the name [H]. Now we have the
+assumption [H] that can be applied in order to reduce the goal.  
+
+*)
 
 apply: H.
-
 (** 
+[[
+  H1 : Q -> R
+  H2 : P -> Q
+  ============================
+   P -> Q
+
+subgoal 2 (ID 142) is:
+ Q -> R
+]]
 
 The proof forked into two goals, since [H] had two arguments, which we
 can now fulfil separately, as they trivially are our assumptions.
 *)
 
-done. done.
+done. 
+done.
 
 (**
 
 The proof is complete, although the last step is somewhat repetitive,
-since we know that for two generated sub-goals the proof is the
+since we know that for two generated sub-goals the proofs are the
 same. In fact, applications of tactics can be _chained_ using the [;]
 %\ssrtl{;}%connective, so the following complete proof of [imp_trans']
 runs [done] for _all_ subgoals generated by [apply:
@@ -806,7 +844,7 @@ created the "massaged" version of [imp_trans], and then moved it as
 [H] to the top, following by [H1] and [H2], which were in the goal
 from the very beginning.
 
-To conclude this section, let us demonstrate the shortest way to prove
+To conclude this section, let us demonstrate even shorter way to prove
 this theorem once again.
 
 *)
@@ -824,7 +862,7 @@ arguments were explicitly instantiated with the local [P], [Q] and
 then automatically solved by the trailing tactical %\ssrtl{//}%[=>
 //], which is equivalent to [;try done] and, informally speaking,
 "tries to kill all the newly created goals".%\footnote{The Coq's
-\texttt{try} tactical tries to execute its tactic argument in a "soft
+\texttt{try}\ssrtl{try} tactical tries to execute its tactic argument in a "soft
 way", that is, not reporting an error if the argument fails.}%
 
 *)
@@ -835,10 +873,10 @@ way", that is, not reporting an error if the argument fails.}%
 Two main logical connectives, conjunction and disjunction, are
 implemented in Coq as simple inductive predicates in the sort
 [Prop]. In order to avoid some clutter, from this moment and till the
-end of the chapter let us start a section and assume a number of
-propositional variables in it (as we remember, those will be
-abstracted over outside of the sections in the statements
-they%\ccom{Variables}% happened to occur).
+end of the chapter let us start a new module [Connectives] and assume
+a number of propositional variables in it (as we remember, those will
+be abstracted over outside of the module in the statements
+they%\ccom{Variables}% happen to occur).
 
 *)
 
@@ -872,10 +910,11 @@ For and: Argument scopes are [type_scope type_scope]
 For conj: Argument scopes are [type_scope type_scope _ _]
 ]]
 
-Proving a conjunction of [P] and [Q] therefore amounts to a pair by
-invoking the constructor [conj] and providing values of [P] and [Q] as
-its arguments:%\footnote{The command \texttt{Goal}\ccom{Goal} creates an
-anonymous theorem and initiates the interactive proof mode.}%
+Proving a conjunction of [P] and [Q] therefore amounts to constructing
+a pair by invoking the constructor [conj] and providing values of [P]
+and [Q] as its arguments:%\footnote{The command
+\texttt{Goal}\ccom{Goal} creates an anonymous theorem and initiates
+the interactive proof mode.}%
 
 *)
 
@@ -884,9 +923,10 @@ move=> p r.
 
 (** 
 
-The proof can be completed in several way. The most familiar one is to
-apply the constructor [conj] directly. It will create two subgoals,
-[P] and [Q] (which are the constructor arguments), that can be immediately discharged.
+The proof can be completed in several ways. The most familiar one is
+to apply the constructor [conj] directly. It will create two subgoals,
+[P] and [Q] (which are the constructor arguments), that can be
+immediately discharged.
 
 *)
 
@@ -894,10 +934,10 @@ apply: conj=>//.
 
 (** 
 
-Alternatively, since we know that [and] has just one constructor, we
-can use the generic Coq's [constructor n]%\ttac{constructor}% tactic,
-where [n] is a number of a constructor to be applied (and in this case
-it's [1])
+Alternatively, since we now know that [and] has just one constructor,
+we can use the generic Coq's [constructor n]%\ttac{constructor}%
+tactic, where [n] is an (optional) number of a constructor to be
+applied (and in this case it's [1])
 
 *)
 
@@ -917,8 +957,8 @@ Qed.
 (** 
 
 In order to prove something out of a conjunction, one needs to
-_destruct_ its constructor, and the simplest way to do so is by the
-[case]-analysis on a single constructor.
+_destruct_ it to get its constructor's arguments, and the simplest way
+to do so is by the [case]-analysis on a single constructor.
 
 *)
 
@@ -995,7 +1035,7 @@ goal completes, similarly to the trailing [done]. If the sequence of
 tactics [left; right] wouldn't prove the goal, a proof script error
 would be reported.
 
-The statements that have disjunction as their assumption are usually
+The statements that have a disjunction as their assumption are usually
 proved by case analysis on the two possible disjunction's
 constructors:
 
@@ -1007,7 +1047,7 @@ case=>x.
 (** 
 
 Notice how the case analysis via the SSReflect's [case] tactic was
-combined here with the trailing [=>]. This resulted in moving the
+combined here with the trailing [=>]. It resulted in moving the
 constructor parameter in _each_ of the subgoals from the goal
 assumptions to the assumption context. The types of [x] are different
 in the two branches of the proof, though. In the first branch, [x] has
@@ -1050,18 +1090,19 @@ Qed.
 (**
 
 It is worth noticing that the definition of disjunction in Coq is
-_constructive_, whereas the disjunction in classical logic is
-not. More precisely, in classical logic the proof of the proposition
-[P \/ ~ P] is true by the axiom of the excluded middle (see
-%Section~\ref{sec:axioms}% for a more detailed discussion), whereas in
-Coq, proving [P \/ ~ P] would amount to _constructing_ the proof of
-either [P] or [~ P]. Let us illustrate it with a specific example. If
-[P] is a proposition stating that [P = NP], then the classical logic's
-the tautology [P \/ ~ P] holds, although it does not contribute to the
-proof of either of the disjuncts. In constructive logic, which Coq is
-an implementation of, in the trivial assumptions given the proof of [P
-\/ ~ P], we would be able to extract the proof of either [P] or
-[~P].%\footnote{Therefore, winning us the Clay Institute's award.}%
+_constructive_, whereas the disjunction in the classical propositional
+logic is not. More precisely, in classical logic the proof of the
+proposition [P \/ ~ P] is true by the axiom of the excluded middle
+(see %Section~\ref{sec:axioms}% for a more detailed discussion),
+whereas in Coq, proving [P \/ ~ P] would amount to _constructing_ the
+proof of either [P] or [~ P]. Let us illustrate it with a specific
+example. If [P] is a proposition stating that [P = NP], then the
+classical logic's the tautology [P \/ ~ P] holds, although it does not
+contribute to the proof of either of the disjuncts. In constructive
+logic, which Coq is an implementation of, in the trivial assumptions
+given the proof of [P \/ ~ P], we would be able to extract the proof
+of either [P] or [~P].%\footnote{Therefore, winning us the Clay
+Institute's award.}%
 
 *)
 
@@ -1080,11 +1121,10 @@ Locate "~ _".
 *)
 
 Print not.
-
 (** 
 [[
-not = fun A : Prop => A -> False
-     : Prop -> Prop
+  not = fun A : Prop => A -> False
+       : Prop -> Prop
 ]]
 
 Therefore, the negation [not] on propositions from [Prop] is just a
@@ -1105,7 +1145,7 @@ as demonstrated by the following theorem, which states that from any
 *)
 
 Theorem absurd: P -> ~P -> Q. 
-Proof. by move=>p H; move:(H p). Qed.
+Proof. by move=>p H; move : (H p). Qed.
 
 (** 
 
@@ -1122,8 +1162,13 @@ Theorem contraP: (P -> Q) -> ~Q -> ~P.
 Proof.
 move=> H Hq. 
 move /H.
-
 (**
+[[
+  H : P -> Q
+  Hq : ~ Q
+  ============================
+   Q -> False
+]]
 
 The syntax [move / H] (spaces in between are optional) stands for one
 of the most powerful features of SSReflect, called _views_ (see
@@ -1148,7 +1193,7 @@ Qed.
 (** * Existential quantification
 %\label{sec:exists}%
 
-Existential quantification in Coq, which is denoted by a notation
+Existential quantification in Coq, which is denoted by the notation
 "[exists x, P x]" is just yet another inductive predicate with exactly
 one constructor:
 
@@ -1221,9 +1266,7 @@ Theorem ex_imp_ex A (S T: A -> Prop):
 
 The parentheses are important here, otherwise, for instance, the scope
 of the first existentially-quantified variable [a] would be the whole
-subsequent statement, not just [S a].
-
-remove printing exists
+subsequent statement, not just the proposition _S a_.
 
 *)
 
@@ -1234,9 +1277,20 @@ and the proposition [Hst], and also store the universally-quantified
 implication assumption with the name [Hst]. *)
 
 case=>a Hs Hst.
-
-(** Next, we apply the [ex]'s constructor by means of the [exists]
-tactic with an explicit witness value [a]: *)
+(** 
+[[
+  A : Type
+  S : A -> Prop
+  T : A -> Prop
+  a : A
+  Hs : S a
+  Hst : forall x : A, S x -> T x
+  ============================
+   exists b : A, T b
+]]
+Next, we apply the [ex]'s constructor by means of the [exists]
+tactic with an explicit witness value [a]: 
+*)
 
 exists a.
 
@@ -1290,7 +1344,7 @@ Qed.
 Sometimes, the universal and the existential quantifications are
 paraphrased as "infinitary" conjunction and disjunction
 correspondingly. This analogy comes in handy when understanding the
-properties of both quantifications, so let us elabore on it for a little bit.
+properties of both quantifications, so let us elabore on it for a bit.
 
 In order to prove the conjunction [P1 /\ ... /\ Pn], one needs to
 establish that _all_ propositions [P1 ... Pn] hold, which in the
