@@ -23,7 +23,7 @@ Module BoolReflect.
 
 In %Chapter~\ref{ch:eqrew}%, we have seen how custom rewriting rules
 and truth tables can be encoded in Coq using its support for indexed
-datatype families, so they offer great support for constructing the
+datatype families, so they are of great help for constructing the
 proofs by case analysis and rewriting. In this chapter, we will show
 how the custom rewriting machinery can be taken to the whole new level
 and be used to facilitate the reasoning about _computable_ properties
@@ -35,7 +35,7 @@ between computable predicates defined in the sort [Prop] (see
 %Chapter~\ref{ch:logic}%) and Coq's recursive functions returning a
 result of type [bool] (in the spirit of the definitions that we have
 seen in %Chapter~\ref{ch:funprog}%). That said, in the vast number of
-cases these two are just two sides of the same coin and, hence, should
+cases these two are just the sides of the same coin and, hence, should
 be treated uniformly, serving to facilitate the reasoning in two
 different directions: %\index{reflection|see {small-scale
 reflection}}%
@@ -58,12 +58,12 @@ constructors of datatypes defined in [Prop]) and by means of mere
 computation (i.e., with [bool]-returning function). These two ways,
 therefore, serve as each other's "reflections" and, moreover, both are
 implemented within the same system, without the need to appeal to
-Coq's meta-object protocol,%\footnote{In contrast, reflection in Java,
-Python or Ruby actually does appeal to the meta-object protocol, e.g.,
-\index{meta-object protocol} the structure of the classes, which lies
-beyond the formally defined semantics of the language itself and,
-hence, allow one to modify the program's behaviour at runtime.}% which
-makes this reflection _small_scale_.
+Coq's meta-object protocol,%\footnote{In contrast, reflection
+mechanism in Java, Python or Ruby actually does appeal to the
+meta-object protocol, e.g., \index{meta-object protocol} the structure
+of the classes, which lies beyond the formally defined semantics of
+the language itself and, hence, allows one to modify the program's
+behaviour at runtime.}% which makes this reflection _small-scale_.
 
 Unfortunately, the proper explanation of the implementation of the
 reflection mechanism between [Prop] and [bool] in SSReflect strongly
@@ -166,7 +166,7 @@ by move=>P Q R p H /(H p).
 (**
 
 In fact, this prove can be shortened even further by using the view
-notation for the _top_ assumption:
+notation for the _top_ assumption (denoted using the underscore):
 
 *)
 
@@ -185,7 +185,7 @@ is trivially provable.
 
 It is also possible to use views in combination with the [case]
 tactics, which first performs the "view switch" via the view lemma
-provided and then case-analyses on the result, as, demonstrated by the
+provided and then case-analysed on the result, as demonstrated by the
 following proof script:
 
 *)
@@ -200,7 +200,7 @@ Qed.
 
 What is happened is that the combined tactic [case/H] first switched
 the top assumption of the goal from [P] to [Q /\ R] and then
-case-analyses on it, which gave the proof of [R] right away, allowing
+case-analysed on it, which gave the proof of [R] right away, allowing
 us to conclude the proof.
 
 ** Using views with equivalences
@@ -231,11 +231,11 @@ Qed.
 
 ** Declaring view hints
 
-Let us get back to the example from %Section~\ref{seq:viewseq}%, in
-which we have seen how views can deal with equalities. The mentioned
-elaboration, which helped the system to recognize, in which direction
-the double implication hypothesis [STequiv] should have been used, is
-not hard-coded into SSReflect. Instead, it is provided by a flexible
+In the example from %Section~\ref{seq:viewseq}%, we have seen how
+views can deal with equivalences. The mentioned elaboration, which
+helped the system to recognize, in which direction the double
+implication hypothesis [STequiv] should have been used, is not
+hard-coded into SSReflect. Instead, it is provided by a flexible
 mechanism of %\index{view hints}% _view hints_, which allows one to
 specify view lemmas that should be applied _implicitly_ whenever it is
 necessary and can be figured out unambiguously.
@@ -244,7 +244,7 @@ In the case of the proof of the [ST_False] lemma the view hint [iffRL]
 from the included module [ssreflect]%\footnote{Implicit view hints are
 defined by means of \texttt{Hint View}\ccom{Hint View} command, added
 to Coq by SSReflect. See the implementation of the module
-[ssrbool]\ssrm{ssrbool} and Section 9.8 of the Reference
+%[ssrbool]%\ssrm{ssrbool} and Section 9.8 of the Reference
 Manual~\cite{Gontier-al:TR}.}% %\ssrm{ssreflect}% has been "fired" in
 order to adapt the hypothesis [STequiv], so the adapted variant could
 be applied as a view lemma to the argument of type [S (a || b)].
@@ -254,6 +254,10 @@ be applied as a view lemma to the argument of type [S (a || b)].
 Check iffRL.
 
 (** 
+[[
+iffRL
+     : forall P Q : Prop, (P <-> Q) -> Q -> P
+]]
 
 The type of [iffRL] reveals that what it does is simply switching the
 equivalence to the implication, which works right-to-left, as captured
@@ -272,7 +276,7 @@ Qed.
 (**
 
 The view switch on the second line of the proof is what has been done
-automatically in the previous case: the implicit view [iffRL] has been
+implicitly in the previous case: the implicit view [iffRL] has been
 applied to the call of [STequiv], which was in its turn supplied the
 necessary arguments [a] and [b], inferred by the system from the goal,
 so the type of [(STequiv a b)] would match the parameter type of
@@ -294,8 +298,8 @@ discuss in %Section~\ref{sec:reflect}%.
 Similarly to how they are used for _assumptions_, views can be used to
 interpret the goal by means of combining the Coq's standard [apply]
 and [exact] tactics with the view tactical%~\texttt{/}%. In the case
-is [H] is a view lemma, which is just an implication [P -> Q], where
-[Q] is the statement of the goal, the enhanced tactic [apply/ P] will
+if [H] is a view lemma, which is just an implication [P -> Q], where
+[Q] is the statement of the goal, the enhanced tactic [apply/ H] will
 work exactly as the standard SSReflect's [apply:], that is, it will
 replace the goal [Q] with [H]'s assumption [P] to prove.
 
@@ -314,10 +318,11 @@ Qed.
 
 (** 
 
-The view switch on the goal by via [apply/STequiv] changes the goal
-from [S ((negb a) || a)] to [T (negb a)], so the rest of the proof
-becomes trivial. Again, notice that the system managed to infer the
-right arguments for the [STequiv] hypothesis by analysing the goal.
+The view switch on the goal via [apply/STequiv] immediately changed
+the goal from [S ((negb a) || a)] to [T (negb a)], so the rest of the
+proof becomes trivial. Again, notice that the system managed to infer
+the right arguments for the [STequiv] hypothesis by analysing the
+goal.
 
 Now, if we print the body of [TS_neg] (we can do it since it has been
 defined via [Definition] rather than [Theorem]), we will be able to
@@ -346,7 +351,7 @@ TS_neg =
 %\label{sec:propbool}%
 
 As we have already explored in the previous chapters, in CIC, the
-logical foundation of Coq there is a number of important distinction
+logical foundation of Coq, there is a number of important distinction
 between logical propositions and boolean values. There is an infinite
 number of ways to represent different propositions in the sort [Prop]
 by means of defining the datatypes. In contrast, the type [bool] is
@@ -354,7 +359,7 @@ represented just by two values: [true] and [false]. Moreover, as it
 was discussed in %Chapter~\ref{ch:logic}%, in Coq only those
 propositions are considered to be _true_, whose proof term can be
 constructed. And, of course, there is no such thing as a "proof term
-of [true]", as [true] is simply a value. 
+of [true]", as [true] is simply a value.
 
 A more interesting question, though, is for which propositions [P] the
 proofs can be computed _automatically_ by means of running a program,
