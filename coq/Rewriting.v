@@ -138,13 +138,13 @@ duplication is that SSReflect provides a specific treatment of Coq's
 standard equality predicate, so the case-analysis on its instances is
 completely superseded by the powerful [rewrite] tactics, which we will
 see in %Section~\ref{sec:rewriting}% of this chapter. Alas, this
-special treatment also leads to a non-standard behavior of
+special treatment also leads to a non-standard behaviour of
 case-analysis on equality. This is why, for didactical purposes, we
 will have to stick with or own home-brewed definition until the end of
 this section.
 
 Let us now prove some interesting properties of the freshly-defined
-equalitiy. We start with symmetry of [===] by formulating the
+equality. We start with symmetry of [===] by formulating the
 following lemma:%\footnote{The Coq's command \texttt{Lemma} is
 identical to \texttt{Theorem}.\ccom{Lemma}}%
 

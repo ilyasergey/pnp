@@ -1614,7 +1614,7 @@ proven to contain no paradoxes%~\cite{Girard:PhD}%, as it reasons only
 about _types_ (or, _propositions_), which do not depend on
 values. However, adding dependent types to the mix (which Coq requires
 to make propositions quantify over arbitrary values, not just other
-propositions, serivng as a general-purpose logic) makes the design of
+propositions, serving as a general-purpose logic) makes the design of
 a calculus more complicated, in order to avoid paradoxes akin to the
 Russels', which arise from mixing values and sets of values. This
 necessity to "cut the knot" inevitably requires to have a sort of a

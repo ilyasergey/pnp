@@ -24,7 +24,7 @@ Module SsrStyle.
 In the previous chapters of this course, we have made an acquaintance
 with the main concepts of constructive logic, Coq and
 SSReflect. However, the proofs we have seen so far are mostly done by
-case analysys, application of hypotheses and various forms of
+case analysis, application of hypotheses and various forms of
 rewriting. In this chapter we will consider in more details the proofs
 that employ inductive reasoning as their main component. We will see
 how such proofs are typically structured in SSReflect, so the
@@ -47,7 +47,7 @@ Require Import ssreflect ssrbool ssrnat eqtype.
 
 An important part of the proof process is keeping to an established
 proof layout, which helps to maintain the proofs readable and restore
-the intuition dribing the prover's hand.  SSReflect offers a number of
+the intuition driving the prover's hand.  SSReflect offers a number of
 syntactic primitives that help to maintain such a layout, and in this
 section we give a short overview of them. As usual, the SSReflect
 reference manual%~\cite{Gontier-al:TR}% (Chapter 6) provides an
@@ -168,13 +168,13 @@ times as possible, as long as new goals are generated or no more goals
 is left to prove.%\footnote{Be careful, though, as such proof script
 might never terminate if more and more new goals will be generated
 after each application of the iterated tactic. That said, while Coq
-itselfs enjoys the strong normalization property (i.e., the programs
-in it always \index{strong normalization} terminate), its tactic
+itself enjoys the strong normalization property (i.e., the programs in
+it always \index{strong normalization} terminate), its tactic
 meta-language is genuinely Turing-complete, so the tactics, while
 constructing Coq programs/proofs, might never in fact
-terminate. Specifying the behavior of tactics and their possible
+terminate. Specifying the behaviour of tactics and their possible
 effects (including non-termination and failures) is a topic of an
-ungoing active
+ongoing active
 research~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10}.}% The
 [do]-tactical can be also combined with the [[|...|]] tactical, so it
 will try to apply all of the enumerated tactics as alternatives. The
@@ -588,7 +588,7 @@ move=>n Hn.
    forall n0 : nat, n0 <= n.+1 -> evenb n0 -> evenb m -> evenb (n0 + m)
 ]]
 
-And then perform the case-analysis on [n0] in the goal, which results
+We then perform the case-analysis on [n0] in the goal, which results
 in two goals, one of which is automatically discharged.
 
 *)
@@ -956,7 +956,7 @@ to Coq comes with an impressive number of libraries for reasoning
 about the large collection of discrete datatypes and structures,
 including but not limited to booleans, natural numbers, sequences,
 finite functions and sets, graphs, algebras, matrices, permutations
-etc. As discussed in this and prevous chapters, all these libraries
+etc. As discussed in this and previous chapters, all these libraries
 give preference to the computable functions rather than inductive
 predicates and leverage the reasoning via rewriting by equality. They
 also introduce a lot of notations that are worth being re-used in
@@ -988,7 +988,7 @@ Proof. by case. Qed.
 
 (** 
 
-In the first case, we had progressivly decompose binary
+In the first case, we had progressively decompose binary
 right-associated conjunctions, which was done by means of the _product
 naming_ pattern [[...]],%\footnote{The same introduction pattern works
 in fact for \emph{any} product type with one constructor, e.g., the
@@ -1055,7 +1055,7 @@ Coq's canonical structures, which is a topic of
 
 ** Libraries for lists and finite sets
 
-Lists, being one of the most basic inductive datatypes, are ususally a
+Lists, being one of the most basic inductive datatypes, are usually a
 subject of a lot of exercises for the fresh Coq hackers. SSReflect's
 modules [seq] %\ssrm{seq}% collect a number of the most commonly used
 procedures on lists and their properties, as well as some non-standard

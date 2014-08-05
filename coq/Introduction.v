@@ -58,12 +58,12 @@ provide a demonstration how the concepts familiar from the mainstream
 programming languages and serving as parts of good programming
 practices can provide illuminating insights about the nature of
 reasoning in Coq's logical foundations and make it possible to reduce
-the burden of mechanical theorem proving. These insighsts will
+the burden of mechanical theorem proving. These insights will
 eventually give the reader a freedom to focus solely on the
 _essential_ part of the formal development instead of fighting with a
 proof assistant in futile attempts to encode the "obvious"
 mathematical intuition---a reason that made many of the new-comers
-abandon their attempts to apply the machine-assisted appropach for
+abandon their attempts to apply the machine-assisted approach for
 formal reasoning as an everyday practice.
 
 * Why yet another course on Coq?
@@ -311,7 +311,7 @@ provided below.
 - Windows users are encouraged to use Pierre-Yves Strub's installer
   with the Coq bundle,%\footnote{Available from
   \url{http://pierre-yves.strub.nu/}.}% which already contains all the
-  necessary components including Coq v8.4pl2, SSreflect v1.4 and Emacs
+  necessary components including Coq v8.4pl2, SSReflect v1.4 and Emacs
   with Proof General installed.
 
 - Linux and Mac OS X users can compile Coq 8.4 and SSReflect from
