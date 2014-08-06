@@ -300,7 +300,7 @@ downloaded from the following URL.
 \end{center}
 %
 
-** Installing Coq, SSReflect and HTT libraries
+** Installing Coq and SSReflect
 
 The sources of this manuscript have been compiled and tested with Coq
 version 8.4 and SSReflect version 1.4. It is not guaranteed that the
