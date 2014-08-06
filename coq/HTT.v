@@ -1263,33 +1263,35 @@ expression being defined to have a type, whose some components haven't
 yet been type-checked and remain to be filled by the programmer,
 similarly to Agda's %\index{Agda}% incremental
 development%~\cite{Sozeau:TYPES06}%. That is, basing on the expression
-itself ([Do (x ::= v)]), Coq will infer the most general type that the
-expression can be allowed to have, and then it becomes a programmer's
-_obligation_ to show that the declared type is actually a
+itself ([Do (x ::= v)]), Coq will infer _the most general type_ that
+the expression can be allowed to have, and then it becomes a
+programmer's _obligation_ to show that the declared type is actually a
 specialization of the inferred type. In the context of the Hoare
-theory the type, inferred by Coq based on the definition can be seen
+theory, the type, inferred by Coq based on the definition can be seen
 as a specification with the _weakest pre_ and _strongest
 postconditions_, which can be then weakened via the %\Rule{Conseq}%
 rule. The program itself is wrapped into the [Do]-notation, which is
-%\httn{Do}% provided by the HTT library and indicates that the
-computations inside always deal with the [STsep] type, similar to the
-Haskell's treatment of [do]-notation.
+provided by the HTT library and indicates that the computations inside
+always deal with the [STsep] type, similar to the Haskell's treatment
+of [do]-notation.
+
+%\httn{Do}%
 
 The type of the program [alter_x] is specified explicitly via the
 [STsep]-notation. There are two logical variables: the value of the
-[y] and the value [Y] of type [n], which is referenced by [y].  The
+[y] and the value [Y] of type [n], which is referenced by [y]. The
 precondition states the existence of some type [B] and value [w], such
-that [x] points to it. The postcondition states that the result is of
-type [unit] (and, therefore, is unconstrained), and the content of the
-pointer [x] became [v], which the content of the pointer [y] remained
-unchanged. Notice that we make explicit use of the PCM notation
-(%Section~\ref{sec:pcms}%) for the empty heap, which is paraphrased as
-[Unit] and for the disjoint union of heaps, which is expressed through
-the join operator [\+]. 
+that [x] points to it. The postcondition specifies that the result is
+of type [unit] (and, therefore, is unconstrained), and the content of
+the pointer [x] became [v], which the content of the pointer [y]
+remained unchanged. Notice that we make explicit use of the PCM
+notation (%Section~\ref{sec:pcms}%) for the empty heap, which is
+paraphrased as [Unit] and for the disjoint union of heaps, which is
+expressed through the join operator [\+].
 
-After stating the definition, Coq generates a series
-of obligations to prove in order to establish the defined program
-well-typed with respect to the stated type.
+After stating the definition, Coq generates a series of obligations to
+prove in order to establish the defined program well-typed with
+respect to the stated type.
 
 [[
 alter_x has type-checked, generating 1 obligation(s)
