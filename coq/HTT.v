@@ -125,26 +125,26 @@ other facts.
 
 The first attempts to specify the behaviour of a state-manipulating
 imperative program with assignments originate in late '60s and are due
-to Tony Hoare%~\cite{Hoare:CACM69}%, who considered programs in a
-simple imperative language with mutable variables (but without
-pointers or procedures) and suggested to give a specification to a
-program $c$ in the form of the triple $\spec{P}~c~\spec{Q}$, where $P$
-and $Q$ are logical propositions, describing the values of the mutable
-programs and possible relations between them. $P$ and $Q$ are usually
-%\index{assertions}% referred to as _assertions_; more specifically,
-$P$ is called %\index{precondition}\index{postcondition}%
-_precondition_ of $c$ (or just "pre"), whereas $Q$ is called
-_postcondition_ (or simply "post"). The triple $\spec{P}~c~\spec{Q}$
-is traditionally referred to as _Hoare triple_.%\index{Hoare
-triple}%%\footnote{The initial syntax for the triples by Hoare, was
-$\specK{P}~\set{c}~\specK{Q}$. The notation $\spec{P}~c~\spec{Q}$,
-which is now used consistently is due to Wirth and emphasizes the
-comment-like nature of the assertion in the syntax reminiscent to the
-one of Pascal.}% Its intuitive semantics can be expressed as follows:
-%\label{pg:triple}% "if right before the program $c$ is executed
-the state of mutable variables is described by a proposition $P$,
-then, _if $c$ terminates_, the resulting state satisfies the
-proposition $Q$".
+to Tony Hoare and Robert Floyd%~\cite{Hoare:CACM69,Floyd:67}%, who
+considered programs in a simple imperative language with mutable
+variables (but without pointers or procedures) and suggested to give a
+specification to a program $c$ in the form of the triple
+$\spec{P}~c~\spec{Q}$, where $P$ and $Q$ are logical propositions,
+describing the values of the mutable programs and possible relations
+between them. $P$ and $Q$ are usually %\index{assertions}% referred to
+as _assertions_; more specifically, $P$ is called
+%\index{precondition}\index{postcondition}% _precondition_ of $c$ (or
+just "pre"), whereas $Q$ is called _postcondition_ (or simply
+"post"). The triple $\spec{P}~c~\spec{Q}$ is traditionally referred to
+as _Hoare triple_.%\index{Hoare triple}%%\footnote{The initial syntax
+for the triples by Hoare, was $\specK{P}~\set{c}~\specK{Q}$. The
+notation $\spec{P}~c~\spec{Q}$, which is now used consistently is due
+to Wirth and emphasizes the comment-like nature of the assertion in
+the syntax reminiscent to the one of Pascal.}% Its intuitive semantics
+can be expressed as follows: %\label{pg:triple}% "if right before the
+program $c$ is executed the state of mutable variables is described by
+a proposition $P$, then, _if $c$ terminates_, the resulting state
+satisfies the proposition $Q$".
 
 The reservation on termination of the program $c$ is important. In
 fact, while the Hoare triples in their simple form make sense only for
