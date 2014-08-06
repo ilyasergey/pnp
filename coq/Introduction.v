@@ -123,13 +123,13 @@ Coq%~\cite{Gontier-al:TR}%:
 
 - Instead of supplying the reader with a large vocabulary of tactics
   necessary for everyday Coq hacking, this course focuses on a _very
-  small_ but powerful and _complete_ set (of about a dozen) of proof
-  constructing primitives, supplied by SSReflect or inherited from the
-  vanilla Coq with notable enhancements.
+  small_ but powerful and _complete_ set of proof constructing
+  primitives (of about a dozen in total), supplied by SSReflect or
+  inherited from the vanilla Coq with notable enhancements.
 
 - This course advocates inductive types' _parameters_ as an
   alternative to _indices_ as a way of reasoning about explicit
-  equalities.
+  equalities in datatypes with constraints.
 
 - The reasoning by rewriting is first presented from the perspective
   of Coq's definition of the propositional equality and followed by
