@@ -2030,7 +2030,7 @@ appreciated as an important aspect in the design and reasoning about
 programming
 languages%~\cite{Aydemir-al:POPL08,Weirich-al:ICFP11,Chargueraud:JAR12}%. We
 believe, these are the reason why this approach is typically chosen as
-a preferable one when teaching program specification verification in
+a preferable one when teaching program specification and verification in
 Coq%~\cite{Pierce-al:SF}%.
 
 Importantly, deep embedding gives the programming language implementor
@@ -2285,6 +2285,8 @@ Qed.
 We can finally define and specify the HTT procedure [remove], which
 returns the current head of the list and returns the pointer to its
 next element (or [null]) if the list is empty.
+
+%\newpage%
 
 *)
 
