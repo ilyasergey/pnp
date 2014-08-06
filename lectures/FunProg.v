@@ -308,8 +308,30 @@ TODO: more exercises
 
 - Define a predecessor function
 
-- Dependent function types in Coq (from Coq'Art)
+
+TODO: exercises from Chapte 6 for Coq'ART
+
+---------------------------------------------------------------------
+%\begin{exercise}%
+
+Write a function that akes a number [n] as an argument... TODO
+
+%\end{exercise}%
+---------------------------------------------------------------------
+
+
+---------------------------------------------------------------------
+%\begin{exercise}%[Functions with dependently-typed result type]
+
+Write a function that has a dependent result type and whose result is
+[true] for natural numbers of the form [4n + 1], [false] for numbers
+of the form [4n + 3] and [n] for numbers of the from [2n].
+
+%\end{exercise}%
+---------------------------------------------------------------------
 
 *)
+
+
 
 End FunProg.
