@@ -260,11 +260,13 @@ The rule %\Rule{Assign}% is in fact an axiom (since it does not assume
 anything, i.e., does not take any arguments), which states that if a
 proposition $Q$ is valid after substituting all occurrences of $x$ in
 it with $e$ (which is denoted by $[e/x]$), then it is a valid
-postcondition for the assignment. The inference rule for sequential
-composition is actually a constructor, which takes the proofs of Hoare
-triples for $c_1$ and $c_2$ and then delivers a composed program $c_1;
-c_2$ _as well as_ the proof for the corresponding Hoare triple,
-ensuring that the postcondition of $c_1$ matches the precondition of $c_2$.
+postcondition for the assignment %\texttt{x := e}%. 
+
+The inference rule for sequential composition is actually a
+constructor, which takes the proofs of Hoare triples for $c_1$ and
+$c_2$ and then delivers a composed program $c_1; c_2$ _as well as_ the
+proof for the corresponding Hoare triple, ensuring that the
+postcondition of $c_1$ matches the precondition of $c_2$.
 %\index{sequential composition}%
 
 %
@@ -299,36 +301,36 @@ postcondition to $Q$, such that $Q'$ implies $Q$.
 \end{mathpar}
 %
 
-With this respect, we can draw the analogy between Hoare triples and
+With this respect, we can make the analogy between Hoare triples and
 function types of the form [A -> B], such that the rule of consequence
 of a Hoare triple corresponds to subtyping of function types, where
 the precondition [P] is analogous to an argument type [A] and the
 postcondition [Q] is analogous to a result type [B]. Similarly to the
 functions with subtyping, Hoare triples are covariant with respect to
-consequence with respect to their postcondition and _contravariant_
-with respect to the argument type%~\cite[Chapter 15]{Pierce:BOOK02}%.
+consequence in their postcondition and _contravariant_ in the
+precondition%~\cite[Chapter 15]{Pierce:BOOK02}%.
 %\index{covariance}\index{contravariance}% This is the reason why,
 when establishing a specification, one should strive to infer the
 _weakest precondition and the strongest postcondition_ to get the
 tightest possible (i.e., the most precise) spec, which can be later
-weakened using the %\Rule{Conseq}% rule. 
+weakened using the %\Rule{Conseq}% rule.
 
 The observed similarity between functions and commands in a Hoare
-logic should serve as a good indicator that, perhaps, it would be a
-good idea to implement the Hoare logic in a form of type
-system. Getting a bit ahead of ourselves, this is exactly what is
-going to happen (as the title of the chapter suggests).
+logic should serve as an indicator that, perhaps, it would be a good
+idea to implement the Hoare logic in a form of a type system. Getting
+a bit ahead of ourselves, this is exactly what is going to happen soon
+in this chapter (as the title of the chapter suggests).
 
-At this point we can already see a simple paper-and-pencil proof of a
+At this point, we can already see a simple paper-and-pencil proof of a
 program that manipulates with mutable variables. In the Hoare logic
 tradition, since most of the programs are typically compositions of
 small programs, the proofs of specifications are written to follow the
 structure of the program, so the first assertion corresponds to the
-overall precondition, the last one is the overall postconditions, and
+overall precondition, the last one is the overall postcondition, and
 the intermediate assertions correspond to $R$ from the rule
-%\Rule{Seq}% modulo weakening via the rule %\Rule{Conseq}%. Let us
-prove the following Hoare-style specification for a program that swaps
-the values of two variables $x$ and $y$.
+%\Rule{Seq}% modulo weakening via the rule of consequence
+%\Rule{Conseq}%. Let us prove the following Hoare-style specification
+for a program that swaps the values of two variables $x$ and $y$.
 
 %
 \begin{alltt}
@@ -336,11 +338,11 @@ the values of two variables $x$ and $y$.
 \end{alltt}
 %
 
-The variables are called _logical_ and are used in order to name
-%\index{logical variables}% unspecified values, which are subject of
-manipulation in the program, and their identity should be
+The variables [a] and [b] are called _logical_ and are used in order
+to name %\index{logical variables}% unspecified values, which are a
+subject of manipulation in the program, and their identity should be
 preserved. The logical variables are implicitly universally quantified
-over in the scope of the whole Hoare triple they appear, but usually
+over in the scope of the _whole_ Hoare triple they appear, but usually
 the quantifiers are omitted, so, in fact, the specification above
 should have been read as follows.
 
@@ -370,7 +372,7 @@ explanations of the rules applied after each assertion.
 %
 
 The list of program constructs and inference rules for them would be
-incomplete without conditional operators.
+incomplete without conditional operators and loops.
 
 %
 \begin{mathpar}
@@ -387,24 +389,24 @@ incomplete without conditional operators.
 %
 
 The inference rule for a conditional statement should be intuitively
-clear and reminds of a typing rule for conditionals in Haskell or
-OCaml, which requires both branches of the statement to have the same
-type (and here, equivalently to satisfy the same postcondition). The
-rule %\Rule{While}% for the loops is more interesting, as it makes use
-of the %\index{loop invariant}% proposition $I$, which is called _loop
-invariant_. Whenever the body of the cycle is entered, the invariant
-should hold (as well as the condition $e$, since the iteration has
-just started). Upon finishing, the body $c$ should restore the
-invariant, so the next iteration would start in a consistent state
-again. Generally, it takes a human prover's intuition to come up with
-a non-trivial resource invariant fo a loop, so it can be used in the
-res of the program. Inference of the best loop invariant is an
-undecidable problem in general and it has a deep relation to type
-inference with polymorphically-recursive
+clear and reminds of a typing rule for conditional expressions in
+Haskell or OCaml, which requires both branches of the statement to
+have the same type (and here, equivalently, to satisfy the same
+postcondition). The rule %\Rule{While}% for the loops is more
+interesting, as it makes use of the %\index{loop invariant}%
+proposition $I$, which is called _loop invariant_. Whenever the body
+of the cycle is entered, the invariant should hold (as well as the
+condition $e$, since the iteration has just started). Upon finishing,
+the body $c$ should restore the invariant, so the next iteration would
+start in a consistent state again. Generally, it takes a human
+prover's intuition to come up with a non-trivial resource invariant
+for a loop, so it can be used in the rest of the program. Inference of
+the best loop invariant is an undecidable problem in general and it
+has a deep relation to type inference with polymorphically-recursive
 functions%~\cite{Henglein:TOPLAS93}%. This should not be very
 surprising, since every loop can be encoded as a recursive function,
-and, since as we have already started guessing, Hoare triples are
-reminiscent to types, automatic inferring of loop invariants
+and, since, as we have already started guessing, Hoare triples are
+reminiscent to types, automatic inferring of loop invariants would
 corresponds to type inference for recursive functions. In the
 subsequent sections we will see examples of looping/recursive programs
 with loop invariants and exercise in establishing some of them.
@@ -419,17 +421,17 @@ semantics as a way to describe the program's behaviour, it is usually
 not the only semantics, which imperative programs are given. In
 particular, it does not say how a program should be executed---a
 question answered by operational
-semantics%~\cite{Winskel:BOOK}%. Rather, Hoare logic allows one to
-make statements about the effect the program takes to the mutable
-state, and, what is more important, construct finite proofs of these
-statements. With this respect, Hoare logic serves the same purpose as
-type systems in many programming languages---determine statically
-(i.e., without _executing_ the program), whether the program is
-well-behave or not. In other words, it serves as an "approximation" of
-another, more low-level semantics of a program, which is also implied
-by the very definition of a hoare triple on
-page%~\pageref{pg:triple}%, which relies to the fact that a program
-can be executed.
+semantics%~\cite[Chapter~2]{Winskel:BOOK}%. Rather, Hoare logic allows
+one to make statements about the effect the program takes to the
+mutable state, and, what is more important, construct finite proofs of
+these statements. With this respect, Hoare logic serves the same
+purpose as type systems in many programming languages---determine
+statically (i.e., without _executing_ the program), whether the
+program is well-behaved or not. In other words, it serves as an
+"approximation" of another, more low-level semantics of a program.
+This intuition is also implied by the very definition of a hoare
+triple on page%~\pageref{pg:triple}%, which relies to the fact that a
+program can be executed.
 
 That said, in order to use a Hoare logic for specifying and verifying
 a program's behaviour, a _soundness_ result should be first
