@@ -42,25 +42,25 @@ proving using the Coq proof assistant.
 The primary audience of this text are the readers with expertise in
 software development and programming and knowledge of discrete
 mathematic disciplines on the level of an undergraduate university
-program. The high-level goal of the course, therefore, is to demonstrate
-how much the rigorous mathematical reasoning and development of robust
-and intellectually manageable programs have in common, and how
-understanding of common programming language concepts provides a solid
-background for building mathematical abstractions and proving theorems
-formally. The low-level goal of this course is to provide an overview
-of the Coq proof assistant, taken in its both incarnations: as an
-expressive functional programming language with dependent types and as
-a proof assistant providing support for mechanized interactive theorem
-proving.
+program. The high-level goal of the course is, therefore, to
+demonstrate how much the rigorous mathematical reasoning and
+development of robust and intellectually manageable programs have in
+common, and how understanding of common programming language concepts
+provides a solid background for building mathematical abstractions and
+proving theorems formally. The low-level goal of this course is to
+provide an overview of the Coq proof assistant, taken in its both
+incarnations: as an expressive functional programming language with
+dependent types and as a proof assistant providing support for
+mechanized interactive theorem proving.
 
-By aiming these these two goals, this manuscript, is thus intended to
+By aiming these these two goals, this manuscript is, thus, intended to
 provide a demonstration how the concepts familiar from the mainstream
 programming languages and serving as parts of good programming
 practices can provide illuminating insights about the nature of
 reasoning in Coq's logical foundations and make it possible to reduce
 the burden of mechanical theorem proving. These insights will
 eventually give the reader a freedom to focus solely on the
-_essential_ part of the formal development instead of fighting with a
+_essential_ part of her formal development instead of fighting with a
 proof assistant in futile attempts to encode the "obvious"
 mathematical intuition---a reason that made many of the new-comers
 abandon their attempts to apply the machine-assisted approach for
@@ -71,7 +71,7 @@ formal reasoning as an everyday practice.
 The Coq proof assistant%~\cite{Coq-manual}% has been in development
 since 1983, and by now there is a number of courses that provide
 excellent introductions into Coq-powered interactive theorem proving
-and software development. Among the others publicly available
+and software development. Among the other publicly available
 manuscripts, the author finds the following three to be the most
 suitable for teaching purposes.
 
@@ -402,6 +402,7 @@ containing Coq and SSReflect's binaries, where %\texttt{ssrcoq}% has
 been previously copied, as it was suggested).
 
 ** Getting HTT sources
+%\label{sec:htt-sources}%
 
 For the examples of Chapter%~\ref{ch:htt}%, the sources of the Hoare
 Type Theory development will be required. The archive <<htt.zip>> with

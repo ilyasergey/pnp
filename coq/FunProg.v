@@ -313,7 +313,7 @@ potentially non-terminating programs and prove some useful facts about
 them%\footnote{Typically, this is done by supplying a user-specific
 termination argument, which "strictly reduces" at each function call,
 or defining a function, so it would take a \emph{co-inductive}
-datatype as its argument.}% (for example, Chapter 7 of Adam Chlipala's
+datatype as its argument.}% (for example, Chapter 7 of the
 book%~\cite{Chlipala:BOOK}% provides a broad overview of methods to
 encode potentially non-terminating programs in Coq and reason about
 them), it usually requires some ingenuity to execute
@@ -541,8 +541,8 @@ In general, dependent pattern matching is quite powerful tool, which,
 however, should be used with a great caution, as it makes assisting
 Coq type checker to be a rather non-trivial task. In the was majority
 of the cases dependent pattern matching can be avoided. We address the
-curious reader to the Chapter 8 of Adam Chlipala's book for more
-examples on the subject%~\cite{Chlipala:BOOK}%.
+curious reader to the Chapter 8 of the book%~\cite{Chlipala:BOOK}% for
+more examples on the subject.
 
 %\index{dependent function type}% Dependent function types, akin to
 those of [nat_rec] and our [sum_no_zero], which allow the type of the

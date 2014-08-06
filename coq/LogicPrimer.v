@@ -1403,13 +1403,12 @@ employed in the _classical_ propositional logic, cannot be encoded in
 Coq in a form of provable statements, and, hence, should be encoded as
 _axioms_.
 
-%\index{classical propositional logic}%
-In this section, we provide a brief and by all means incomplete
-overview of the classical propositional logic axioms that are missing
-in Coq, but can be added by means of importing the appropriate
-libraries. We address the curious reader to %Chapter~12 of Adam
-Chlipala's book~\cite{Chlipala:BOOK}% for a detailed survey of useful
-axioms that can be added into Coq development on top of CIC. 
+%\index{classical propositional logic}% In this section, we provide a
+brief and by all means incomplete overview of the classical
+propositional logic axioms that are missing in Coq, but can be added
+by means of importing the appropriate libraries. %Chapter~12 of the
+book~\cite{Chlipala:BOOK}% contains a detailed survey of useful axioms
+that can be added into Coq development on top of CIC.
 
 To explore some of some of the axioms, we first import that classical
 logic module [Classical_Prop].

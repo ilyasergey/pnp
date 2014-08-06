@@ -902,6 +902,7 @@ means of the predicate [XOR']:
 Definition XOR' (P Q: Prop) := (P /\ ~Q) \/ (~P /\ Q).
 (** 
 %\noindent%
+
 Prove the following equivalence lemma between to versions of [XOR]:
 
 *)
@@ -966,7 +967,7 @@ the following exercise.
 %\begin{exercise}%
 
 Prove the following specialized lemmas for decidable propositions
-represented y booleans:
+represented y booleans (without using the [intuition] tactic):
 
 *)
 
