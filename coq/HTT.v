@@ -125,12 +125,12 @@ other facts.
 * Imperative programs and their specifications
 %\label{sec:imp-spec}%
 
-The first attempts to specify the behaviour of a state-manipulating
-imperative program with assignments originate in late '60s and are due
-to Tony Hoare and Robert Floyd%~\cite{Hoare:CACM69,Floyd:67}%, who
+The first attempts to specify the behaviour of state-manipulating
+imperative programs with assignments originated in late '60s and are
+due to Tony Hoare and Robert Floyd%~\cite{Hoare:CACM69,Floyd:67}%, who
 considered programs in a simple imperative language with mutable
 variables (but without pointers or procedures) and suggested to give a
-specification to a program $c$ in the form of the triple
+specification to a program $c$ in the form of a triple
 $\spec{P}~c~\spec{Q}$, where $P$ and $Q$ are logical propositions,
 describing the values of the mutable variables and possible relations
 between them. $P$ and $Q$ are usually %\index{assertions}% referred to
@@ -140,21 +140,24 @@ just "pre"), whereas $Q$ is called _postcondition_ (or simply
 "post"). The triple $\spec{P}~c~\spec{Q}$ is traditionally referred to
 as _Hoare triple_.%\index{Hoare triple}%%\footnote{The initial syntax
 for the triples by Hoare, was $\specK{P}~\set{c}~\specK{Q}$. The
-notation $\spec{P}~c~\spec{Q}$, which is now used consistently is due
-to Wirth and emphasizes the comment-like nature of the assertion in
-the syntax reminiscent to the one of Pascal.}% Its intuitive semantics
-can be expressed as follows: %\label{pg:triple}% "if right before the
-program $c$ is executed the state of mutable variables is described by
-a proposition $P$, then, _if $c$ terminates_, the resulting state
-satisfies the proposition $Q$".
+notation $\spec{P}~c~\spec{Q}$, which is now used consistently, is due
+to Niklaus Wirth and emphasizes the comment-like nature of the
+assertions in the syntax reminiscent to the one of Pascal.}% Its
+intuitive semantics can be expressed as follows: %\label{pg:triple}%
+"if right before the program $c$ is executed the state of mutable
+variables is described by the proposition $P$, then, _if $c$
+terminates_, the resulting state satisfies the proposition $Q$".
+
+%\index{partial program correctness}%
+%\index{total program correctness}%
 
 The reservation on termination of the program $c$ is important. In
 fact, while the Hoare triples in their simple form make sense only for
 terminating programs, it is possible to specify non-terminating
 programs as well. This is due to the fact that the semantics of a
 Hoare triple implies that a non-terminating program can be given _any_
-postcondition, as one won't be able to check it anyway, as the program
-will never reach the final state.%\footnote{This intuition is
+postcondition, as one won't be able to check it anyway, because the
+program will never reach the final state.%\footnote{This intuition is
 consistent with the one, enforced by Coq's termination checker, which
 allows only terminating programs to be written, since non-terminating
 program can be given any type and therefore compromise the consistency
@@ -176,7 +179,7 @@ resource bounds%~\cite{Dockins-Hobor:DS10}%.
 %\label{sec:hoare-primer}%
 
 The original Hoare logic worked over a very simplistic imperative
-language with cycles, conditional operators and assignments. This is
+language with loops, conditional operators and assignments. This is
 how one can specify a program, which just assigns 3 to a specific
 variable named%~\texttt{x}%:
 %
@@ -186,9 +189,9 @@ variable named%~\texttt{x}%:
 %
 
 That is, the program's precondition doesn't make any specific
-assumptions, which is simply expressed by the proposition $\True$; the
+assumptions, which is expressed by the proposition $\True$; the
 postcondition ensures that the value of a mutable variable
-%\texttt{x}% is equal to three. 
+%\texttt{x}% is equal to three.
 
 The formalism, which allows us to validate particular Hoare triples
 for specific programs is called _program logic_ (or, equivalently,
@@ -207,8 +210,8 @@ of type [A /\ B]), one should have provided a proof of a proposition
 [A] and a proposition [B] and then _apply_ the only conjunction's
 constructor [conj], as described in %Section~\ref{sec:conjdisj}%. The
 logicians, however, prefer to write inference rules as "something with
-a bar". Therefore, an inference rule for conjunction introduction in
-the constructive logic looks as follows:
+a bar", rather than as constructors. Therefore, an inference rule for
+conjunction introduction in the constructive logic looks as follows:
 
 %\index{inference rules|seealso {Hoare/Separation Logic rules}}%
 
@@ -220,11 +223,11 @@ the constructive logic looks as follows:
 \end{mathpar}
 %
 
-That is the rule %\Rule{$\wedge$-Intro}% is just a paraphrase of the
-[conj] constructor, which specifies how an instance of conjunction is
-constructor. Similarly, the disjunction [or] has two inference rules,
-for one constructor each. The elimination rules are converses of the
-introduction rules and formalize the intuition behind the case
+That is, the rule %\Rule{$\wedge$-Intro}% is just a paraphrase of the
+[conj] constructor, which specifies how an instance of conjunction can
+be created. Similarly, the disjunction [or] has two inference rules,
+for each of its constructors. The elimination rules are converses of
+the introduction rules and formalize the intuition behind the case
 analysis. An alternative example of an inference rule for a
 proposition encoded by means of Coq's datatype constructor is the
 definition of the predicate for _beautiful_ numbers [beautiful] from
@@ -233,9 +236,9 @@ an inference rule that, given the proofs that [n'] is beautiful and
 [m'] is beautiful, constructs the proof of the fact that their sum is
 beautiful.%\footnote{Actually, some courses on Coq introduce datatype
 constructors exactly from this perspective---as a programming
-counterpart of the introduction rules for particular kinds of
+counterpart of the introduction rules for particular kinds of logical
 propositions~\cite{Pierce-al:SF}. We came to the same analogy by
-starting from a different and exploring the datatypes in the
+starting from an opposite side and exploring the datatypes in the
 programming perspective first.}%
 
 Hoare logic also suggests a number of axioms and inference rules that
