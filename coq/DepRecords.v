@@ -447,8 +447,8 @@ Definition pcm_struct : mixin_of cT :=
 
 (** 
 
-The function [pcm_struct] simply extracts the PCM structure from the
-"packed" instance. Notice the use of dependent pattern matching
+The function [pcm_struct] extracts the PCM structure from the "packed"
+instance. Notice the use of dependent pattern matching
 %\index{dependent pattern matching}% in the [let:]-statement with the
 explicit [return]-statement, so Coq would be able to refine the result
 of the whole expression basing on the dependent type of the [c]
@@ -649,9 +649,10 @@ Record mixin_of (U : pcm) := Mixin {
 (** 
 
 Notice that the validity of the sum [a \+ c] is not imposed, as it can
-be proven by equality and the validity of [a \+ b].
+be proven from the propositional equality and the validity of [a \+
+b].
 
-We continue the definition by defining the standard packaging data
+We continue the definition by describing the standard packaging data
 structure.
 
 *)
@@ -669,9 +670,9 @@ Notation CancelPCM T m:= (@Pack T m).
 There is a tiny twist in the definition of the specific coercion,
 though, as now we it specifies that the instance of the packed data
 structure, describing the cancellative PCM, can be seen as an instance
-of the underlying PCM. Implied coercions are transitive, which means
-that the same instance can be coerced even further to [U]'s carrier
-type [T].
+of the underlying PCM. The coercions are transitive, which means that
+the same instance can be coerced even further to [U]'s carrier type
+[T].
 
 *)
 
@@ -688,7 +689,7 @@ property.
 Lemma cancel (U: cancel_pcm) (x y z: U): 
   valid (x \+ y) -> x \+ y = x \+ z -> y = z.
 Proof.
-by case: U x y z=>Up [Hc] x y z; apply:Hc.
+by case: U x y z=>Up [Hc] x y z; apply: Hc.
 Qed.
 
 End Exports.
@@ -698,9 +699,9 @@ Export CancelPCM.Exports.
 
 (** 
 
-The proof of following lemma, combining commutativity and
+The proof of the following lemma, combining commutativity and
 cancellativity, demonstrates how the properties of a cancellative PCM
-work in concert with the properties of its base PCM structure.
+work in combination with the properties of its base PCM structure.
 
 *)
 
@@ -725,9 +726,9 @@ later ones to be instances of a PCM.
 ** Defining arbitrary PCM instances
 
 Natural numbers form a PCM, in particular, with addition as a join
-operation and zero as a unit element. The validity predicate is simply
+operation and zero as a unit element. The validity predicate is
 constant true, because the addition of two natural numbers is again a
-valid natural numbers. Therefore, we can instantiate the PCM structure
+valid natural number. Therefore, we can instantiate the PCM structure
 for [nat] as follows, first by constructing the appropriate mixin.
 
 *)
@@ -741,12 +742,12 @@ The constructor [PCMMixin], defined in Section~%\ref{sec:packaging}%
 is invoked with five parameters, all of which correspond to the
 properties, ensured by the PCM definition. The rest of the arguments,
 namely, the validity predicate, the join operation and the zero
-element are soundly inferred by Coq's type inference engine from the
-types of lemmas, provided as propositional arguments. For instance,
-the first argument [addnC], whose type is [commutative addn] makes it
-possible to infer that the join operation is the addition. In the same
-spirit, the third argument, [add0n] makes it unambiguous that the unit
-element is zero.
+element are implicit and are soundly inferred by Coq's type inference
+engine from the types of lemmas, provided as propositional
+arguments. For instance, the first argument [addnC], whose type is
+[commutative addn] makes it possible to infer that the join operation
+is the addition. In the same spirit, the third argument, [add0n] makes
+it unambiguous that the unit element is zero.
 
 After defining the PCM mixin, we can instantiate the PCM packed class
 for [nat] by the following definition:
@@ -757,7 +758,7 @@ Definition NatPCM := PCM nat natPCMMixin.
 
 (** 
 
-This definition will indeed work, although, somewhat
+This definition will indeed work, although, being somewhat
 unsatisfactory. For example, assume we want to prove the following
 lemma for natural numbers treated as elements of a PCM, which should
 trivially follow from the PCM properties of [nat] with addition and
@@ -772,17 +773,19 @@ Lemma add_perm (a b c : nat) : a \+ (b \+ c) = a \+ (c \+ b).
 The term "a" has type "nat" while it is expected to have type "PCMDef.type ?135".
 ]]
 
-This error is due to the fact that Coq is unable to recognise natural
+This error is due to the fact that Coq is unable to recognize natural
 numbers to be elements of the corresponding PCM, and one possible way
 to fix it is to declare the parameters of the lemma [add_perm], [a],
 [b] and [c] to be of type [NatPCM] rather than [nat]. This is still
 awkward: it means that the lemmas cannot be just applied to mere
 natural numbers, instead they need to be _coerced_ to the [NatPCM]
-type whenever we need to apply this lemma. Coq suggests a better
-solution to this problem by providing a mechanism of _canonical
-structures_ %\index{canonical structures}% as a flexible way to
-specify _how exactly_ each concrete datatype should be embedded into
-an abstract mathematical structure%~\cite{Saibi:PhD}%.
+type explicitly whenever we need to apply this lemma. Coq suggests a
+better solution to this problem by providing a mechanism of _canonical
+structures_ as a flexible way to specify _how exactly_ each concrete
+datatype should be embedded into an abstract mathematical
+structure%~\cite{Saibi:PhD}%.
+
+%\index{canonical structures}% 
 
 The Vernacular syntax for defining canonical structures is similar to
 the one of definitions and makes use of the [Canonical]
@@ -816,29 +819,29 @@ number <- sub_sort ( number_subType )
 ...
 ]]
 
-The displayed list specifies, which implicit canonical structures are
+The displayed list specifies, which implicit canonical instances are
 currently available and will be triggered implicitly. That is, for
 example, whenever an instance of [nat] is available, but in fact it
 should be treated as the [type] field of the [PCM] structure (with all
-getters typed properly), the canonical instance [natPCM] should be
-picked for such embedding. In other words, the canonical structures
-machinery allowed us to define the policy for finding an appropriate
-_dictionary_ of functions and propositions for an arbitrary concrete
-datatype, whenever it is supposed to have them. The mechanism of
-defining canonical structures for concrete data types is reminiscent
-to the resolution of type class constraints in
+getters typed properly), the canonical instance [natPCM] will be
+automatically picked by Coq for such embedding. In other words, the
+machinery of canonical structures allows us to define the policy for
+finding an appropriate _dictionary_ of functions and propositions for
+an arbitrary concrete datatype, whenever it is supposed to have
+them. The mechanism of defining canonical structures for concrete data
+types is reminiscent to the resolution of type class constraints in
 Haskell%~\cite{Wadler-Blott:POPL89}%. However, unlike Haskell, where
 the resolution algorithm for type class instances is _hard-coded_, in
 the case of Coq one can actually _program_ the way the canonical
 instances are resolved.%\footnote{In addition to canonical structures,
-Coq also provides mechanism of type classe, which are even more
-similar to the ones from Haskell, and similarly to the later ones do
-not provide a way to program the resolution
+Coq also provides mechanism of type classes, which are even more
+reminiscent to the ones from Haskell, and, similarly to the later
+ones, do not provide a way to program the resolution
 policy~\cite{Sozeau-Oury:TPHOL08}.}% This leads to a very powerful
 technique to automate the process of theorem proving by encoding the
 way to find and apply necessary lemmas, whenever it is required. These
 techniques are, however, outside of the scope of this course, so we
-direct the interested reader to the relevant publications that
+direct the interested reader to the relevant research papers that
 describe the patterns of programming with canonical
 structures%~\cite{Gontier-al:ICFP11,Mahboubi-Tassi:ITP13,Garillot:PhD}%.
 
