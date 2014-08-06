@@ -1310,16 +1310,16 @@ conseq (x ::= v)
 ]]
 
 The statement looks rather convoluted due to a number of type
-definitions and notations use and essentially postulates that from the
-proposition, corresponding to the specification inferred by Coq from
-the program definition, we should be able to prove the specification
-that we have declared explicitly. Instead of explaining each component
-of the goal, we will proceed directly to the proof and will build the
-necessary intuition on demand.
+definitions and notations used and essentially postulates that from
+the proposition, corresponding to the specification inferred by Coq
+from the program definition, we should be able to prove the
+specification that we have declared explicitly. Instead of explaining
+each component of the goal, we will proceed directly to the proof and
+will build the necessary intuition as we go.
 
 The proof mode for each of the remaining obligations is activated by
-Vernacular command [Next Obligation] %\ccom{Next Obligation}%, which
-automatically moves some of the assumptions to the context.
+the Vernacular command [Next Obligation] %\ccom{Next Obligation}%,
+which automatically moves some of the assumptions to the context.
 
 *)
 
@@ -1345,21 +1345,21 @@ Next Obligation.
 
 A usual first step in every HTT proof, which deals with a spec with
 logical variables is to "pull them out", so they would just become
-simple assumptions, allowing one to get rid of the [logvar] and
-[binarify] calls in the goal.%\footnote{In fact, the proper handling
-of the logical variables is surprisingly tricky in a type-based
-encoding, which is what HTT delivers. It is due to the fact that the
-\emph{same} variables can appear in both pre- and
+simple assumptions in the goal, allowing one to get rid of the
+[logvar] and [binarify] calls in the goal.%\footnote{In fact, the
+proper handling of the logical variables is surprisingly tricky in a
+type-based encoding, which is what HTT delivers. It is due to the fact
+that the \emph{same} variables can appear in both pre- and
 postconditions. Earlier implementations of HTT used \emph{binary}
 postconditions for this
 purpose~\cite{Nanevski-al:JFP08,Nanevski-al:POPL10}, which was a cause
-of some code duplication in specifications and made the spec looks
-different from one familiar with the standard hoare logic would
-expect. Current implementation uses an encoding with recursive
-notations to circumvent the duplication problem, This encoding is a
-source of the observed occurrences of %[logvar]% and %[binarify]%
-definitions in the goal.}% This is what is done by applying the lemma
-[ghR] %\httl{ghR}% to the goal.
+of some code duplication in specifications and made the spec look
+differently from those that someone familiar with the standard Hoare
+logic would expect. Current implementation uses an encoding with
+recursive notations to circumvent the code duplication problem. This
+encoding is a source of the observed occurrences of %[logvar]% and
+%[binarify]% definitions in the goal.}% This is what is done by
+applying the lemma [ghR] %\httl{ghR}% to the goal.
 
 *)
 
@@ -1394,18 +1394,20 @@ move=>h1 [y Y][B][w]->{h1} _ /=.
    verify (x :-> w \+ y :-> Y) (x ::= v) [vfun _ h => h = x :-> v \+ y :-> Y]
 ]]
 
+%\httn{verify}%
+
 The resulting goal is stated using the [verify]-notation, which means
-%\httn{verify}% in this particular case that in the heap of the shape
-[x :-> w \+ y :-> Y] we need to be able to prove that the result and
-the produced heap of the command [x ::= v] satisfy the predicate
-[[vfun _ h => h = x :-> v \+ y :-> Y]]. This goal can be proved using
-one of the numerous [verify]-lemmas that HTT provides (try executing
-[Search _ (verify _ _ _)] to see the full list), however in this
-particular case the program and the goal are so simple and are
-obviously correct that the statement can be proved by means of simple
-automation, implemented in HTT by a brute-force tactic [heval], which
-just tries a number of [verify]-lemmas applicable in this case modulo
-the shape of the heap.  %\httt{heval}%
+in this particular case that in the heap of the shape [x :-> w \+ y
+:-> Y] we need to be able to prove that the result and the produced
+heap of the command [x ::= v] satisfy the predicate [[vfun _ h => h =
+x :-> v \+ y :-> Y]]. This goal can be proved using one of the
+numerous [verify]-lemmas that HTT provides (try executing [Search _
+(verify _ _ _)] to see the full list), however in this particular case
+the program and the goal are so simple and are obviously correct that
+the statement can be proved by means of proof automation, implemented
+in HTT by a brute-force tactic [heval], which just tries a number of
+[verify]-lemmas applicable in this case modulo the shape of the heap.
+%\httt{heval}%
 
 *)
 
@@ -1417,14 +1419,14 @@ Qed.
 ** Verifying the factorial procedure mechanically
 %\label{sec:factver}%
 
-Proving a simple assignment for two non-aliased pointer was a simple
-exercise, so we proveed to a more interesting program, which features
-loops and conditional expressions, namely, imperative implementation
-of the factorial function.
+Proving an assignment for two non-aliased pointers was a simple
+exercise, so now we can proceed to a more interesting program, which
+features loops and conditional expressions, namely, imperative
+implementation of the factorial function.
 
 Our specification and verification process will follow precisely the
 story of %Section~\ref{sec:fact-logic}%. We start by defining the
-factorial in the most declarative way---as a recursive pure function
+factorial in the most declarative way---as a pure recursive function
 in Coq itself.
 
 *)
@@ -1446,11 +1448,11 @@ Definition fact_inv (n acc : ptr) (N : nat) h : Prop :=
 
 (** 
 
-To show how Separation logic in general and its particular
+To show how separation logic in general and its particular
 implementation in HTT allow one to build the reasoning
 _compositionally_ (i.e., by building the proofs about large programs
-from the fact of the small ones), we will first provide and prove a
-specification for the internal factorial loop, which, in fact,
+from the facts about their components), we will first provide and
+prove a specification for the internal factorial loop, which, in fact,
 performs all of the interesting computations, so the rest of the
 "main" function only takes care of allocation/deallocation of the
 pointers [n] and [acc]. The loop will be just a function, taking an
@@ -1476,9 +1478,9 @@ fact_pure N].
 
 The definition of the factorial "accumulator" loop is then represented
 as a recursive function, taking as arguments the two pointers, [n] and
-[acc], and the unit value. The body of the function is defined using
-the monadic fixpoint operator [Fix]%\httn{Fix}%, whose semantics is
-similar to the semantics of the classical _Y-combinator_, defined
+[acc], and also a unit value. The body of the function is defined
+using the monadic fixpoint operator [Fix]%\httn{Fix}%, whose semantics
+is similar to the semantics of the classical _Y-combinator_, defined
 usually by the equation [Y f = f (Y f)], where [f] is a fixpoint
 operator argument that should be though of as a recursive function
 being defined. Similarly, the fixpoint operator [Fix], provided by
@@ -1487,6 +1489,7 @@ recursively ([loop, in this case]), its argument and _body_. The named
 function (i.e., [loop]) can be then called from the body recursively.
 In the similar spirit, one can define nested loops in HTT as nested
 calls of the fixpoint operator.
+
 *)
 
 
@@ -1514,6 +1517,8 @@ zero using the monadic [ret] operator. %\httl{ret}% In the case of
 
 Stating the looping function like this leaves us with one obligation
 to prove.
+
+
 *)
 
 Next Obligation. 
@@ -1576,7 +1581,7 @@ heval.
      [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
 ]]
 
-The goal, containing a use of the conditional operator is natural to
+The goal, containing a use of the conditional operator, is natural to
 be proved on case analysis on the condition [n' == 0].
 
 *)
@@ -1599,7 +1604,7 @@ Now, the first goal has the form
 To prove it, we will need one of the numerous [val]-lemmas, delivered
 as a part of HTT libraries and directly corresponding to the rules of
 separation logic (%Section~\ref{sec:seplog-rules}%). The general
-recipe on acquiring intuition for lemmas applicable for each
+recipe on acquiring intuition for the lemmas applicable for each
 particular [verify]-goal is to make use of SSReflect's [Search]
 machinery. For instance, in this particular case, given that the
 command to be verified (i.e., the second argument of [verify]) is [ret
@@ -1611,7 +1616,8 @@ Search _ (verify _ _ _) (ret _).
 
 (**
 
-The request results report, in particular, on the following lemma found:
+The request results report, in particular, on the following lemma
+found:
 
 [[
 val_ret
@@ -1619,9 +1625,11 @@ val_ret
    (valid i -> r (Val v) i) -> verify i (ret v) r
 ]]
 
-The lemma has a statement in its goal, which seems like it can be
-unified with our goal, so we proceed by applying it.
+The lemma has a statement in its conclusion, which seems like it can
+be unified with our goal, so we proceed by applying it.
+
 %\httl{val\_ret}%
+
 *)
 
 - apply: val_ret=>/= _. 
@@ -1634,8 +1642,10 @@ combining a number of arithmetical facts in the goal via the
 hypotheses [Hi] and [X]. We proceed by first turing the boolean
 equality in [X] into the propositional on via the view [eqP] and then
 substituting all occurrences of [n'] in the goal and other assumptions
-via Coq's tactic [subst]. %\ssrt{subst}% The rest of the proof is by
-providing existential witnesses and rewriting [1 * a'] to [a'] in [Hi].
+via Coq's tactic [subst]. The rest of the proof is by providing
+existential witnesses and rewriting [1 * a'] to [a'] in [Hi].
+
+%\ssrt{subst}% 
 
 *)
 
@@ -1687,6 +1697,7 @@ several lemmas tackling this kind of a goal, all different in the way
 they treat the postconditions, so in other cases it is recommended to
 run [Search "val_do"] to see the full list and chose the most
 appropriate one.
+
 %\httl{val\_doR}%
 
 *)
@@ -1711,10 +1722,9 @@ are standard and mostly appeal to propositional reasoning
 
 *)
 
-- exists (n'-1), (a' * n'); split=>//=. 
+exists (n'-1), (a' * n'); split=>//=. 
 rewrite -Hi=>{Hi}; rewrite [a' * _]mulnC mulnA [_ * n']mulnC.
-case: n' X=>//= n' _.
-by rewrite subn1 -pred_Sn. 
+by case: n' X=>//= n' _; rewrite subn1 -pred_Sn. 
 Qed.
 
 (** 
@@ -1738,8 +1748,8 @@ Program Definition fact (N : nat) :
 (** 
 
 The specification of [fact] explicitly states that its execution
-starts and terminates in the empty memory; it also constraints its
-result to be a factorial of [N]. 
+starts and terminates in the empty heap; it also constraints its
+result to be a factorial of [N].
 
 *)
 
@@ -1790,14 +1800,16 @@ use of what corresponds to the rule %\Rule{App}% again. In this case,
 however, the tactic [val_doR] will not work immediately, so we will
 first need to reduce the program to be verified from the binding
 command to a mere function call be means of HTT's [bnd_seq] lemma,
-which tackles the binding combined with a call to a user-defined
-function, which is exactly our case. %\httl{bnd\_seq}%.  Next, we
-instantiate [fact_acc] specification's logical variable by applying
-[gh_ex] and proceed with the application of [val_doR].
+which tackles the binding _combined_ with a call to a user-defined
+function, and this is exactly our case. Next, we instantiate the
+[fact_acc] specification's logical variable [N] by applying [gh_ex]
+and proceed with the application of [val_doR].
+
+%\httl{bnd\_seq}%
 
 *)
 
-apply: bnd_seq=>/=. apply: (gh_ex N); apply: val_doR=>//.
+apply: bnd_seq=>/=; apply: (gh_ex N); apply: val_doR=>//.
 
 (** 
 
@@ -1822,41 +1834,48 @@ Qed.
 
 (** 
 
+%
+\begin{figure}[t!]
+\begin{alltt}
+
+    fun fib (\var{N} : nat): nat = \{
+      if \var{N} == 0 then ret 0
+       else if \var{N} == 1 then ret 1
+       else n <-- alloc 2;
+            x <-- alloc 1;
+            y <-- alloc 1;
+            res <-- 
+              (fix loop (_ : unit). 
+                 n' <-- !n;
+                 y' <-- !y;
+                 if n' == \var{N} then ret y'
+                 else tmp <-- !x;
+                      x ::= y';;
+                      x' <-- !x;
+                      y ::= x' + tmp;;
+                      n ::= n' + 1;;
+                      loop(tt))(tt).
+            dealloc n;;
+            dealloc x;;
+            dealloc y;;
+            ret res    
+    \}
+\end{alltt}
+\caption{An imperative procedure computing the $N$th Fibonacci
+number.}
+\label{fig:fibcode}
+\end{figure}
+%
+
 %\begin{exercise}[Fibonacci numbers]%
 %\index{Fibonacci numbers}%
-Let us consider the following efficient imperative implementation of
-the function $\com{fib}$ that computes the [N]th Fibonacci number and
-is defined in pseudocode as follows.
 
-%
-\begin{alltt}
-fun fib (\var{N} : nat): nat = \{
-  if \var{N} == 0 then ret 0
-   else if \var{N} == 1 then ret 1
-   else n <-- alloc 2;
-        x <-- alloc 1;
-        y <-- alloc 1;
-        res <-- 
-          (fix loop (_ : unit). 
-             n' <-- !n;
-             y' <-- !y;
-             if n' == \var{N} then ret y'
-             else tmp <-- !x;
-                  x ::= y';;
-                  x' <-- !x;
-                  y ::= x' + tmp;;
-                  n ::= n' + 1;;
-                  loop(tt))(tt).
-        dealloc n;;
-        dealloc x;;
-        dealloc y;;
-        ret res    
-\}
-\end{alltt}
-%
-Your task will be to prove its correctness with respect to the
-"pure" function [fib_pure] (which you should define in plain Coq) as
-well as the fact that it starts and ends in an empty heap.
+Figure%~\ref{fig:fibcode}% presents the pseudocode listing of an
+efficient imperative implementation of the function $\com{fib}$ that
+computes the [N]th Fibonacci number.  Your task will be to prove its
+correctness with respect to the "pure" function [fib_pure] (which you
+should define in plain Coq) as well as the fact that it starts and
+ends in an empty heap.
 
 %\hint% What is the loop invariant of the recursive computation
  defined by means of the [loop] function?
@@ -1944,31 +1963,36 @@ Qed.
 * On shallow and deep embedding
 %\label{sec:shallowdeep}%
 
-A noteworthy trait of HTT's approach to verification of imperative
+A noteworthy trait of HTT's approach to verification of effectful
 programs is its use of _shallow embedding_ of the imperative language
 %\index{shallow embedding}% to the programming language of Coq. In
 fact, the imperative programs that we have written, e.g., the
 factorial procedure, are mere Coq programs, written in Coq syntax with
 a number of HTT-specific notations. Moreover, the Hoare triples, by
-means of which we have provided specifications to the
+means of which we have provided the specifications to the
 heap-manipulating programs are nothing but specific types defined in
-Coq. This is what makes the way imperative programs encoded _shallow_:
+Coq. This is what makes the way effectful programs encoded _shallow_:
 the new programming language of imperative programs and their
 Hoare-style specifications has been defined as a subset of Coq
 programming language, so most of the Coq's infrastructure for parsing,
-type-checking, name binding and computations could be reused right
-away. In particular, it made it possible to represent the variables in
-imperative programs as Coq's variables, make use of Coq's conditional
-operator and provide specifications to higher-order procedures without
-going into the need to design a higher-order version of a Hoare logic
-first (since the specifications in HTT are just types of
-monadically-typed expressions). Furthermore, shallow embedding made it
-possible to take advantage of Coq's name binding machinery, so we
-could avoid the problem of _name capturing_ by means using the
-approach known as %\emph{Higher-Order Abstract
+type-checking, name binding and computations could be reused off the
+shelf. In particular, shallow embedding made it possible to represent
+the variables in imperative programs as Coq's variables, make use of
+Coq's conditional operator and provide specifications to higher-order
+procedures without going into the need to design a higher-order
+version of a separation logic first (since the specifications in HTT
+are just types of monadically-typed expressions). Furthermore, shallow
+embedding provided us with a benefit of reusing Coq's name binding
+machinery, so we could avoid the problem of _name capturing_ by means
+using the approach known as %\emph{Higher-Order Abstract
 Syntax}~\cite{Pfenning-Elliott:PLDI88}%, representing immutable
 variables by Coq's native variables (disguised by the binding notation
 [<--]).
+
+%\index{DSL|see{domain-specific language}}% 
+%\index{domain-specific language}% 
+%\index{internal DSL}%
+%\index{embedded DSL}%
 
 To summarize, shallow embedding is an approach of implementing
 programming languages (not necessarily in Coq), characterized by
@@ -1980,11 +2004,10 @@ originates at early '60s with the beginning of era of the Lisp
 programming language%~\cite{Graham:BOOK}\index{Lisp}%, which, thanks
 to its macro-expansion system, serves as a powerful platform to
 implement DSLs by means of shallow embedding (such DSLs are sometimes
-called _internal_ or _embedded_).  %\index{DSL|see{domain-specific
-language}}% %\index{domain-specific language}% %\index{internal DSL}%
-%\index{embedded DSL}% Shallow embedding in the world of practical
-programming is advocated for a high speed of language prototyping and
-the ability to re-use most of the host language machinery.
+called _internal_ or _embedded_). Shallow embedding in the world of
+practical programming is advocated for a high speed of language
+prototyping and the ability to re-use most of the host language
+infrastructure.
 
 An alternative approach of implementing and encoding programming
 languages in general and in Coq in particular is called _deep
@@ -1997,8 +2020,7 @@ implementation, since then a lot of intermediate abstractions, which
 are artefacts of the host language, can be avoided.
 
 In the world of mechanized program verification, both approaches, deep
-and shallow embedding, have their own strengths and
-weaknesses. 
+and shallow embedding, have their own strengths and weaknesses.
 
 Although implementations of deeply embedded languages and calculi
 naturally tend to be more verbose, design choices in them are usually
@@ -2008,7 +2030,7 @@ appreciated as an important aspect in the design and reasoning about
 programming
 languages%~\cite{Aydemir-al:POPL08,Weirich-al:ICFP11,Chargueraud:JAR12}%. We
 believe, these are the reason why this approach is typically chosen as
-a preferable one when teaching program verification in
+a preferable one when teaching program specification verification in
 Coq%~\cite{Pierce-al:SF}%.
 
 Importantly, deep embedding gives the programming language implementor
@@ -2028,7 +2050,9 @@ embedding, while sparing one the labor of implementing the parser,
 name binder and type checker, may limit the expressivity of the
 logical calculus or a type system to be defied. In the case of HTT,
 for instance, it amounts to the impossibility to specify programs that
-store _effectful functions_ and their specifications into a heap.
+store _effectful functions_ and their specifications into a
+heap.%\footnote{This limitation can be, however, overcome by
+postulating necessary \emph{axioms} on top of CIC.}%
 
 In the past decade Coq has been used in a large number of projects
 targeting formalization of logics and type systems of various
@@ -2038,12 +2062,12 @@ that the explanation of this phenomenon is the fact that it is much
 more straightforward to define semantics of a deeply-embedded
 "featherweight" calculus%~\cite{Igarashi-al:TOPLAS01}% and prove
 soundness of its type system or program logic, given that it is the
-ultimate goal of the project. However, in order to use the implemented
-framework to type or verify realistic programs, a significant
-implementation effort is required to extend the deep implementation
-beyond the "core language", which makes shallow embedding more
-preferable in this case---a reason why this way has been chosen by
-HTT.
+_ultimate goal_ of the research project. However, in order to use the
+implemented framework to specify and verify realistic programs, a
+significant implementation effort is required to extend the deep
+implementation beyond the "core language", which makes shallow
+embedding more preferable in this case---a reason why this way has
+been chosen by HTT.
 
 * Soundness of Hoare Type Theory
 
@@ -2060,9 +2084,9 @@ logic is defined. HTT takes definition of a Hoare triple (or, rather,
 a Hoare type, since in HTT specs are types) from
 page%~\pageref{pg:triple}% literally but implements it not via an
 operational semantics, i.e., defining how a program _should be run_,
-but using a denotational semantics%~\cite{Winskel:BOOK}%, i.e.,
-defining what a program _is_. The HTT library comes with a module
-[stmod] that defines denotational semantics of HTT
+but using a denotational semantics%~\cite[Chapter~5]{Winskel:BOOK}%,
+i.e., defining what a program _is_. The HTT library comes with a
+module [stmod] that defines denotational semantics of HTT
 commands%\footnote{I.e., monadic values constructed by means of the
 write/alloc/dealloc/read/return commands and standard Coq connectives,
 such as conditional expression or pattern matching.}% and Hoare
@@ -2073,35 +2097,38 @@ returning some result. The denotational semantics of HTT commands in
 terms of state-transforming functions makes it also possible to define
 what is a semantics of a program resulting from the use of the [Fix]
 operator (%Section~\ref{sec:factver}%).%\footnote{In fact, a standard
-construction from domain theory is used: employing Knaster-Tarski
+construction from the domain theory is used: employing Knaster-Tarski
 theorem on a lattice of monotone functions, which is, however, outside
 of the scope of these notes, so we redirect the reader to the relevant
 literature: Glynn Winskel's book for the theoretical
-construction~\cite{Winskel:BOOK} or Adam Chlipala's manuscript
-covering a similar implementation~\cite[\S~7.2]{Chlipala:BOOK}.}% The
-semantics of Hoare types $\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$
-is defined as _sets_ of state transforming functions, taking a heap
-satisfying $P$ to the result and heap satisfying $Q$. Therefore, the
-semantic account of the verification (which is implemented by means of
-type-checking in Coq) is checking that semantics of a particular HTT
-program (i.e., a state-transforming function) lies within the
-semantics of its type.
+construction~\cite[Chapters~8--10]{Winskel:BOOK} or Adam Chlipala's
+manuscript covering a similar
+implementation~\cite[\S~7.2]{Chlipala:BOOK}.}% The semantics of Hoare
+types $\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$ is defined as
+_sets_ of state transforming functions, taking a heap satisfying $P$
+to the result and heap satisfying $Q$. Therefore, the semantic account
+of the verification (which is implemented by means of type-checking in
+Coq) is checking that semantics of a particular HTT program (i.e., a
+state-transforming function) lies _within_ the semantics of its type
+as a set.
+
+%\index{extraction}%
 
 If execution of programs verified in HTT is of interest, it can be
-implemented by means of extraction of HTT commands into programs in an
-external language, which supports general recursion natively (e.g.,
-Haskell). In fact, such extraction has been implemented in the first
-release of HTT%~\cite{Nanevski-al:JFP08}%, but was not ported to the
-latest release.
+implemented by means of _extraction_ of HTT commands into programs
+into an external language, which supports general recursion natively
+(e.g., Haskell). In fact, such extraction has been implemented in the
+first release of HTT%~\cite{Nanevski-al:JFP08}%, but was not ported to
+the latest release.
 
 * Specifying and verifying programs with linked lists
 
-We conclude this chapter with a _tour de force_ of separation logic
+We conclude this chapter with a _tour de force_ of separation logic in
 HTT by considering specification verification of programs operating
-with single-linked lists. Unlike the factorial example an
-implementation of single-linked truly relies on pointers, and
-specifying such datatypes and programs is where separation logic
-shines.
+with single-linked lists. Unlike the factorial example, an
+implementation of single-linked lists truly relies on pointers, and
+specifying such datatypes and programs is an area where separation
+logic shines.
 
 %\index{single-linked lists}%
 
@@ -2118,17 +2145,17 @@ Notation llist := (llist T).
 
 (** 
 
-However, in order to prove interesting facts about imperative lists,
-similarly to the previous examples, we need to establish a connection
-between what is storen in a list heap and a purely mathematical
-sequence of elements. This is done using the recursive predicate
-[lseg], which relates two pointers, [p] and [q], pointing
-correspondingly to the head and to the tail of the list and a logical
-sequence [xs] of elements stored in the list.
+However, in order to specify and prove interesting facts about
+imperative lists, similarly to the previous examples, we need to
+establish a connection between what is stored in a list heap and a
+purely mathematical sequence of elements. This is done using the
+_recursive predicate_ [lseg], which relates two pointers, [p] and [q],
+pointing correspondingly to the head and to the tail of the list and a
+logical sequence [xs] of elements stored in the list.
 
 *)
 
-Fixpoint lseg (p q : ptr) (xs : seq T) := 
+Fixpoint lseg (p q : ptr) (xs : seq T): Pred heap := 
   if xs is x::xt then 
     [Pred h | exists r h', 
        h = p :-> x \+ (p .+ 1 :-> r \+ h') /\ h' \In lseg r q xt]
@@ -2141,11 +2168,11 @@ of type [heap -> Prop], where [h] is assumed to be of type [heap]. The
 notation [h \In f] is a synonym for [f h] assuming [f] is a predicate
 of type [heap -> Prop].
 
-The following lemma [lseg_null] states a fact, which is
-almost obvious: give that the heap [h], corresponding to a linked
-list, is a valid one (according to its notion of validity as a PCM)
-and the head pointer of a list structure is [null], then its tail
-pointer is [null] as well, and the overall list is empty.
+The following lemma [lseg_null] states a fact, which is almost
+obvious: given that the heap [h], corresponding to a linked list, is a
+valid one (according to its notion of validity as a PCM) and the head
+pointer of a list structure is [null], then its tail pointer is [null]
+as well, and the overall list is empty.
 
 *)
 
@@ -2169,8 +2196,8 @@ In the process of the proof we are forced to use the validity of a
 heap in order to derive a contradiction. In the case of heap's
 validity, one of the requirements is that every pointer in it is not
 [null]. We can make it explicit by rewriting the top assumption with
-one of numerous HTT's heap validity lemmas (use the [Search] machinery
-to find the others).
+one of numerous HTT's lemmas about heap validity (use the [Search]
+machinery to find the others).
 
 %\httl{hvalidPtUn}%
 
@@ -2198,12 +2225,12 @@ Qed.
 
 We can now define a particular case of linked
 lists---_null-terminating_ lists and prove the specification of a
-simple insertion program, which allocates a new memory for an element
-[x] and makes it to be a new head of a list pointed by [p]. The
-allocation is performed via the primitive [allocb], which allocates a
-number of subsequent heap pointers (two in this case, as defined by
-its second argument) and sets all of them to point to the value
-provided.
+simple insertion program, which allocates a new memory cell for an
+element [x] and makes it to be a new head of a list pointed by
+[p]. The allocation is performed via the primitive [allocb], which
+allocates a number of subsequent heap pointers (two in this case, as
+defined by its second argument) and sets all of them to point to the
+value provided.
 
 %\httl{allocb}%
 *)

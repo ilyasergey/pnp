@@ -11,6 +11,7 @@
 \usepackage[citecolor=blue]{hyperref}
 \usepackage[]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{float}
 \usepackage{lmodern}
 \usepackage{fullpage}
 \usepackage{coqdoc}
@@ -36,6 +37,11 @@
 
 % No page number on chapter pages
 \renewcommand{\chapterpagestyle}{empty}
+
+% Figures should be boxed
+%    *** Uncomment the next two lines to box the floats *** 
+\floatstyle{boxed}
+\restylefloat{figure}
 
 % Line spacings
 %\setlength{\parskip}{0.35\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip}
