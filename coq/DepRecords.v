@@ -909,22 +909,25 @@ operation [\+] instead of the boolean addition when specifying the
 facts about natural numbers (even though they are treated as elements
 of the appropriate PCM). Unfortunately, it is not trivial to encode
 the mechanism, which will perform such conversion implicitly. Even
-though Coq is capable of figuring out what the PCM is necessary, and
-when seeing [(a b : nat)] being used, it infers the [natPCM]. Alas,
-it's not powerful enough to infer that the by writing the addition
-function [+] on natural numbers, we mean the PCM's join. However, if
-necessary, in most of the cases the conversion like this can be done
-by manual rewriting using the following "conversion" lemma.
+though Coq is capable of figuring out what PCM is necessary for a
+particular type (if the necessary canonical instance is defined),
+e.g., when seeing [(a b : nat)] being used, it infers the [natPCM],
+alas, it's not powerful enough to infer that the by writing the
+addition function [+] on natural numbers, we mean the PCM's
+join. However, if necessary, in most of the cases the conversion like
+this can be done by manual rewriting using the following trivial
+"conversion" lemma.
 
 *)
 
 Lemma addn_join (x y: nat): x + y = x \+ y. 
-Proof. done. Qed.
+Proof. by []. Qed.
 
 End PCMExamples.
 
 (**
 %\begin{exercise}[Partially ordered sets]%
+
 %\index{partially ordered set}%
 
 A partially ordered set order is a triple $(T, \pre, \bot)$, such that
@@ -943,7 +946,7 @@ $T$, such that
 \end{enumerate}
 %
 
-Implement a data structure for partially-ordered set using mixins and
+Implement a data structure for partially-ordered sets using mixins and
 packed classes. Prove the following laws:
 
 [[
@@ -974,8 +977,9 @@ b2)].%\ssrd{reflect}% Let us now show how the decidable equality is
 defined and instantiated.
 
 The module [eqtype]%\ssrm{eqtype}% of SSReflect's standard library
-provides a definition of the equality mixin of the familiar shape,
-which, after some simplifications, boil to the following ones:
+provides a definition of the equality mixin and packaged class of the
+familiar shape, which, after some simplifications, boil to the
+following ones:
 
 [[
 Module Equality.
@@ -1021,6 +1025,7 @@ Fixpoint eqn m n {struct m} :=
   end.
 ]]
 
+%\noindent%
 The following lemma establishes that [eqn] correctly reflects the
 propositional equality.
 
@@ -1033,6 +1038,7 @@ Qed.
 ]]
 %\ssrtl{//=}%
 
+%\noindent%
 Finally the following two definitions establish the canonical instance
 of the decidable equality for [nat], which can be used whenever
 [ssrnat] is imported.

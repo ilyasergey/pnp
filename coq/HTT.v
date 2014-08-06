@@ -36,30 +36,30 @@ use of most of Coq's features as a programming languages with
 dependent types and as a framework to build proofs and reason about
 mathematical theories.
 
-Programming language practitioners usuale elaborate on the dichotomy
+Programming language practitioners usually elaborate on the dichotomy
 between _declarative_ and _imperative_ languages, emphasizing the fact
 %\index{declarative programming}\index{imperative programming}% that a
-program written in declarative language is pretty much documenting
+program written in a declarative language is pretty much documenting
 itself, as it already specifies the _result_ of a
 computation. Therefore, logic and constraint programming languages
-(such as Prolog%~\cite{Lloyd:87}% %\index{Prolog}% and
+(such as Prolog%~\cite{Lloyd:87}% %\index{Prolog}% or
 Ciao%~\cite{Hermenegildo-al:TPLP12}\index{Ciao}%) as well as data
 definition/manipulation languages (e.g., SQL), whose programs are just
 sets of constraints/logical clauses or queries describing the desired
 result, are naturally considered to be declarative. Very often, pure
 functional programming languages (e.g., Haskell) are considered
 declarative as well, The reason for this is the _referential
-transparency_ property, which ensures that programs in such language
+transparency_ property, which ensures that programs in such languages
 %\index{referential transparency}% are in fact effect-free
 expressions, evaluating to some result (similar to mathematical
-functions). Therefore, such programs, whose outcome is only their
-result as an expression, but not some side effect (e.g., output to a
-file), can be replaced safely by their result, if it's
-computable. This possibility provides a convenient way of algebraic
-reasoning about such programs by means of equality
-rewritings---precisely what we were observing and leveraging in
-%Chapters~\ref{ch:eqrew} and~\ref{ch:ssrstyle}% of this course in the
-context of Coq taken as a functional programming language.
+functions) or diverging. Therefore, such programs, whose outcome is
+only a value, but not some side effect (e.g., output to a file), can
+be replaced safely by their result, if it's computable. This
+possibility provides a convenient way of algebraic reasoning about
+such programs by means of equality rewritings---precisely what we were
+observing and leveraging in %Chapters~\ref{ch:eqrew}
+and~\ref{ch:ssrstyle}% of this course in the context of Coq taken as a
+functional programming language.
 
 %\index{specification|see {program specification}}%
 
@@ -67,17 +67,18 @@ That said, pure functional programs tend to be considered to be good
 specifications for themselves. Of course, the term "specification" (or
 simply, "spec") %\index{program specification}% is overloaded and in
 some context it might mean the result of the program, its effect or
-some algebraic properties. While a functional program is already a
-good description of its result (due to referential transparency), its
-algebraic properties (e.g., some equalities that hold over it) are
-usually a subject of separate statements, which should be proved. Good
-example of such properties are the commutativity and cancellation
-statements, which we proved for natural numbers on
+some of the program's algebraic properties. While a functional program
+is already a good description of its result (due to referential
+transparency), its algebraic properties (e.g., some equalities that
+hold over it) are usually a subject of separate statements, which
+should be proved%~\cite{Bird:BOOK}%. Good example of such properties
+are the commutativity and cancellation properties, which we proved for
+natural numbers concidered as an instance of PCM on
 page%~\pageref{pg:addnprops} of Chapter~\ref{ch:depstruct}%. Another
 classical series of examples, which we did not focus in this course,
 are properties of list functions, such as appending and reversal
 (e.g., that the list reversal is an inverse to itself).%\footnote{A
-typical anti-pattern in dependently-typed languages and Coq in
+common anti-pattern in dependently-typed languages and Coq in
 particular is to encode such algebraic properties into the definitions
 of the datatypes and functions themselves (a canonical example of such
 approach are length-indexed lists). While this approach looks
@@ -88,30 +89,31 @@ interest, which has not been foreseen by a designer of the
 datatype/function, so it will have to be encoded as an external fact
 anyway. This is why we advocate the approach, in which datatypes and
 functions are defined as close to the way they would be defined by a
-programmer as possible, and all necessary properties are proved
-separately.}%
+programmer as possible, and all necessary properties of them are
+proved separately.}%
 
 The situation is different when it comes to imperative programs, whose
 outcome is typically their side-effect and is achieved by means of
-manipulating mutable state or performing input/output. While some of
-the modern programming languages (e.g., Scala, OCaml) allow one to mix
-imperative and declarative programming styles, it is significantly
-harder to reason about such programs, as now they cannot be simply
-replaced by their results: one should also take into account the
-effect of their execution (i.e., changes in the mutable state). A very
-distinct approach to incorporating both imperative and declarative
-programming is taken by Haskell, in which effectful programs can
-always be distinguished from pure ones by means of enforcing the
-former ones to have very specific
+manipulating mutable state, throwing an exception or performing
+input/output. While some of the modern programming languages (e.g.,
+Scala, OCaml) allow one to mix imperative and declarative programming
+styles, it is significantly harder to _reason_ about such programs, as
+now they cannot be simply replaced by their results: one should also
+take into account the effect of their execution (i.e., changes in the
+mutable state). A very distinct approach to incorporating both
+imperative and declarative programming is taken by Haskell, in which
+effectful programs can always be distinguished from pure ones by means
+of enforcing the former ones to have very specific
 types%~\cite{PeytonJones-Wadler:POPL93}%---the idea we will elaborate
 more on a bit further.
 
 In the following sections of this chapter, we will learn how Coq can
 be used to give specifications to imperative programs, written in a
-language, similar to C. Moreover, we will observe how the familiar
-proof construction machinery can be used to establish the correctness
-of these specifications, therefore, providing a way to _verify_ a
-program by means of checking, whether it satisfies a given spec. In
+domain-specific language, similar to C, but in fact being a subset of
+Coq itself. Moreover, we will observe how the familiar proof
+construction machinery can be used to establish the correctness of
+these specifications, therefore, providing a way to _verify_ a program
+by means of checking, whether it satisfies a given spec. In
 particular, we will learn how the effects of state-manipulating
 programs can be specified via dependent types, and the specifications
 of separate effectful programs can be _composed_, therefore allowing
@@ -130,7 +132,7 @@ considered programs in a simple imperative language with mutable
 variables (but without pointers or procedures) and suggested to give a
 specification to a program $c$ in the form of the triple
 $\spec{P}~c~\spec{Q}$, where $P$ and $Q$ are logical propositions,
-describing the values of the mutable programs and possible relations
+describing the values of the mutable variables and possible relations
 between them. $P$ and $Q$ are usually %\index{assertions}% referred to
 as _assertions_; more specifically, $P$ is called
 %\index{precondition}\index{postcondition}% _precondition_ of $c$ (or
