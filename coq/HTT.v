@@ -260,7 +260,7 @@ The rule %\Rule{Assign}% is in fact an axiom (since it does not assume
 anything, i.e., does not take any arguments), which states that if a
 proposition $Q$ is valid after substituting all occurrences of $x$ in
 it with $e$ (which is denoted by $[e/x]$), then it is a valid
-postcondition for the assignment %\texttt{x := e}%. 
+postcondition for the assignment $x := e$.
 
 The inference rule for sequential composition is actually a
 constructor, which takes the proofs of Hoare triples for $c_1$ and
