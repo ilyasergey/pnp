@@ -78,8 +78,8 @@ suitable for teaching purposes.
 - The classical book _Interactive Theorem Proving and Program
   Development. Coq'Art: The Calculus of Inductive Constructions_ by
   Yves Bertot and Pierre %Cast\'{e}ran~\cite{Bertot-Casteran:BOOK}% is
-  a great and exhaustive overview of Coq as formal system and a tool,
-  covering both logical foundations, reasoning methodologies,
+  a great and exhaustive overview of Coq as a formal system and a
+  tool, covering both logical foundations, reasoning methodologies,
   automation tools and offering large number of examples and exercises
   (from which this course borrows some).
 
