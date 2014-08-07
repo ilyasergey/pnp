@@ -1,5 +1,6 @@
 Require Import ssreflect ssrbool ssrnat.
 
+Module FunProg.
 
 (**
 ---------------------------------------------------------------------
@@ -74,3 +75,5 @@ Fixpoint dep_value (n: nat): dep_type n :=
   end.
 
 Eval compute in dep_value 6.
+
+End FunProg.
