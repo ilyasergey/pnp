@@ -499,42 +499,159 @@ fact
 *)
 
 (** * Exercises on functional programming in Coq *)
+Require Import eqtype.
+Set Implicit Arguments.
+Unset Strict Implicit.
+Unset Printing Implicit Defensive.
 
 (**
-
 ---------------------------------------------------------------------
-%\begin{exercise}%
+%\begin{exercise}[Power of two]%
 
 Write the function [two_power] of type [nat -> nat], such that
 [two_power n = 2^n]. Use the functions that we have defined earlier.
 
 %\end{exercise}%
 ---------------------------------------------------------------------
+*)
 
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Even numbers]%
+
+Define the function [evenB] of type [nat -> bool], such that it
+returns [true] for even numbers and [false] otherwise. Use the
+function we have already defined.
+
+%\end{exercise}%
+---------------------------------------------------------------------
 *)
 
 
 (**
-TODO: more exercises
-
-- More standard list functions
-
-- Define a predecessor function
-
-
-TODO: exercises from Chapte 6 for Coq'ART
-
 ---------------------------------------------------------------------
-%\begin{exercise}%
+%\begin{exercise}[Division by four]%
 
-Write a function that akes a number [n] as an argument... TODO
+Define the function [div4] that maps any natural number [n] to the
+integer part of [n/4].
 
 %\end{exercise}%
 ---------------------------------------------------------------------
+*)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Fun with lists in Coq]%
+%\begin{exercise}[Representing rational numbers]%
+
+Every strictly positive rational number can be obtained in aunique
+manned by a succession of applications of functions [N] nad [D] on the
+number one, where [N] and [D] defined as follows:
+
+[[
+N(x) = 1 + x
+
+D(x) = 1/(1 + 1/x)
+]]
+
+Define an inductive type (with three constructors), such that it
+uniquely defines strictly positive rational using the representation
+above.
+
+Then, define the function that takes an element of the defined type
+nad returns a numerator and denominator of the corresponding fraction.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Infinitely-branching trees]%
+
+Define an following inductive type of infinitely-branching trees
+(parametrized over a type [T]), whose leafs are represented by a
+constructor that doesn't take parameters and a non-leaf nodes contain
+a value _and_ a function that takes a natural number and returns a
+child of the node with a corresponding natural index.
+
+Define a boolean function that takes such a tree (instantiated with a
+type [nat]) and an argument of [n] type [nat] and checks whether the
+zero value occurs in it at a node reachable only by indices smaller
+than a number [n]. Then write some "test-cases" for the defined
+function.
+
+%\hint% You might need to define a couple of auxiliary functions for
+ this exercise.
+
+%\hint% Sometimes you might need to provide the type arguments to
+ constructors explicitly.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Take n]%
+
+Write a function that takes a type [A], and number [n] and a list [l]
+of elements of type [A] as arguments and returns first [n] elements of
+the list (as another list) of [l] if they exist.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Generate a range]%
+
+Implement a function that takes a number [n] and returns the list
+containing the natural numbers from [1] to [n], _in this order_.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[List-find]%
+
+Write a function that take a type [A], a function [f] of type [A ->
+bool] and a list [l], and return the first element [x] in [l], such
+that [f x == true]. 
+
+%\hint% Use Coq's [option] type to account for the fact that the
+ function of interest is partially-defined.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Standard list combinators]%
+
+Implement the following higher-order functions on lists
+
+- map
+- filter
+- fold_left
+- fold_right
+- tail-recursive list reversal
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[List alternation]%
 
 Implement the recursive function [alternate] of type [seq nat -> seq
 nat -> seq nat], so it would construct the alternation of two
@@ -572,11 +689,11 @@ Write a function that has a dependent result type and whose result is
 [true] for natural numbers of the form [4n + 1], [false] for numbers
 of the form [4n + 3] and [n] for numbers of the from [2n].
 
+%\hint% Again, you might need to define a number of auxiliary
+ (possibly, higher-order) functions to complete this exercise.
+
 %\end{exercise}%
 ---------------------------------------------------------------------
-
 *)
-
-
 
 End FunProg.

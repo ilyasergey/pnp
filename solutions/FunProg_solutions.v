@@ -4,7 +4,7 @@ Module FunProg.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}%
+%\begin{exercise}[Power of two]%
 
 Write the function [two_power] of type [nat -> nat], such that
 [two_power n = 2^n]. Use the functions that we have defined earlier.
@@ -19,9 +19,187 @@ Fixpoint two_power n := match n with
   | m.+1 => my_mult 2 (two_power m)
   end.
 
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Even numbers]%
+
+Define the function [evenB] of type [nat -> bool], such that it
+returns [true] for even numbers and [false] otherwise. Use the
+function we have already defined.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Fixpoint evenB n := if n is m.+1 then negate (evenB m) else true.
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Division by 4]%
+
+Define the function [div4] that maps any natural number [n] to the
+integer part of [n/4].
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Fixpoint div4 n := if n is m.+4 then (div4 m).+1 else 0.
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Representing rational numbers]%
+
+Every strictly positive rational number can be obtained in aunique
+manned by a succession of applications of functions [N] nad [D] on the
+number one, where [N] and [D] defined as follows:
+
+[[
+N(x) = 1 + x
+
+D(x) = 1/(1 + 1/x)
+]]
+
+Define an inductive type (with three constructors), such that it
+uniquely defines strictly positive rational using the representation
+above.
+
+Then, define the function that takes an element of the defined type
+nad returns a numerator and denominator of the corresponding fraction.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Inductive rational : Set :=
+ One | N of rational | D of rational.
+
+Fixpoint rat_to_frac (r: rational) : nat * nat :=
+  match r with 
+  | One => (1, 1)
+  | N x => let: (a, b) := rat_to_frac x 
+           in (b + a, b)
+  | D x => let (a, b) := rat_to_frac x 
+           in (a, a + b)
+  end. 
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Infinitely-branching trees]%
+
+Define an following inductive type of infinitely-branching trees
+(parametrized over a type [T]), whose leafs are represented by a
+constructor that doesn't take parameters and a non-leaf nodes contain
+a value _and_ a function that takes a natural number and returns a
+child of the node with a corresponding natural index.
+
+Define a boolean function that takes such a tree (instantiated with a
+type [nat]) and an argument of [n] type [nat] and checks whether the
+zero value occurs in it at a node reachable only by indices smaller
+than a number [n]. Then write some "test-cases" for the defined
+function.
+
+%\hint% You might need to define a couple of auxiliary functions for
+ this exercise.
+
+%\hint% Sometimes you might need to provide the type arguments to
+ constructors explicitly.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Inductive inf_tree (T: Set) := Leaf | Node of T & (nat -> inf_tree T).
+
+Fixpoint check_subtrees (f: nat -> inf_tree nat) (checker: inf_tree nat -> bool) n :=
+  if n is m.+1 
+  then checker (f n) || check_subtrees f checker m
+  else checker (f 0).
+
+Fixpoint has_zero (t: inf_tree nat) n : bool :=
+  match t with 
+  | Leaf => if n is 0 then true else false
+  | Node x f => (x == 0) || 
+       (if n is m.+1 then check_subtrees f (fun s => has_zero s m) n else false)
+  end.
+
+Eval compute in 
+  has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf nat) else Leaf nat)) 5.
+
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[List-find]%
+
+Write a function that take a type [A], a function [f] of type [A ->
+bool] and a list [l], and return the first element [x] in [l], such
+that [f x == true]. 
+
+%\hint% Use Coq's [option] type to account for the fact that the
+ function of interest is partially-defined.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Fixpoint first_elt A (f: A -> bool) (l : seq A) : option A := 
+  if l is x::xs 
+  then if f x then Some x else first_elt f xs
+  else None.
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Generate a range]%
+
+Implement a function that takes a number [n] and returns the list
+containing the natural numbers from [1] to [n], _in this order_.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Fixpoint nns n z :=
+  if n is m.+1 
+  then z :: (nns m (z.+1))
+  else [::].
+
+Definition Nns n := nns n 1.
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Standard list combinators]%
+
+Implement the following higher-order functions on lists
+
+- map
+- filter
+- fold_left
+- fold_right
+- tail-recursive list reversal
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+Fixpoint fold_left A B (f: B -> A -> B) z (l: seq A): B :=
+  if l is x::xs 
+  then fold_left f (f z x) xs
+  else z.
+
+Eval compute in fold_left (fun x y => x + y) 0 [::1;2;4].
+
+Fixpoint fold_right A B (f: A -> B -> B) z (l: seq A): B :=
+  if l is x::xs 
+  then (f x (fold_right f z xs))
+  else z.
+
+Eval compute in fold_left (fun x y => x + y) 5 [::1;2;4].
+
+
 (** 
 ---------------------------------------------------------------------
-%\begin{exercise}[Fun with lists in Coq]%
+%\begin{exercise}[List alternation]%
 
 Implement the recursive function [alternate] of type [seq nat -> seq
 nat -> seq nat], so it would construct the alternation of two
@@ -49,6 +227,9 @@ match (l1, l2) with
 Write a function that has a dependent result type and whose result is
 [true] for natural numbers of the form [4n + 1], [false] for numbers
 of the form [4n + 3] and [n] for numbers of the from [2n].
+
+%\hint% Again, you might need to define a number of auxiliary
+ (possibly, higher-order) functions to complete this exercise.
 
 %\end{exercise}%
 ---------------------------------------------------------------------
