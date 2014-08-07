@@ -1164,7 +1164,6 @@ End Appears_bool.
 -----------------------------------------------------------------------
 *)
 Section Appears_Prop.
-
 Variable Y: Type.
 
 Fixpoint appears_inP (a: Y) (l: seq Y) : Prop :=
@@ -1206,6 +1205,9 @@ Eval compute in appears_in 1 [:: 1; 2; 3].
 (** 
 -----------------------------------------------------------------------
 %\begin{exercise}[Nostutter]%
+
+TODO: define and test nostutter
+
 %\end{exercise}%
 -----------------------------------------------------------------------
 *)
@@ -1216,9 +1218,29 @@ Fixpoint nostutter (l : seq nat): bool :=
                          else true
   else true.
 
+(** 
+-----------------------------------------------------------------------
+%\begin{exercise}[Pigeonhole principle]%
+%\end{exercise}%
+-----------------------------------------------------------------------
+*)
 
 
-(* exercise 2 *)
+Section Pigeonhole.
+Variable Y: eqType.
+
+Fixpoint repeats (ls : seq Y) := 
+  if ls is x :: xs then (appears_in x xs) || repeats xs else false.
+
+Definition excluded_middle := forall P: Prop, P \/ ~P.
+
+(* Theorem pigeonhole_principle (l1 l2 : seq Y):  *)
+(*    (forall x, appears_in x l1 -> appears_in x l2) ->  *)
+(*    size l2 < size l1 -> *)
+(*    repeats l1. *)
+
+End Pigeonhole.
+
 
 
 
