@@ -13,9 +13,8 @@
 \label{ch:logic}
 % *)
 
-(* begin hide *)
 Module LogicPrimer.
-(* end hide *)
+
 
 (** 
 
@@ -1756,6 +1755,24 @@ Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 
 *)
 
+Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
+Proof.
+move=>P H. 
+apply: (H); right=>p.
+by apply: H; left.
+Qed.
+
+
+Theorem not_exists_dist :
+  excluded_middle -> forall (X: Type) (P : X -> Prop),
+    ~ (exists x, ~ P x) -> (forall x, P x).
+Proof.
+move=> Em X P H x; rewrite /excluded_middle in Em.
+move: (Em (P x)); case=>// => H1.
+by suff: False =>//; apply:H; exists x. 
+Qed.
+
+
 
 (* begin hide *)
 Definition dys_imp (P Q: Prop) := (P -> Q) -> (Q -> P).
@@ -1768,7 +1785,5 @@ Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
 Proof. by move=>H; apply: (H False True)=>//. Qed.
 (* end hide *)
 
-(* begin hide *)
 End LogicPrimer.
-(* end hide *)
 

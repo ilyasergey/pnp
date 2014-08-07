@@ -1103,6 +1103,126 @@ segment of natural numbers%~%is).
 
 *)
 
+Require Import ssreflect eqtype ssrbool ssrnat seq.
+Set Implicit Arguments.
+Unset Strict Implicit.
+Unset Printing Implicit Defensive.
+
+(** 
+-----------------------------------------------------------------------
+%\begin{exercise}[Appears in: bool]%
+%\end{exercise}%
+-----------------------------------------------------------------------
+*)
+
+Section Appears_bool.
+Variable X: eqType.
+
+(* exercise 1 *)
+Fixpoint appears_in (a: X) (l: seq X) : bool :=
+  if l is x::xs 
+  then if x == a then true else  appears_in a xs
+  else false.
+
+Lemma appears_in_app (xs ys : seq X) (x:X): 
+     appears_in x (xs ++ ys) = appears_in x xs || appears_in x ys.
+Proof.
+elim: xs=>// a ls Hi.
+rewrite cat_cons //=.
+by case: (a == x).
+Qed.
+
+(*
+Lemma app_appears_in (xs ys : seq X) (x:X):
+     appears_in x xs || appears_in x ys -> appears_in x (xs ++ ys).
+Proof.
+by move/orP; case; elim: xs=>//= a ls Hi; case: (a == x)=>//.
+Qed.
+*)
+
+Fixpoint disjoint (l1 l2: seq X): bool := 
+  if l1 is x::xs then ~~(appears_in x l2) && disjoint xs l2 else true.
+
+Fixpoint no_repeats (ls : seq X) := 
+  if ls is x :: xs then ~~ (appears_in x xs) && no_repeats xs else true.
+
+Theorem norep_disj_app l1 l2: 
+  no_repeats l1 -> no_repeats l2 -> disjoint l1 l2 -> no_repeats (l1 ++ l2).
+Proof.
+elim: l1=>//= x xs Hi H1 H2 H3; apply/andP; split; first last.
+- by apply: Hi=>//; [case/andP: H1=>// | case/andP: H3=>//].
+rewrite appears_in_app. 
+by apply/norP; split; [case/andP: H1=>// | case/andP: H3=>//].
+Qed.
+
+End Appears_bool.
+
+(** 
+-----------------------------------------------------------------------
+%\begin{exercise}[Appears in: Prop]%
+%\end{exercise}%
+-----------------------------------------------------------------------
+*)
+Section Appears_Prop.
+
+Variable Y: Type.
+
+Fixpoint appears_inP (a: Y) (l: seq Y) : Prop :=
+  if l is x::xs 
+  then x = a \/ appears_inP a xs
+  else False.
+
+Lemma appears_in_appP (xs ys : seq Y) (x:Y): 
+     appears_inP x (xs ++ ys) <-> appears_inP x xs \/ appears_inP x ys.
+Proof.
+split; elim: xs=>[| a ls Hi].
+- by right.
+- rewrite cat_cons; case.
+  - by left; left.
+  by case/Hi; [left|]; right. 
+- by rewrite cat0s; case.
+by case=>//=; intuition.
+Qed.
+
+Fixpoint disjointP (l1 l2: seq Y) := 
+  if l1 is x::xs then ~(appears_inP x l2) /\ disjointP xs l2 else True.
+
+Fixpoint no_repeatsP (ls : seq Y) := 
+  if ls is x :: xs then ~(appears_inP x xs) /\ no_repeatsP xs else True.
+
+Theorem norep_disj_appP l1 l2: 
+  no_repeatsP l1 -> no_repeatsP l2 -> disjointP l1 l2 -> no_repeatsP (l1 ++ l2).
+Proof.
+elim: l1=>//= x xs Hi H1 H2 H3; split; first last.
+- by apply: Hi=>//; [case: H1=>// | case: H3=>//].
+rewrite appears_in_appP. 
+by case; [case: H1| case: H3].
+Qed.
+
+End Appears_Prop.
+
+Eval compute in appears_in 1 [:: 1; 2; 3].
+
+(** 
+-----------------------------------------------------------------------
+%\begin{exercise}[Nostutter]%
+%\end{exercise}%
+-----------------------------------------------------------------------
+*)
+
+Fixpoint nostutter (l : seq nat): bool := 
+  if l is x1::xs1 
+  then if xs1 is x2::xs2 then (x1 != x2) && nostutter xs1
+                         else true
+  else true.
+
+
+
+(* exercise 2 *)
+
+
+
+
 (* begin hide *)
 End SsrStyle.
 (* end hide *)
