@@ -41,6 +41,7 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 
 Require Import ssreflect ssrbool ssrnat eqtype.
 
+
 (** 
 
 %\section{Structuring the proof scripts}%
@@ -1103,10 +1104,105 @@ segment of natural numbers%~%is).
 
 *)
 
-Require Import ssreflect eqtype ssrbool ssrnat seq.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
+
+Lemma repr3 n : n >= 8 -> 
+  exists k, [\/ n = 3 * k + 8, n = 3*k + 9 | n = 3*k + 10].
+Proof.
+elim: n=>// n Ih.
+rewrite leq_eqVlt; case/orP.
+- by rewrite eqSS=>/eqP<-; exists 0; rewrite muln0 add0n; constructor.
+case/Ih=>k; case=>->{n Ih}.
+- by exists k; constructor 2; rewrite -addn1 -addnA addn1.
+- by exists k; constructor 3; rewrite -addn1 -addnA addn1.
+exists (k.+1); constructor 1.  
+by rewrite mulnSr -addn1 -2!addnA; congr (_ + _).
+Qed.
+
+Lemma gorg3 n : gorgeous (3 * n).
+Proof.
+elim: n=>//[|n Ih]; first by apply: g_0; rewrite muln0.
+by rewrite mulnSr; apply: (g_plus3 _ (3*n)).
+Qed.
+
+Lemma gorg_criteria1 n : n >= 8 -> gorgeous n.
+Proof.
+case/repr3=>k; case=>->{n}.
+Print gorgeous.
+- apply: (g_plus5 _ (3*k + 3)); last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+- apply: (g_plus3 _ (3*k + 6))=>//; last by rewrite -addnA.
+  apply: (g_plus3 _ (3*k + 3))=>//; last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+apply: (g_plus5 _ (3*k + 5))=>//; last by rewrite -addnA.
+by apply: (g_plus5 _ (3*k))=>//; apply: gorg3.
+Qed.
+
+Lemma gorg_refl1 n: n >= 8 -> reflect (gorgeous n) true.
+Proof. by move/gorg_criteria1=>H; constructor. Qed.
+
+Fixpoint gorgeous_b n : bool := match n with 
+ | 0 | 3 | 5 | 6 => true
+ | 1 | 2 | 4 | 7 => false
+ | _ => true
+ end. 
+
+Lemma not_g1: ~(gorgeous 1).
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+
+Lemma not_g2: ~(gorgeous 2).
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+
+Lemma not_g4: ~(gorgeous 4).
+Proof.
+case=>//n Ih /eqP; last by rewrite addnC eqSS.  
+case: n Ih=>//n Ih.
+rewrite addnC !eqSS. move/eqP=>Z; subst n. 
+by apply:not_g1.
+Qed.
+
+Lemma not_g7: ~(gorgeous 7).
+Proof.
+case=>//n Ih /eqP; case: n Ih=>//n Ih;
+  rewrite addnC !eqSS; move/eqP=>Z; subst n. 
+- by apply:not_g4. 
+by apply:not_g2. 
+Qed.
+
+Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
+Proof.
+case: n=>/=[|n]; first by constructor; apply:g_0.
+case: n=>/=[|n]; first by constructor; apply: not_g1.
+case: n=>/=[|n]; first by constructor; apply: not_g2.
+case: n=>/=[|n]. 
+- constructor; apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g4.
+case: n=>/=[|n].
+- constructor; apply:(g_plus5 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n].
+- constructor; apply:(g_plus3 _ 3)=>//.
+  apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g7.
+suff X: (n.+4.+4 >= 8); last by [].
+by apply:(gorg_refl1).
+Qed.
+
+Program Definition blah: gorgeous 14.
+Proof.
+apply/gorg_refl; by [].
+Qed.
+
 
 (** 
 -----------------------------------------------------------------------
