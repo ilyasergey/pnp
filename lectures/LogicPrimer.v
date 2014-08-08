@@ -143,14 +143,12 @@ case.
 
 (**
 
-The tactic [case]%\ssrt{case}% makes Coq to perform the case
-analysis. In particular, it _deconstructs_ the _top assumption_ of the
-goal. The top assumption in the goal is such that it comes first
-before any arrows, and in this case it is a value of type
-[False]. Then, for all constructors of the type, whose value is being
-case-analysed, the tactic [case] constructs _subgoals_ to be
-proved. 
-*)
+The tactic [case] makes Coq to perform the case analysis. In
+particular, it _deconstructs_ the _top assumption_ of the goal. The
+top assumption in the goal is such that it comes first before any
+arrows, and in this case it is a value of type [False]. Then, for all
+constructors of the type, whose value is being case-analysed, the
+tactic [case] constructs _subgoals_ to be proved.  *)
 
 Undo.
 
@@ -405,9 +403,9 @@ apply: conj=>//.
 (** 
 
 Alternatively, since we now know that [and] has just one constructor,
-we can use the generic Coq's [constructor n]%\ttac{constructor}%
-tactic, where [n] is an (optional) number of a constructor to be
-applied (and in this case it's [1])
+we can use the generic Coq's [constructor n] tactic, where [n] is an
+(optional) number of a constructor to be applied (and in this case
+it's [1])
 
 *)
 
@@ -417,9 +415,8 @@ constructor 1=>//.
 (**
 
 Finally, for propositions that have exactly one constructor, Coq
-provides a specialized tactic [split]%\ttac{split}%, which is a synonym for
-[constructor 1]:
-*)
+provides a specialized tactic [split], which is a synonym for
+[constructor 1]: *)
 
 Undo. split=>//.
 Qed.
@@ -826,7 +823,8 @@ Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[forall-distributivity]%
+Exercise [forall-distributivity]
+---------------------------------------------------------------------
 
 Formulate and prove the following theorem in Coq, which states the
 distributivity of universal quantification with respect to implication:
@@ -837,14 +835,17 @@ forall P Q,
 
 Be careful with the scoping of universally-quantified variables
 and use parentheses to resolve ambiguities!
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
+
+Theorem all_imp_ist A (P Q: A -> Prop): 
+  (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
+Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Home-brewed existential quantification]%
+Exercise [Home-brewed existential quantification]
+---------------------------------------------------------------------
 
 Let us define our own version [my_ex] of the existential quantifier
 using the SSReflect notation for constructors: *)
@@ -865,14 +866,79 @@ Qed.
 Hint: the propositional equivalence [<->] is just a conjunction of
 two implications, so proving it can be reduced to two separate goals
 by means of [split] tactics.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Equivalence of classical logic axioms]%
+Exercise [Distributivity of existential quantification]
+---------------------------------------------------------------------
+Prove the following theorem.
+*)
+
+Theorem dist_exists_or (X : Type) (P Q : X -> Prop):
+  (exists x, P x \/ Q x) <-> (exists x, P x) \/ (exists x, Q x).
+Proof.
+split; first by case=>x; case=>H; [left | right]; exists x=> //.
+by case; case=>x H; exists x; [left | right].
+Qed.
+
+(**
+---------------------------------------------------------------------
+Exercise [Two equals three]
+---------------------------------------------------------------------
+Prove the following  theorem. Can you explain the proof?
+*)
+
+Theorem two_is_three A: (exists x : A, (forall R : A -> Prop, R x)) -> 2 = 3.
+Proof.
+by case=>x H; apply: H.
+Qed.
+
+(**
+---------------------------------------------------------------------
+Exercise [Dyslexic implication and contraposition]
+---------------------------------------------------------------------
+
+The "dyslexic" implication and contrapositions are the following
+propositions. 
+*)
+
+Definition dys_imp (P Q: Prop) := (P -> Q) -> (Q -> P).
+Definition dys_contrap (P Q: Prop) := (P -> Q) -> (~P -> ~Q).
+
+(**
+These propositions are inhabited, as otherwise one, given a proof of
+any of them, would be able to construct a proof of [False]. You are
+invited to deomnstrate it by proving the following statements.
+*)
+
+Theorem di_false: (forall P Q: Prop, dys_imp P Q) -> False.
+Proof. by move/(_ _ True); apply. Qed.
+
+Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
+Proof. by move=>H; apply: (H False True)=>//. Qed.
+
+(**
+---------------------------------------------------------------------
+Exercise [Irrefutability of the excluded middle]
+---------------------------------------------------------------------
+
+Proof the following theorem that states that the assumption of the
+falsehood of the excluded middle leads to inconsistencies, as is
+allows one to derive [False].
+*)
+
+Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
+Proof.
+move=>P H. 
+apply: (H); right=>p.
+by apply: H; left.
+Qed.
+
+(**
+---------------------------------------------------------------------
+Exercise [Equivalence of classical logic axioms]
+---------------------------------------------------------------------
 
 Prove that the following five axioms of the classical are equivalent.
 
@@ -940,27 +1006,33 @@ Hint: Stuck with a tricky proof? Use the Coq [admit] tactic as a
  considered completed by Coq. You can always get back to an admitted
  proof later.
 
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
+(**
+---------------------------------------------------------------------
+Exercise [Inifinitary de Morgan laws]
+---------------------------------------------------------------------
 
-Theorem all_imp_dist A (P Q: A -> Prop): 
-  (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
-Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+Prove the following implication analogous to the Morgan law for
+conjunctions  and disjunctions.
 
+*)
 
-
-Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
+Theorem not_forall_exists A (P : A -> Prop): 
+  (forall x: A, P x) -> ~(exists y: A, ~ P y).
 Proof.
-move=>P H. 
-apply: (H); right=>p.
-by apply: H; left.
+by move=>H G; case: G=>y G; apply: G; apply: H.
 Qed.
 
+(**
 
-Theorem not_exists_dist :
+Then, prove that the assumption of the excluded middle axiom allows one to
+establish the implication from the negation of (exists) to (forall).
+
+*)
+
+Theorem not_exists_forall :
   excluded_middle -> forall (X: Type) (P : X -> Prop),
     ~ (exists x, ~ P x) -> (forall x, P x).
 Proof.
@@ -968,22 +1040,6 @@ move=> Em X P H x; rewrite /excluded_middle in Em.
 move: (Em (P x)); case=>// => H1.
 by suff: False =>//; apply:H; exists x. 
 Qed.
-
-Theorem dist_exists_or : ∀(X:Type) (P Q : X → Prop),
-  (∃x, P x ∨ Q x) ↔ (∃x, P x) ∨ (∃x, Q x).
-Proof.
-
-
-(* begin hide *)
-Definition dys_imp (P Q: Prop) := (P -> Q) -> (Q -> P).
-Definition dys_contrap (P Q: Prop) := (P -> Q) -> (~P -> ~Q).
-
-Theorem di_false: (forall P Q: Prop, dys_imp P Q) -> False.
-Proof. by move/(_ _ True); apply. Qed.
-
-Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
-Proof. by move=>H; apply: (H False True)=>//. Qed.
-(* end hide *)
 
 End LogicPrimer.
 

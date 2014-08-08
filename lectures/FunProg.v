@@ -509,42 +509,37 @@ Unset Printing Implicit Defensive.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Power of two]%
+Exercise [Power of two]
+---------------------------------------------------------------------
 
 Write the function [two_power] of type [nat -> nat], such that
 [two_power n = 2^n]. Use the functions that we have defined earlier.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Even numbers]%
+Exercise [Even numbers]
+---------------------------------------------------------------------
 
 Define the function [evenB] of type [nat -> bool], such that it
 returns [true] for even numbers and [false] otherwise. Use the
 function we have already defined.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Division by four]%
+Exercise [Division by four]
+---------------------------------------------------------------------
 
 Define the function [div4] that maps any natural number [n] to the
 integer part of [n/4].
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Representing rational numbers]%
+Exercise [Representing rational numbers]
+---------------------------------------------------------------------
 
 Every strictly positive rational number can be obtained in aunique
 manned by a succession of applications of functions [N] nad [D] on the
@@ -561,16 +556,14 @@ uniquely defines strictly positive rational using the representation
 above.
 
 Then, define the function that takes an element of the defined type
-nad returns a numerator and denominator of the corresponding fraction.
-
-%\end{exercise}%
----------------------------------------------------------------------
+and returns a numerator and denominator of the corresponding fraction.
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Infinitely-branching trees]%
+Exercise [Infinitely-branching trees]
+---------------------------------------------------------------------
 
 Define an following inductive type of infinitely-branching trees
 (parametrized over a type [T]), whose leafs are represented by a
@@ -589,40 +582,34 @@ function.
 
 %\hint% Sometimes you might need to provide the type arguments to
  constructors explicitly.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Take n]%
+Exercise [Take n]
+---------------------------------------------------------------------
 
 Write a function that takes a type [A], and number [n] and a list [l]
 of elements of type [A] as arguments and returns first [n] elements of
 the list (as another list) of [l] if they exist.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Generate a range]%
+Exercise [Generate a range]
+---------------------------------------------------------------------
 
 Implement a function that takes a number [n] and returns the list
 containing the natural numbers from [1] to [n], _in this order_.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[List-find]%
+Exercise [List-find]
+---------------------------------------------------------------------
 
 Write a function that take a type [A], a function [f] of type [A ->
 bool] and a list [l], and return the first element [x] in [l], such
@@ -630,15 +617,13 @@ that [f x == true].
 
 %\hint% Use Coq's [option] type to account for the fact that the
  function of interest is partially-defined.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Standard list combinators]%
+Exercise [Standard list combinators]
+---------------------------------------------------------------------
 
 Implement the following higher-order functions on lists
 
@@ -647,14 +632,12 @@ Implement the following higher-order functions on lists
 - fold_left
 - fold_right
 - tail-recursive list reversal
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[List alternation]%
+Exercise [List alternation]
+---------------------------------------------------------------------
 
 Implement the recursive function [alternate] of type [seq nat -> seq
 nat -> seq nat], so it would construct the alternation of two
@@ -679,14 +662,12 @@ Eval compute in alternate [:: 1;2;3] [:: 4].
 
 %\hint% The reason why the "obvious" elegant solution might fail is
  that the argument is not strictly decreasing.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}%[Functions with dependently-typed result type]
+Exercise [Functions with dependently-typed result type]
+---------------------------------------------------------------------
 
 Write a function that has a dependent result type and whose result is
 [true] for natural numbers of the form [4n + 1], [false] for numbers
@@ -694,9 +675,6 @@ of the form [4n + 3] and [n] for numbers of the from [2n].
 
 %\hint% Again, you might need to define a number of auxiliary
  (possibly, higher-order) functions to complete this exercise.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 End FunProg.

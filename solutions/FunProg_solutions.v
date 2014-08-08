@@ -4,14 +4,10 @@ Module FunProg.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Power of two]%
-
+Exercise [Power of two]
+---------------------------------------------------------------------
 Write the function [two_power] of type [nat -> nat], such that
 [two_power n = 2^n]. Use the functions that we have defined earlier.
-
-%\end{exercise}%
----------------------------------------------------------------------
-
 *)
 
 Fixpoint two_power n := match n with 
@@ -21,14 +17,12 @@ Fixpoint two_power n := match n with
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Even numbers]%
+Exercise [Even numbers]
+---------------------------------------------------------------------
 
 Define the function [evenB] of type [nat -> bool], such that it
 returns [true] for even numbers and [false] otherwise. Use the
 function we have already defined.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint evenB n := if n is m.+1 then negate (evenB m) else true.
@@ -36,20 +30,19 @@ Fixpoint evenB n := if n is m.+1 then negate (evenB m) else true.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Division by 4]%
+Exercise [Division by 4]
+---------------------------------------------------------------------
 
 Define the function [div4] that maps any natural number [n] to the
 integer part of [n/4].
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint div4 n := if n is m.+4 then (div4 m).+1 else 0.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Representing rational numbers]%
+Exercise [Representing rational numbers]
+---------------------------------------------------------------------
 
 Every strictly positive rational number can be obtained in aunique
 manned by a succession of applications of functions [N] nad [D] on the
@@ -67,9 +60,6 @@ above.
 
 Then, define the function that takes an element of the defined type
 nad returns a numerator and denominator of the corresponding fraction.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Inductive rational : Set :=
@@ -86,7 +76,8 @@ Fixpoint rat_to_frac (r: rational) : nat * nat :=
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Infinitely-branching trees]%
+Exercise [Infinitely-branching trees]
+---------------------------------------------------------------------
 
 Define an following inductive type of infinitely-branching trees
 (parametrized over a type [T]), whose leafs are represented by a
@@ -105,9 +96,6 @@ function.
 
 %\hint% Sometimes you might need to provide the type arguments to
  constructors explicitly.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Inductive inf_tree (T: Set) := Leaf | Node of T & (nat -> inf_tree T).
@@ -130,7 +118,8 @@ Eval compute in
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[List-find]%
+Exercise [List-find]
+---------------------------------------------------------------------
 
 Write a function that take a type [A], a function [f] of type [A ->
 bool] and a list [l], and return the first element [x] in [l], such
@@ -138,9 +127,6 @@ that [f x == true].
 
 %\hint% Use Coq's [option] type to account for the fact that the
  function of interest is partially-defined.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint first_elt A (f: A -> bool) (l : seq A) : option A := 
@@ -150,13 +136,11 @@ Fixpoint first_elt A (f: A -> bool) (l : seq A) : option A :=
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Generate a range]%
+Exercise [Generate a range]
+---------------------------------------------------------------------
 
 Implement a function that takes a number [n] and returns the list
 containing the natural numbers from [1] to [n], _in this order_.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint nns n z :=
@@ -168,7 +152,8 @@ Definition Nns n := nns n 1.
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[Standard list combinators]%
+Exercise [Standard list combinators]
+---------------------------------------------------------------------
 
 Implement the following higher-order functions on lists
 
@@ -177,9 +162,6 @@ Implement the following higher-order functions on lists
 - fold_left
 - fold_right
 - tail-recursive list reversal
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint fold_left A B (f: B -> A -> B) z (l: seq A): B :=
@@ -199,7 +181,8 @@ Eval compute in fold_left (fun x y => x + y) 5 [::1;2;4].
 
 (** 
 ---------------------------------------------------------------------
-%\begin{exercise}[List alternation]%
+Exercise [List alternation]
+---------------------------------------------------------------------
 
 Implement the recursive function [alternate] of type [seq nat -> seq
 nat -> seq nat], so it would construct the alternation of two
@@ -207,9 +190,6 @@ sequences.
 
 %\hint% The reason why the "obvious" elegant solution might fail is
  that the argument is not strictly decreasing.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint alternate (l1 l2 : seq nat) : seq nat := 
@@ -222,7 +202,8 @@ match (l1, l2) with
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}%[Functions with dependently-typed result type]
+Exercise [Functions with dependently-typed result type]
+---------------------------------------------------------------------
 
 Write a function that has a dependent result type and whose result is
 [true] for natural numbers of the form [4n + 1], [false] for numbers
@@ -230,9 +211,6 @@ of the form [4n + 3] and [n] for numbers of the from [2n].
 
 %\hint% Again, you might need to define a number of auxiliary
  (possibly, higher-order) functions to complete this exercise.
-
-%\end{exercise}%
----------------------------------------------------------------------
 *)
 
 Fixpoint dep_type (n : nat) : Set := match n with 
