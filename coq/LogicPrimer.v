@@ -978,7 +978,7 @@ the rest of the proof trivial.
 done.
 Qed.
 
-(*
+(**
 The datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
 isomorphic to the [sum] datatype from %Chapter~\ref{ch:funprog}% and
 can be constructed by using one of its two constructors: [or_introl]

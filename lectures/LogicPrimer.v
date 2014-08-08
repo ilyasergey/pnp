@@ -1,115 +1,11 @@
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-(** printing R $R$ *)
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing suff %\texttt{\emph{suff}}% *)
-(** printing admit %\texttt{\emph{admit}}% *)
-
-
-(** %
-\chapter{Propositional Logic}
-\label{ch:logic}
-% *)
+(** %\chapter{Propositional Logic}% *)
 
 Module LogicPrimer.
 
 
 (** 
 
-
-In the previous chapter we had an opportunity to explore Coq as a
-functional programming language and learn how to define inductive
-datatypes and programs that operate with them, implementing the later
-ones directly or using the automatically-generated recursion
-combinators. Importantly, most of the values that we met until this
-moment, inhabited the types, which were defined as elements of the
-sort [Set]. The types [unit], [empty], [nat], [nat * unit] etc. are
-good examples of _first-order_ types inhabiting the sort [Set] and,
-therefore, contributing to the analogy between sets and first-order
-types, which we explored previously.  In this chapter, we will be
-working with a new kind of entities, incorporated by Coq:
-_propositions_.
-
 * Propositions and the [Prop] sort
-%\label{sec:propsort}%
-
-In Coq, propositions bear a lot of similarities with types,
-demonstrated in Chapter%~\ref{ch:funprog}%, and inhabit a separate
-sort [Prop], similarly to how first-order types inhabit
-[Set].%\footnote{In the Coq community, the datatypes of % [Prop] %
-sort are usually referred to as \emph{inductive
-predicates}.\index{inductive predicates}}% The "values" that have
-elements of [Prop] as their types are usually referred to as _proofs_
-or _proof terms_, the naming convention which stems out of the ide of
-%\index{Curry-Howard correspondence}% %\emph{Curry-Howard
-Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
-Sometimes, the Curry-Howard Correspondence is paraphrased as
-_proofs-as-programs_, which is truly illuminating when it comes to the
-intuition behind the formal proof construction in Coq, which, in fact,
-is just programming in disguise.
-
-%\index{Calculus of Inductive Constructions}%
-%\index{CIC|see {Calculus~of~Inductive~Constructions}}%
-%\index{Intuitionistic type theory}%
-%\index{Martin-\loef's type theory|see {Intuitionistic type theory}}%
-%\index{Prop sort@\texttt{Prop} sort}%
-
-The _Calculus of Inductive Constructions_
-(CIC)%~\cite{Bertot-Casteran:BOOK,Coquand-Huet:IC88}% a logical
-foundation of Coq, similarly to its close relative, Martin-%\loef%'s
-_Intuitionistic Type Theory_ %\cite{Martin-Loef:84}%, considers proofs
-to be just regular values of the "programming" language it
-defines. Therefore, the process of constructing the proofs of Coq is
-very similar to the process of writing the programs. Intuitively, when
-one asks a question "Whether the proposition [P] is _true_?", what is
-meant in fact is "Whether the _proof_ of [P] can be constructed?" This
-is an unusual twist, which is crucial for understanding the concept of
-the "truth" and proving propositions in CIC (and, equivalently, in Coq),
-so we specifically outline it here in the form of a motto:
-
-%
-\begin{center}
-Only those propositions are considered to be \emph{true}, which are
-provable \emph{constructively},\\ i.e., by providing an \emph{explicit} proof term,
-that inhabits them.
-\end{center}
-%
-
-This formulation of "truth" is somewhat surprising at the first
-encounter, comparing to the classical propositional logic, where the
-propositions are considered to be true simply if they are tautologies
-(i.e., reduce to the boolean value [true] for all possible
-combinations of their free variables' values), therefore leading to
-the common proof method in classical propositional logic: truth
-tables.  While the truth table methodology immediately delivers the
-recipe to prove propositions without quantifiers _automatically_ (that
-is, just by checking the corresponding truth tables), it does not
-quite scale when it comes to the higher-order propositions (i.e.,
-quantifying over predicates) as well as of propositions quantifying
-over elements of arbitrary domains. For instance, the following
-proposition, in which the reader can recognize the induction principle
-over natural numbers, cannot be formulated in the zeroth- or
-first-order propositional logic (and, in fact, in _any_ propositional
-logic):
-
-%
-\begin{center}
-For any predicate $P$, if $P(0)$ holds, and for any $m$, $P(m)$
-implies $P(m + 1)$, \\
-then for any $n$, $P(n)$ holds.
-\end{center}
-%
-
-The statement above is _second-order_ as it binds a first-order
-predicate by means of universal quantification, which makes it belong
-to the corresponding second-order logic (which is not even
-propositional, as it quantifies over arbitrary natural values, not
-just propositions). Higher-order logics%~\cite{Church:JSL40}% are
-known to be undecidable in general, and, therefore, there is no
-automatic way to reduce an arbitrary second-order formula to one of
-the two values: [true] or [false].
 
 CIC as a logic is expressive enough to accommodate propositions with
 quantifications of an arbitrary order and over arbitrary values. On
@@ -130,44 +26,11 @@ the rest of this course: we are going to see how to _prove_ logical
 statements by means of writing _programs_, that have the types
 corresponding to these statements.
 
-In the rest of this chapter we will focus only on the capability of
-Coq as a formal system allowing one to reason about propositions,
-leaving reasoning about values aside till the next chapter. It is
-worth noticing that a fragment of Coq, which deals with the sort
-[Prop], accommodating all the propositions, and allows the programmer
-to make statements with propositions, corresponds to the logical
-calculus, known as %System~$F_{\omega}$\index{System $F_{\omega}$}%
-(see Chapter 30 of%~\cite{Pierce:BOOK02}%) %\index{System $F$}%
-extending %System $F$~\cite{Reynolds:SP74,Girard:PhD}%, mentioned in
-Chapter%~\ref{ch:funprog}%. Unlike %System $F$%, which introduces
-polymorphic types, and, equivalently, first-order propositions that
-quantify over other propositions, %System~$F_{\omega}$% allows one to
-quantify as well over _type operators_, which can be also thought of
-as higher-order propositions.
-
-* The truth and the falsehood in Coq
-
-We start our acquaintance with propositional logic in Coq by
-demonstrating how the two simplest propositions, the truth and the
-falsehood, are encoded. Once again, let us remind that, unlike in the
-propositional logic, in Coq these two are _not_ the only possible
-propositional _values_, and soon we will see how a wide range of
-propositions different from mere truth or falsehood are
-implemented. From now on, we will be always including to the
-development the standard SSReflect's module [ssreflect],
-%\ssrm{ssreflect}% which imports some necessary machinery for dealing
-with propositions and proofs.
-
 *)
+
+(** * The truth and the falsehood in Coq *)
 
 Require Import ssreflect.
-
-(**
-
-The truth is represented in Coq as a datatype of sort [Prop] with just
-one constructor, taking no arguments:
-
-*)
 
 Print True.
 
@@ -175,16 +38,6 @@ Print True.
 [[
 Inductive True : Prop :=  I : True
 ]]
-
-%\ssrd{True}%
-
-Such simplicity makes it trivial to construct an instance of the
-[True] proposition:%\footnote{In the context of propositional logic, we
-will be using the words ``type'' and ``proposition'' interchangeably
-without additional specification when it's clear from the context.}%
-Now we can prove the following proposition in Coq's embedded
-propositional logic, essentially meaning that [True] is provable.
-
 *)
 
 Theorem true_is_true: True.
@@ -196,130 +49,33 @@ Theorem true_is_true: True.
   ============================
    True
 ]]
-
-The command [Theorem] %\ccom{Theorem}% serves two purposes. First, similarly to the
-command [Definition], it defines a named entity, which is not
-necessarily a proposition. In this case the name is
-[true_is_true]. Next, similarly to [Definition], there might follow a
-list of parameters, which is empty in this example. Finally, after the
-colon [:] there is a type of the defined value, which in this case it
-[True]. With this respect there is no difference between [Theorem] and
-[Definition]. However, unlike [Definition], [Theorem] doesn't require
-one to provide the expression of the corresponding type right
-away. Instead, the _interactive proof mode_ %\index{interactive proof mode}%  
-is activated, so the proof term could be constructed
-incrementally. The process of the gradual proof construction is what
-makes Coq to be a _interactive proof assistant_, in addition to being
-already a programming language with dependent types.
-
-Although not necessary, it is considered a good programming practice
-in Coq to start any interactive proof with the Coq's command
-%\ccom{Proof}% [Proof], which makes the final scripts easier to read
-and improves the general proof layout.
-
 *)
 
 Proof.
-
-(**
-
-%\index{goal}% In the interactive proof mode, the [goals] display
-shows a _goal_ of the proof---the type of the value to be constructed
-([True] in this case), which is located below the double line. Above
-the line one can usually see the context of _assumptions_, which can
-be used in the %\index{assumption}% process of constructing the
-proof. Currently, the assumption context is empty, as theorem we
-stated does not make any and ventures to proof [True] out of thin
-air. Fortunately, this is quite easy to do, as from the formulation of
-the [True] type we already know that it is inhabited by its only
-constructor [I]. The next line proved the _exact_ value of the type of
-the goal.%\ttac{exact:}%
-
-*)
-
 exact: I.
 
 (** 
-
-This completes the proof, as indicated by the Proof General's
-%\texttt{*response*}% display:
-
 [[
 No more subgoals.
 (dependent evars:)
 ]]
-
-The only thing left to complete the proof is to inform Coq that now
-the theorem [true_is_true] is proved, which is achieved by typing the
-command %\ccom{Qed}% [Qed].
-
 *)
 
 Qed.
 
 (**
-
-In fact, typing [Qed] invokes a series of additional checks, which
-ensure the well-formedness of the constructed proof term. Although the
-proof of [true_is_true] is obviously valid, in general there is a
-number of proof term properties to be checked _a posteriori_ and
-particularly essential in the case of proofs about infinite objects,
-which we do not cover in these course (see %Chapter~13%
-of%~\cite{Bertot-Casteran:BOOK}% for a detailed discussion on such
-proofs).
-
 So, our first theorem is proved. As it was hinted previously, it could
 have been stated even more concisely, formulated as a mere definition,
 and proved by means of providing a corresponding value, without the
 need to enter a proof mode:
-
 *)
 
 Definition true_is_true': True := I.
 
 (**
-
-Although this is a valid way to prove statements in Coq, it is not as
-convenient as an interactive proof mode, when it comes to the
-construction of large proofs, arising from complicated
-statements. This is why, when it comes to proving propositions, we
-will prefer the interactive proof mode to the "vanilla" program
-definition. It is worth noticing, thought, that even though the
-process of proof construction in Coq usually looks more like writing a
-_script_, consisting from a number of commands (which are called
-_tactics_ in Coq jargon),%\index{Coq/SSReflect tactics}%
-%\index{tactics|seealso {Coq/SSReflect tactics}}% the result of such
-script, given that it eliminates all of the goals, is a valid
-well-typed Coq program. In comparison, in some other dependently-typed
-frameworks (e.g., in Agda%\index{Agda}%), the construction of proof
-terms does not obscure the fact that what is being constructed is a
-program, so the resulting interactive proof process is formulated as
-"filling the holes" in a program (i.e., a proof-term), which is being
-gradually refined. We step away from the discussion on which of these
-two views to the proof term construction is more appropriate.
-
-There is one more important difference between values defined by as
-[Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
-both define what in fact is a proof terms for the declared type, the
-value bound by [Definition] is _transparent_: it can be executed by
-means of unfolding and subsequent evaluation of its body. In contrast,
-a proof term bound by means of [Theorem] is _opaque_, which means that
-its body cannot be evaluated and serves the only purpose: establish
-the fact that the corresponding type (the theorem's statement) is
-inhabited, and, therefore is true.  This distinction between
-definitions and theorems arises from the notion of _proof
-irrelevance_, which, informally, states that (ideally) one shouldn't
-be able to distinguish between two proofs of the same statement as
-long as they both are valid.%\footnote{Although, in fact, proof terms
-in Coq can be very well distinguished.}% Conversely, the programs
-(that is, what is created using the [Definition] command) are
-typically of interest by themselves, not only because of the type they
-return.
-
 The difference between the two definitions of the truth's validity,
 which we have just constructed, can be demonstrated by means of the
 [Eval] command.
-
 *)
 
 Eval compute in true_is_true. 
@@ -335,40 +91,6 @@ As we can see now, the theorem is evaluated to itself, whereas the
 definition evaluates to it body, i.e., the value of the constructor
 [I].  
 
-*)
-
-
-(**
-
-A more practical analogy for the discussed above distinction can be
-drawn if one will think of [Definition]s as of mere functions,
-packaged into libraries and intended to be used by third-party
-clients. In the same spirit, on can think of [Theorem]s as of facts
-that need to be checked only once when established, so no one would
-bother to re-prove them again, knowing that they are valid, and just
-appeal to their types (statement) without exploring the
-proof.%\footnote{While we consider this to be a valid analogy to the
-process of functioning of the mathematical community, it is only true
-in spirit. In the real life, the statements proved once, are usually
-re-proved by students for didactical reasons, in order to understand
-the proof principles and be able to produce other proofs. Furthermore,
-the history of mathematics witnessed a number of proofs that have been
-later invalidated as being non-valid. Luckily, the
-mechanically-checked proofs are usually not a subject of this
-problem.}% This is similar to what is happening during the oral
-examinations on mathematical disciplines: a student is supposed to
-remember the statements of theorems from the _previous_ courses and
-semesters, but is not expected to reproduce their proofs.
-
-At this point, an attentive reader can notice that the definition of
-[True] in Coq is strikingly similar to the definition of the type
-[unit] from %Chapter~\ref{ch:funprog}%. This is a fair observation,
-which brings us again to the Curry-Howard analogy, and makes it
-possible to claim that the trivial truth proposition is isomorphic to
-the [unit] type from functional programming. Indeed, both have just
-one way to be constructed and can be constructed in any context, as
-their single constructor does not require any arguments.
-
 Thinking by analogy, one can now guess how the falsehood can be encoded.
 *)
 
@@ -378,14 +100,6 @@ Print False.
 [[
 Inductive False : Prop :=  
 ]]
-
-Unsurprisingly, the proposition [False] in Coq is just a Curry-Howard
-counterpart of the type [empty], which we have constructed in
-%Chapter~\ref{ch:funprog}%. Moreover, the same intuition that was
-applicable to [empty]'s recursion principle ("anything can be produced
-given an element of an empty set"), is applicable to reasoning by
-induction with the [False] proposition:
-
 *)
 
 Check False_ind.
@@ -395,41 +109,12 @@ Check False_ind.
 False_ind
      : forall P : Prop, False -> P
 ]]
-
-That is, _any_ proposition can be derived from the falsehood by means
-of implication.%\footnote{In the light of the Curry-Howard analogy, at
-\index{Curry-Howard correspondence} this moment it shouldn't come as a
-surprise that Coq uses the arrow notation \texttt{->} both for
-function types and for propositional implication: after all, they both
-are just particular cases of functional abstraction, in sorts
-\texttt{Set} or \texttt{Prop}, correspondingly.}% For instance, we can
-prove now that [False] implies the equality [1 = 2].%\footnote{We
-postpone the definition of the equality till the next chapter, and for
-now let us consider it to be just an arbitrary proposition.}%
-
 *)
 
 Theorem one_eq_two: False -> 1 = 2.
 Proof.
 
-(** 
-
-One way to prove this statement is to use the [False] induction
-principle, i.e., the theorem [False_ind], directly by instantiating it
-with the right predicate [P]:
-
-*)
-
 exact: (False_ind (1 = 2)).
-
-(**
-
-This indeed proves the theorem, but for now, let us explore a couple
-of other ways to prove the same statement. For this we first
-%\ccom{Undo}% [Undo] the last command of the already succeeded but not
-yet completed proof.
-
-*)
 
 Undo.
 
@@ -444,23 +129,6 @@ SSReflect [apply:] tactic.%\ssrt{apply:}%
 apply: False_ind.
 
 (** 
-
-The following thing just happened: the tactic [apply:] supplied with
-an argument [False_ind], tried to figure out whether our goal [False
--> (1 = 2)] matches any _head_ type of the theorem [False_ind].
-%\index{head type}% By _head type_ we mean a component of type (in
-this case, [forall P : Prop, False -> P]), which is a type by itself
-and possibly contains free variables. For instance, recalling that
-[->] is right-associative, head-types of [False_ind] would be [P],
-[False -> P] and [forall P : Prop, False -> P] itself.
- 
-So, in our example, the call to the tactics [apply: False_ind] makes
-Coq realize that the goal we are trying to prove matches the type
-[False -> P], where [P] is taken to be [(1 = 2)]. Since in this case
-there is no restrictions on what [P] can be (as it is
-universally-quantified in the type of [False_ind]), Coq assigns [P] to
-be [(1 = 2)], which, after such specialization, turns the type of
-[False_ind] to be exactly the goal we're after, and the proof is done.
 
 There are many more ways to prove this rather trivial statement, but
 at this moment we will demonstrate just yet another one, which does
@@ -481,41 +149,16 @@ goal. The top assumption in the goal is such that it comes first
 before any arrows, and in this case it is a value of type
 [False]. Then, for all constructors of the type, whose value is being
 case-analysed, the tactic [case] constructs _subgoals_ to be
-proved. Informally, in mathematical reasoning, the invocation of the
-[case] tactic would correspond to the statement "let us consider all
-possible cases, which amount to the construction of the top
-assumption". Naturally, since [False] has _no_ constructors (as it
-corresponds to the [empty] type), the case analysis on it produces
-_zero_ subgoals, which completes the proof immediately. Since the
-result of the proof is just some program, again, we can demonstrate
-the effect of [case] tactic by proving the same theorem with an exact
-proof term:
-
+proved. 
 *)
 
 Undo.
 
 exact: (fun (f: False) => match f with end).
 
-(**
-
-As we can see, one valid proof term of [one_eq_two] is just a
-function, which case-analyses on the value of type [False], and such
-case-analysis has no branches.
-
-*)
-
 Qed.
 
 (** * Implication and universal quantification
-
-By this moment we have already seen how implication is represented in
-Coq: it is just a functional type, represented by the "arrow" notation
-[->] and familiar to all functional programmers. Indeed, if a function
-of type [A -> B] is a program that takes an argument value of type [A]
-and returns a result value of type [B], then the propositional
-implication [P -> Q] is, ... a program that takes an argument proof
-term of type [P] and returns a proof of the proposition [Q].
 
 Unlike most of the value-level functions we have seen so far,
 propositions are usually parametrized by other propositions, which
@@ -547,34 +190,6 @@ theorem.  *)
 Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
 Proof.
 
-(** 
-
-Our goal is the statement of the theorem, its type. The frist thing we
-are going to do is to "peel off" some of the goal assumptions---the
-[forall]-bound variables---and move them from the goal to the
-assumption context (i.e., from below to above the double line). This
-step in the proof script is usually referred to as _bookkeeping_,
-since it does not directly contribute to reducing the goal, but
-instead moves some of the values from the goal to assumption, as a
-preparatory step for the future reasoning.
-
-%\index{tacticals}%
-%\index{bookkeeping}%
-%\index{tacticals|seealso {Coq/SSReflect tacticals}}%
-SSReflect offers a tactic and small but powerful toolkit of
-_tacticals_ (i.e., higher-order tactics) for bookkeeping. In
-particular, for moving the bound variables from "bottom to the top",
-one should use a combination of the "no-op" tactic [move]%\ssrt{move}%
-and the tactical [=>] %\ssrtl{=>}%(spelled <<=>>>). The following
-command moves the next three assumptions from the goal, [P], [Q] and
-[R] to the assumption context, simultaneously renaming them to [A],
-[B] and [C]. The renaming is optional, so we just show it here to
-demonstrate the possibility to give arbitrary (and, preferably, more
-meaningful) names to the assumption variables "on the fly" while
-constructing the proof via a script.
-
-*)
-
 move=> A B C.
 (**
 [[
@@ -584,11 +199,6 @@ move=> A B C.
   ============================
    (A -> B) -> (B -> C) -> A -> C
 ]]
-
-We can now move the three other arguments to the top using the same
-command: the [move=>] combination works uniformly for [forall]-bound
-variables as well as for the propositions on the left of the arrow.
-
 *)
 
 move=> H1 H2 a.
@@ -620,7 +230,6 @@ tactics.
 Undo.
 
 (**
-%\noindent%
 The first use of [apply:] will replace the goal [C] by the goal [B],
 since this is what it takes to get [C] by using [H2]:
 
@@ -634,7 +243,6 @@ apply: H2.
   ============================
    B
 ]]
-%\noindent%
 The second use of [apply:] reduces the proof of [B] to the proof of
 [A], demanding an appropriate argument for [H1].
 
@@ -647,18 +255,6 @@ apply: H1.
   ============================
    A
 ]]
-
-Notice that both calls to [apply:] removed the appropriate hypotheses,
-[H1] and [H2] from the assumption context. If one needs a hypothesis
-to stay in the context (to use it twice, for example), then the
-occurrence of the tactic argument hypothesis should be parenthesised:
-[apply: (H1)].
-
-Finally, we can see that the only goal left to prove is to provide a
-proof term of type [A]. Luckily, this is exactly what we have in the
-assumption by the name [a], so the following demonstration of the
-exact [a] finishes the proof:
-
 *)
 
 exact: a. 
@@ -671,33 +267,9 @@ In the future, we will replace the use of trivial tactics, such as
 combines a number of standard Coq's tactics in an attempt to finish
 the proof of the current goal and reports an error if it fails to do
 so. 
-
-%
-\begin{exercise}[$\forall$-distributivity]
-\label{ex:forall-dist}
-
-Formulate and prove the following theorem in Coq, which states the
-distributivity of universal quantification with respect to implication:
-\[
-\forall P~Q, [(\forall x, P(x) \implies Q(x)) \implies ((\forall y, P(y)) \implies \forall z, Q(z))]
-\]
-
-\hint Be careful with the scoping of universally-quantified variables
-and use parentheses to resolve ambiguities!
-
-\end{exercise}
-%
 *)
 
-(* begin hide*)
-Theorem all_imp_dist A (P Q: A -> Prop): 
-  (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
-Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
-(* end hide*)
-
-(**
-
-** On forward and backward reasoning
+(** ** On forward and backward reasoning
 
 Let us check now the actual value of the proof term of theorem
 [imp_trans]. 
@@ -718,7 +290,7 @@ Argument scopes are [type_scope type_scope type_scope _ _ _]
 Even though the proof term looks somewhat furry, this is almost
 exactly our initial proof term from the first proof attempt: [H2 (H1
 a)]. The only difference is that the hypotheses [H1] and [H2] are
-_eta-expanded_,%\index{eta-expansion}% that is instead of simply [H1] the proof terms
+_eta-expanded_, that is instead of simply [H1] the proof terms
 features its operational equivalent [fun b: B => H2 b]. Otherwise, the
 printed program term indicates that the proof obtained by means of
 direct application of [H1] and [H2] is the same (modulo eta-expansion)
@@ -729,56 +301,18 @@ or some part of it, and by first reducing the goal via tactics, are
 usually referred in the mechanized proof community as _forward_ and
 _backward_ proof styles%\index{forward proof style}\index{backward
 proof style}%.
+*)
 
-- The _backward_ proof style assumes that the goal is being gradually
-  transformed by means of applying some tactics, until its proof
-  becomes trivial and can be completed by means of a basic tactics,
-  like [exact:] or [done].
-
-- The _forward_ proof style assumes that the human prover has some
-  "foresight" with respect to the goal he is going to prove, so she
-  can define some "helper" entities as well as to adapt the available
-  assumptions, which will then be used to solve the goal. Typical
-  example of the forward proofs are the proofs from the classical
-  mathematic textbooks: first a number of "supporting" lemmas is
-  formulated, proving some partial results, and finally all these
-  lemmas are applied in a concert in order to prove an important
-  theorem.
-
-While the standard Coq is very well supplied with a large number of
-tactics that support reasoning in the backward style, it is less
-convenient for the forward-style reasoning. This aspect of the tool is
-significantly enhanced by SSReflect, which introduces a small number
-of helping tactics, drastically simplifying the forward proofs, as we
-will see in the subsequent chapters.
-
-** Refining and bookkeeping assumptions 
+(** ** Refining and bookkeeping assumptions 
 
 Suppose, we have the following theorem to prove, which is just a
 simple reformulation of the previously proved [imp_trans]:
+
 *)
 
 Theorem imp_trans' (P Q R: Prop) : (Q -> R) -> (P -> Q) -> P -> R.
 Proof.
 move=> H1 H2.
-
-(**  
-
-Notice that we made the propositional variables [P], [Q] and [R] to be
-parameters of the theorem, rather than [forall]-quantified
-values. This relieved us from the necessity to lift them using
-[move=>] in the beginning of the proof.
-
-In is natural to expect that the original [imp_trans] will be of some
-use. We are now in the position to apply it directly, as the current
-goal matches its conclusion. However, let us do something slightly
-different: _move_ the statement of [imp_trans] into the goal,
-simultaneously with specifying it (or, equivalently, partially
-applying) to the assumptions [H1] and [H2]. Such move "to the bottom
-part" in SSReflect is implemented by means of the %\ssrtl{:}% [:]
-tactical, following the [move] command:
-
-*)
 
 move: (imp_trans P Q R)=> H.
 (** 
@@ -789,15 +323,6 @@ move: (imp_trans P Q R)=> H.
   ============================
    P -> R
 ]]
-
-What has happened now is a good example of the forward reasoning: the
-specialized version of [(imp_trans P Q R)], namely, [(P -> Q) -> (Q ->
-R) -> P -> R], has been moved to the goal, so it became [((P -> Q) ->
-(Q -> R) -> P -> R) -> P -> R]. Immediately after that, the top
-assumption (that is, what has been just "pushed" to the goal stack)
-was moved to the top and given the name [H]. Now we have the
-assumption [H] that can be applied in order to reduce the goal.  
-
 *)
 
 apply: H.
@@ -811,9 +336,6 @@ apply: H.
 subgoal 2 (ID 142) is:
  Q -> R
 ]]
-
-The proof forked into two goals, since [H] had two arguments, which we
-can now fulfil separately, as they trivially are our assumptions.
 *)
 
 done. 
@@ -824,9 +346,8 @@ done.
 The proof is complete, although the last step is somewhat repetitive,
 since we know that for two generated sub-goals the proofs are the
 same. In fact, applications of tactics can be _chained_ using the [;]
-%\ssrtl{;}%connective, so the following complete proof of [imp_trans']
-runs [done] for _all_ subgoals generated by [apply:
-H]%\ccom{Restart}%:
+connective, so the following complete proof of [imp_trans'] runs
+[done] for _all_ subgoals generated by [apply: H]:
 
 *)
 
@@ -837,12 +358,6 @@ apply: H; done.
 
 (**
 
-Also, notice that the sequence in which the hypotheses were moved to
-the top has changed: in order to make the proof more concise, we first
-created the "massaged" version of [imp_trans], and then moved it as
-[H] to the top, following by [H1] and [H2], which were in the goal
-from the very beginning.
-
 To conclude this section, let us demonstrate even shorter way to prove
 this theorem once again.
 
@@ -852,44 +367,10 @@ Restart.
 move=>H1 H2; apply: (imp_trans P Q R)=>//.
 Qed.
 
-(**
-
-After traditional move of the two hypotheses to the top, we applied
-the specialised version of [imp_trans], where its three first
-arguments were explicitly instantiated with the local [P], [Q] and
-[R]. This application generated two subgoals, each of which has been
-then automatically solved by the trailing tactical %\ssrtl{//}%[=>
-//], which is equivalent to [;try done] and, informally speaking,
-"tries to kill all the newly created goals".%\footnote{The Coq's
-\texttt{try}\ssrtl{try} tactical tries to execute its tactic argument in a "soft
-way", that is, not reporting an error if the argument fails.}%
-
-*)
-
-(** * Conjunction and disjunction 
-%\label{sec:conjdisj}%
-
-Two main logical connectives, conjunction and disjunction, are
-implemented in Coq as simple inductive predicates in the sort
-[Prop]. In order to avoid some clutter, from this moment and till the
-end of the chapter let us start a new module [Connectives] and assume
-a number of propositional variables in it (as we remember, those will
-be abstracted over outside of the module in the statements
-they%\ccom{Variables}% happen to occur).
-
-*)
+(** * Conjunction and disjunction *)
 
 Module Connectives.
 Variables P Q R: Prop.
-
-(** 
-
-The propositional conjunction of [P] and [Q], denoted by [P /\ Q], is
-a straightforward Curry-Howard counterpart of the [pair] datatype that
-we have already seen in %Chapter~\ref{ch:funprog}%, and is defined by
-means of the predicate [and].
-
-*)
 
 Locate "_ /\ _".
 
@@ -898,9 +379,6 @@ Locate "_ /\ _".
 Print and.
 
 (**
-
-%\ssrd{and}%
-
 [[
 Inductive and (A B : Prop) : Prop :=  conj : A -> B -> A /\ B
 
@@ -908,13 +386,6 @@ For conj: Arguments A, B are implicit
 For and: Argument scopes are [type_scope type_scope]
 For conj: Argument scopes are [type_scope type_scope _ _]
 ]]
-
-Proving a conjunction of [P] and [Q] therefore amounts to constructing
-a pair by invoking the constructor [conj] and providing values of [P]
-and [Q] as its arguments:%\footnote{The command
-\texttt{Goal}\ccom{Goal} creates an anonymous theorem and initiates
-the interactive proof mode.}%
-
 *)
 
 Goal P -> R -> P /\ R.
@@ -948,7 +419,7 @@ constructor 1=>//.
 Finally, for propositions that have exactly one constructor, Coq
 provides a specialized tactic [split]%\ttac{split}%, which is a synonym for
 [constructor 1]:
- *)
+*)
 
 Undo. split=>//.
 Qed.
@@ -965,17 +436,11 @@ Goal P /\ Q -> Q.
 Proof.
 case.
 
-(**  
-
-Again, the tactic [case] replaced the top assumption [P /\ Q] of the
-goal with the arguments of its only constructor, [P] and [Q] making
-the rest of the proof trivial.
-*)
-
 done.
 Qed.
 
-(*
+(**
+
 The datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
 isomorphic to the [sum] datatype from %Chapter~\ref{ch:funprog}% and
 can be constructed by using one of its two constructors: [or_introl]
@@ -1755,6 +1220,33 @@ Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 
 *)
 
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[$\forall$-distributivity]%
+
+Formulate and prove the following theorem in Coq, which states the
+distributivity of universal quantification with respect to implication:
+\[
+forall P Q, 
+  [(forall x, P(x) => Q(x)) => ((forall y, P(y)) => forall z, Q(z))]
+\]
+
+Be careful with the scoping of universally-quantified variables
+and use parentheses to resolve ambiguities!
+
+%\end{exercise}%
+---------------------------------------------------------------------*
+*)
+Theorem all_imp_dist A (P Q: A -> Prop): 
+  (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
+Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+
+
+
 Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
 Proof.
 move=>P H. 
@@ -1772,6 +1264,9 @@ move: (Em (P x)); case=>// => H1.
 by suff: False =>//; apply:H; exists x. 
 Qed.
 
+Theorem dist_exists_or : ∀(X:Type) (P Q : X → Prop),
+  (∃x, P x ∨ Q x) ↔ (∃x, P x) ∨ (∃x, Q x).
+Proof.
 
 
 (* begin hide *)

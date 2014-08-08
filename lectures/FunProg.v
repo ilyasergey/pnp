@@ -498,7 +498,10 @@ fact
 ]]
 *)
 
-(** * Exercises on functional programming in Coq *)
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
 Require Import eqtype.
 Set Implicit Arguments.
 Unset Strict Implicit.
