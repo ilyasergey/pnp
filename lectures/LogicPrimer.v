@@ -839,8 +839,31 @@ and use parentheses to resolve ambiguities!
 
 Theorem all_imp_ist A (P Q: A -> Prop): 
   (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
-Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
+(**
+---------------------------------------------------------------------
+Exercise [Or-And distributivity]
+---------------------------------------------------------------------
+Prove the following theorems.
+*)
+
+Theorem or_distributes_over_and P Q R: 
+  P \/ (Q /\ R) <-> (P \/ Q) /\ (P \/ R).
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
+Theorem or_distributes_over_and_2 P Q R :
+  (P \/ Q) /\ (P \/ R) -> P \/ (Q /\ R).
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
 (**
 ---------------------------------------------------------------------
@@ -857,9 +880,8 @@ equivalence of the two propositions. *)
 
 Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
 Proof.
-move=> A S; split.
-- by case=> x Hs; exists x.
-by case=>y Hs; apply: my_ex_intro Hs.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
  
 (** 
@@ -878,8 +900,8 @@ Prove the following theorem.
 Theorem dist_exists_or (X : Type) (P Q : X -> Prop):
   (exists x, P x \/ Q x) <-> (exists x, P x) \/ (exists x, Q x).
 Proof.
-split; first by case=>x; case=>H; [left | right]; exists x=> //.
-by case; case=>x H; exists x; [left | right].
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 (**
@@ -891,7 +913,8 @@ Prove the following  theorem. Can you explain the proof?
 
 Theorem two_is_three A: (exists x : A, (forall R : A -> Prop, R x)) -> 2 = 3.
 Proof.
-by case=>x H; apply: H.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 (**
@@ -913,10 +936,16 @@ invited to deomnstrate it by proving the following statements.
 *)
 
 Theorem di_false: (forall P Q: Prop, dys_imp P Q) -> False.
-Proof. by move/(_ _ True); apply. Qed.
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
 Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
-Proof. by move=>H; apply: (H False True)=>//. Qed.
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
 (**
 ---------------------------------------------------------------------
@@ -930,9 +959,8 @@ allows one to derive [False].
 
 Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
 Proof.
-move=>P H. 
-apply: (H); right=>p.
-by apply: H; left.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 (**
@@ -951,43 +979,33 @@ Definition de_morgan_not_and_not := forall P Q: Prop, ~ ( ~P /\ ~Q) -> P \/ Q.
 Definition implies_to_or := forall P Q: Prop, (P -> Q) -> (~P \/ Q).
 
 Lemma peirce_dn: peirce -> double_neg.
-Proof. by move=>H P Hn; apply: (H _ False)=> /Hn. Qed.
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
 Lemma dn_em : double_neg -> excluded_middle.
-Proof. 
-rewrite /double_neg /excluded_middle=> Dn P. 
-apply: (Dn (P \/ ~ P))=>H1; apply: (H1).
-by left; apply: (Dn)=> H2; apply: H1; right.
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 Lemma em_dmnan: excluded_middle -> de_morgan_not_and_not.
 Proof.
-rewrite /excluded_middle /de_morgan_not_and_not=> H1 P Q H2.
-suff: ~P -> Q.
-- move=>H3. move: (H1 P); case=>//X; first by left. 
-  by right; apply: H3. 
-move=> Pn.
-move: (H1 Q); case=>// Qn.
-suff: False=>//; apply: H2; split=>//.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 Lemma dmnan_ito : de_morgan_not_and_not -> implies_to_or.
 Proof.
-rewrite /de_morgan_not_and_not /implies_to_or=> H1 P Q Hi.
-suff: ~P \/ P.
-case=>//; first by left.
-- by move/ Hi; right.
-move: (H1 (~P) P)=> H2; apply: H2; case=> Hp p.
-suff: (P -> False) \/ False by case=>//.
-by apply: H1; case.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 Lemma ito_peirce : implies_to_or -> peirce.
 Proof.
-rewrite /peirce /peirce_law /implies_to_or=> H1 P Q H2.
-have X: P -> P by [].
-move: (H1 P P) =>/(_ X); case=>{X}// Pn.
-by apply: (H2)=>p. 
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 (**
@@ -1022,7 +1040,8 @@ conjunctions  and disjunctions.
 Theorem not_forall_exists A (P : A -> Prop): 
   (forall x: A, P x) -> ~(exists y: A, ~ P y).
 Proof.
-by move=>H G; case: G=>y G; apply: G; apply: H.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 (**
@@ -1036,9 +1055,8 @@ Theorem not_exists_forall :
   excluded_middle -> forall (X: Type) (P : X -> Prop),
     ~ (exists x, ~ P x) -> (forall x, P x).
 Proof.
-move=> Em X P H x; rewrite /excluded_middle in Em.
-move: (Em (P x)); case=>// => H1.
-by suff: False =>//; apply:H; exists x. 
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 End LogicPrimer.
