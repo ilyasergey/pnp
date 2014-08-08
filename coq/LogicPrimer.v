@@ -1496,12 +1496,8 @@ derive the falsehood%~\cite{Werner:TACS97}%.
 The following exercise reconcile most of the familiar axioms of the
 classical logic.
 
-
-
-%\begin{exercise}{Equivalence of classical logic axioms~\cite[\S
- 5.2.4]{Bertot-Casteran:BOOK}}
-\label{ex:equivax}
-%
+%\begin{exercise}[Equivalence of classical logic axioms (from \S~5.2.4
+of~\cite{Bertot-Casteran:BOOK})] \label{ex:equivax} %
 
 Prove that the following five axioms of the classical are equivalent.
 

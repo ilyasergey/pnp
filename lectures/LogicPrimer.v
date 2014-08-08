@@ -465,8 +465,6 @@ For or_introl, when applied to less than 1 argument:
 ...
 ]]
 
-%\ssrd{or}%
-
 In order to prove disjunction of [P] and [Q], it is sufficient to
 provide a proof of just [P] or [Q], therefore appealing to the
 appropriate constructor.
@@ -476,47 +474,13 @@ appropriate constructor.
 Goal Q -> P \/ Q \/ R.
 move=> q. 
 
-(**  
-
-Similarly to the case of conjunction, this proof can be completed
-either by applying a constructor directly, by using [constructor 2]
-tactic or by a specialised Coq's tactic for disjunction:
-[left]%\ttac{left}\ttac{right}% or [right]. The notation ["_ \/ _"] is
-right-associative, hence the following proof script, which first
-reduces the goal to the proof of [Q \/ R], and then to the proof of
-[Q], which is trivial by assumption.
-
-*)
-
 by right; left.
 Qed.
-
-(** 
-
-The use of SSReflect's tactical [by]%\ssrtl{by}% makes sure that its
-argument tactic ([right] in this case) succeeds and the proof of the
-goal completes, similarly to the trailing [done]. If the sequence of
-tactics [left; right] wouldn't prove the goal, a proof script error
-would be reported.
-
-The statements that have a disjunction as their assumption are usually
-proved by case analysis on the two possible disjunction's
-constructors:
-
-*)
 
 Goal P \/ Q -> Q \/ P.
 case=>x.
 
 (** 
-
-Notice how the case analysis via the SSReflect's [case] tactic was
-combined here with the trailing [=>]. It resulted in moving the
-constructor parameter in _each_ of the subgoals from the goal
-assumptions to the assumption context. The types of [x] are different
-in the two branches of the proof, though. In the first branch, [x] has
-type [P], as it names the argument of the [or_introl] constructor.
-
 [[
   P : Prop
   Q : Prop
@@ -551,26 +515,9 @@ case of the [or_intror] constructor.
 by left.
 Qed.
 
+(** * Proofs with negation *)
+
 (**
-
-It is worth noticing that the definition of disjunction in Coq is
-_constructive_, whereas the disjunction in the classical propositional
-logic is not. More precisely, in classical logic the proof of the
-proposition [P \/ ~ P] is true by the axiom of the excluded middle
-(see %Section~\ref{sec:axioms}% for a more detailed discussion),
-whereas in Coq, proving [P \/ ~ P] would amount to _constructing_ the
-proof of either [P] or [~ P]. Let us illustrate it with a specific
-example. If [P] is a proposition stating that [P = NP], then the
-classical logic's the tautology [P \/ ~ P] holds, although it does not
-contribute to the proof of either of the disjuncts. In constructive
-logic, which Coq is an implementation of, in the trivial assumptions
-given the proof of [P \/ ~ P], we would be able to extract the proof
-of either [P] or [~P].%\footnote{Therefore, winning us the Clay
-Institute's award.}%
-
-*)
-
-(** * Proofs with negation
 
 In Coq's constructive approach proving the negation of [~P] of a
 proposition [P] literally means that one can derive
@@ -593,13 +540,11 @@ Print not.
 
 Therefore, the negation [not] on propositions from [Prop] is just a
 function, which maps a proposition [A] to the implication [A ->
-False]. With this respect the intuition of negation from the classical
-logic might be misleading: as it will be discussed in
-%Section~\ref{sec:axioms}%, the Calculus of Constructions lacks the
-axiom of double negation, which means that the proof of [~ ~A] will not
-deliver the proof of [A], as such derivation would be not
-constructive, as one cannot get a value of type [A] out of a function
-of type [(A -> B) -> B], where [B] is taken to be [False].
+False]. Calculus of Constructions lacks the axiom of double negation,
+which means that the proof of [~ ~A] will not deliver the proof of
+[A], as such derivation would be not constructive, as one cannot get a
+value of type [A] out of a function of type [(A -> B) -> B], where [B]
+is taken to be [False].
 
 However, reasoning out of negation helps to derive the familiar proofs
 by contradiction, given that we managed to construct [P] _and_ [~P],
@@ -633,35 +578,13 @@ move /H.
   ============================
    Q -> False
 ]]
-
-The syntax [move / H] (spaces in between are optional) stands for one
-of the most powerful features of SSReflect, called _views_ (see
-%Section~9 of~\cite{Gontier-al:TR}%), which allows one to _weaken_ the
-assumption in the goal part of the proof on the fly by applying a
-hypothesis [H] to the top assumption in the goal. In the script above
-the first command [move=> H Hq] simply popped two assumptions from the
-goal to the context. What is left is [~P], or, equivalently [P ->
-False]. The view mechanism then "interpreted" [P] in the goal via [H]
-and changing it to [Q], since [H] was of type [P -> Q], which results
-in the modified goal [Q -> False].  Next, we apply the view [Hq] to
-the goal, which switches [Q] to [False], which makes the rest of the
-prof trivial.  *)
+*)
 
 move /Hq.
 done.
 Qed.
 
-(** remove printing exists *)
-(** printing <-> %\texttt{<->}% *)
-
-(** * Existential quantification
-%\label{sec:exists}%
-
-Existential quantification in Coq, which is denoted by the notation
-"[exists x, P x]" is just yet another inductive predicate with exactly
-one constructor:
-
-*)
+(** * Existential quantification *)
 
 Locate "exists".
 
@@ -680,47 +603,6 @@ Print ex.
 Inductive ex (A : Type) (P : A -> Prop) : Prop :=
     ex_intro : forall x : A, P x -> ex A P
 ]]
-
-%\ssrd{ex}%
-
-The notation for existentially quantified predicates conveniently
-allows one to existentially quantify over several variables,
-therefore, leading to a chain of enclosed calls of the constructor
-[ex_intro].  
-
-The inductive predicate [ex] is parametrized with a type [A], over
-elements of which we quantify, and a predicate function of type [A ->
-Prop]. What is very important is that the scope of the variable [x] in
-the constructor captures [ex A P] as well. That is, the constructor
-type could be written as [forall x, (P x -> ex A P)] to emphasize that
-each particular instance of [ex A P] carries is defined by a
-_particular_ value of [x]. The actual value of [x], which satisfies
-the predicate [P] is, however, not exposed to the client, providing
-the _data abstraction_ and information hiding, similarly to the
-traditional existential types (see %Chapter~24
-of~\cite{Pierce:BOOK02}%), which would serve as a good analogy.  Each
-inhabitant of the type [ex] is therefore an instance of a
-%\emph{dependent pair},\footnote{In the literature, dependent pairs
-are often referred to as \emph{dependent sums} or
-$\Sigma$-types.\index{dependent sum}}% whose first element is a
-_witness_ for the following predicate [P], and the second one is a
-result of application of [P] to [x], yielding a particular
-proposition.
-
-%\index{Sigma-type|see {dependent sum}}%
-
-The proofs of propositions that assume existential quantification are
-simply the proofs by case analysis: destructing the only constructor
-of [ex], immediately provides its arguments: a witness [x] and the
-predicate [P] it satisfies. The proofs, where the existential
-quantification is a goal, can be completed by applying the constructor
-[ex_intro] directly or by using a specialized Coq's tactic [exists z],
-which does exactly the same, instantiating the first parameter of the
-constructor with the provided value [z]. Let us demonstrate it on a
-simple example%~\cite[\S 5.2.6]{Bertot-Casteran:BOOK}%, accounting for
-the weakening of the predicate, satisfying the existentially
-quantified variable.
-
 *)
 
 Theorem ex_imp_ex A (S T: A -> Prop): 
@@ -736,10 +618,6 @@ subsequent statement, not just the proposition _S a_.
 
 Proof.
 
-(** First, we decompose the first existential sum into the witness [a]
-and the proposition [Hst], and also store the universally-quantified
-implication assumption with the name [Hst]. *)
-
 case=>a Hs Hst.
 (** 
 [[
@@ -752,6 +630,7 @@ case=>a Hs Hst.
   ============================
    exists b : A, T b
 ]]
+
 Next, we apply the [ex]'s constructor by means of the [exists]
 tactic with an explicit witness value [a]: 
 *)
@@ -764,120 +643,18 @@ by apply: Hst.
 
 Qed.
 
-(**
-%\begin{exercise}%
-
-Let us define our own version [my_ex] of the existential quantifier
-using the SSReflect notation for constructors:
-
-*)
-
-Inductive my_ex A (S: A -> Prop) : Prop := my_ex_intro x of S x.
-
-(** 
-
-The reader is invited to prove the following goal, establishing the
-equivalence of the two propositions
-
-*)
-
-Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
-
-(** 
-
-%\hint% the propositional equivalence [<->] is just a conjunction of
-two implications, so proving it can be reduced to two separate goals
-by means of [split] tactics.
-
-*)
-
-(* begin hide *)
-Proof.
-move=> A S; split.
-- by case=> x Hs; exists x.
-by case=>y Hs; apply: my_ex_intro Hs.
-Qed.
-(* end hide *) 
- 
-(** 
-
-%\end{exercise}%
-
-** A conjunction and disjunction analogy
+(** ** A conjunction and disjunction analogy
 
 Sometimes, the universal and the existential quantifications are
 paraphrased as "infinitary" conjunction and disjunction
 correspondingly. This analogy comes in handy when understanding the
 properties of both quantifications, so let us elabore on it for a bit.
 
-In order to prove the conjunction [P1 /\ ... /\ Pn], one needs to
-establish that _all_ propositions [P1 ... Pn] hold, which in the
-finite case can be done by proving [n] goal, for each statement
-separately (and this is what the [split] tactic helps to
-do). Similarly, in order to prove the propositions [forall x: A, P x],
-one needs to prove that [P x] holds for _any_ [x] of type [A]. Since
-the type [A] itself can define an infinite set, there is no way to
-enumerate all conjuncts, however, an explicit handle [x] gives a way
-to effective _index_ them, so proving [P x] for an arbitrary [x] would
-establish the validity of the universal quantification itself. Another
-useful insight is that in Coq [forall x: A, P x] is a type of a
-dependent function that maps [x] of type [A] to a value of type [P
-x]. The proof of the quantification would be, therefore, a function
-with a suitable "plot". Similarly, in the case of [n]-ary conjunction,
-the function has finite domain of exactly [n] points, for each of
-which an appropriate proof term should be found.
-
-In order to prove the [n]-ary disjunction [P1 \/ ... \/ Pn] in Coq, it
-is sufficient to provide a proof for just one of the disjunct _as well
-as_ a "tag" --- an indicator, which disjunct exactly is being proven
-(this is what tactics [left] and [right] help to achieve). In the case
-of infinitary disjunction, the existential quantification "[exists x,
-P x]", the existentially quantified variable plays role of the tag
-indexing all possible propositions [P x]. Therefore, in order to prove
-such a proposition, one needs first to deliver a witness [x] (usually,
-by means of calling the tactics [exists]), and then prove that for
-this witness/tag the proposition [P x] holds. Continuing the same
-analogy, the disjunction in the assumption of a goal usually leads to
-the proof by [case] analysis assuming that one of the disjuncts holds
-at a time. Similarly, the way to destruct the existential
-quantification is by case-analysing on its constructor, which results
-in acquiring the witness (i.e., the "tag") and the corresponding
-"disjunct".
-
-Finally, the folklore alias "dependent product type" for dependent
-function types (i.e., [forall]-quantified types) indicates its
-relation to products, which are Curry-Howard counterparts of
-conjunctions. In the same spirit, the term "dependent sum type" for
-the dependent types, of which existential quantification is a
-particular case, hints to the relation to the usual sum types, and, in
-particular [sum] (discussed in %Chapter~\ref{ch:funprog}%), which is a
-Curry-Howard dual of a disjunction.
-
 *)
 
 End Connectives.
 
-(** * Missing axioms from the classical logic
-%\label{sec:axioms}%
-
-In the previous sections of this chapter, we have seen how a fair
-amount of propositions from the higher-order propositional logics can
-be encoded and proved in Coq. However, some reasoning principles,
-employed in the _classical_ propositional logic, cannot be encoded in
-Coq in a form of provable statements, and, hence, should be encoded as
-_axioms_.
-
-%\index{classical propositional logic}% In this section, we provide a
-brief and by all means incomplete overview of the classical
-propositional logic axioms that are missing in Coq, but can be added
-by means of importing the appropriate libraries. %Chapter~12 of the
-book~\cite{Chlipala:BOOK}% contains a detailed survey of useful axioms
-that can be added into Coq development on top of CIC.
-
-To explore some of some of the axioms, we first import that classical
-logic module [Classical_Prop].
-
-*)
+(** * Missing axioms from the classical logic *)
 
 Require Import Classical_Prop.
 
@@ -887,8 +664,7 @@ Require Import Classical_Prop.
 The most often missed axiom is the axiom of _excluded middle_, which
 postulates that the disjunction of [P] and [~P] is provable. Adding
 this axiom circumvents the fact that the reasoning out of the excluded
-middle principle is _non-constructive_, as discussed in
-%Section~\ref{sec:conjdisj}%.
+middle principle is _non-constructive_.
 
 *)
 
@@ -901,11 +677,7 @@ classic
 ]]
 
 Another axiom from the classical logic, which coincides with the type
-of Scheme's [call/cc]
-operator%\footnote{\url{http://community.schemewiki.org/?call-with-current-continuation}}%
-(pronounced as _call with current continuation_) modulo Curry-Howard
-isomorphism is _Peirce's law_:
-%\index{Peirce's law}%
+of Scheme's [call/cc] operator.
 *)
 
 Definition peirce_law := forall P Q: Prop, ((P -> Q) -> P) -> P.
@@ -918,11 +690,6 @@ computation. Similarly to the fact that [call/cc] cannot be
 implemented in terms of polymorphically-typed lambda calculus as a
 function and should be added as an external operator, the Peirce's law
 is an axiom in the constructive logic.
-
-The classical double negation principle is easily derivable from
-Peirce's law, and corresponds to the type of [call/cc], which always
-invokes its continuation parameter, aborting the current computation.
-
 *)
 
 Check NNPP.
@@ -953,15 +720,9 @@ Curiously, none of these axioms, if added to Coq, makes its logic
 unsound: it has been rigorously proven (although, not within Coq, due
 to %\Godel%'s incompleteness result) that all classical logic axioms
 are consistent with CIC, and, therefore, don't make it possible to
-derive the falsehood%~\cite{Werner:TACS97}%.
+derive the falsehood.
 
-The following exercise reconcile most of the familiar axioms of the
-classical logic.
-
-
-
-%\begin{exercise}{Equivalence of classical logic axioms~\cite[\S
- 5.2.4]{Bertot-Casteran:BOOK}}
+%\begin{exercise}[Equivalence of classical logic axioms]
 \label{ex:equivax}
 %
 
@@ -1226,7 +987,7 @@ Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
 
 (**
 ---------------------------------------------------------------------
-%\begin{exercise}[$\forall$-distributivity]%
+%\begin{exercise}[forall-distributivity]%
 
 Formulate and prove the following theorem in Coq, which states the
 distributivity of universal quantification with respect to implication:
@@ -1239,8 +1000,37 @@ Be careful with the scoping of universally-quantified variables
 and use parentheses to resolve ambiguities!
 
 %\end{exercise}%
----------------------------------------------------------------------*
+---------------------------------------------------------------------
 *)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Home-brewed existential quantification]%
+
+Let us define our own version [my_ex] of the existential quantifier
+using the SSReflect notation for constructors: *)
+
+Inductive my_ex A (S: A -> Prop) : Prop := my_ex_intro x of S x.
+
+(** You invited to prove the following goal, establishing the
+equivalence of the two propositions. *)
+
+Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
+Proof.
+(* fill your prof here instead of [admit]*)
+admit. 
+Qed.
+ 
+(** 
+Hint: the propositional equivalence [<->] is just a conjunction of
+two implications, so proving it can be reduced to two separate goals
+by means of [split] tactics.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+
 Theorem all_imp_dist A (P Q: A -> Prop): 
   (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
 Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
