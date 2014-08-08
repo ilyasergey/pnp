@@ -371,6 +371,8 @@ one way to be constructed and can be constructed in any context, as
 their single constructor does not require any arguments.
 
 Thinking by analogy, one can now guess how the falsehood can be encoded.
+
+%\ssrd{False}%
 *)
 
 Print False.

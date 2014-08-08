@@ -1432,6 +1432,24 @@ and the size of the resulting list.
 rewrite ltnS in H1; apply: leq_trans H1. 
 rewrite -(count_predC (pred1 x) xs2) -count_filter.
 rewrite -addn1 addnC leq_add2r -has_count.
+
+(**
+[[
+  ...
+  H2 : {subset x :: xs1 <= xs2}
+  H3 : (x \in xs1) = false
+  xs2' := [seq x <- xs2 | (predC (pred1 x)) x0] : seq A
+  ============================
+   has (pred1 x) xs2
+]]
+
+The remaining goal can be proved by _reflecting_ the boolean
+proposition [has] into its [Prop]-counterpart [exists2] from SSReflect
+library. The switch is done using the view [hasP], and the proof is
+completed by supplying explicitly the existential witness%~%[x].
+
+*)
+
 by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
 Qed.
 

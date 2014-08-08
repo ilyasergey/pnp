@@ -681,6 +681,7 @@ Chapter~\ref{ch:eqrew}%) and introducing the inductive predicate
 family [reflect], which connects propositions an booleans:
 
 %\ssrd{reflect}%
+%\index{reflect datatype@{\textsf{reflect} datatype}}%
 
 *)
 
