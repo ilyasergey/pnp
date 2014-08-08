@@ -27,3 +27,5 @@ by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
 Qed.
 
 End Dirichlet.
+
+
