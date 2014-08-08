@@ -12,6 +12,7 @@ Module SsrStyle.
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
+(** printing is %\texttt{\emph{is}}% *)
 (** printing first %\texttt{{first}}% *)
 (** printing last %\texttt{{last}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
@@ -1254,7 +1255,8 @@ A number of such properties is usually defined in a generic way, using
 Coq's canonical structures, which is a topic of
 %Chapter~\ref{ch:depstruct}%.
 
-** Libraries for lists and finite sets
+** A library for lists
+%\label{sec:liblists}%
 
 Lists, being one of the most basic inductive datatypes, are usually a
 subject of a lot of exercises for the fresh Coq hackers. SSReflect's
@@ -1293,16 +1295,82 @@ constructor [cons]. We encourage the reader to check the proof of the
 list function properties, such as [nth_rev] or [foldl_rev] to see the
 reasoning by the [last_ind] induction principle.
 
-Another commonly used SSReflect module [finset] %\ssrm{finset}%
-implements a functionality of sets of elements of %\index{finite
-types}% of _finite_ types, i.e., types with a finite number of
-elements, providing operations such as intersection, union, complement
-as well as a number of lemmas about them. Notice, though, that
-assuming a type to be finite is quite a restriction; for instance,
-whereas [bool] is a finite type, [nat] is not (however, a finite
-segment of natural numbers%~%is).
+%\index{Dirichlet's box principle}%
+%\index{pigeonhole principle|see{Dirichlet's box principle}}%
+
+To demonstrate the power of the library for reasoning with lists, let
+us prove the following property, known as _Dirichlet's box principle_
+(sometimes also referred to as _pigeonhole principle_), the
+formulation of which we have borrowed from
+%Chapter~\textsc{MoreLogic}% of Pierce et al.'s
+course%~\cite{Pierce-al:SF}%.
 
 *)
+
+Variable A : eqType.
+
+Fixpoint has_repeat (xs : seq A) :=
+  if xs is x :: xs' then (x \in xs') || has_repeat xs' else false.
+
+(** 
+
+The property [has_repeat] is stated over the lists with elements that
+have decidable equality, which we have considered in
+%Section~\ref{sec:eqrefl}%. Following the computational approach, it
+is a boolean function, which makes use of the boolean disjunction [||]
+and SSReflect's element inclusion predicate [\in], which is similar to
+defined in the module [seq].
+
+The following lemma states that for two lists [xs1] and [xs2], is the
+size [xs2] is strictly smaller than the size of [xs1], but
+nevertheless [xs1] as a set is a subset of [xs2] then there ought to
+be repetitions in [xs1].
+
+*)
+
+Theorem dirichlet xs1 xs2 :
+        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1.
+
+(** 
+
+Let us go through the proof of this statement, as it is interesting by
+itself in its intensive use os SSReflect's library lemmas from the
+[seq] module.%\footnote{The final layout of the proof is courtesy of
+Aleks Nanevski.}%
+
+*)
+
+Proof.
+elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2. 
+
+(**
+[[
+  x : A
+  xs1 : seq A
+  IH : forall xs2 : seq A,
+       size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1
+  xs2 : seq A
+  H1 : size xs2 < (size xs1).+1
+  H2 : {subset x :: xs1 <= xs2}
+  ============================
+   (x \in xs1) || has_repeat xs1
+]]
+*)
+
+
+(* Complement and filter *)
+pose xs2' := filter (predC (pred1 x)) xs2.
+
+case H3: (x \in xs1) => //=.
+apply: (IH xs2'); last first.
+- move=>y H4; move: (H2 y); rewrite inE H4 orbT mem_filter /=.
+  by move => -> //; case: eqP H3 H4 => // ->->. 
+rewrite ltnS in H1; apply: leq_trans H1. 
+rewrite -(count_predC (pred1 x) xs2) -count_filter.
+rewrite -addn1 addnC leq_add2r -has_count.
+by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
+Qed.
+
 
 (* begin hide *)
 End SsrStyle.
