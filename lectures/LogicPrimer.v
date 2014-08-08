@@ -721,10 +721,158 @@ unsound: it has been rigorously proven (although, not within Coq, due
 to %\Godel%'s incompleteness result) that all classical logic axioms
 are consistent with CIC, and, therefore, don't make it possible to
 derive the falsehood.
+*)
 
-%\begin{exercise}[Equivalence of classical logic axioms]
-\label{ex:equivax}
-%
+(** * Universes and [Prop] impredicativity
+
+_Impredicativity_ as a property of definitions allows one to define
+domains that are _self-recursive_---a feature of [Prop] that we
+recently observed. Unfortunately, when restated in the classical set
+theory, impredicativity immediately leads to the famous Russel's
+paradox, which arises from the attempt to define a set of all sets
+that do not belong to themselves. In the terms of programming, the
+Russel's paradox provides a recipe to encode a fixpoint combinator in
+the calculus itself and write generally-recursive programs.
+
+** Exploring and debugging the universe hierarchy
+
+In the light of %Martin-\loef%'s stratification, the Coq'
+non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
+"live" at the [0]th level of universe hierarchy, namely, in the sort
+[Set]. The polymorphic types, quantifying over the elements of the
+[Set] universe are, therefore located at the higher level, which in
+Coq is denoted as [Type(1)], but in the displays is usually presented
+simply as [Type], as well as all the higher universes. We can enable
+the explicit printing of the universe levels to see how they are
+assigned:
+
+*)
+
+Set Printing Universes.
+
+Check bool.
+
+(**
+[[
+bool
+     : Set
+]]
+*)
+
+Check Set.
+
+
+Check Prop.
+
+(**
+The following type is polymorphic over the elements of the [Set]
+universe, and this is why its own universe is "bumped up" by one, so
+it becomes [Type(1)].
+*)
+
+Definition S := forall T: Set, list T. 
+Check S.
+
+(**
+At this moment, Coq provides a very limited version of _universe
+polymorphism_. For instance, the next definition [R] is polymorphic
+with respect to the universe of its parameter [A], so its result lives
+in the universe, whose level is taken to be the level of [A].
+
+*)
+
+Definition R (A: Type) (x: A): A := x. 
+Implicit Arguments R [A].
+
+Check R tt. 
+
+(** 
+[[
+R tt 
+     : unit
+]]
+*)
+
+(** 
+
+If the argument of [R] is itself a universe, it means that [A]'s
+level is higher than [x]'s level, and so is the level of [R]'s result.
+
+*)
+
+Check R Type. 
+
+(**
+However, the attempt to apply [R] to itself immediately leads to an
+error reported, as the system cannot infer the level of the result, by
+means of solving a system of universe level inequations, therefore,
+preventing meta-circular paradoxes.
+
+*)
+
+(**
+[[
+Check R R.
+
+Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
+]]
+*)
+
+
+
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[forall-distributivity]%
+
+Formulate and prove the following theorem in Coq, which states the
+distributivity of universal quantification with respect to implication:
+\[
+forall P Q, 
+  [(forall x, P(x) => Q(x)) => ((forall y, P(y)) => forall z, Q(z))]
+\]
+
+Be careful with the scoping of universally-quantified variables
+and use parentheses to resolve ambiguities!
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Home-brewed existential quantification]%
+
+Let us define our own version [my_ex] of the existential quantifier
+using the SSReflect notation for constructors: *)
+
+Inductive my_ex A (S: A -> Prop) : Prop := my_ex_intro x of S x.
+
+(** You invited to prove the following goal, establishing the
+equivalence of the two propositions. *)
+
+Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
+Proof.
+move=> A S; split.
+- by case=> x Hs; exists x.
+by case=>y Hs; apply: my_ex_intro Hs.
+Qed.
+ 
+(** 
+Hint: the propositional equivalence [<->] is just a conjunction of
+two implications, so proving it can be reduced to two separate goals
+by means of [split] tactics.
+
+%\end{exercise}%
+---------------------------------------------------------------------
+*)
+
+(**
+---------------------------------------------------------------------
+%\begin{exercise}[Equivalence of classical logic axioms]%
 
 Prove that the following five axioms of the classical are equivalent.
 
@@ -736,7 +884,6 @@ Definition excluded_middle := forall P: Prop, P \/ ~P.
 Definition de_morgan_not_and_not := forall P Q: Prop, ~ ( ~P /\ ~Q) -> P \/ Q.
 Definition implies_to_or := forall P Q: Prop, (P -> Q) -> (~P \/ Q).
 
-(* begin hide *)
 Lemma peirce_dn: peirce -> double_neg.
 Proof. by move=>H P Hn; apply: (H _ False)=> /Hn. Qed.
 
@@ -777,258 +924,26 @@ move: (H1 P P) =>/(_ X); case=>{X}// Pn.
 by apply: (H2)=>p. 
 Qed.
 
-(* end hide *)
-
 (**
 
-%\hint% Use [rewrite /d] %\ssrt{rewrite}% tactics to unfold the
- definition of a value [d] and replace its name by its body. You can
- chain several unfoldings by writing [rewrite /d1 /d2 ...]
- etc. %\ssrt{rewrite}%
+Hint: Use [rewrite /d] tactics to unfold the definition of a value [d]
+ and replace its name by its body. You can chain several unfoldings by
+ writing [rewrite /d1 /d2 ...]  etc.
 
-%\hint% To facilitate the forward reasoning by contradiction, you can
- use the SSReflect tactic [suff: P], %\ssrt{suff:}% where [P] is
- an arbitrary proposition. The system will then require you to prove
- that [P] implies the goal _and_ [P] itself.
+Hint: To facilitate the forward reasoning by contradiction, you can
+ use the SSReflect tactic [suff: P], where [P] is an arbitrary
+ proposition. The system will then require you to prove that [P]
+ implies the goal _and_ [P] itself.
 
-%\ssrt{admit}%
-
-%\hint% Stuck with a tricky proof? Use the Coq [admit] tactic as a
+Hint: Stuck with a tricky proof? Use the Coq [admit] tactic as a
  "stub" for an unfinished proof of a goal, which, nevertheless will be
  considered completed by Coq. You can always get back to an admitted
  proof later.
 
 %\end{exercise}%
-
-*)
-
-(** * Universes and [Prop] impredicativity
-
-While solving Exercise%~\ref{ex:equivax}% from the previous section,
-the reader could notice an interesting detail about the propositions
-in Coq and the sort [Prop]: the propositions that quantify over
-propositions still remain to be propositions, i.e., they still belong
-to the sort [Prop]. This property of propositions in Coq (and, in
-general, the ability of entities of some class to abstract over the
-entities of the same class) is called
-_impredicativity_. %\index{impredicativity}% The opposite
-characteristic (i.e., the inability to refer to the elements of the
-same class) is called _predicativity_. %\index{predicativity}%
-
-One of the main challenges when designing the Calculus of
-Constructions was to implement its logical component (i.e., the
-fragment responsible for constructing and operating with elements of
-the [Prop] sort), so it would subsume the existing impredicative
-propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
-%\index{System $F$}%
-particular, %System~$F$% (which is impredicative), allowing for the
-expressive reasoning in the higher-order propositional logic.
-
-_Impredicativity_ as a property of definitions allows one to define
-domains that are _self-recursive_---a feature of [Prop] that we
-recently observed. Unfortunately, when restated in the classical set
-theory, impredicativity immediately leads to the famous Russel's
-paradox, which arises from the attempt to define a set of all sets
-that do not belong to themselves. In the terms of programming, the
-Russel's paradox provides a recipe to encode a fixpoint combinator in
-the calculus itself and write generally-recursive programs.
-
-%System~$F$% is not a dependently-typed calculus and it has been
-proven to contain no paradoxes%~\cite{Girard:PhD}%, as it reasons only
-about _types_ (or, _propositions_), which do not depend on
-values. However, adding dependent types to the mix (which Coq requires
-to make propositions quantify over arbitrary values, not just other
-propositions, serving as a general-purpose logic) makes the design of
-a calculus more complicated, in order to avoid paradoxes akin to the
-Russels', which arise from mixing values and sets of values. This
-necessity to "cut the knot" inevitably requires to have a sort of a
-higher level, which contains all sets and propositions (i.e., the
-whole sorts [Set] and [Prop]), but does not contain itself. Let us
-call such sort [Type]. It turns out that the self-inclusion [Type :
-Type] leads to another class of paradoxes%~\cite{Coquand:LICS86}%, and
-in order to avoid them the hierarchy of higher-order sorts should be
-made infinite and _stratified_. %\index{stratification}%
-Stratification means that each sort has a level number, and is
-contained in a sort of a higher level but not in itself. The described
-approach is suggested by %Martin-\loef~\cite{Martin-Loef:84}% and
-adopted literally, in particular, by
-Agda%~\cite{Norell:PhD}\index{Agda}%. The stratified type sorts,
-following %Martin-\loef%'s tradition, are usually referred to as
-_universes_.%\index{universes}%
-
-A similar stratification is also implemented in Coq, which has its own
-universe hierarchy, although with an important twist. The two
-universes, [Set] and [Prop] cohabit at the first level of the universe
-hierarchy with [Prop] being impredicative. The universe containing
-both [Set] and [Prop] is called [Type(1)], and it is _predicative_, as
-well as all universes that are above it in the hierarchy. CIC
-therefore remains consistent as a calculus, only because of the fact
-that all impredicativity in it is contained at the very bottom of the
-hierarchy.
-
-** Exploring and debugging the universe hierarchy
-
-In the light of %Martin-\loef%'s stratification, the Coq'
-non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
-"live" at the [0]th level of universe hierarchy, namely, in the sort
-[Set]. The polymorphic types, quantifying over the elements of the
-[Set] universe are, therefore located at the higher level, which in
-Coq is denoted as [Type(1)], but in the displays is usually presented
-simply as [Type], as well as all the higher universes. We can enable
-the explicit printing of the universe levels to see how they are
-assigned:
-
-%\ccom{Set Printing Universes}%
-
-*)
-
-Set Printing Universes.
-
-Check bool.
-
-(**
-[[
-bool
-     : Set
-]]
-*)
-
-Check Set.
-
-(**
-%
-\texttt{Set}
-
-~~~~~\texttt{: Type (* (Set)+1 *)}
-%
-*)
-
-Check Prop.
-
-(**
-%
-\texttt{Prop}
-
-~~~~~\texttt{: Type (* (Set)+1 *)}
-%
-
-The following type is polymorphic over the elements of the [Set]
-universe, and this is why its own universe is "bumped up" by one, so
-it becomes [Type(1)].
-
-*)
-
-Definition S := forall T: Set, list T. 
-Check S.
-
-(**
-
-%
-\textsf{S}
-
-~~~~~\texttt{: Type (* max(Set, (Set)+1) *)}
-%
-
-At this moment, Coq provides a very limited version of _universe
-polymorphism_. For instance, the next definition [R] is polymorphic
-with respect to the universe of its parameter [A], so its result lives
-in the universe, whose level is taken to be the level of [A].
-
-*)
-
-Definition R (A: Type) (x: A): A := x. 
-Implicit Arguments R [A].
-
-Check R tt. 
-
-(** 
-[[
-R tt 
-     : unit
-]]
-*)
-
-(** 
-
-If the argument of [R] is itself a universe, it means that [A]'s
-level is higher than [x]'s level, and so is the level of [R]'s result.
-
-*)
-
-Check R Type. 
-
-(**
-
-%
-\textsf{R} 
-
-~~~~~\texttt{: Type (* Top.1237 *) : Type (* Top.1238 *)}
-%
-
-However, the attempt to apply [R] to itself immediately leads to an
-error reported, as the system cannot infer the level of the result, by
-means of solving a system of universe level inequations, therefore,
-preventing meta-circular paradoxes.
-
-*)
-
-(**
-[[
-Check R R.
-
-Error: Universe inconsistency (cannot enforce Top.1225 < Top.1225).
-]]
-
-*)
-
-(*******************************************************************)
-(**                     * Exercices *                              *)
-(*******************************************************************)
-
-(**
----------------------------------------------------------------------
-%\begin{exercise}[forall-distributivity]%
-
-Formulate and prove the following theorem in Coq, which states the
-distributivity of universal quantification with respect to implication:
-\[
-forall P Q, 
-  [(forall x, P(x) => Q(x)) => ((forall y, P(y)) => forall z, Q(z))]
-\]
-
-Be careful with the scoping of universally-quantified variables
-and use parentheses to resolve ambiguities!
-
-%\end{exercise}%
 ---------------------------------------------------------------------
 *)
 
-(**
----------------------------------------------------------------------
-%\begin{exercise}[Home-brewed existential quantification]%
-
-Let us define our own version [my_ex] of the existential quantifier
-using the SSReflect notation for constructors: *)
-
-Inductive my_ex A (S: A -> Prop) : Prop := my_ex_intro x of S x.
-
-(** You invited to prove the following goal, establishing the
-equivalence of the two propositions. *)
-
-Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
-Proof.
-(* fill your prof here instead of [admit]*)
-admit. 
-Qed.
- 
-(** 
-Hint: the propositional equivalence [<->] is just a conjunction of
-two implications, so proving it can be reduced to two separate goals
-by means of [split] tactics.
-
-%\end{exercise}%
----------------------------------------------------------------------
-*)
 
 
 Theorem all_imp_dist A (P Q: A -> Prop): 
