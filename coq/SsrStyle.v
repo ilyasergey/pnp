@@ -956,6 +956,7 @@ Qed.
 
 
 (**
+%\noindent%
 As usual, do not hesitate to use the [Search] utility for finding the
 necessary rewriting lemmas from the [ssrnat] module.
 
