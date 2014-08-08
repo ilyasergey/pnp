@@ -749,16 +749,16 @@ Qed.
 
 %\end{exercise}%
 
-* Inductive predicates that cannot be avoided
+* Inductive predicates that are hard to avoid
 %\label{sec:cannot}%
 
 Although formulating predicates as boolean functions is often
-preferable, it is not always trivial to do so. Sometimes, it is much
-simpler to come up with an inductive predicate, which witnesses the
-property of interest. As an example for such property, let us consider
-the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
-%Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
-\textsf{MoreInd})%.
+preferable, it is not always trivial to do so. Sometimes, it is
+(seemingly) much simpler to come up with an inductive predicate, which
+explicitly witnesses the property of interest. As an example for such
+property, let us consider the notion of _beautiful_ and _gorgeous_
+numbers, which we borrow from %Pierce et al.'s electronic
+book~\cite{Pierce-al:SF} (Chapter \textsf{MoreInd})%.
 
 %\ssrd{beautiful}%
 
@@ -899,9 +899,9 @@ Qed.
 
 (** 
 
-%\begin{exercise}%
+%\begin{exercise}\label{ex:gb}%
 
-Prove the following statements about gorgeous numbers:
+Prove by induction the following statements about gorgeous numbers:
 
 *)
 
@@ -942,10 +942,210 @@ by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
 (* end hide *)
 
-(**
+Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
+(* begin hide *)
+Proof.
+elim=>{n}n=>//.
+- by move=>->; apply: b_0.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 3) m 3 H2)=>H; apply: H=>//; apply: b_3.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 5) m 5 H2)=>H; apply: H=>//; apply: b_5.
+Qed.
+(* end hide *)
 
+
+(**
 As usual, do not hesitate to use the [Search] utility for finding the
 necessary rewriting lemmas from the [ssrnat] module.
+
+%\end{exercise}%
+
+*)
+
+
+(** 
+%\begin{exercise}[Gorgeous reflection]%
+
+%\index{Frobenius problem}%
+%\index{coin problem|see {Frobenius problem}}%
+
+Gorgeous and beautiful numbers, defining, in fact, exactly the same
+subset of [nat] are a particular case of Frobenius coin problem, which
+asks for the largest integer amount of money, that cannot be obtained
+using only coins of specified
+denominations.%\footnote{\url{http://en.wikipedia.org/wiki/Frobenius_problem}}%
+In the case of [beautiful] and [gorgeous] numbers we have two
+denominations available, namely [3] and [5]. An explicit formula
+exists for the case of only two denominations $n_1$ and $n_2$, which
+allows one to compute the Frobenius number as $g(n_1, n_2) = n_1
+\times n_2 - n_1 - n_2$. That said, for the case $n_1 = 3$ and $n_2 =
+5$ the Frobenius number is $7$, which means that all numbers greater
+or equal than $8$ are in fact beautiful and gorgeous (since the two
+are equivalent, as was established by Exercise%~\ref{ex:gb}%).
+
+In this exercise, we suggest the reader to prove that the efficient
+procedure of "checking" for gorgeousness is in fact correct. First,
+let us defined the following candidate function.
+
+*)
+
+Fixpoint gorgeous_b n : bool := match n with 
+ | 1 | 2 | 4 | 7 => false
+ | _ => true
+ end. 
+
+(** 
+
+%\noindent%
+The ultimate goal of this exercise is to prove the statement [reflect
+(gorgeous n) (gorgeous_b n)], which would mean that the two
+representations are equivalent. Let us divide the proof into two stages:
+
+- The first stage is proving that all numbers greater or equal than
+  [8] are gorgeous. To prove thism it might be useful to have the
+  following two facts established:
+
+%\hint% Use the tactic [constructor i] to prove a goal, which is an
+ [n]-ary disjunction, which is satisfied if its [i]th disjunct is
+ true.
+
+*)
+
+Lemma repr3 n : n >= 8 -> 
+  exists k, [\/ n = 3 * k + 8, n = 3 * k + 9 | n = 3 * k + 10].
+(* begin hide *)
+Proof.
+elim: n=>// n Ih.
+rewrite leq_eqVlt; case/orP.
+- by rewrite eqSS=>/eqP<-; exists 0; rewrite muln0 add0n; constructor.
+case/Ih=>k; case=>->{n Ih}.
+- by exists k; constructor 2; rewrite -addn1 -addnA addn1.
+- by exists k; constructor 3; rewrite -addn1 -addnA addn1.
+exists (k.+1); constructor 1.  
+by rewrite mulnSr -addn1 -2!addnA; congr (_ + _).
+Qed.
+(* end hide *)
+
+Lemma gorg3 n : gorgeous (3 * n).
+(* begin hide *)
+Proof.
+elim: n=>//[|n Ih]; first by apply: g_0; rewrite muln0.
+by rewrite mulnSr; apply: (g_plus3 _ (3*n)).
+Qed.
+(* end hide *)
+
+(** 
+
+%\noindent%
+Next, we can establish by induction the following criteria using the
+lemmas [repr3] and [gorg3] in the subgoals of the proof.
+
+*)
+
+Lemma gorg_criteria n : n >= 8 -> gorgeous n.
+(* begin hide *)
+Proof.
+case/repr3=>k; case=>->{n}.
+- apply: (g_plus5 _ (3*k + 3)); last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+- apply: (g_plus3 _ (3*k + 6))=>//; last by rewrite -addnA.
+  apply: (g_plus3 _ (3*k + 3))=>//; last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+apply: (g_plus5 _ (3*k + 5))=>//; last by rewrite -addnA.
+by apply: (g_plus5 _ (3*k))=>//; apply: gorg3.
+Qed.
+(* end hide *)
+
+(** 
+
+%\noindent%
+This makes the proof of the following lemma trivial.
+
+*)
+
+Lemma gorg_refl' n: n >= 8 -> reflect (gorgeous n) true.
+(* begin hide *)
+Proof. by move/gorg_criteria=>H; constructor. Qed.
+(* end hide *)
+
+(** 
+
+- In the second stage of the proof of reflection, we will
+  need to prove four totally boring but unavoidable lemmas.
+
+%\hint% The rewriting lemmas [addnC] and [eqSS] from the [ssrnat]
+ module might be particularly useful here.
+
+*)
+
+
+Lemma not_g1: ~(gorgeous 1).
+(* begin hide *)
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+(* end hide *)
+
+Lemma not_g2: ~(gorgeous 2).
+(* begin hide *)
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+(* end hide *)
+
+Lemma not_g4: ~(gorgeous 4).
+(* begin hide *)
+Proof.
+case=>//n Ih /eqP; last by rewrite addnC eqSS.  
+case: n Ih=>//n Ih.
+rewrite addnC !eqSS. move/eqP=>Z; subst n. 
+by apply:not_g1.
+Qed.
+(* end hide *)
+
+Lemma not_g7: ~(gorgeous 7).
+(* begin hide *)
+Proof.
+case=>//n Ih /eqP; case: n Ih=>//n Ih;
+  rewrite addnC !eqSS; move/eqP=>Z; subst n. 
+- by apply:not_g4. 
+by apply:not_g2. 
+Qed.
+(* end hide *)
+
+(** 
+
+%\noindent% We can finally provide prove the ultimate reflection
+predicate, relating [gorgeous] and [gorgeous_b].
+
+*)
+Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
+(* begin hide *)
+Proof.
+case: n=>/=[|n]; first by constructor; apply:g_0.
+case: n=>/=[|n]; first by constructor; apply: not_g1.
+case: n=>/=[|n]; first by constructor; apply: not_g2.
+case: n=>/=[|n]. 
+- constructor; apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g4.
+case: n=>/=[|n].
+- constructor; apply:(g_plus5 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n].
+- constructor; apply:(g_plus3 _ 3)=>//.
+  apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g7.
+suff X: (n.+4.+4 >= 8); last by [].
+by apply:(gorg_refl').
+Qed.
+(* end hide *)
+
+(** 
 
 %\end{exercise}%
 
@@ -1106,39 +1306,6 @@ segment of natural numbers%~%is).
 (* begin hide *)
 End SsrStyle.
 (* end hide *)
-
-
-
-
-(* Dirichlet *)
-Require Import ssreflect ssrfun ssrbool ssrnat eqtype seq.
-Set Implicit Arguments. 
-Unset Strict Implicit. 
-Set Automatic Coercions Import.
-Unset Printing Implicit Defensive. 
-
-Section Dirichlet.
-Variable A : eqType.
-
-Fixpoint has_repeat (xs : seq A) :=
-  if xs is x :: xs' then (x \in xs') || has_repeat xs' else false.
-
-Lemma dirichlet xs1 xs2 :
-        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1.
-Proof.
-elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2. 
-pose xs2' := filter (predC (pred1 x)) xs2.
-case H3: (x \in xs1) => //=.
-apply: (IH xs2'); last first.
-- move=>y H4; move: (H2 y); rewrite inE H4 orbT mem_filter /=.
-  by move => -> //; case: eqP H3 H4 => // ->->. 
-rewrite ltnS in H1; apply: leq_trans H1. 
-rewrite -(count_predC (pred1 x) xs2) -count_filter.
-rewrite -addn1 addnC leq_add2r -has_count.
-by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
-Qed.
-
-End Dirichlet.
 
 
 
