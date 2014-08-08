@@ -1169,7 +1169,7 @@ subset of the standard SSReflect programming and naming policies,
 which will, hopefully, simplify the use of the libraries in a
 standalone development.
 
-** Notation and standard operation properties
+** Notation and standard properties of algebraic operations
 %\label{sec:funprops}%
 
 SSReflect's module [ssrbool] introduces convenient notation for
@@ -1309,12 +1309,12 @@ course%~\cite{Pierce-al:SF}%.
 
 Variable A : eqType.
 
-Fixpoint has_repeat (xs : seq A) :=
-  if xs is x :: xs' then (x \in xs') || has_repeat xs' else false.
+Fixpoint has_repeats (xs : seq A) :=
+  if xs is x :: xs' then (x \in xs') || has_repeats xs' else false.
 
 (** 
 
-The property [has_repeat] is stated over the lists with elements that
+The property [has_repeats] is stated over the lists with elements that
 have decidable equality, which we have considered in
 %Section~\ref{sec:eqrefl}%. Following the computational approach, it
 is a boolean function, which makes use of the boolean disjunction [||]
@@ -1329,7 +1329,7 @@ be repetitions in [xs1].
 *)
 
 Theorem dirichlet xs1 xs2 :
-        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1.
+        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeats xs1.
 
 (** 
 
@@ -1341,6 +1341,16 @@ Aleks Nanevski.}%
 *)
 
 Proof.
+
+(** 
+
+First, the proof scripts initiates the induction on the structure of
+the first, "longer", list [xs1], simplifying and moving to the context
+some hypotheses in the "step" case (as the [nil]-case is proved
+automatically).
+
+*)
+
 elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2. 
 
 (**
@@ -1348,23 +1358,77 @@ elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2.
   x : A
   xs1 : seq A
   IH : forall xs2 : seq A,
-       size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1
+       size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeats xs1
   xs2 : seq A
   H1 : size xs2 < (size xs1).+1
   H2 : {subset x :: xs1 <= xs2}
   ============================
-   (x \in xs1) || has_repeat xs1
+   (x \in xs1) || has_repeats xs1
 ]]
+
+Next, exactly in the case of a paper-and-pencil proof, we perform the
+case-analysis on the fact [(x \in xs1)], i.e., whether the "head"
+element [x] occurs in the remainder of the list [xs1]. If is,
+the proof is trivial and automatically discharged.
+
 *)
 
-
-(* Complement and filter *)
-pose xs2' := filter (predC (pred1 x)) xs2.
-
 case H3: (x \in xs1) => //=.
+(**
+[[
+  ...
+  H3 : (x \in xs1) = false
+  ============================
+   has_repeats xs1
+]]
+
+Therefore, we are considering now the situation when [x] was the
+_only_ representative of its class in the original "long" list.  For
+the further inductive reasoning, we will have to remove the same
+element from the "shorter" list [xs2], which is done using the
+following filtering operation ([pred1 x] checks every element for
+equality to [x] and [predC] construct a negation of the passed
+predicate), resulting in the list [xs2'], to which the induction
+hypothesis is applied, resulting in two goals
+
+*)
+
+pose xs2' := filter (predC (pred1 x)) xs2.
 apply: (IH xs2'); last first.
+
+(**
+[[
+  ...
+  H2 : {subset x :: xs1 <= xs2}
+  H3 : (x \in xs1) = false
+  xs2' := [seq x <- xs2 | (predC (pred1 x)) x0] : seq A
+  ============================
+   {subset xs1 <= xs2'}
+
+subgoal 2 (ID 5716) is:
+ size xs2' < size xs1
+]]
+
+The first goal is discharged by first "de-sugaring" the [{subset ...}]
+notation and moving a universally-quantified variable to the top, and
+then performing a number of rewriting with the lemmas from the
+[seq] library, such as [inE] and [mem_filter] (check their types!).
+*)
+
 - move=>y H4; move: (H2 y); rewrite inE H4 orbT mem_filter /=.
   by move => -> //; case: eqP H3 H4 => // ->->. 
+
+(** 
+
+The second goal requires to prove the inequality, which states that
+after removal of [x] from [xs2], the length of the resulting list
+[xs2] is smaller than the length of [xs1]. This is accomplished by the
+transitivity of [<] and several rewritings by lemmas from the [seq]
+and [ssrnat] modules, mostly targeted to relate the [filter] function
+and the size of the resulting list.
+
+*)
+
 rewrite ltnS in H1; apply: leq_trans H1. 
 rewrite -(count_predC (pred1 x) xs2) -count_filter.
 rewrite -addn1 addnC leq_add2r -has_count.
