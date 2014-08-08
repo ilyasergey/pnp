@@ -1335,8 +1335,7 @@ Theorem dirichlet xs1 xs2 :
 
 Let us go through the proof of this statement, as it is interesting by
 itself in its intensive use os SSReflect's library lemmas from the
-[seq] module.%\footnote{The final layout of the proof is courtesy of
-Aleks Nanevski.}%
+[seq] module.
 
 *)
 
