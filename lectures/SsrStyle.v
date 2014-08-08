@@ -1291,6 +1291,10 @@ segment of natural numbers%~%is).
 
 *)
 
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
 Lemma repr3 n : n >= 8 -> 
   exists k, [\/ n = 3 * k + 8, n = 3*k + 9 | n = 3*k + 10].
 Proof.
@@ -1506,6 +1510,24 @@ Fixpoint nostutter (l : seq nat): bool :=
 
 
 
+Require Import seq.
+
+Fixpoint all {X} (P : X -> Prop) (ls: seq X): Prop := 
+  if ls is x::xs then P x /\ all P xs else True.
+
+Fixpoint allb {X : Type} (test : X -> bool) (ls : seq X) : bool :=
+  if ls is x::xs then test x && allb test xs else true.
+
+Lemma allP T P test: 
+  (forall x: T, reflect (P x) (test x)) -> 
+  forall ls, reflect (all P ls) (allb test ls).
+Proof.
+move=>H; elim=>//=[| x xs Ih]; first by constructor.
+case X: (test x)=>/=; last by constructor; case; move/H; rewrite X.
+case Y: (allb test xs); constructor.
+- by split; [apply/H | case: Ih Y]. 
+by case: Ih Y=>// H1 _; case.
+Qed.
 
 
 
