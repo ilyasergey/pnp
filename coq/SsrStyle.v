@@ -1124,7 +1124,7 @@ Fixpoint has_repeat (xs : seq A) :=
   if xs is x :: xs' then (x \in xs') || has_repeat xs' else false.
 
 Lemma dirichlet xs1 xs2 :
-       size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1.
+        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeat xs1.
 Proof.
 elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2. 
 pose xs2' := filter (predC (pred1 x)) xs2.
@@ -1134,11 +1134,12 @@ apply: (IH xs2'); last first.
   by move => -> //; case: eqP H3 H4 => // ->->. 
 rewrite ltnS in H1; apply: leq_trans H1. 
 rewrite -(count_predC (pred1 x) xs2) -count_filter.
-rewrite -subn_gt0 -subnBA // subnn subn0 -has_count.
+rewrite -addn1 addnC leq_add2r -has_count.
 by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
 Qed.
 
 End Dirichlet.
+
 
 
 
