@@ -559,7 +559,8 @@ Qed.
 
 (** 
 
-%\begin{exercise}[PCM laws]% Proof the rest of the PCM laws.
+%\begin{exercise}[PCM laws]% 
+Proove the rest of the PCM laws.
 
 *)
 

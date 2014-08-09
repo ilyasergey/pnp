@@ -1,173 +1,21 @@
-(** 
-%
-\chapter{Encoding Mathematical Structures}
-\label{ch:depstruct}
-% 
-*)
+(** %\chapter{Encoding Mathematical Structures}% *)
 
-(* begin hide *)
 Module DepRecords.
-(* end hide *)
 
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-(** printing R $R$ *)
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing first %\texttt{{first}}% *)
-(** printing last %\texttt{\emph{last}}% *)
-(** printing suff %\texttt{\emph{suff}}% *)
-(** printing have %\texttt{\emph{have}}% *)
-(** printing View %\texttt{\emph{View}}% *)
-(** printing >-> %\texttt{>->}% *)
-(** printing bot $\bot$ *)
-(** printing <== $\pre$ *)
-
-
-
-(**  
-
-Long before programming has been established as a discipline,
-mathematics became to be perceived as a science of building
-abstractions and summarizing important properties of various entities
-necessary for describing the nature's phenomenons.%\footnote{In
-addition to being a science of rewriting, as we have already covered
-in Chapter~\ref{ch:eqrew}.}% From the basic course of algebra, we are
-familiar with a number of mathematical structures, such as monoids,
-groups, rings, fields etc., the couple a _carrier_ set (or a number of
-sets), a number of operations on it (them), and a collection of
-properties of the set itself and operations on them.
-
-From a working programmer's perspective, a notion of a mathematical
-abstract structure is reminiscent to a notion of a class from
-object-oriented programming, modules from Standard ML and type
-classes%~\cite{Wadler-Blott:POPL89}% from Haskell: all these
-mechanisms are targeted to solve the same goal: _package_ a number of
-operations manipulating with some data, while abstracting of a
-particular implementation of this data itself. What neither of these
-programming mechanisms is capable of doing, comparing to mathematics,
-is enforcing the requirement for one to provide the _proofs_ of
-properties, which restrict the operations on the data structure. For
-instance, one can implement a type class for a _lattice_ in Haskell as
-follows: %\index{type classes}\index{Haskell}%
-
-<<
-  class Lattice a where
-    bot :: a
-    top :: a
-    pre :: a -> a -> Bool
-    lub :: a -> a -> a
-    glb :: a -> a -> a
->>
-
-That is, the class %\texttt{Lattice}% is parametrized by a _carrier_
-type %\texttt{a}%, and provides the abstract interfaces for top and
-bottom elements of the lattice, as well as for the ordering predicate
-%\texttt{pre}% and the binary _least-upper-bound_ and
-_greatest-lower-bound_ operations. What this class cannot capture is a
-number of restrictions, for instance, that the %\texttt{pre}% relation
-should be transitive, reflexive and antisymmetric. That said, one can
-instantiate the %\texttt{Lattice}% class, e.g., for integers,
-%\index{lattice}% providing an implementation of %\texttt{pre}%, which
-is _not_ a partial order (e.g., just constant %\texttt{true}%). While
-this relaxed approach is supposedly fine for the programming needs, as
-the type classes are used solely for computing, not the reasoning
-about the correctness of the computations, this is certainly
-unsatisfactory from the mathematical perspective. Without the
-possibility to establish and enforce the necessary properties of a
-mathematical structure's operations, we would not be able to carry out
-any sort of sound formal reasoning, as we simply could not distinguish
-a "correct" implementation from a flawed one.
-
-Luckily, Coq's ability to work with dependent types and combine
-programs and propositions about them in the same language, as we've
-already witnessed in the previous chapters, makes it possible to
-define mathematical structures with a necessary degree of rigour and
-describe their properties precisely by means of stating them as
-_types_ (i.e., propositions) of the appropriate implementation's
-parameters. Therefore, any faithful instance of an abstract
-mathematical structure implemented this way, would be enforced to
-provide not just the _carrier_ and implementations of the declared
-operations but also _proofs_ of propositions that constrain these
-operations and the carrier.
-
-In this chapter we will learn how to encode common algebraic data
-structures in Coq in a way very similar to how data structures are
-encoded in languages like C (with a bit of Haskell-ish type class-like
-machinery), so the represintation, unlike the one in C or Haskell,
-would allow for flexible and generic reasoning about the structures'
-properties. In the process, we will meet some old friends from the
-course of abstract algebra---partial commutative monoids, and implement
-them using Coq's native constructs: dependent records and canonical
-structures.
-
-As usual, we will require a number of SSReflect package imported.
-
-*)
-
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
-
-(** 
-
-We will also require to execute a number of Vernacular commands
-simplifying the handling of implicit datatype arguments.
-
-%\ccom{Set Implicit Arguments}%
-%\ccom{Unset Strict Implicit}%
-%\ccom{Unset Printing Implicit}%
-
-*)
+Require Import ssreflect ssrbool ssrnat ssrfun.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
-(** 
-
-* Encoding partial commutative monoids
-%\label{sec:pcms}%
-
-%\index{partial commutative monoid}%
-%\index{PCM|see {partial commutative monoid}}%
-
-We will be using partial commutative monoids (PCMs) as an illustrative
-example of a simple algebraic data structure, a subject of encoding
-and formalization. A PCM is defined as an algebraic structure with a
-carrier set [U], abstract binary "join" operation $\join$ and a unit
-element $\unit$.%\footnote{Sometimes also referred to as an
-\emph{identity} or \emph{neutral} element.}%%\index{unit element}%
-%\index{join operation}% The join operation is required to be
-associative and commutative, and for the unit element the left and
-right identity equalities should hold. Moreover, partiality means that
-the operation $\join$ might be undefined for some pairs of elements
-[a] and [b] (and in this case it is denoted as $a \join b =
-\bot$). PCMs are fairly ubiquitous: in particular, natural numbers
-with addition and multiplication, sets with a disjoin union,
-partially-defined functions with a point-wise union, are all PCM
-instances. Furthermore, partial commutative monoids are omnipresent in
-program verification%~\cite{Nanevski-al:POPL10}%, as they capture
-exactly the properties of _heaps_, as well as the effect of programs
-that can be executed in
-parallel%~\cite{Nanevski-al:ESOP14}%. Therefore, it is useful to have
-PCMs formalized as a structure, so they could be employed for future
-reasoning.
-
-%\index{identity element|see {unit element}}%
-
-%\newpage%
-
-** Describing algebraic data structures via dependent records
-
-*)
+(** * Encoding partial commutative monoids *)
 
 Module PCMDef.
 
 (**
 
-In %Section~\ref{sec:exists} of Chapter~\ref{ch:logic}% we have
-already seen a use of a dependent pair type, exemplified by the Coq's
-definition of the universal quantification.
+We have already seen a use of a dependent pair type, exemplified by
+the Coq's definition of the universal quantification.
 
 *)
 
@@ -178,27 +26,6 @@ Print ex.
 Inductive ex (A : Type) (P : A -> Prop) : Prop :=
     ex_intro : forall x : A, P x -> ex P
 ]]
-
-The only constructor [ex_intro] of the predicate [ex], whose type is a
-dependent function type, is a way to encode a $\Sigma$-type of a
-dependent pair, such that its second component's type _depends_ on the
-value of the first one.%\index{dependent pair}% More specifically, the
-result of the existential quantification's encoding in Coq is a
-dependent pair $(\Sigma x:A, P~x)$, such that the proposition in
-the second component is determined by the value of the first
-component%~%[x].
-
-%\index{dependent records}%
-
-Coq provides an alternative way to encode _iterated_ dependent pairs
-via the mechanism of _dependent records_, also allowing one to give
-names to the subsequent components. Dependent records are defined
-using the [Record] command. Getting back to our PCM example, we
-illustrate the use of dependent records by the following definition of
-the abstract PCM structure.
-
-%\index{mixins}%
-%\ccom{Record}%
 
 *)
 
@@ -214,7 +41,6 @@ Record mixin_of (T : Type) := Mixin {
 }.
 
 (**
-
 [[
 mixin_of is defined
 mixin_of_rect is defined
@@ -224,45 +50,6 @@ valid_op is defined
 join_op is defined
 unit_op is defined
 ]]
-
-%\index{record types|see {dependent records}}%
-
-The syntax of Coq's dependent records is reminiscent to the one of
-records in C. Following SSReflect's naming
-pattern%~\cite{Garillot-al:TPHOL09}%, we call the record type (defined
-in a dedicated module for the reasons explained further) [mixin_of]
-and its only constructor [Mixin]. The reasons for such naming
-convention will be explained soon, and for now let us discuss the
-definition. The PCM record type is parametrized over the carrier type
-[T], which determines the carrier set of a PCM. It then lists three
-_named_ fields: [join_op] describes an implementation of the PCM's
-binary operation, [unit_op] defines the unit element, finally, the
-[valid_op] predicate determines whether a particular element of the
-carrier set [T] is valid or not, and, thus, serves as a way to express
-the partiality of the [join_op] operation (the result is undefined,
-whenever the corresponding value of [T] is non-valid). Next, the PCM
-record lists five unnamed PCM _properties_, which should be satisfied
-whenever the record is instantiated and are defined using the standard
-propositions from SSReflect's [ssrfun] %\ssrm{ssrfun}% module (see
-%Section~\ref{sec:funprops}%). In particular, the PCM type definition
-requires the operation to be [commutative] and [associative]. It also
-states that if $a \join b \neq \bot$ then $a \neq \bot$ (the same
-statement about $b$ can be proved by commutativity), and that the unit
-element is a valid one.
-
-Notice that in the definition of the [mixin_of] record type, the types
-of some of the later fields (e.g., any of the properties) depend on
-the values of fields declared earlier (e.g., [unit_op] and
-[joint_op]), which makes [mixin_of] to be a truly dependent type.
-
-Upon describing the record, a number of auxiliary definitions has been
-generated by Coq automatically. Along with the usual recursion and
-induction principles, the system also generated three _getters_,
-[valid_op], [join_op] and [unit_op] %\index{getters}% for the record's
-named fields. That is, similarly to Haskell's syntax, given an
-instance of a PCM, one can extract, for example, its operation, via
-the following getter function.
-
 *)
 
 Check valid_op.
@@ -272,23 +59,6 @@ Check valid_op.
 valid_op
      : forall T : Type, mixin_of T -> T -> bool
 ]]
-
-Coq supports the syntax for anonymous record fields (via the the
-underscore [_]), so getters for them are not generated. We have
-decided to make the property fileds of [mixin_of] to be anonymous,
-since they will usually appear only in the proofs, where the structure
-is going to be decomposed by case analysis anyway, as we will soon
-see.
-
-We can now prove a number of facts about the structure, very much in
-the spirit of the facts that are being proven in the algebra course.
-For instance, the following lemma states that [unit_op] is also the
-_right unit_, in addition to it being the left unit, as encoded by the
-structure's definition.
-
-%\index{right unit}%
-%\index{left unit}%
-
 *)
 
 
@@ -307,36 +77,13 @@ case: pcm=>_ join unit Hc _ Hlu _ _ /=.
   ============================
    join t unit = t
 ]]
-
-The first line of the proof demonstrates that dependent records in Coq
-are actually just product types in disguise, so the proofs about them
-should be done by case analysis. In this particular case, we decompose
-the [pcm] argument of the lemma into its components, replacing those
-of no interest with wildcards [_]. The [join] and [unit], therefore,
-bind the operation and the identity element, whereas [Hc] and [Hlu]
-are the commutativity and left-unit properties, named explicitly in
-the scope of the proof. The trailing SSReflect's simplification
-tactical %\texttt{/=}\ssrtl{/=}% replaces the calls to the getters in
-the goal (e.g., [join_op pcm]) by the bound identifiers. The proof can
-be now accomplished by a series of rewritings by the [Hc] and [Hlu]
-hypotheses.
-
 *)
 
 by rewrite Hc Hlu.
 Qed.
 
 
-(**
-
-** An alternative definition
-
-In the previous section we have seen how to define the algebraic
-structure of PCMs using Coq's dependent record mechanism. The same PCM
-structure could be alternatively defined using the familiar syntax for
-inductive types, as a datatype with precisely one constructor:
-
-*)
+(** ** An alternative definition *)
 
 Inductive mixin_of' (T: Type) := 
   Mixin' (valid_op: T -> bool) (join_op : T -> T -> T) (unit_op: T) of
@@ -363,43 +110,6 @@ will show a different way to encode implicit inheritance, though.}%
 
 Section Packing.
 
-(** 
-
-%\index{packaging}%
-
-By now, we have defined a structure of a PCM "interface" in a form of
-a set of the components (i.e., the carrier set and operations on it)
-and their properties. However, it might be the case that the same
-carrier set (which we represented by the type parameter [T]), should
-be given properties from other algebraic data structures (e.g.,
-lattices), which are essentially orthogonal to those of a
-PCM. Moreover, at some point one might be interested in implementing
-the proper inheritance of the PCM structure with respect to the
-carrier type [T]. more precisely, if the type [T] comes with some
-additional operations, they should be available from it, even if it's
-seen as being "wrapped" into the PCM structure. That said, if [T] is
-proven to be a PCM, one should be able to use this fact as well as the
-functions, defined on [T] separately.
-
-%\index{packed classes}%
-
-These two problems, namely, (a) combining together several structures
-into one, and (b) implementing inheritance and proper mix-in
-composition, can be done in Coq using the description pattern, known
-as "packed classes"%~\cite{Garillot-al:TPHOL09}%. The idea of the
-approach is to define a "wrapper" record type, which would "pack"
-several mix-ins together, similar to how it is done in object-oriented
-languages with implicit trait composition, e.g.,
-Scala%~\cite{Odersky-Zenger:OOPSLA05}%.%\footnote{Using this mechanism
-will, however, afford us a greater degree of flexibility, as it is up
-to the Coq programmer to define the resolution policy of the combined
-record's members, rather than to rely on an implicit mechanism of
-field linearization.}%
-
-%\index{Scala}\index{traits}%
-
-*)
-
 Structure pack_type : Type := Pack {type : Type; _ : mixin_of type}.
 
 (** 
@@ -411,29 +121,11 @@ given) of type [mixin_of type]. That is, in order to construct an
 instance of [pack_type], one will have to provide _both_ arguments:
 the carrier set and a PCM structure for it.
 
-Next, we specify that the field [type] of the [pack_type] should be
-also considered as a _coercion_, that is, whenever we have a value of
-type [pack_type], whose field [type] is some [T], it can be implicitly
-seen as an element of type [T]. The coercion is specified locally, so
-it will work only in the scope of the current section (i.e.,
-[Packing]) by using Coq's [Local Coercion] command. We address the
-reader to Chapter 18 of the Coq Reference Manual%~\cite{Coq-manual}%
-for more details of the implicit coercions.
-
-%\ccom{Local Coercion}%
 *)
 
 Local Coercion type : pack_type >-> Sortclass.
 
 (**
-
-%\index{Sortclass@\emph{Sortclass}}%
-
-The [>->] simply specifies the fact of the coercion, whereas
-[Sortclass] is an abstract class of sorts, so the whole command
-postulates that whenever an instance of [pack_type] should be coerced
-into an element of an arbitrary sort, it should be done via referring
-to is [type] field.
 
 Next, in the same section, we provide a number of abbreviations to
 simplify the work with the PCM packed structure and prepare it to be
@@ -445,35 +137,11 @@ Variable cT: pack_type.
 Definition pcm_struct : mixin_of cT := 
     let: Pack _ c := cT return mixin_of cT in c.
 
-(** 
-
-The function [pcm_struct] extracts the PCM structure from the "packed"
-instance. Notice the use of dependent pattern matching
-%\index{dependent pattern matching}% in the [let:]-statement with the
-explicit [return]-statement, so Coq would be able to refine the result
-of the whole expression basing on the dependent type of the [c]
-component of the data structure [cT], which is being scrutinized. With
-the help of this definition, we can now define three aliases for the
-PCM's key components, "lifted" to the packed data structure.
-
-*)
-
 Definition valid := valid_op pcm_struct.
 Definition join := join_op pcm_struct.
 Definition unit := unit_op pcm_struct.
 
 End Packing.
-
-(** 
-
-Now, as the packaging mechanism and the aliases are properly defined,
-we come to the last step of the PCM package description: preparing the
-batch of definitions, notations and facts to be exported to the
-client. Following the pattern of nesting modules, presented in
-%Section~\ref{sec:secmod}%, we put all the entities to be exported
-into the inner module [Exports].
-
-*)
 
 Module Exports.
 
@@ -486,38 +154,10 @@ Notation valid := valid.
 Notation Unit := unit.
 
 
-(** 
-
-We will have to define the coercion from the PCM structure with
-respect to its [type] field once again, as the previous one was
-defined locally for the section [Packing], and, hence, is invisible in
-this submodule.
-
-*)
-
 Coercion type : pack_type >-> Sortclass.
 
 
-(** 
-
-* Properties of partial commutative monoids 
-
-Before we close the [Exports] module of the [PCMDef] package, it makes
-sense to supply as many properties to the clients, as it will be
-necessary for them to build the reasoning involving PCMs. In the
-traditions of proper encapsulation, %\index{encapsulation}% requiring
-to expose only the relevant and as abstract as possible elements of
-the interface to its clients, it is undesirable for users of the [pcm]
-datatype to perform any sort of analysis on the structure of the
-[mixin_of] datatype, as it will lead to rather tedious and cumbersome
-proofs, which will first become a subject of massive changes, once we
-decide to change the implementation of the PCM mixin structure.
-
-This is why in this section we supply a number of properties of PCM
-elements and operations, derived from its structure, which we observe
-to be enough to build the reasoning with arbitrary PCM instances.
-
-*)
+(** * Properties of partial commutative monoids *)
 
 Section PCMLemmas.
 Variable U : pcm.
@@ -557,52 +197,70 @@ Proof.
 by case: U x y z=>tp [v j z Cj Aj *]; apply: Aj. 
 Qed.
 
+(*******************************************************************)
+(**                     * Exercices 1 *                            *)
+(*******************************************************************)
+
 (** 
+---------------------------------------------------------------------
+Exercise [PCM Laws]
+---------------------------------------------------------------------
 
-%\begin{exercise}[PCM laws]% Proof the rest of the PCM laws.
-
+Proove the rest of the PCM laws.
 *)
 
 Lemma joinAC (x y z : U) : x \+ y \+ z = x \+ z \+ y.
-(* begin hide *)
-Proof. by rewrite -joinA (joinC y) joinA. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma joinCA (x y z : U) : x \+ (y \+ z) = y \+ (x \+ z).
-(* begin hide *)
-Proof. by rewrite joinA (joinC x) -joinA. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma validL (x y : U) : valid (x \+ y) -> valid x.
-(* begin hide *)
-Proof. case: U x y=>tp [v j z Cj Aj Uj /= Mj inv f]; apply: Mj. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma validR (x y : U) : valid (x \+ y) -> valid y.
-(* begin hide *)
-Proof. by rewrite joinC; apply: validL. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma unitL (x : U) : (@Unit U) \+ x = x.
-(* begin hide *)
-Proof. by case: U x=>tp [v j z Cj Aj Uj *]; apply: Uj. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma unitR (x : U) : x \+ (@Unit U) = x.
-(* begin hide *)
-Proof. by rewrite joinC unitL. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
+
 
 Lemma valid_unit : valid (@Unit U).
-(* begin hide *)
-Proof. by case: U=>tp [v j z Cj Aj Uj Vm Vu *]. Qed.
-(* end hide *)
+Proof.
+(* fill in your proof here instead of [admit] *)
+admit.
+Qed.
 
-(**
 
-%\end{exercise}%
-
-*)
+(*******************************************************************)
+(**                 * End of Exercices 1 *                         *)
+(*******************************************************************)
 
 End PCMLemmas.
 
@@ -612,50 +270,19 @@ End PCMDef.
 
 Export PCMDef.Exports.
 
-(** 
+(** * Implementing inheritance hierarchies
 
-* Implementing inheritance hierarchies
-
-%\index{inheritance}%
-
-By packaging an arbitrary type [T] into one record with the PCM
-structure in %Section~\ref{sec:packaging}% and supplying it with a
-specific implicit coercion, we have already achieved some degree of
-inheritance: any element of a PCM can be also perceived by the system
-in an appropriate context, as an element of its carrier type. 
-
-In this section, we will go even further and show how to build
-hierarchies of mathematical structures using the same way of encoding
-inheritance. We will use a _cancellative PCM_ as a running example.
+We will now go even further and show how to build hierarchies of
+mathematical structures using the same way of encoding inheritance. We
+will use a _cancellative PCM_ as a running example.
 
 *)
 
 Module CancelPCM.
 
-(**
-
-PCMs with cancellation %\index{cancellative}% extend ordinary PCMs
-with an extra property, that states that the equality $a \join b = a
-\join c$ for any $a$, $b$ and $c$, whenever $a \join b$ is defined,
-implies $a = b$. We express such property via an additional mixin
-record type, parametrized over an arbitrary PCM [U].
-
-*)
-
 Record mixin_of (U : pcm) := Mixin {
   _ : forall a b c: U, valid (a \+ b) -> a \+ b = a \+ c -> b = c
 }.
-
-(** 
-
-Notice that the validity of the sum [a \+ c] is not imposed, as it can
-be proven from the propositional equality and the validity of [a \+
-b].
-
-We continue the definition by describing the standard packaging data
-structure.
-
-*)
 
 Structure pack_type : Type := Pack {pcmT : pcm; _ : mixin_of pcmT}.
 
@@ -665,26 +292,7 @@ Notation cancel_pcm := pack_type.
 Notation CancelPCMMixin := Mixin.
 Notation CancelPCM T m:= (@Pack T m).
 
-(** 
-
-There is a tiny twist in the definition of the specific coercion,
-though, as now we it specifies that the instance of the packed data
-structure, describing the cancellative PCM, can be seen as an instance
-of the underlying PCM. The coercions are transitive, which means that
-the same instance can be coerced even further to [U]'s carrier type
-[T].
-
-*)
-
 Coercion pcmT : pack_type >-> pcm.
-
-(** 
-
-We finish the definition of the cancellative PCM by providing its only
-important law, which is a direct consequence of the newly added
-property.
-
-*)
 
 Lemma cancel (U: cancel_pcm) (x y z: U): 
   valid (x \+ y) -> x \+ y = x \+ z -> y = z.
@@ -696,14 +304,6 @@ End Exports.
 End CancelPCM. 
 
 Export CancelPCM.Exports.
-
-(** 
-
-The proof of the following lemma, combining commutativity and
-cancellativity, demonstrates how the properties of a cancellative PCM
-work in combination with the properties of its base PCM structure.
-
-*)
 
 Lemma cancelC (U: cancel_pcm) (x y z : U) :
   valid (y \+ x \+ z) -> y \+ x = x \+ z -> y = z.
@@ -720,8 +320,6 @@ Now, as we have defined a PCM structure along with its specialized
 version, a cancellative PCM, it is time to see how to _instantiate_
 these abstract definitions with concrete datatypes, i.e., _prove_ the
 later ones to be instances of a PCM.
-
-%\index{instantiation}%
 
 ** Defining arbitrary PCM instances
 
