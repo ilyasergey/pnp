@@ -1,91 +1,13 @@
-(** 
+(**  %\chapter{Views and Boolean Reflection}% *)
 
-%\chapter{Views and Boolean Reflection}
-\label{ch:boolrefl}%
-
-*)
-
-Require Import ssreflect.
+Require Import ssreflect ssrfun eqtype ssrnat ssrbool.
+Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
-(* begin hide *)
 Module BoolReflect.
-(* end hide *)
 
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-(** printing R $R$ *)
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing suff %\texttt{\emph{suff}}% *)
-(** printing have %\texttt{\emph{have}}% *)
-(** printing View %\texttt{\emph{View}}% *)
-
-(** 
-
-In %Chapter~\ref{ch:eqrew}%, we have seen how custom rewriting rules
-and truth tables can be encoded in Coq using its support for indexed
-datatype families, so they are of great help for constructing the
-proofs by case analysis and rewriting. In this chapter, we will show
-how the custom rewriting machinery can be taken to the whole new level
-and be used to facilitate the reasoning about _computable_ properties
-and predicates. We will consider a series of insights that lead to the
-idea of the _small-scale reflection_, the heart of the SSReflect
-%\index{small-scale reflection|textbf}% %\index{reflection|see
-{small-scale reflection}}% framework, which blurs the boundaries
-between computable predicates defined in the sort [Prop] (see
-%Chapter~\ref{ch:logic}%) and Coq's recursive functions returning a
-result of type [bool] (in the spirit of the definitions that we have
-seen in %Chapter~\ref{ch:funprog}%). That said, in the vast number of
-cases these two are just the sides of the same coin and, hence, should
-be treated uniformly, serving to facilitate the reasoning in two
-different directions: %\index{reflection|see {small-scale
-reflection}}%
-
-- expressing quantifications and building the proofs by means of
-  _constructive reasoning_ with logical connectives as datatypes
-  defined in the sort [Prop];
-
-- employing brute-force computations for quantifier-free goals within
-  the Coq framework itself, taken as a programming language, in order
-  to reduce the goals to be proved by means of simply _computing_
-  them.
-
-We will elaborate more on the differences between predicates stated by
-means of [Prop] and [bool] in %Section~\ref{sec:propbool}%. The term
-_small-scale reflection_, which gives the name to the whole framework
-of SSReflect, emphasizes the two complementary ways of building
-proofs: by means of intuitionistic inference (i.e., using the
-constructors of datatypes defined in [Prop]) and by means of mere
-computation (i.e., with [bool]-returning function). These two ways,
-therefore, serve as each other's "reflections" and, moreover, both are
-implemented within the same system, without the need to appeal to
-Coq's meta-object protocol,%\footnote{In contrast, reflection
-mechanism in Java, Python or Ruby actually does appeal to the
-meta-object protocol, e.g., \index{meta-object protocol} the structure
-of the classes, which lies beyond the formally defined semantics of
-the language itself and, hence, allows one to modify the program's
-behaviour at runtime.}% which makes this reflection _small-scale_.
-
-Unfortunately, the proper explanation of the implementation of the
-reflection mechanism between [Prop] and [bool] in SSReflect strongly
-relies on the _views_ machinery, so let us begin by describing it
-first.
-
-%\newpage%
-
-* Proving with views in SSReflect
-%\label{sec:views}\index{views|textbf}%
-
-*)
-
-Require Import ssreflect.
-
-(** 
-
-Let us assume we have the following implication to prove:
+(**  * Proving with views in SSReflect
 
 *)
 
@@ -108,10 +30,10 @@ move=>H1 H2 H3.
 
 Since we are proficient in the proofs via implications, it is not
 difficult to construct the explicit proof term by a series of [apply:]
-tactic calls or via the [exact:] tactic, as it has been show in
-%Chapter~\ref{ch:logic}%. Let us do something different, though,
-namely _weaken_ the top assumption of the goal by means of applying
-the hypothesis [H1] to it, so the overall goal will become [Q -> S].
+tactic calls or via the [exact:] tactic. Let us do something
+different, though, namely _weaken_ the top assumption of the goal by
+means of applying the hypothesis [H1] to it, so the overall goal will
+become [Q -> S].
 
 *)
 
@@ -120,10 +42,9 @@ move=>p; move: (H1 p).
 (** 
 
 This proof pattern of "switching the view" turns out to be so frequent
-that SSReflect introduces a special _view_ tactical %\texttt{/}% for
-it, which is typically combined with the standard [move] or [case]
-tactics. In particular, the last proof line could be replaced by the
-following:
+that SSReflect introduces a special _view_ tactical [/] for it, which
+is typically combined with the standard [move] or [case] tactics. In
+particular, the last proof line could be replaced by the following:
 
 *)
 
@@ -140,28 +61,12 @@ move/H1.
   ============================
    Q -> S
 ]]
-
-The assumption [H1] used for weakening is usually referred to as a
-%\index{view lemma}% _view lemma_. The spaces before and after
-%\texttt{/}% are optional. One can also _chain_ the views into one
-series, so the current proof can be completed as follows:
-
 *)
 
 by move/H3 /H2.
 Qed.
 
-(** 
-
-** Combining views and bookkeeping
-
-The view tactical can be also combined with the standard bookkeeping
-machinery, so it will apply the specified view lemma to the
-corresponding assumption of the goal, as demonstrated by the following
-proof script, which use the partially-applied assumption [H p] as a
-view lemma:
-
-*)
+(** ** Combining views and bookkeeping *)
 
 Goal forall P Q R, P -> (P -> Q -> R) -> Q -> R.
 Proof.
@@ -200,28 +105,7 @@ move=> P Q R H.
 by case/H. 
 Qed.
 
-(** 
-
-What is happened is that the combined tactic [case/H] first switched
-the top assumption of the goal from [P] to [Q /\ R] and then
-case-analysed on it, which gave the proof of [R] right away, allowing
-us to conclude the proof.
-
-** Using views with equivalences
-%\label{seq:viewseq}%
-
-So far we have explored only views that help to weaken the hypothesis
-using the view lemma, which is an implication. In fact, SSReflect's
-view mechanism is elaborated enough to deal with view lemmas defined
-by means of equivalence (double implication) %\texttt{<->}%, and the
-system can figure out itself, "in which direction" the view lemma
-should be applied. Let us demonstrate it with the following example,
-which makes use of the hypothesis [PQequiv],%\footnote{The Coq's
-command \texttt{Hypothesis} is a synonym for \texttt{Axiom} and
-\texttt{Variable}.\ccom{Hypothesis}\ccom{Variable}\ccom{Axiom}}% whose
-nature is irrelevant for the illustration purposes:
-
-*)
+(** ** Using views with equivalences *)
 
 Variables S T: bool -> Prop.
 Hypothesis STequiv : forall a b, T a <-> S (a || b). 
@@ -235,24 +119,6 @@ Qed.
 
 ** Declaring view hints
 
-In the example from %Section~\ref{seq:viewseq}%, we have seen how
-views can deal with equivalences. The mentioned elaboration, which
-helped the system to recognize, in which direction the double
-implication hypothesis [STequiv] should have been used, is not
-hard-coded into SSReflect. Instead, it is provided by a flexible
-mechanism of %\index{view hints}% _view hints_, which allows one to
-specify view lemmas that should be applied _implicitly_ whenever it is
-necessary and can be figured out unambiguously.
-
-In the case of the proof of the [ST_False] lemma the view hint [iffRL]
-from the included module [ssreflect]%\footnote{Implicit view hints are
-defined by means of \texttt{Hint View}\ccom{Hint View} command, added
-to Coq by SSReflect. See the implementation of the module
-%[ssrbool]%\ssrm{ssrbool} and Section 9.8 of the Reference
-Manual~\cite{Gontier-al:TR}.}% %\ssrm{ssreflect}% has been "fired" in
-order to adapt the hypothesis [STequiv], so the adapted variant could
-be applied as a view lemma to the argument of type [S (a || b)].
-
 *)
 
 Check iffRL.
@@ -262,12 +128,6 @@ Check iffRL.
 iffRL
      : forall P Q : Prop, (P <-> Q) -> Q -> P
 ]]
-
-The type of [iffRL] reveals that what it does is simply switching the
-equivalence to the implication, which works right-to-left, as captured
-by the name. Let us now redo the proof of the [ST_False] lemma to see
-what is happening under the hood:
-
 *)
 
 Lemma ST_False' a b: (T a -> False) -> S (a || b) -> False.
@@ -1070,6 +930,16 @@ tactical, so the rest of the proof is simply by computation.
 by move/eqP=>->.
 Qed.
 
-(* begin hide *)
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
+(**
+---------------------------------------------------------------------
+Exercise [...]
+---------------------------------------------------------------------
+
+*)
+
+
 End BoolReflect.
-(* end hide *)
