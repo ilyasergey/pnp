@@ -447,7 +447,8 @@ Notation EqType T m := Pack T m.
 End Equality.
 ]]
 
-Demo: check the corresponding file ssreflect-1.4/theories/eqtype.v
+DEMO: check the corresponding files ssreflect-1.4/theories/eqtype.v
+and ssreflect-1.4/theories/ssrnat.v
 
 *)
 
