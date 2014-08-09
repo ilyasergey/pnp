@@ -28,6 +28,7 @@ Module HTT.
 (** printing putStrLn %\texttt{\emph{putStrLn}}% *)
 (** printing getChar %\texttt{\emph{getChar}}% *)
 (** printing heval %\textsf{\emph{heval}}% *)
+(** printing heval %\textsf{\emph{write}}% *)
 
 (** 
 
@@ -1830,6 +1831,57 @@ deallocation, so the proof for it is accomplished mostly by applying
 
 by move=>_ _ [[n'][a'][->] _ ->] _; heval.  
 Qed.
+
+(** 
+
+%\begin{exercise}[Swapping two values] \label{ex:swap}%
+
+Implement in HTT a function that takes as arguments two pointers, [x]
+and [y], which point to natural numbers, and swaps their
+values. Reflect this effect in the function's specification and verify
+it.
+
+%\hint% Instead of reading the value of a pointer into a variable [t]
+ using the [t <-- !p] notation, you might need to specify the _type_
+ of the expected value explicitly by using the "de-sugared" version of
+ the command [t <-- read T p], where [T] is the expected type. This
+ way, the proof will be more straightforward.
+
+%\end{exercise}%
+
+*)
+
+(* begin hide *)
+Program Definition swap (x y : ptr):
+  {(a b : nat)},
+  STsep (fun h => h = x :-> a \+ y :-> b,
+        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
+  Do (vx <-- read nat x;
+      vy <-- read nat y;
+      x ::= vy;;
+      y ::= vx).
+Next Obligation.
+apply:ghR=>_ [a b]->/= V.
+apply: bnd_seq; apply: val_read=>_.
+apply: bnd_seq; apply: val_readR =>/= _.
+apply: bnd_writeR=>/=.
+by apply val_writeR=>/=.
+Qed.
+(* end hide *)
+
+(**
+
+%\begin{exercise}%
+
+Try to redo the exercise%~\ref{ex:swap}% _without_ using the
+automation provided by the [heval] tactic. The goal of this exercise
+is to explore the library of HTT lemmas, mimicking the rules of the
+separation logic. You can alway displat the whole list of the
+available lemmas by running the command [Search _ (verify _ _ _)] and
+then refine the query for specific programs (e.g., [read] or [write]).
+
+%\end{exercise}%
+*)
 
 
 (** 
