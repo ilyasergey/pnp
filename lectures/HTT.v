@@ -1179,16 +1179,16 @@ Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
 *) 
 
 Add LoadPath "./../htt".
-Require Import pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
+Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
-(* Program Definition swap (x y : ptr):  *)
-(*   {(a b : nat)},  *)
+(* Program Definition swap (x y : ptr): *)
+(*   {(a b : nat)}, *)
 (*   STsep (fun h => h = x :-> a \+ y :-> b, *)
-(*         [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=  *)
+(*         [vfun (_: unit) h => h = x :-> b \+ y :-> a]) := *)
 (*   Do (vx <-- !x; *)
 (*       vy <-- !y; *)
 (*       x ::= vy;; *)
@@ -1198,7 +1198,7 @@ Unset Printing Implicit Defensive.
 (* Next Obligation. *)
 (* apply:ghR=>_ [a b]->/= V. *)
 (* Search _ (verify _ _ _) (!_). *)
-(* apply: bnd_seq. move: x y V Z. apply val_read. *)
+(* apply: bnd_seq. apply val_read. *)
 
 (**
 
