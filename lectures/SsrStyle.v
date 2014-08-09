@@ -4,19 +4,7 @@ Module SsrStyle.
 
 (** 
 
-In the previous chapters of this course, we have made an acquaintance
-with the main concepts of constructive logic, Coq and
-SSReflect. However, the proofs we have seen so far are mostly done by
-case analysis, application of hypotheses and various forms of
-rewriting. In this chapter we will consider in more details the proofs
-that employ inductive reasoning as their main component. We will see
-how such proofs are typically structured in SSReflect, so the
-corresponding scripts would become very concise, yet readable and
-maintainable. We will also learn a few common techniques that will
-help to adapt the induction hypothesis for a goal, so it would become
-suitable.
-
-In the rest of the chapter we will be constantly relying on a series
+In the rest of this lecture we will be constantly relying on a series
 of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 [eqtype], which we import right away.
 
@@ -24,41 +12,23 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 
 Require Import ssreflect ssrbool ssrnat eqtype.
 
-(** 
-
-%\section{Structuring the proof scripts}%
+(**  * Structuring the proof scripts
 
 An important part of the proof process is keeping to an established
 proof layout, which helps to maintain the proofs readable and restore
 the intuition driving the prover's hand.  SSReflect offers a number of
 syntactic primitives that help to maintain such a layout, and in this
 section we give a short overview of them. As usual, the SSReflect
-reference manual%~\cite{Gontier-al:TR}% (Chapter 6) provides an
-exhaustive formal definition of each primitive's semantics, so we will
-just cover the base cases here, hoping that the subsequent proofs will
-provide more intuition on typical usage scenarios.
+reference manual provides an exhaustive formal definition of each
+primitive's semantics, so we will just cover the base cases here,
+hoping that the subsequent proofs will provide more intuition on
+typical usage scenarios.
 
 ** Bullets and terminators
-
-The proofs proceeding by induction and case analysis typically require
-to prove several goals, one by one, in a sequence picked by the
-system.  It is considered to be a good practice to indent the subgoals
-(except for the last one) when there are several to prove. For
-instance, let us consider the following almost trivial lemma:
 
 *)
 
 Lemma andb_true_elim b c: b && c -> c = true.
-
-(**
-
-Indeed, the reflection machinery, presented in
-%Section~\ref{sec:reflect} of Chapter~\ref{ch:boolrefl}%, makes this
-proof to be a one liner ([by case/andP.]). However, for the sake of
-demonstration, let us not appeal to it this time and do the proof as
-it would be done in a traditional Coq style: by mere case analysis.
-
- *)
 
 Proof.
 case: c.
@@ -70,35 +40,11 @@ true = true
 subgoal 2 (ID 15) is:
  b && false -> false = true
 ]]
-
-Case analysis on [c] (which is first moved down to the goal to become
-an assumption) immediately gives us two subgoals to prove. Each of
-them can be subsequently proved by the _inner_ cases analysis on [b],
-so we do, properly indenting the goals.
-
 *)
 
 - by case: b.
 
-(** 
-
-The proof script above successfully solves the first goal, as ensured
-by the _terminator_ tactical %\index{terminators}\ssrtl{by}% [by],
-which we have seen previously. More precisely, [by tac.] first runs
-the script [tac] and then applies a number of simplifications and
-discriminations to see if the proof can be completed. If the current
-goal is solved, [by tac.] simply terminates and proceeds to the next
-goal; otherwise it reports a proof script error. Alternative
-equivalent uses of the same principle would be [tac; by [].] or [tac;
-done], %\ssrt{done}%, which do exactly the same.
-
-Notice that the first goal was indented and preceded by the _bullet_
-[-]. %\index{bullets}% The bullet token, preceding a tactic
-invocation, has no operational effect to the proof and serves solely
-for the readability purposes. Alternative forms of tokens are
-%\texttt{+}% and %\texttt{*}%.
-
-** Using selectors and discharging subgoals
+(** ** Using selectors and discharging subgoals
 
 Let us restart this proof and show an alternative way to structure the
 proof script, which should account for multiple cases.
@@ -106,31 +52,19 @@ proof script, which should account for multiple cases.
 *)
 
 Restart.
+
 case: c; first by [].
 
 (**
-
 [[
   b : bool
   ============================
    b && false -> false = true
 ]]
-
-
-%\index{selectors}%
-Now, right after case-analysing on [c], the proof script specifies
-that the _first_ of the generated subgoals should be solved using [by
-[].]. In this case [first] is called _selector_, and its counterpart
-[last] would specify that the last goal should be taken care of
-instead, before proceeding.
-
-Finally, if several simple goals can be foreseen as a result of case
-analysis, Coq provides a convenient way to discharge them in a
-structured way using %\ssrtl{[|...|]}% the [[|...|]] tactical:
-
 *)
 
 Restart.
+
 case:c; [by [] | by case: b].
 
 (** 
@@ -140,75 +74,15 @@ then solves the second one via [by case: b].
 
 *)
 
-(** 
-
-** Iteration and alternatives
-
-Yet another possible way to prove the statement of our subject lemma
-is by employing Coq's _repetition_ tactical [do]%\ssrtl{do}%. The
-script of the form [do !tac.] tries to apply the tactic [tac] as many
-times as possible, as long as new goals are generated or no more goals
-is left to prove.%\footnote{Be careful, though, as such proof script
-might never terminate if more and more new goals will be generated
-after each application of the iterated tactic. That said, while Coq
-itself enjoys the strong normalization property (i.e., the programs in
-it always \index{strong normalization} terminate), its tactic
-meta-language is genuinely Turing-complete, so the tactics, while
-constructing Coq programs/proofs, might never in fact
-terminate. Specifying the behaviour of tactics and their possible
-effects (including non-termination and failures) is a topic of an
-ongoing active
-research~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10}.}% The
-[do]-tactical can be also combined with the [[|...|]] tactical, so it
-will try to apply all of the enumerated tactics as alternatives. The
-following script finishes the proof of the whole lemma.
-
-
-*)
+(** ** Iteration and alternatives *)
 
 Restart.
+
 by do ![done | apply: eqxx | case: b | case: c].
-
-(** 
-
-Notice that we have added two tactics into the alternative list,
-[done] and [apply: eqxx], which were deemed to fail. The script,
-nevertheless, has succeeded, as the remaining two tactics, [case: b]
-and [case: c], did all the job. Lastly, notice that the [do]-tactical
-can be specified _how many_ times should it try to run each tactic
-from the list by using the restricted form [do n!tac], where [n] is
-the number of attempts (similarly to iterating the [rewrite]
-tactics). The lemma above could be completed by the script of the form
-[by do 2![...]] with the same list of alternatives.
-
-*)
 
 Qed.
 
-(** 
-
-%\section{Inductive predicates that should be functions}%
-
-It has been already discussed in %Chapter~\ref{ch:boolrefl}% that,
-even though a lot of interesting propositions are inherently
-undecidable and should be, therefore, represented in Coq as instances
-of the sort [Prop], one should strive to implement as many of
-_decidable_ propositions as possible as [bool]-returning
-function. Such "computational" approach to the propositions turns out
-to pay off drastically in the long-term perspective, as most of the
-usual proof burden will be carried out by Coq's computational
-component. In this section we will browse through a series of
-predicates defined both as inductive datatypes and boolean functions
-and compare the proofs of various properties stated over the
-alternative representations.
-
-One can defined the fact that the only natural number which is equal
-to zero is the zero itself, as shown below:
-
-%\ssrd{isZero}%
-
-*)
-
+(** * Inductive predicates that should be functions *)
 
 Inductive isZero (n: nat) : Prop := IsZero of n = 0.
 
@@ -227,9 +101,8 @@ Proof. by case. Qed.
 
 However, the equality on natural numbers is, decidable, so the very
 same definition can be rewritten as a function employing the boolean
-equality [(==)] (see %Section~\ref{sec:eqrefl} of
-Chapter~\ref{ch:boolrefl}%), which will make the proofs of paradoxes
-even shorter than they already are:
+equality [(==)], which will make the proofs of paradoxes even shorter
+than they already are:
 
 *)
 
@@ -248,8 +121,6 @@ The benefits of the computable definitions become even more obvious
 when considering the next example, the predicate defining whether a
 natural number is even or odd. Again, we define two versions, the
 inductive predicate and a boolean function.
-
-%\ssrd{evenP}%
 
 *)
 
@@ -271,33 +142,13 @@ Proof.
 elim: n=>//[| n Hn]; first by rewrite addn0 add0n; case=>//.
 
 (** 
-
-We start the proof by induction on [n], which is triggered by [elim:
-n].%\footnote{Remember that the [elim], \ssrt{elim} as most of other
-SSReflect's tactics operates on the top assumption.}% The subsequent
-two goals (for the zero and the successor cases) are then simplified
-via %\texttt{//}% and the induction variable and hypothesis are given
-the names [n] and [Hn], respectively, in the second goal (as described
-in %Section~\ref{sec:naming-subgoals}%). Then, the first goal (the
-[0]-case) is discharged by simplifying the sum via two rewritings by
-[addn0] and [add0n] lemmas from the [ssrnat] module and case-analysis
-on the assumption of the form [evenP 1], which delivers the
-contradiction.
-
-The second goal is annoyingly trickier.
-
 [[
   n : nat
   Hn : evenP (n + 1 + n) -> False
   ============================
    evenP (n.+1 + 1 + n.+1) -> False
 ]]
-
-First, let us do some rewritings that make the hypothesis and the goal
-look alike.%\footnote{Recall that% [n.+1] %stands for the
-\emph{value} of the successor of% [n] %, whereas% [n + 1] % is a
-function call, so the whole expression in the goal cannot be just
-trivially simplified and requires some rewritings to be done.}% *)
+*)
 
 rewrite addn1 addnS addnC !addnS. 
 rewrite addnC addn1 addnS in Hn.
@@ -309,14 +160,6 @@ rewrite addnC addn1 addnS in Hn.
   ============================
    evenP (n + n).+3 -> False
 ]] 
-
-Now, even though the hypothesis [Hn] and the goal are almost the same
-module the natural "[(.+2)]-orbit" of the [evenP] predicate and some
-rewritings, we cannot take an advantage of it right away, and instead
-are required to case-analysed on the assumption of the form [evenP (n
-+ n).+3]:
-
-
 *)
 
 case=>// m /eqP.
@@ -330,12 +173,6 @@ case=>// m /eqP.
   ============================
    (n + n).+3 = m.+2 -> evenP m -> False
 ]]
-
-Only now we can make use of the rewriting lemma to "strip off" the
-constant summands from the equality in the assumption, so it could be
-employed for brushing the goal, which would then match the hypothesis
-exactly.
-
 *)
 
 by rewrite !eqSS; move/eqP=><-.
@@ -359,13 +196,6 @@ elim: n=>[|n IH] //.
   ============================
    evenb (n.+1 + 1 + n.+1) -> False
 ]]
-
-In the case of zero, the proof by induction on [n] is automatically
-carried out by computation, since [evenb 1 = false]. The inductive
-step is not significantly more complicated, and it takes only two
-rewriting to get it into the shape, so the computation of [evenb]
-could finish the proof.
-
 *)
 
 by rewrite addSn addnS. 
@@ -396,10 +226,6 @@ elim=>//n'; first by move=>->; rewrite add0n.
    n' = m0.+2 ->
    evenP m0 -> (evenP m -> evenP (m0 + m)) -> evenP m -> evenP (n' + m)
 ]]
-
-The induction here is on the predicate [evenP], so the first case is
-discharged by rewriting.
-
 *)
 
 move=> m'->{n'} H1 H2 H3; rewrite addnC !addnS addnC.
@@ -417,11 +243,15 @@ move=> m'->{n'} H1 H2 H3; rewrite addnC !addnS addnC.
    evenP (m' + m).+2
 ]]
 
+*)
 
+Check EvenSS.
 
-In order to proceed with the inductive case, again a few rewritings
-are required.
-
+(** 
+[[
+EvenSS
+     : forall n m : nat, n = m.+2 -> evenP m -> evenP n
+]]
 *)
 
 apply: (EvenSS _ _)=>//.
@@ -438,29 +268,6 @@ apply: (EvenSS _ _)=>//.
   ============================
    evenP (m' + m)
 ]] 
-
-The proof script is continued by explicitly applying the constructor
-[EvenSS] of the [evenP] datatype. Notice the use of the wildcard
-underscores %\index{wildcards}% in the application of [EvenSS]. Let us
-check its type:
-
-*)
-
-Check EvenSS.
-
-(** 
-[[
-EvenSS
-     : forall n m : nat, n = m.+2 -> evenP m -> evenP n
-]]
-
-By using the underscores, we allowed Coq to _infer_ the two necessary
-arguments for the [EvenSS] constructor, namely, the values of [n] and
-[m]. The system was able to do it basing on the goal, which was
-reduced by applying it. After the simplification and automatic
-discharging the of the trivial subgoals (e.g., [(m' + m)+.2 = (m' +
-m)+.2]) via the %\texttt{//}% tactical, the only left obligation can
-be proved by applying the hypothesis [H2].
 
 *)
 
@@ -485,8 +292,6 @@ Proof.
 elim: n=>[|n Hn]; first by rewrite add0n.
 
 (** 
-%\label{pg:evenbplus}%
-
 [[
   m : nat
   n : nat
@@ -507,6 +312,7 @@ the proof.
 *)
 
 Restart.
+
 move: (leqnn n).
 
 (**
@@ -523,7 +329,7 @@ on [n], such that some of its occurrences in the goal will be a
 subject of inductive reasoning (namely, the second one), and some
 others will be left generalized (that is, bound by a forall-quantified
 variable). We do so by using SSReflect's tactics [elim] with explicit
-_occurrence selectors_.  %\index{occurrence selectors}%
+_occurrence selectors_. 
 
 *)
 
@@ -546,9 +352,6 @@ The same effect could be achieved by using [elim: n {1 3 4}n], that
 is, indicating which occurrences of [n] _should_ be generalized,
 instead of specifying, which ones should not (as we did by means of
 [{-2}n]).
-
-Now, the first goal can be solved by case-analysis on the top
-assumption (that is, [n]).
 
 *)
 
@@ -614,21 +417,7 @@ hypothesis [Hn].
 by move/ltnW /Hn=>//.
 Qed.
 
-(** 
-
-It is fair to notice that this proof was far less direct that one
-could expect, but it taught us an important trick---selective
-generalization of the induction hypothesis. In particular, by
-introducing an extra assumption [n <= n] in the beginning, we later
-exploited it, so we could apply the induction hypothesis, which was
-otherwise general enough to match the ultimate goal at the last step
-of the proof.
-
-*)
-
-(**
-
-** Eliminating assumptions with a custom induction hypothesis
+(** ** Eliminating assumptions with a custom induction hypothesis
 
 The functions like [evenb], with specific value orbits, are not
 particularly uncommon, and it is useful to understand the key
@@ -691,61 +480,12 @@ Qed.
 
 Notice that we used the version of the [elim] tactics with specific
 _elimination view_ [nat2_ind], different from the default one, which
-is possible using the view tactical %\texttt{/}\ssrtl{/}\ssrt{elim}%.
-%\index{elimination view}% In this sense, the "standard induction"
-[elim: n] would be equivalent to [elim/nat_ind: n].
-
-%\begin{exercise}%
-
-Let us define the binary division function [div2] as follows.
+is possible using the view tactical [/]. In this sense, the "standard
+induction" [elim: n] would be equivalent to [elim/nat_ind: n].
 
 *)
 
-
-Fixpoint div2 (n: nat) := if n is p.+2 then (div2 p).+1 else 0.
-
-(** 
-
-Prove the following lemma directly, _without_ using the [nat2_ind]
-induction principle.
-
-*)
-
-(* begin hide *)
-Lemma div2orb n : div2 (n.+2) = (div2 n).+1.
-Proof. by case: n=>//. Qed.
-(* end hide *)
-
-Lemma div2_le n: div2 n <= n.
-(* begin hide *)
-Proof.
-suff: (div2 n <= n) /\ (div2 n.+1 <= n.+1) by case.
-elim: n=>//[n].
-case: n=>// n; rewrite !div2orb; case=>H1 H2.
-split=>//. Search _ (_ < _.+1). 
-rewrite -ltnS in H1.
-by move: (ltn_trans H1 (ltnSn n.+2)).
-Qed.
-(* end hide *)
-
-(** 
-
-%\end{exercise}%
-
-* Inductive predicates that are hard to avoid
-%\label{sec:cannot}%
-
-Although formulating predicates as boolean functions is often
-preferable, it is not always trivial to do so. Sometimes, it is
-(seemingly) much simpler to come up with an inductive predicate, which
-explicitly witnesses the property of interest. As an example for such
-property, let us consider the notion of _beautiful_ and _gorgeous_
-numbers, which we borrow from %Pierce et al.'s electronic
-book~\cite{Pierce-al:SF} (Chapter \textsf{MoreInd})%.
-
-%\ssrd{beautiful}%
-
-*)
+(** * Inductive predicates that are hard to avoid *)
 
 Inductive beautiful (n: nat) : Prop :=
 | b_0 of n = 0
@@ -755,13 +495,11 @@ Inductive beautiful (n: nat) : Prop :=
 
 (** 
 
-The number is beautiful %\index{beautiful numbers}% if it's either
-[0], [3], [5] or a sum of two beautiful numbers. Indeed, there are
-many ways to decompose some numbers into the sum $3 \times n + 5
-\times n$.%\footnote{In fact, the solution of this simple Diophantine
-equation are all natural numbers, greater than $7$.}% Encoding a
-function, which checks whether a number is beautiful or not, although
-not impossible, is not entirely trivial (and, in particular, it's not
+The number is beautiful if it's either [0], [3], [5] or a sum of two
+beautiful numbers. Indeed, there are many ways to decompose some
+numbers into the sum $3 \times n + 5 \times n$. Encoding a function,
+which checks whether a number is beautiful or not, although not
+impossible, is not entirely trivial (and, in particular, it's not
 trivial to prove the correctness of such function with respect to the
 definition above). Therefore, if one decides to stick with the
 predicate definition, some operations become tedious, as, even for
@@ -800,10 +538,6 @@ move=>E H.
   ============================
    False
 ]]
-
-The way to infer the falsehood will be to proceed by induction on the
-hypothesis [H]:
-
 *)
 
 elim: H E=>n'; do?[by move=>->].
@@ -821,318 +555,7 @@ case: n1 H2=>// n'=> H3.
 by case: n' H3=>//; case.
 Qed.
 
-(** 
-
-%\begin{exercise}%
-
-Proof the following theorem about beautiful numbers.
-
-*)
-
-Lemma b_timesm n m: beautiful n ->  beautiful (m * n).
-(* begin hide *)
-Proof.
-elim:m=>[_|m Hm Bn]; first by rewrite mul0n; apply: b_0.
-move: (Hm Bn)=> H1.
-by rewrite mulSn; apply: (b_sum _ n (m * n))=>//.
-Qed.
-(* end hide *)
-
-(** 
-
-%\hint% Choose wisely, what to build the induction on.
-
-%\end{exercise}%
-
-To practice with proofs by induction, let us consider yet another
-inductive predicate, borrowed fro Pierce et al.'s course and defining
-which of natural numbers are _gorgeous_.  
-%\index{gorgeous numbers}%
-
-%\ssrd{gorgeous}%
-
-*)
-
-Inductive gorgeous (n: nat) : Prop :=
-| g_0 of n = 0
-| g_plus3 m of gorgeous m & n = m + 3
-| g_plus5 m of gorgeous m & n = m + 5.
-
-(*
-Fixpoint gorgeous_b (n: nat) : bool := 
- match n with 
- | 0 => true
- | m.+3 => (gorgeous_b m) || 
-              (match m with 
-                m'.+2 => gorgeous_b m'
-              | _ => false
-              end)
- | _ => false
- end.
-
-Lemma nat3_ind (P: nat -> Prop): 
-  P 0 -> P 1 -> P 2 -> (forall n, P n -> P (n.+3)) -> forall n, P n.
-Proof.
-move=> H0 H1 H2 H n. 
-suff: (P n /\ P (n.+1) /\ P (n.+2)) by case.
-elim: n=>//n; case=>H3 [H4 H5]; split=>//; split=>//. 
-by apply: H.
-Qed.
-*)
-
-(** 
-
-%\begin{exercise}\label{ex:gb}%
-
-Prove by induction the following statements about gorgeous numbers:
-
-*)
-
-
-Lemma gorgeous_plus13 n: gorgeous n -> gorgeous (n + 13).
-(* begin hide *)
-Proof.
-move=> H.
-apply: (g_plus5 _ (n + 8))=>//; last by rewrite -addnA; congr (_ + _).
-apply: (g_plus5 _ (n + 3)); last by rewrite -addnA; congr (_ + _).
-by apply: (g_plus3 _ n). 
-Qed.
-(* end hide *)
-
-Lemma beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
-(* begin hide *)
-Proof.
-elim=>n'{n}=>//.
-- by move=>->; apply g_0.
-- by move=>->; apply: (g_plus3 _ 0)=>//; apply g_0.
-- by move=>->; apply: (g_plus5 _ 0)=>//; apply g_0.
-move=> n m H1 H2 H3 H4->{n'}. 
-elim: H2; first by move=>_->; rewrite add0n.
-by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus3 _ (m' + m)).
-by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus5 _ (m' + m)).
-Qed.
-(* end hide *)
-
-Lemma g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
-(* begin hide *)
-Proof.
-rewrite muln2.
-elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply g_0.
-- rewrite doubleD -(addnn 3) addnA.
-  by apply: (g_plus3 _ (m.*2 + 3))=>//; apply: (g_plus3 _ m.*2)=>//.
-rewrite doubleD -(addnn 5) addnA.
-by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
-Qed.
-(* end hide *)
-
-Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
-(* begin hide *)
-Proof.
-elim=>{n}n=>//.
-- by move=>->; apply: b_0.
-- move=>m H1 H2->{n}.
-  by move: (b_sum (m + 3) m 3 H2)=>H; apply: H=>//; apply: b_3.
-- move=>m H1 H2->{n}.
-  by move: (b_sum (m + 5) m 5 H2)=>H; apply: H=>//; apply: b_5.
-Qed.
-(* end hide *)
-
-
-(**
-%\noindent%
-As usual, do not hesitate to use the [Search] utility for finding the
-necessary rewriting lemmas from the [ssrnat] module.
-
-%\end{exercise}%
-
-*)
-
-
-(** 
-%\begin{exercise}[Gorgeous reflection]%
-
-%\index{Frobenius problem}%
-%\index{coin problem|see {Frobenius problem}}%
-
-Gorgeous and beautiful numbers, defining, in fact, exactly the same
-subset of [nat] are a particular case of Frobenius coin problem, which
-asks for the largest integer amount of money, that cannot be obtained
-using only coins of specified
-denominations.%\footnote{\url{http://en.wikipedia.org/wiki/Frobenius_problem}}%
-In the case of [beautiful] and [gorgeous] numbers we have two
-denominations available, namely [3] and [5]. An explicit formula
-exists for the case of only two denominations $n_1$ and $n_2$, which
-allows one to compute the Frobenius number as $g(n_1, n_2) = n_1
-\times n_2 - n_1 - n_2$. That said, for the case $n_1 = 3$ and $n_2 =
-5$ the Frobenius number is $7$, which means that all numbers greater
-or equal than $8$ are in fact beautiful and gorgeous (since the two
-are equivalent, as was established by Exercise%~\ref{ex:gb}%).
-
-In this exercise, we suggest the reader to prove that the efficient
-procedure of "checking" for gorgeousness is in fact correct. First,
-let us defined the following candidate function.
-
-*)
-
-Fixpoint gorgeous_b n : bool := match n with 
- | 1 | 2 | 4 | 7 => false
- | _ => true
- end. 
-
-(** 
-
-%\noindent%
-The ultimate goal of this exercise is to prove the statement [reflect
-(gorgeous n) (gorgeous_b n)], which would mean that the two
-representations are equivalent. Let us divide the proof into two stages:
-
-- The first stage is proving that all numbers greater or equal than
-  [8] are gorgeous. To prove thism it might be useful to have the
-  following two facts established:
-
-%\hint% Use the tactic [constructor i] to prove a goal, which is an
- [n]-ary disjunction, which is satisfied if its [i]th disjunct is
- true.
-
-*)
-
-Lemma repr3 n : n >= 8 -> 
-  exists k, [\/ n = 3 * k + 8, n = 3 * k + 9 | n = 3 * k + 10].
-(* begin hide *)
-Proof.
-elim: n=>// n Ih.
-rewrite leq_eqVlt; case/orP.
-- by rewrite eqSS=>/eqP<-; exists 0; rewrite muln0 add0n; constructor.
-case/Ih=>k; case=>->{n Ih}.
-- by exists k; constructor 2; rewrite -addn1 -addnA addn1.
-- by exists k; constructor 3; rewrite -addn1 -addnA addn1.
-exists (k.+1); constructor 1.  
-by rewrite mulnSr -addn1 -2!addnA; congr (_ + _).
-Qed.
-(* end hide *)
-
-Lemma gorg3 n : gorgeous (3 * n).
-(* begin hide *)
-Proof.
-elim: n=>//[|n Ih]; first by apply: g_0; rewrite muln0.
-by rewrite mulnSr; apply: (g_plus3 _ (3*n)).
-Qed.
-(* end hide *)
-
-(** 
-
-%\noindent%
-Next, we can establish by induction the following criteria using the
-lemmas [repr3] and [gorg3] in the subgoals of the proof.
-
-*)
-
-Lemma gorg_criteria n : n >= 8 -> gorgeous n.
-(* begin hide *)
-Proof.
-case/repr3=>k; case=>->{n}.
-- apply: (g_plus5 _ (3*k + 3)); last by rewrite -addnA.
-  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
-- apply: (g_plus3 _ (3*k + 6))=>//; last by rewrite -addnA.
-  apply: (g_plus3 _ (3*k + 3))=>//; last by rewrite -addnA.
-  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
-apply: (g_plus5 _ (3*k + 5))=>//; last by rewrite -addnA.
-by apply: (g_plus5 _ (3*k))=>//; apply: gorg3.
-Qed.
-(* end hide *)
-
-(** 
-
-%\noindent%
-This makes the proof of the following lemma trivial.
-
-*)
-
-Lemma gorg_refl' n: n >= 8 -> reflect (gorgeous n) true.
-(* begin hide *)
-Proof. by move/gorg_criteria=>H; constructor. Qed.
-(* end hide *)
-
-(** 
-
-- In the second stage of the proof of reflection, we will
-  need to prove four totally boring but unavoidable lemmas.
-
-%\hint% The rewriting lemmas [addnC] and [eqSS] from the [ssrnat]
- module might be particularly useful here.
-
-*)
-
-
-Lemma not_g1: ~(gorgeous 1).
-(* begin hide *)
-Proof.
-case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
-by rewrite addnC eqSS.  
-Qed.
-(* end hide *)
-
-Lemma not_g2: ~(gorgeous 2).
-(* begin hide *)
-Proof.
-case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
-by rewrite addnC eqSS.  
-Qed.
-(* end hide *)
-
-Lemma not_g4: ~(gorgeous 4).
-(* begin hide *)
-Proof.
-case=>//n Ih /eqP; last by rewrite addnC eqSS.  
-case: n Ih=>//n Ih.
-rewrite addnC !eqSS. move/eqP=>Z; subst n. 
-by apply:not_g1.
-Qed.
-(* end hide *)
-
-Lemma not_g7: ~(gorgeous 7).
-(* begin hide *)
-Proof.
-case=>//n Ih /eqP; case: n Ih=>//n Ih;
-  rewrite addnC !eqSS; move/eqP=>Z; subst n. 
-- by apply:not_g4. 
-by apply:not_g2. 
-Qed.
-(* end hide *)
-
-(** 
-
-%\noindent% We can finally provide prove the ultimate reflection
-predicate, relating [gorgeous] and [gorgeous_b].
-
-*)
-Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
-(* begin hide *)
-Proof.
-case: n=>/=[|n]; first by constructor; apply:g_0.
-case: n=>/=[|n]; first by constructor; apply: not_g1.
-case: n=>/=[|n]; first by constructor; apply: not_g2.
-case: n=>/=[|n]. 
-- constructor; apply:(g_plus3 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n]; first by constructor; apply: not_g4.
-case: n=>/=[|n].
-- constructor; apply:(g_plus5 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n].
-- constructor; apply:(g_plus3 _ 3)=>//.
-  apply:(g_plus3 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n]; first by constructor; apply: not_g7.
-suff X: (n.+4.+4 >= 8); last by [].
-by apply:(gorg_refl').
-Qed.
-(* end hide *)
-
-(** 
-
-%\end{exercise}%
-* Working with SSReflect libraries
+(** * Working with SSReflect libraries
 
 As it was mentioned in %Chapter~\ref{ch:intro}%, SSReflect extension
 to Coq comes with an impressive number of libraries for reasoning
@@ -1439,10 +862,283 @@ Qed.
 (*******************************************************************)
 
 (** 
------------------------------------------------------------------------
-%\begin{exercise}[Appears in: bool]%
-%\end{exercise}%
------------------------------------------------------------------------
+---------------------------------------------------------------------
+Exercise [Integer binary division]
+---------------------------------------------------------------------
+
+Let us define the binary division function [div2] as follows.
+*)
+
+
+Fixpoint div2 (n: nat) := if n is p.+2 then (div2 p).+1 else 0.
+
+(** 
+
+Prove the following lemma directly by induction on [n], _without_
+using the [nat2_ind] induction principle. Then prove it using
+[nat2_ind].
+
+*)
+
+Lemma div2orb n : div2 (n.+2) = (div2 n).+1.
+Proof. by case: n=>//. Qed.
+
+Lemma div2_le n: div2 n <= n.
+Proof.
+suff: (div2 n <= n) /\ (div2 n.+1 <= n.+1) by case.
+elim: n=>//[n].
+case: n=>// n; rewrite !div2orb; case=>H1 H2.
+split=>//.
+rewrite -ltnS in H1.
+by move: (ltn_trans H1 (ltnSn n.+2)).
+Qed.
+
+(** 
+---------------------------------------------------------------------
+Exercise [Some facts about beautiful numbers]
+---------------------------------------------------------------------
+
+Proof the following theorem about beautiful numbers.
+
+Hint: Choose wisely, what to build the induction on.
+*)
+
+Lemma b_timesm n m: beautiful n ->  beautiful (m * n).
+Proof.
+elim:m=>[_|m Hm Bn]; first by rewrite mul0n; apply: b_0.
+move: (Hm Bn)=> H1.
+by rewrite mulSn; apply: (b_sum _ n (m * n))=>//.
+Qed.
+
+
+(**
+---------------------------------------------------------------------
+Exercise [Gorgeous numbers]
+---------------------------------------------------------------------
+
+To practice with proofs by induction, let us consider yet another
+inductive predicate, defining which of natural numbers are _gorgeous_.
+
+*)
+
+Inductive gorgeous (n: nat) : Prop :=
+| g_0 of n = 0
+| g_plus3 m of gorgeous m & n = m + 3
+| g_plus5 m of gorgeous m & n = m + 5.
+
+(** 
+Prove by induction the following statements about gorgeous numbers.
+
+Hint: As usual, do not hesitate to use the [Search] utility for finding the
+necessary rewriting lemmas from the [ssrnat] module.
+*)
+
+
+Lemma gorgeous_plus13 n: gorgeous n -> gorgeous (n + 13).
+Proof.
+move=> H.
+apply: (g_plus5 _ (n + 8))=>//; last by rewrite -addnA; congr (_ + _).
+apply: (g_plus5 _ (n + 3)); last by rewrite -addnA; congr (_ + _).
+by apply: (g_plus3 _ n). 
+Qed.
+
+Lemma beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
+Proof.
+elim=>n'{n}=>//.
+- by move=>->; apply g_0.
+- by move=>->; apply: (g_plus3 _ 0)=>//; apply g_0.
+- by move=>->; apply: (g_plus5 _ 0)=>//; apply g_0.
+move=> n m H1 H2 H3 H4->{n'}. 
+elim: H2; first by move=>_->; rewrite add0n.
+by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus3 _ (m' + m)).
+by move=> n' m' H5 H6->; rewrite addnAC; apply: (g_plus5 _ (m' + m)).
+Qed.
+
+Lemma g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
+Proof.
+rewrite muln2.
+elim=>{n}[n Z|n m H1 H2 Z|n m H1 H2 Z]; subst n; first by rewrite double0; apply g_0.
+- rewrite doubleD -(addnn 3) addnA.
+  by apply: (g_plus3 _ (m.*2 + 3))=>//; apply: (g_plus3 _ m.*2)=>//.
+rewrite doubleD -(addnn 5) addnA.
+by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
+Qed.
+
+Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
+Proof.
+elim=>{n}n=>//.
+- by move=>->; apply: b_0.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 3) m 3 H2)=>H; apply: H=>//; apply: b_3.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 5) m 5 H2)=>H; apply: H=>//; apply: b_5.
+Qed.
+
+
+(** 
+---------------------------------------------------------------------
+Exercise [Gorgeous reflection]
+---------------------------------------------------------------------
+
+Gorgeous and beautiful numbers, defining, in fact, exactly the same
+subset of [nat] are a particular case of Frobenius coin problem, which
+asks for the largest integer amount of money, that cannot be obtained
+using only coins of specified denominations.  In the case of
+[beautiful] and [gorgeous] numbers we have two denominations
+available, namely 3 and 5. An explicit formula exists for the case
+of only two denominations n_1 and n_2, which allows one to compute
+the Frobenius number as 
+
+g(n_1, n_2) = n_1 * n_2 - n_1 - n_2. 
+
+That said, for the case n_1 = 3 and n_2 = 5 the Frobenius number is 7,
+which means that all numbers greater or equal than 8 are in fact
+beautiful and gorgeous (since the two are equivalent, as was
+established by the previous exercise).
+
+In this exercise, we suggest the reader to prove that the efficient
+procedure of "checking" for gorgeousness is in fact correct. First,
+let us defined the following candidate function.
+
+*)
+
+Fixpoint gorgeous_b n : bool := match n with 
+ | 1 | 2 | 4 | 7 => false
+ | _ => true
+ end. 
+
+(** 
+
+The ultimate goal of this exercise is to prove the proposition
+[reflect (gorgeous n) (gorgeous_b n)], which would mean that the two
+representations are equivalent. Let us divide the proof into two
+stages:
+
+- The first stage is proving that all numbers greater or equal than
+  8 are gorgeous. To prove thism it might be useful to have the
+  following two facts established:
+
+Hint: Use the tactic [constructor i] to prove a goal, which is an
+n-ary disjunction, which is satisfied if its i-th disjunct is true.
+
+*)
+
+Lemma repr3 n : n >= 8 -> 
+  exists k, [\/ n = 3 * k + 8, n = 3 * k + 9 | n = 3 * k + 10].
+Proof.
+elim: n=>// n Ih.
+rewrite leq_eqVlt; case/orP.
+- by rewrite eqSS=>/eqP<-; exists 0; rewrite muln0 add0n; constructor.
+case/Ih=>k; case=>->{n Ih}.
+- by exists k; constructor 2; rewrite -addn1 -addnA addn1.
+- by exists k; constructor 3; rewrite -addn1 -addnA addn1.
+exists (k.+1); constructor 1.  
+by rewrite mulnSr -addn1 -2!addnA; congr (_ + _).
+Qed.
+
+Lemma gorg3 n : gorgeous (3 * n).
+Proof.
+elim: n=>//[|n Ih]; first by apply: g_0; rewrite muln0.
+by rewrite mulnSr; apply: (g_plus3 _ (3*n)).
+Qed.
+
+(** 
+
+Next, we can establish by induction the following criteria using the
+lemmas [repr3] and [gorg3] in the subgoals of the proof.
+
+*)
+
+Lemma gorg_criteria n : n >= 8 -> gorgeous n.
+Proof.
+case/repr3=>k; case=>->{n}.
+- apply: (g_plus5 _ (3*k + 3)); last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+- apply: (g_plus3 _ (3*k + 6))=>//; last by rewrite -addnA.
+  apply: (g_plus3 _ (3*k + 3))=>//; last by rewrite -addnA.
+  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
+apply: (g_plus5 _ (3*k + 5))=>//; last by rewrite -addnA.
+by apply: (g_plus5 _ (3*k))=>//; apply: gorg3.
+Qed.
+
+(** 
+
+This makes the proof of the following lemma trivial.
+
+*)
+
+Lemma gorg_refl' n: n >= 8 -> reflect (gorgeous n) true.
+Proof. by move/gorg_criteria=>H; constructor. Qed.
+
+(** 
+
+- In the second stage of the proof of reflection, we will
+  need to prove four totally boring but unavoidable lemmas.
+
+Hint: The rewriting lemmas [addnC] and [eqSS] from the [ssrnat]
+module might be particularly useful here.
+
+*)
+
+Lemma not_g1: ~(gorgeous 1).
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+
+Lemma not_g2: ~(gorgeous 2).
+Proof.
+case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
+by rewrite addnC eqSS.  
+Qed.
+
+Lemma not_g4: ~(gorgeous 4).
+Proof.
+case=>//n Ih /eqP; last by rewrite addnC eqSS.  
+case: n Ih=>//n Ih.
+rewrite addnC !eqSS. move/eqP=>Z; subst n. 
+by apply:not_g1.
+Qed.
+
+Lemma not_g7: ~(gorgeous 7).
+Proof.
+case=>//n Ih /eqP; case: n Ih=>//n Ih;
+  rewrite addnC !eqSS; move/eqP=>Z; subst n. 
+- by apply:not_g4. 
+by apply:not_g2. 
+Qed.
+
+(** 
+
+We can finally provide prove the ultimate reflection predicate,
+relating [gorgeous] and [gorgeous_b].
+
+*)
+Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
+Proof.
+case: n=>/=[|n]; first by constructor; apply:g_0.
+case: n=>/=[|n]; first by constructor; apply: not_g1.
+case: n=>/=[|n]; first by constructor; apply: not_g2.
+case: n=>/=[|n]. 
+- constructor; apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g4.
+case: n=>/=[|n].
+- constructor; apply:(g_plus5 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n].
+- constructor; apply:(g_plus3 _ 3)=>//.
+  apply:(g_plus3 _ 0); first by apply g_0.
+  by rewrite add0n.
+case: n=>/=[|n]; first by constructor; apply: not_g7.
+suff X: (n.+4.+4 >= 8); last by [].
+by apply:(gorg_refl').
+Qed.
+
+(** 
+---------------------------------------------------------------------
+Exercise [Boolean apears_in predicate for lists]
+---------------------------------------------------------------------
 *)
 
 Section Appears_bool.
@@ -1461,14 +1157,6 @@ elim: xs=>// a ls Hi.
 rewrite cat_cons //=.
 by case: (a == x).
 Qed.
-
-(*
-Lemma app_appears_in (xs ys : seq X) (x:X):
-     appears_in x xs || appears_in x ys -> appears_in x (xs ++ ys).
-Proof.
-by move/orP; case; elim: xs=>//= a ls Hi; case: (a == x)=>//.
-Qed.
-*)
 
 Fixpoint disjoint (l1 l2: seq X): bool := 
   if l1 is x::xs then ~~(appears_in x l2) && disjoint xs l2 else true.
@@ -1491,10 +1179,10 @@ Eval compute in appears_in (EqType nat _) 1 [:: 1; 2; 3].
 
 
 (** 
------------------------------------------------------------------------
+---------------------------------------------------------------------
 %\begin{exercise}[Appears in: Prop]%
 %\end{exercise}%
------------------------------------------------------------------------
+---------------------------------------------------------------------
 *)
 Section Appears_Prop.
 Variable Y: Type.
@@ -1534,13 +1222,13 @@ Qed.
 End Appears_Prop.
 
 (** 
------------------------------------------------------------------------
+---------------------------------------------------------------------
 %\begin{exercise}[Nostutter]%
 
 TODO: define and test nostutter
 
 %\end{exercise}%
------------------------------------------------------------------------
+---------------------------------------------------------------------
 *)
 
 Fixpoint nostutter (l : seq nat): bool := 
@@ -1550,10 +1238,10 @@ Fixpoint nostutter (l : seq nat): bool :=
   else true.
 
 (** 
------------------------------------------------------------------------
-%\begin{exercise}[Pigeonhole principle]%
+---------------------------------------------------------------------
+%\begin{exercise}[All predicate]%
 %\end{exercise}%
------------------------------------------------------------------------
+---------------------------------------------------------------------
 *)
 
 
