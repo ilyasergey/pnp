@@ -1,23 +1,6 @@
-(** %\chapter{Inductive Reasoning in SSReflect}
-\label{ch:ssrstyle}
-% *)
+(** %\chapter{Inductive Reasoning in SSReflect}% *)
 
-(* begin hide *)
 Module SsrStyle.
-(* end hide *)
-
-(** remove printing ~ *)
-(** printing ~ %\textasciitilde% *)
-(** printing R $R$ *)
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing first %\texttt{{first}}% *)
-(** printing last %\texttt{{last}}% *)
-(** printing suff %\texttt{\emph{suff}}% *)
-(** printing have %\texttt{\emph{have}}% *)
-(** printing View %\texttt{\emph{View}}% *)
-
 
 (** 
 
@@ -40,10 +23,6 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 *)
 
 Require Import ssreflect ssrbool ssrnat eqtype.
-Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive.
-
 
 (** 
 
@@ -753,16 +732,16 @@ Qed.
 
 %\end{exercise}%
 
-* Inductive predicates that cannot be avoided
+* Inductive predicates that are hard to avoid
 %\label{sec:cannot}%
 
 Although formulating predicates as boolean functions is often
-preferable, it is not always trivial to do so. Sometimes, it is much
-simpler to come up with an inductive predicate, which witnesses the
-property of interest. As an example for such property, let us consider
-the notion of _beautiful_ and _gorgeous_ numbers, which we borrow from
-%Pierce et al.'s electronic book~\cite{Pierce-al:SF} (Chapter
-\textsf{MoreInd})%.
+preferable, it is not always trivial to do so. Sometimes, it is
+(seemingly) much simpler to come up with an inductive predicate, which
+explicitly witnesses the property of interest. As an example for such
+property, let us consider the notion of _beautiful_ and _gorgeous_
+numbers, which we borrow from %Pierce et al.'s electronic
+book~\cite{Pierce-al:SF} (Chapter \textsf{MoreInd})%.
 
 %\ssrd{beautiful}%
 
@@ -903,9 +882,9 @@ Qed.
 
 (** 
 
-%\begin{exercise}%
+%\begin{exercise}\label{ex:gb}%
 
-Prove the following statements about gorgeous numbers:
+Prove by induction the following statements about gorgeous numbers:
 
 *)
 
@@ -946,13 +925,30 @@ by apply: (g_plus5 _ (m.*2 + 5))=>//; apply: (g_plus5 _ m.*2)=>//.
 Qed.
 (* end hide *)
 
-(**
+Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
+(* begin hide *)
+Proof.
+elim=>{n}n=>//.
+- by move=>->; apply: b_0.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 3) m 3 H2)=>H; apply: H=>//; apply: b_3.
+- move=>m H1 H2->{n}.
+  by move: (b_sum (m + 5) m 5 H2)=>H; apply: H=>//; apply: b_5.
+Qed.
+(* end hide *)
 
+
+(**
+%\noindent%
 As usual, do not hesitate to use the [Search] utility for finding the
 necessary rewriting lemmas from the [ssrnat] module.
 
 %\end{exercise}%
 
+*)
+
+
+(** 
 %\begin{exercise}[Gorgeous reflection]%
 
 %\index{Frobenius problem}%
@@ -1136,7 +1132,6 @@ Qed.
 (** 
 
 %\end{exercise}%
-
 * Working with SSReflect libraries
 
 As it was mentioned in %Chapter~\ref{ch:intro}%, SSReflect extension
@@ -1241,7 +1236,8 @@ A number of such properties is usually defined in a generic way, using
 Coq's canonical structures, which is a topic of
 %Chapter~\ref{ch:depstruct}%.
 
-** Libraries for lists and finite sets
+** A library for lists
+%\label{sec:liblists}%
 
 Lists, being one of the most basic inductive datatypes, are usually a
 subject of a lot of exercises for the fresh Coq hackers. SSReflect's
@@ -1280,116 +1276,167 @@ constructor [cons]. We encourage the reader to check the proof of the
 list function properties, such as [nth_rev] or [foldl_rev] to see the
 reasoning by the [last_ind] induction principle.
 
-Another commonly used SSReflect module [finset] %\ssrm{finset}%
-implements a functionality of sets of elements of %\index{finite
-types}% of _finite_ types, i.e., types with a finite number of
-elements, providing operations such as intersection, union, complement
-as well as a number of lemmas about them. Notice, though, that
-assuming a type to be finite is quite a restriction; for instance,
-whereas [bool] is a finite type, [nat] is not (however, a finite
-segment of natural numbers%~%is).
+%\index{Dirichlet's box principle}%
+%\index{pigeonhole principle|see{Dirichlet's box principle}}%
+
+To demonstrate the power of the library for reasoning with lists, let
+us prove the following property, known as _Dirichlet's box principle_
+(sometimes also referred to as _pigeonhole principle_), the
+formulation of which we have borrowed from
+%Chapter~\textsc{MoreLogic}% of Pierce et al.'s
+course%~\cite{Pierce-al:SF}%.
 
 *)
+
+Variable A : eqType.
+
+Fixpoint has_repeats (xs : seq A) :=
+  if xs is x :: xs' then (x \in xs') || has_repeats xs' else false.
+
+(** 
+
+The property [has_repeats] is stated over the lists with elements that
+have decidable equality, which we have considered in
+%Section~\ref{sec:eqrefl}%. Following the computational approach, it
+is a boolean function, which makes use of the boolean disjunction [||]
+and SSReflect's element inclusion predicate [\in], which is similar to
+defined in the module [seq].
+
+The following lemma states that for two lists [xs1] and [xs2], is the
+size [xs2] is strictly smaller than the size of [xs1], but
+nevertheless [xs1] as a set is a subset of [xs2] then there ought to
+be repetitions in [xs1].
+
+*)
+
+Theorem dirichlet xs1 xs2 :
+        size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeats xs1.
+
+(** 
+
+Let us go through the proof of this statement, as it is interesting by
+itself in its intensive use os SSReflect's library lemmas from the
+[seq] module.
+
+*)
+
+Proof.
+
+(** 
+
+First, the proof scripts initiates the induction on the structure of
+the first, "longer", list [xs1], simplifying and moving to the context
+some hypotheses in the "step" case (as the [nil]-case is proved
+automatically).
+
+*)
+
+elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2. 
+
+(**
+[[
+  x : A
+  xs1 : seq A
+  IH : forall xs2 : seq A,
+       size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeats xs1
+  xs2 : seq A
+  H1 : size xs2 < (size xs1).+1
+  H2 : {subset x :: xs1 <= xs2}
+  ============================
+   (x \in xs1) || has_repeats xs1
+]]
+
+Next, exactly in the case of a paper-and-pencil proof, we perform the
+case-analysis on the fact [(x \in xs1)], i.e., whether the "head"
+element [x] occurs in the remainder of the list [xs1]. If is,
+the proof is trivial and automatically discharged.
+
+*)
+
+case H3: (x \in xs1) => //=.
+(**
+[[
+  ...
+  H3 : (x \in xs1) = false
+  ============================
+   has_repeats xs1
+]]
+
+Therefore, we are considering now the situation when [x] was the
+_only_ representative of its class in the original "long" list.  For
+the further inductive reasoning, we will have to remove the same
+element from the "shorter" list [xs2], which is done using the
+following filtering operation ([pred1 x] checks every element for
+equality to [x] and [predC] construct a negation of the passed
+predicate), resulting in the list [xs2'], to which the induction
+hypothesis is applied, resulting in two goals
+
+*)
+
+pose xs2' := filter (predC (pred1 x)) xs2.
+apply: (IH xs2'); last first.
+
+(**
+[[
+  ...
+  H2 : {subset x :: xs1 <= xs2}
+  H3 : (x \in xs1) = false
+  xs2' := [seq x <- xs2 | (predC (pred1 x)) x0] : seq A
+  ============================
+   {subset xs1 <= xs2'}
+
+subgoal 2 (ID 5716) is:
+ size xs2' < size xs1
+]]
+
+The first goal is discharged by first "de-sugaring" the [{subset ...}]
+notation and moving a universally-quantified variable to the top, and
+then performing a number of rewriting with the lemmas from the
+[seq] library, such as [inE] and [mem_filter] (check their types!).
+*)
+
+- move=>y H4; move: (H2 y); rewrite inE H4 orbT mem_filter /=.
+  by move => -> //; case: eqP H3 H4 => // ->->. 
+
+(** 
+
+The second goal requires to prove the inequality, which states that
+after removal of [x] from [xs2], the length of the resulting list
+[xs2] is smaller than the length of [xs1]. This is accomplished by the
+transitivity of [<] and several rewritings by lemmas from the [seq]
+and [ssrnat] modules, mostly targeted to relate the [filter] function
+and the size of the resulting list.
+
+*)
+
+rewrite ltnS in H1; apply: leq_trans H1. 
+rewrite -(count_predC (pred1 x) xs2) -count_filter.
+rewrite -addn1 addnC leq_add2r -has_count.
+
+(**
+[[
+  ...
+  H2 : {subset x :: xs1 <= xs2}
+  H3 : (x \in xs1) = false
+  xs2' := [seq x <- xs2 | (predC (pred1 x)) x0] : seq A
+  ============================
+   has (pred1 x) xs2
+]]
+
+The remaining goal can be proved by _reflecting_ the boolean
+proposition [has] into its [Prop]-counterpart [exists2] from SSReflect
+library. The switch is done using the view [hasP], and the proof is
+completed by supplying explicitly the existential witness%~%[x].
+
+*)
+
+by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
+Qed.
+
 
 (*******************************************************************)
 (**                     * Exercices *                              *)
 (*******************************************************************)
-
-Lemma repr3 n : n >= 8 -> 
-  exists k, [\/ n = 3 * k + 8, n = 3*k + 9 | n = 3*k + 10].
-Proof.
-elim: n=>// n Ih.
-rewrite leq_eqVlt; case/orP.
-- by rewrite eqSS=>/eqP<-; exists 0; rewrite muln0 add0n; constructor.
-case/Ih=>k; case=>->{n Ih}.
-- by exists k; constructor 2; rewrite -addn1 -addnA addn1.
-- by exists k; constructor 3; rewrite -addn1 -addnA addn1.
-exists (k.+1); constructor 1.  
-by rewrite mulnSr -addn1 -2!addnA; congr (_ + _).
-Qed.
-
-Lemma gorg3 n : gorgeous (3 * n).
-Proof.
-elim: n=>//[|n Ih]; first by apply: g_0; rewrite muln0.
-by rewrite mulnSr; apply: (g_plus3 _ (3*n)).
-Qed.
-
-Lemma gorg_criteria1 n : n >= 8 -> gorgeous n.
-Proof.
-case/repr3=>k; case=>->{n}.
-Print gorgeous.
-- apply: (g_plus5 _ (3*k + 3)); last by rewrite -addnA.
-  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
-- apply: (g_plus3 _ (3*k + 6))=>//; last by rewrite -addnA.
-  apply: (g_plus3 _ (3*k + 3))=>//; last by rewrite -addnA.
-  by apply: (g_plus3 _ (3*k))=>//; apply: gorg3.
-apply: (g_plus5 _ (3*k + 5))=>//; last by rewrite -addnA.
-by apply: (g_plus5 _ (3*k))=>//; apply: gorg3.
-Qed.
-
-Lemma gorg_refl1 n: n >= 8 -> reflect (gorgeous n) true.
-Proof. by move/gorg_criteria1=>H; constructor. Qed.
-
-Fixpoint gorgeous_b n : bool := match n with 
- | 0 | 3 | 5 | 6 => true
- | 1 | 2 | 4 | 7 => false
- | _ => true
- end. 
-
-Lemma not_g1: ~(gorgeous 1).
-Proof.
-case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
-by rewrite addnC eqSS.  
-Qed.
-
-Lemma not_g2: ~(gorgeous 2).
-Proof.
-case=>//n Ih /eqP; first by rewrite addn3 eqSS. 
-by rewrite addnC eqSS.  
-Qed.
-
-Lemma not_g4: ~(gorgeous 4).
-Proof.
-case=>//n Ih /eqP; last by rewrite addnC eqSS.  
-case: n Ih=>//n Ih.
-rewrite addnC !eqSS. move/eqP=>Z; subst n. 
-by apply:not_g1.
-Qed.
-
-Lemma not_g7: ~(gorgeous 7).
-Proof.
-case=>//n Ih /eqP; case: n Ih=>//n Ih;
-  rewrite addnC !eqSS; move/eqP=>Z; subst n. 
-- by apply:not_g4. 
-by apply:not_g2. 
-Qed.
-
-Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
-Proof.
-case: n=>/=[|n]; first by constructor; apply:g_0.
-case: n=>/=[|n]; first by constructor; apply: not_g1.
-case: n=>/=[|n]; first by constructor; apply: not_g2.
-case: n=>/=[|n]. 
-- constructor; apply:(g_plus3 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n]; first by constructor; apply: not_g4.
-case: n=>/=[|n].
-- constructor; apply:(g_plus5 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n].
-- constructor; apply:(g_plus3 _ 3)=>//.
-  apply:(g_plus3 _ 0); first by apply g_0.
-  by rewrite add0n.
-case: n=>/=[|n]; first by constructor; apply: not_g7.
-suff X: (n.+4.+4 >= 8); last by [].
-by apply:(gorg_refl1).
-Qed.
-
-Program Definition blah: gorgeous 14.
-Proof.
-apply/gorg_refl; by [].
-Qed.
-
 
 (** 
 -----------------------------------------------------------------------
@@ -1440,6 +1487,9 @@ Qed.
 
 End Appears_bool.
 
+Eval compute in appears_in (EqType nat _) 1 [:: 1; 2; 3].
+
+
 (** 
 -----------------------------------------------------------------------
 %\begin{exercise}[Appears in: Prop]%
@@ -1483,8 +1533,6 @@ Qed.
 
 End Appears_Prop.
 
-Eval compute in appears_in 1 [:: 1; 2; 3].
-
 (** 
 -----------------------------------------------------------------------
 %\begin{exercise}[Nostutter]%
@@ -1509,8 +1557,6 @@ Fixpoint nostutter (l : seq nat): bool :=
 *)
 
 
-
-Require Import seq.
 
 Fixpoint all {X} (P : X -> Prop) (ls: seq X): Prop := 
   if ls is x::xs then P x /\ all P xs else True.
