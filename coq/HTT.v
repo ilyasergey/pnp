@@ -28,7 +28,7 @@ Module HTT.
 (** printing putStrLn %\texttt{\emph{putStrLn}}% *)
 (** printing getChar %\texttt{\emph{getChar}}% *)
 (** printing heval %\textsf{\emph{heval}}% *)
-(** printing heval %\textsf{\emph{write}}% *)
+(** printing write %\textsf{\emph{write}}% *)
 
 (** 
 
@@ -2338,8 +2338,6 @@ We can finally define and specify the HTT procedure [remove], which
 returns the current head of the list and returns the pointer to its
 next element (or [null]) if the list is empty.
 
-%\newpage%
-
 *)
 
 
@@ -2412,7 +2410,7 @@ reverse p : {xs}, STsep (lseq p xs, [vfun y => lseq y (rev xs)]) :=
 We invite the reader to conduct the verification of [reverse], proving
 that it satisfies the given specification.
 
-%\hint% Try to design a proof on a paper first.
+%\hint% Try to design the proof on paper first.
 
 %\hint% It might be a good idea to make use of the previously proved
  lemmas [lseq_null] and [leq_pos], used as _views_.
