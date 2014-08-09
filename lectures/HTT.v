@@ -1185,6 +1185,21 @@ Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
+(* Program Definition swap (x y : ptr):  *)
+(*   {(a b : nat)},  *)
+(*   STsep (fun h => h = x :-> a \+ y :-> b, *)
+(*         [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=  *)
+(*   Do (vx <-- !x; *)
+(*       vy <-- !y; *)
+(*       x ::= vy;; *)
+(*       y ::= vx). *)
+(* Next Obligation. exact: nat. Qed. *)
+(* Next Obligation. exact: nat. Qed. *)
+(* Next Obligation. *)
+(* apply:ghR=>_ [a b]->/= V. *)
+(* Search _ (verify _ _ _) (!_). *)
+(* apply: bnd_seq. move: x y V Z. apply val_read. *)
+
 (**
 
 ** The Hoare monad
