@@ -334,24 +334,6 @@ for [nat] as follows, first by constructing the appropriate mixin.
 Definition natPCMMixin := 
   PCMMixin addnC addnA add0n (fun x y => @id true) (erefl _).
 
-(**
-
-The constructor [PCMMixin], defined in Section~%\ref{sec:packaging}%
-is invoked with five parameters, all of which correspond to the
-properties, ensured by the PCM definition. The rest of the arguments,
-namely, the validity predicate, the join operation and the zero
-element are implicit and are soundly inferred by Coq's type inference
-engine from the types of lemmas, provided as propositional
-arguments. For instance, the first argument [addnC], whose type is
-[commutative addn] makes it possible to infer that the join operation
-is the addition. In the same spirit, the third argument, [add0n] makes
-it unambiguous that the unit element is zero.
-
-After defining the PCM mixin, we can instantiate the PCM packed class
-for [nat] by the following definition:
-
-*)
-
 Definition NatPCM := PCM nat natPCMMixin.
 
 (** 
@@ -371,42 +353,13 @@ Lemma add_perm (a b c : nat) : a \+ (b \+ c) = a \+ (c \+ b).
 The term "a" has type "nat" while it is expected to have type "PCMDef.type ?135".
 ]]
 
-This error is due to the fact that Coq is unable to recognize natural
-numbers to be elements of the corresponding PCM, and one possible way
-to fix it is to declare the parameters of the lemma [add_perm], [a],
-[b] and [c] to be of type [NatPCM] rather than [nat]. This is still
-awkward: it means that the lemmas cannot be just applied to mere
-natural numbers, instead they need to be _coerced_ to the [NatPCM]
-type explicitly whenever we need to apply this lemma. Coq suggests a
-better solution to this problem by providing a mechanism of _canonical
-structures_ as a flexible way to specify _how exactly_ each concrete
-datatype should be embedded into an abstract mathematical
-structure%~\cite{Saibi:PhD}%.
-
-%\index{canonical structures}% 
-
-The Vernacular syntax for defining canonical structures is similar to
-the one of definitions and makes use of the [Canonical]
-command.%\footnote{The command \texttt{Canonical Structure}
-\ccom{Canonical Structure} serves the same purpose.}\ccom{Canonical}%
-The following definition defines [natPCM] to be a canonical instance
-of the PCM structure for natural numbers.
-
 *)
 
 Canonical natPCM := PCM nat natPCMMixin.
 
-(** 
-
-To see what kind of effect it takes, we will print all _canonical
-projections_, currently available in the context of the module. 
-
-*)
-
 Print Canonical Projections.
 
 (**
-
 [[
 ...
 nat <- PCMDef.type ( natPCM )
@@ -416,40 +369,6 @@ sig <- sub_sort ( sig_subType )
 number <- sub_sort ( number_subType )
 ...
 ]]
-
-The displayed list specifies, which implicit canonical instances are
-currently available and will be triggered implicitly. That is, for
-example, whenever an instance of [nat] is available, but in fact it
-should be treated as the [type] field of the [PCM] structure (with all
-getters typed properly), the canonical instance [natPCM] will be
-automatically picked by Coq for such embedding. In other words, the
-machinery of canonical structures allows us to define the policy for
-finding an appropriate _dictionary_ of functions and propositions for
-an arbitrary concrete datatype, whenever it is supposed to have
-them. The mechanism of defining canonical structures for concrete data
-types is reminiscent to the resolution of type class constraints in
-Haskell%~\cite{Wadler-Blott:POPL89}%. However, unlike Haskell, where
-the resolution algorithm for type class instances is _hard-coded_, in
-the case of Coq one can actually _program_ the way the canonical
-instances are resolved.%\footnote{In addition to canonical structures,
-Coq also provides mechanism of type classes, which are even more
-reminiscent to the ones from Haskell, and, similarly to the later
-ones, do not provide a way to program the resolution
-policy~\cite{Sozeau-Oury:TPHOL08}.}% This leads to a very powerful
-technique to automate the process of theorem proving by encoding the
-way to find and apply necessary lemmas, whenever it is required. These
-techniques are, however, outside of the scope of this course, so we
-direct the interested reader to the relevant research papers that
-describe the patterns of programming with canonical
-structures%~\cite{Gontier-al:ICFP11,Mahboubi-Tassi:ITP13,Garillot:PhD}%.
-
-Similarly to the way we have defined a canonical instance of PCM for
-[nat], we can define a canonical instance of a PCM with
-cancellativity. In order to instantiate it, we will, however, need to
-prove the following lemma, which states that the addition on natural
-numbers is indeed cancellative, so this fact will be used as an
-argument for the [CancelPCMMixin] constructor.
-
 *)
 
 
@@ -458,14 +377,6 @@ Proof.
 move=> a b c; elim: a=>// n /(_ is_true_true) Hn _ H.
 by apply: Hn; rewrite !addSn in H; move/eq_add_S: H.
 Qed.
-
-(** 
-
-Notice the first assumption [true] of the lemma. Here it serves as a
-placeholder for the general validity hypothesis [valid (a \+ b)],
-which is always [true] in the case of natural numbers.
-
-*)
 
 Definition cancelNatPCMMixin := CancelPCMMixin cancelNat.
 
@@ -481,20 +392,11 @@ machinery.
 
 Section PCMExamples.
 
-(** %\label{pg:addnprops}% *)
-
 Variables a b c: nat.
 
 Goal a \+ (b \+ c) =  c \+ (b \+ a).
 by rewrite joinA [c \+ _]joinC [b \+ _]joinC.
 Qed.
-
-(** 
-
-The next goal is proved by using the combined machinery of [PCM] and
-[CancelPCM].
-
-*)
 
 Goal c \+ a = a \+ b -> c = b.
 by rewrite [c \+ _]joinC; apply: cancel.
@@ -523,45 +425,7 @@ Proof. by []. Qed.
 
 End PCMExamples.
 
-(**
-%\begin{exercise}[Partially ordered sets]%
-
-%\index{partially ordered set}%
-
-A partially ordered set order is a triple $(T, \pre, \bot)$, such that
-$T$ is a set, $\pre$ is a relation on $T$ and $\bot$ is an element of
-$T$, such that
-
-%
-\begin{enumerate}
-\item $\forall x \in T, \bot \pre x$ ($\bot$ is a bottom element);
-
-\item $\forall x \in T, x \pre x$ (reflexivity);
-
-\item $\forall x, y \in T, x \pre y \wedge y \pre x \implies x = y$ (antisymmetry);
-
-\item $\forall x, y, z \in T, x \pre y \wedge y \pre z \implies x \pre z$ (transitivity).
-\end{enumerate}
-%
-
-Implement a data structure for partially-ordered sets using mixins and
-packed classes. Prove the following laws:
-
-[[
-Lemma botP (x : T) : bot <== x.
-Lemma poset_refl (x : T) : x <== x.
-Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
-Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
-]]
-
-Provide canonical instances of partially ordered sets for types [nat]
-and [pair] and functions, whose codomain (range) is a partially
-ordered set.
-
-%\end{exercise}%
-
-** Types with decidable equalities
-%\index{decidable equality}%
+(** ** Types with decidable equalities
 
 When working with SSReflect and its libraries, one will always come
 across multiple canonical instances of a particularly important
@@ -648,6 +512,63 @@ Canonical nat_eqType := EqType nat nat_eqMixin.
 
 *)
 
-(* begin hide *)
+(*******************************************************************)
+(**                     * Exercices 2 *                            *)
+(*******************************************************************)
+
+(** 
+---------------------------------------------------------------------
+Exercise [Partially-ordered sets]
+---------------------------------------------------------------------
+
+A partially ordered set order is a triple (T, \pre, \bot), such that T
+is a carrier set, \pre is a relation on T and \bot is an element of T,
+such that
+
+- forall x in T, \bot \pre x (\bot is a bottom element);
+
+- forall x in T, x \pre x (reflexivity);
+
+- forall x, y in T, x \pre y \wedge y \pre x \implies x = y (antisymmetry);
+
+- forall x, y, z in T, x \pre y \wedge y \pre z \implies x \pre z (transitivity).
+
+Implement a data structure for partially-ordered sets using mixins and
+packed classes. Prove the following laws:
+
+Lemma botP (x : T) : bot <== x.
+Lemma poset_refl (x : T) : x <== x.
+Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
+Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
+*)
+
+(**
+---------------------------------------------------------------------
+Exercise [Canonical instances of partially ordered sets]
+---------------------------------------------------------------------
+
+Provide canonical instances of partially ordered sets for the
+following types:
+
+- [nat] and [<=];
+
+- [prod], whose components are posets;
+
+- functions [A -> B], whose codomain (range) [B] is a partially
+  ordered set.
+
+In order to provide a canonical instance for functions, you will need
+to assume and make use of the following axiom of functional
+extensionality:
+
+*)
+
+Axiom fext : forall A (B : A -> Type) (f1 f2 : forall x, B x), 
+               (forall x, f1 x = f2 x) -> f1 = f2.
+
+
+(*******************************************************************)
+(**                 * End of Exercices 2 *                         *)
+(*******************************************************************)
+
 End DepRecords.
-(* end hide *)

@@ -101,3 +101,180 @@ End Exports.
 End PCMDef.
 
 Export PCMDef.Exports.
+
+(*******************************************************************)
+(**                     * Exercices 2 *                            *)
+(*******************************************************************)
+
+(** 
+---------------------------------------------------------------------
+Exercise [Partially-ordered sets]
+---------------------------------------------------------------------
+
+A partially ordered set order is a triple (T, \pre, \bot), such that T
+is a carrier set, \pre is a relation on T and \bot is an element of T,
+such that
+
+- forall x in T, \bot \pre x (\bot is a bottom element);
+
+- forall x in T, x \pre x (reflexivity);
+
+- forall x, y in T, x \pre y \wedge y \pre x \implies x = y (antisymmetry);
+
+- forall x, y, z in T, x \pre y \wedge y \pre z \implies x \pre z (transitivity).
+
+Implement a data structure for partially-ordered sets using mixins and
+packed classes. Prove the following laws:
+
+Lemma botP (x : T) : bot <== x.
+Lemma poset_refl (x : T) : x <== x.
+Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
+Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
+
+*)
+
+Module Poset.
+Section RawMixin.
+
+Record mixin_of (T : Type) := Mixin {
+  mx_leq : T -> T -> Prop;
+  _ : forall x, mx_leq x x; 
+  _ : forall x y, mx_leq x y -> mx_leq y x -> x = y; 
+  _ : forall x y z, mx_leq x y -> mx_leq y z -> mx_leq x z}.
+
+End RawMixin.
+Section ClassDef.
+
+Record class_of T := Class {mixin : mixin_of T}.
+
+Structure type : Type := Pack {sort : Type; _ : class_of sort; _ : Type}.
+Local Coercion sort : type >-> Sortclass.
+
+Variables (T : Type) (cT : type).
+Definition class := let: Pack _ c _ as cT' := cT return class_of cT' in c.
+
+Definition pack (m0 : mixin_of T) := 
+  fun m & phant_id m0 m => Pack (@Class T m) T.
+
+Definition leq := mx_leq (mixin class).
+
+End ClassDef.
+
+Module Exports.
+Coercion sort : type >-> Sortclass.
+Notation poset := Poset.type.
+Notation PosetMixin := Poset.Mixin.
+Notation Poset T m := (@pack T _ m id).
+
+Notation "x <== y" := (Poset.leq x y) (at level 70).
+
+Section Laws.
+Variable T : poset.
+
+Lemma poset_refl (x : T) : x <== x.
+Proof. by case: T x=>S [[leq B R]]. Qed.
+
+Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
+Proof. by case: T x y=>S [[l R A Tr]] *; apply: (A). Qed.
+
+Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
+Proof. by case: T y x z=>S [[l R A Tr]] ? x y z; apply: (Tr). Qed.
+End Laws.
+End Exports.
+End Poset.
+
+Export Poset.Exports.
+
+(**
+---------------------------------------------------------------------
+Exercise [Canonical instances of partially ordered sets]
+---------------------------------------------------------------------
+
+Provide canonical instances of partially ordered sets for the
+following types:
+
+- [nat] and [<=];
+
+- [prod], whose components are posets;
+
+- functions [A -> B], whose codomain (range) [B] is a partially
+  ordered set.
+
+In order to provide a canonical instance for functions, you will need
+to assume and make use of the following axiom of functional
+extensionality:
+
+*)
+
+Section NatPoset.
+Lemma nat_refl x : x <= x. Proof. by []. Qed.
+
+Lemma nat_asym x y : x <= y -> y <= x -> x = y.
+Proof. by move=>H1 H2; apply: anti_leq; rewrite H1 H2. Qed. 
+
+Lemma nat_trans x y z : x <= y -> y <= z -> x <= z.
+Proof. by apply: leq_trans. Qed.
+
+Definition natPosetMixin := PosetMixin nat_refl nat_asym nat_trans.
+Canonical natPoset := Eval hnf in Poset nat natPosetMixin.
+End NatPoset.
+
+
+Section PairPoset. 
+Variable (A B : poset). 
+Local Notation tp := (A * B)%type. 
+
+Definition pair_leq (p1 p2 : tp) := p1.1 <== p2.1 /\ p1.2 <== p2.2.
+
+Lemma pair_refl x : pair_leq x x.
+Proof. by split; apply: poset_refl. Qed.
+
+Lemma pair_asym x y : pair_leq x y -> pair_leq y x -> x = y.
+Proof.
+move: x y=>[x1 x2][y1 y2][/= H1 H2][/= H3 H4].
+by congr (_, _); apply: poset_asym.
+Qed.
+
+Lemma pair_trans x y z : pair_leq x y -> pair_leq y z -> pair_leq x z.
+Proof. 
+move: x y z=>[x1 x2][y1 y2][z1 z2][/= H1 H2][/= H3 H4]; split=>/=.
+- by apply: poset_trans H3.
+by apply: poset_trans H4.
+Qed.
+
+Definition pairPosetMixin := 
+  PosetMixin pair_refl pair_asym pair_trans.
+Canonical pairPoset := Eval hnf in Poset tp pairPosetMixin.
+
+End PairPoset.
+
+Axiom fext : forall A (B : A -> Type) (f1 f2 : forall x, B x), 
+               (forall x, f1 x = f2 x) -> f1 = f2.
+
+Section FunPoset. 
+Variable (A : Type) (B : poset).
+Local Notation tp := (A -> B). 
+
+Definition fun_leq (p1 p2 : tp) := forall x, p1 x <== p2 x.
+
+Lemma fun_refl x : fun_leq x x.
+Proof. by move=>z; apply: poset_refl. Qed. 
+
+Lemma fun_asym x y : fun_leq x y -> fun_leq y x -> x = y.
+Proof. 
+move=>H1 H2. apply: fext=>z; 
+by apply: poset_asym; [apply: H1 | apply: H2]. 
+Qed.
+
+Lemma fun_trans x y z : fun_leq x y -> fun_leq y z -> fun_leq x z.
+Proof. by move=>H1 H2 t; apply: poset_trans (H2 t). Qed.
+
+Definition funPosetMixin := PosetMixin fun_refl fun_asym fun_trans.
+Canonical funPoset := Eval hnf in Poset tp funPosetMixin.
+
+End FunPoset.
+
+
+(*******************************************************************)
+(**                 * End of Exercices 2 *                         *)
+(*******************************************************************)

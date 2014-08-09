@@ -957,10 +957,30 @@ Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
 Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
 ]]
 
-Provide canonical instances of partially ordered sets for types [nat]
-and [pair] and functions, whose codomain (range) is a partially
-ordered set.
+%\end{exercise}%
 
+%\begin{exercise}[Canonical instances of partially ordered sets]%
+
+Provide canonical instances of partially ordered sets for the
+following types:
+
+- [nat] with [<=] as a partial order;
+- [prod], whose components are partially-ordered sets;
+- functions [A -> B], whose codomain (range) [B] is a partially
+  ordered set.
+
+In order to provide a canonical instance for functions, you will need
+to assume and make use of the following axiom of functional
+extensionality:
+
+%\index{extensionality}%
+
+*)
+
+Axiom fext : forall A (B : A -> Type) (f1 f2 : forall x, B x), 
+               (forall x, f1 x = f2 x) -> f1 = f2.
+
+(**
 %\end{exercise}%
 
 ** Types with decidable equalities
