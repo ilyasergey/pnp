@@ -913,6 +913,23 @@ Proof.
 by move=>H; move/disaster: (my_eq_sym H).
 Qed.
 
+(**
+---------------------------------------------------------------------
+Exercise [Fun with rewritings]
+---------------------------------------------------------------------
+Prove the following lemma
+*)
+
+Lemma rewrite_is_fun T (f : T -> T -> T) (a b c : T):
+  (forall a b : T, f a b = f b a) ->
+  (forall a b c : T, f a (f b c) = f (f a b) c) ->
+  f (f b a) c = f a (f c b).     
+Proof.
+move=> H1 H2.
+by rewrite [(f b a)]H1 -H2 [(f c b)]H1.
+Qed.
+
+
 
 
 (* begin hide *)
