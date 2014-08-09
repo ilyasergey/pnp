@@ -635,7 +635,7 @@ Module CancelPCM.
 
 (**
 
-PCMs with cancellation %\index{cancellative}% extend ordinary PCMs
+PCMs with cancellation %\index{cancellativity}% extend ordinary PCMs
 with an extra property, that states that the equality $a \join b = a
 \join c$ for any $a$, $b$ and $c$, whenever $a \join b$ is defined,
 implies $a = b$. We express such property via an additional mixin
