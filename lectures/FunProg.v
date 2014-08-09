@@ -634,6 +634,18 @@ Implement the following higher-order functions on lists
 - tail-recursive list reversal
 *)
 
+(** 
+---------------------------------------------------------------------
+Exercises [No-stuttering lists]
+---------------------------------------------------------------------
+
+We say that a list of numbers "stutters" if it repeats the same number
+consecutively. The predicate "nostutter ls" means that ls does not
+stutter. Formulate an inductive definition for nostutter. Write some
+"unit tests" for this function.
+
+*)
+
 (**
 ---------------------------------------------------------------------
 Exercise [List alternation]

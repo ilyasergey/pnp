@@ -178,6 +178,24 @@ Fixpoint fold_right A B (f: A -> B -> B) z (l: seq A): B :=
 
 Eval compute in fold_left (fun x y => x + y) 5 [::1;2;4].
 
+(** 
+---------------------------------------------------------------------
+Exercises [No-stuttering lists]
+---------------------------------------------------------------------
+
+We say that a list of numbers "stutters" if it repeats the same number
+consecutively. The predicate "nostutter ls" means that ls does not
+stutter. Formulate an inductive definition for nostutter. Write some
+"unit tests" for this function.
+
+*)
+
+Fixpoint nostutter (l : seq nat): bool := 
+  if l is x1::xs1 
+  then if xs1 is x2::xs2 then (x1 != x2) && nostutter xs1
+                         else true
+  else true.
+
 
 (** 
 ---------------------------------------------------------------------

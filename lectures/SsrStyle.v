@@ -557,24 +557,12 @@ Qed.
 
 (** * Working with SSReflect libraries
 
-As it was mentioned in %Chapter~\ref{ch:intro}%, SSReflect extension
-to Coq comes with an impressive number of libraries for reasoning
-about the large collection of discrete datatypes and structures,
-including but not limited to booleans, natural numbers, sequences,
-finite functions and sets, graphs, algebras, matrices, permutations
-etc. As discussed in this and previous chapters, all these libraries
-give preference to the computable functions rather than inductive
-predicates and leverage the reasoning via rewriting by equality. They
-also introduce a lot of notations that are worth being re-used in
-order to make the proof scripts tractable, yet concise.
-
-We would like to conclude this chapter with a short overview of a
-subset of the standard SSReflect programming and naming policies,
-which will, hopefully, simplify the use of the libraries in a
-standalone development.
+We conclude this chapter with a short overview of a subset of the
+standard SSReflect programming and naming policies, which will,
+hopefully, simplify the use of the libraries in a standalone
+development.
 
 ** Notation and standard operation properties
-%\label{sec:funprops}%
 
 SSReflect's module [ssrbool] introduces convenient notation for
 predicate connectives, such as [/\] and [\/]. In particular, multiple
@@ -592,23 +580,6 @@ Proof. by case=>p1 [p2][p3]. Qed.
 Lemma conj4' P1 P2 P3 P4 : [ /\ P1, P2, P3 & P4] -> P3.
 Proof. by case. Qed.
 
-(** 
-
-In the first case, we had progressively decompose binary
-right-associated conjunctions, which was done by means of the _product
-naming_ pattern [[...]],%\footnote{The same introduction pattern works
-in fact for \emph{any} product type with one constructor, e.g., the
-existential quantification (see Chapter~\ref{ch:logic}).}% so
-eventually all levels vere "peeled off", and we got the necessary
-hypothesis [p3]. In the second formulation, [conj4'], the case
-analysis immediately decomposed the whole 4-conjunction into the
-separate assumptions.
-
-For functions of arity bigger than one, SSReflect's module [ssrfun]
-also introduces convenient notation, allowing them to be curried with
-respect to the second argument:%\index{currying}%
-
-*) 
 
 Require Import ssrfun.
 Locate "_ ^~ _".
@@ -654,19 +625,9 @@ addn_maxl  left_distributive addn maxn
 addn_minl  left_distributive addn minn
 ...
 ]]
+*)
 
-A number of such properties is usually defined in a generic way, using
-Coq's canonical structures, which is a topic of
-%Chapter~\ref{ch:depstruct}%.
-
-** A library for lists
-%\label{sec:liblists}%
-
-Lists, being one of the most basic inductive datatypes, are usually a
-subject of a lot of exercises for the fresh Coq hackers. SSReflect's
-modules [seq] %\ssrm{seq}% collect a number of the most commonly used
-procedures on lists and their properties, as well as some non-standard
-induction principles, drastically simplifying the reasoning.
+(** ** A library for lists
 
 For instance, properties of some of the functions, such as _list
 reversal_ are simpler to prove not by the standard "direct" induction
@@ -692,22 +653,9 @@ last_ind
        forall s : seq T, P s
 ]]
 
-That is, [last_ind] is very similar to the standard list induction
-principle [list_ind], except for the fact that its "induction step" is
-defined with respect to the [rcons] function, rather than the list's
-constructor [cons]. We encourage the reader to check the proof of the
-list function properties, such as [nth_rev] or [foldl_rev] to see the
-reasoning by the [last_ind] induction principle.
-
-%\index{Dirichlet's box principle}%
-%\index{pigeonhole principle|see{Dirichlet's box principle}}%
-
 To demonstrate the power of the library for reasoning with lists, let
 us prove the following property, known as _Dirichlet's box principle_
-(sometimes also referred to as _pigeonhole principle_), the
-formulation of which we have borrowed from
-%Chapter~\textsc{MoreLogic}% of Pierce et al.'s
-course%~\cite{Pierce-al:SF}%.
+(sometimes also referred to as _pigeonhole principle_).
 
 *)
 
@@ -718,13 +666,6 @@ Fixpoint has_repeats (xs : seq A) :=
 
 (** 
 
-The property [has_repeats] is stated over the lists with elements that
-have decidable equality, which we have considered in
-%Section~\ref{sec:eqrefl}%. Following the computational approach, it
-is a boolean function, which makes use of the boolean disjunction [||]
-and SSReflect's element inclusion predicate [\in], which is similar to
-defined in the module [seq].
-
 The following lemma states that for two lists [xs1] and [xs2], is the
 size [xs2] is strictly smaller than the size of [xs1], but
 nevertheless [xs1] as a set is a subset of [xs2] then there ought to
@@ -734,15 +675,6 @@ be repetitions in [xs1].
 
 Theorem dirichlet xs1 xs2 :
         size xs2 < size xs1 -> {subset xs1 <= xs2} -> has_repeats xs1.
-
-(** 
-
-Let us go through the proof of this statement, as it is interesting by
-itself in its intensive use os SSReflect's library lemmas from the
-[seq] module.
-
-*)
-
 Proof.
 
 (** 
@@ -768,12 +700,6 @@ elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2.
   ============================
    (x \in xs1) || has_repeats xs1
 ]]
-
-Next, exactly in the case of a paper-and-pencil proof, we perform the
-case-analysis on the fact [(x \in xs1)], i.e., whether the "head"
-element [x] occurs in the remainder of the list [xs1]. If is,
-the proof is trivial and automatically discharged.
-
 *)
 
 case H3: (x \in xs1) => //=.
@@ -784,16 +710,6 @@ case H3: (x \in xs1) => //=.
   ============================
    has_repeats xs1
 ]]
-
-Therefore, we are considering now the situation when [x] was the
-_only_ representative of its class in the original "long" list.  For
-the further inductive reasoning, we will have to remove the same
-element from the "shorter" list [xs2], which is done using the
-following filtering operation ([pred1 x] checks every element for
-equality to [x] and [predC] construct a negation of the passed
-predicate), resulting in the list [xs2'], to which the induction
-hypothesis is applied, resulting in two goals
-
 *)
 
 pose xs2' := filter (predC (pred1 x)) xs2.
@@ -811,11 +727,6 @@ apply: (IH xs2'); last first.
 subgoal 2 (ID 5716) is:
  size xs2' < size xs1
 ]]
-
-The first goal is discharged by first "de-sugaring" the [{subset ...}]
-notation and moving a universally-quantified variable to the top, and
-then performing a number of rewriting with the lemmas from the
-[seq] library, such as [inE] and [mem_filter] (check their types!).
 *)
 
 - move=>y H4; move: (H2 y); rewrite inE H4 orbT mem_filter /=.
@@ -825,10 +736,7 @@ then performing a number of rewriting with the lemmas from the
 
 The second goal requires to prove the inequality, which states that
 after removal of [x] from [xs2], the length of the resulting list
-[xs2] is smaller than the length of [xs1]. This is accomplished by the
-transitivity of [<] and several rewritings by lemmas from the [seq]
-and [ssrnat] modules, mostly targeted to relate the [filter] function
-and the size of the resulting list.
+[xs2] is smaller than the length of [xs1]. 
 
 *)
 
@@ -845,12 +753,6 @@ rewrite -addn1 addnC leq_add2r -has_count.
   ============================
    has (pred1 x) xs2
 ]]
-
-The remaining goal can be proved by _reflecting_ the boolean
-proposition [has] into its [Prop]-counterpart [exists2] from SSReflect
-library. The switch is done using the view [hasP], and the proof is
-completed by supplying explicitly the existential witness%~%[x].
-
 *)
 
 by apply/hasP; exists x=>//=; apply: H2; rewrite inE eq_refl.
@@ -868,7 +770,6 @@ Exercise [Integer binary division]
 
 Let us define the binary division function [div2] as follows.
 *)
-
 
 Fixpoint div2 (n: nat) := if n is p.+2 then (div2 p).+1 else 0.
 
@@ -1137,18 +1038,31 @@ Qed.
 
 (** 
 ---------------------------------------------------------------------
-Exercise [Boolean apears_in predicate for lists]
+Exercise [Boolean element inclusion predicate for lists]
 ---------------------------------------------------------------------
+
+Assuming a type [X] with the boolean equality (i.e., elements of [X]
+can be compared for being equal using the [==] operator returning
+[true] or [false]), define a recursive funciton [appears_in] on lists
+that takes an element [a : X], a list [l : seq X] and returns a
+boolean value indicating whether [a] appears in [l] or not.
+
 *)
 
 Section Appears_bool.
 Variable X: eqType.
 
-(* exercise 1 *)
 Fixpoint appears_in (a: X) (l: seq X) : bool :=
   if l is x::xs 
   then if x == a then true else  appears_in a xs
   else false.
+
+(** 
+
+Next, prove the following lemma, relating [appears_in] and list
+concatenation [++].
+
+*)
 
 Lemma appears_in_app (xs ys : seq X) (x:X): 
      appears_in x (xs ++ ys) = appears_in x xs || appears_in x ys.
@@ -1158,11 +1072,25 @@ rewrite cat_cons //=.
 by case: (a == x).
 Qed.
 
+(** 
+
+Let us define the functions [disjoint] and [no_repeats] using
+[appears_in] as follows:
+
+*)
+
 Fixpoint disjoint (l1 l2: seq X): bool := 
   if l1 is x::xs then ~~(appears_in x l2) && disjoint xs l2 else true.
 
 Fixpoint no_repeats (ls : seq X) := 
   if ls is x :: xs then ~~ (appears_in x xs) && no_repeats xs else true.
+
+(** 
+
+Finally, prove the following lemma, realting [no_repeats] and
+[disjoint].
+
+*)
 
 Theorem norep_disj_app l1 l2: 
   no_repeats l1 -> no_repeats l2 -> disjoint l1 l2 -> no_repeats (l1 ++ l2).
@@ -1176,14 +1104,19 @@ Qed.
 End Appears_bool.
 
 Eval compute in appears_in (EqType nat _) 1 [:: 1; 2; 3].
+Eval compute in appears_in (EqType nat _) 1 [:: 2; 4; 3].
 
 
 (** 
 ---------------------------------------------------------------------
-%\begin{exercise}[Appears in: Prop]%
-%\end{exercise}%
+Exercise [Element inclusion predicate for lists in Prop]
 ---------------------------------------------------------------------
+
+For types [Y] with propositional equality, define the [appears_inP]
+predicate, which returns [Prop].
+
 *)
+
 Section Appears_Prop.
 Variable Y: Type.
 
@@ -1191,6 +1124,15 @@ Fixpoint appears_inP (a: Y) (l: seq Y) : Prop :=
   if l is x::xs 
   then x = a \/ appears_inP a xs
   else False.
+
+(**
+
+Prove the lemma [appears_in_appP]:
+
+Lemma appears_in_appP (xs ys : seq Y) (x:Y): 
+     appears_inP x (xs ++ ys) <-> appears_inP x xs \/ appears_inP x ys.
+
+*)
 
 Lemma appears_in_appP (xs ys : seq Y) (x:Y): 
      appears_inP x (xs ++ ys) <-> appears_inP x xs \/ appears_inP x ys.
@@ -1203,6 +1145,17 @@ split; elim: xs=>[| a ls Hi].
 - by rewrite cat0s; case.
 by case=>//=; intuition.
 Qed.
+
+(** 
+
+Finally, define the [Prop]-versions of the [disjoint] and [no_repeat]
+predicates: [disjointP] and [no_repeatP] and prove the following lemma
+relating them:
+
+Theorem norep_disj_appP l1 l2: 
+  no_repeatsP l1 -> no_repeatsP l2 -> disjointP l1 l2 -> no_repeatsP (l1 ++ l2).
+
+*)
 
 Fixpoint disjointP (l1 l2: seq Y) := 
   if l1 is x::xs then ~(appears_inP x l2) /\ disjointP xs l2 else True.
@@ -1223,27 +1176,26 @@ End Appears_Prop.
 
 (** 
 ---------------------------------------------------------------------
-%\begin{exercise}[Nostutter]%
-
-TODO: define and test nostutter
-
-%\end{exercise}%
+Exercise ["All" predicate for lists]
 ---------------------------------------------------------------------
+
+Define two version of version of "all-elements-satisfy" predicate for
+lists. 
+
+- The version [all] takes a type [X], a predicate [P : X -> Prop] and
+  a list [ls: seq X] and returns element of sort [Prop] which carries
+  a proof that all elements of ls satisfy [P].
+
+- The decidable version [allb] takes a type [X], a predicate [test : X
+  -> bool] and a list [ls: seq X], and returns a boolean result.
+
+Prove the following lemma, stating that the two representations are
+equivalent whenever [P] and [test] are equivalent:
+
+Lemma allP T P test: 
+  (forall x: T, reflect (P x) (test x)) -> 
+  forall ls, reflect (all P ls) (allb test ls).
 *)
-
-Fixpoint nostutter (l : seq nat): bool := 
-  if l is x1::xs1 
-  then if xs1 is x2::xs2 then (x1 != x2) && nostutter xs1
-                         else true
-  else true.
-
-(** 
----------------------------------------------------------------------
-%\begin{exercise}[All predicate]%
-%\end{exercise}%
----------------------------------------------------------------------
-*)
-
 
 
 Fixpoint all {X} (P : X -> Prop) (ls: seq X): Prop := 
@@ -1263,10 +1215,6 @@ case Y: (allb test xs); constructor.
 by case: Ih Y=>// H1 _; case.
 Qed.
 
-
-
-(* begin hide *)
 End SsrStyle.
-(* end hide *)
 
 
