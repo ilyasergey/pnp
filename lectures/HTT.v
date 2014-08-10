@@ -2484,7 +2484,7 @@ reverse T p : {xs}, STsep (@lseq T p xs, [vfun y => lseq y (rev xs)]) :=
 We invite the reader to conduct the verification of [reverse], proving
 that it satisfies the given specification.
 
-%\hint% Try to design a proof on a paper first.
+%\hint% Try to design the proof on a paper first.
 
 %\hint% It might be a good idea to make use of the previously proved
  lemmas [lseq_null] and [leq_pos], used as _views_.
