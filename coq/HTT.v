@@ -2150,12 +2150,12 @@ returning some result. The denotational semantics of HTT commands in
 terms of state-transforming functions makes it also possible to define
 what is a semantics of a program resulting from the use of the [Fix]
 operator (%Section~\ref{sec:factver}%).%\footnote{In fact, a standard
-construction from the domain theory is used: employing Knaster-Tarski
-theorem on a lattice of monotone functions, which is, however, outside
-of the scope of these notes, so we redirect the reader to the relevant
-literature: Glynn Winskel's book for the theoretical
-construction~\cite[Chapters~8--10]{Winskel:BOOK} or Adam Chlipala's
-manuscript covering a similar
+construction from the domain theory is used, namely, employing
+Knaster-Tarski theorem on a lattice of monotone functions. This
+subject is, however, outside of the scope of this course, so we
+redirect the reader to the relevant literature: Glynn Winskel's book
+for the theoretical construction~\cite[Chapters~8--10]{Winskel:BOOK}
+or Adam Chlipala's manuscript covering a similar
 implementation~\cite[\S~7.2]{Chlipala:BOOK}.}% The semantics of Hoare
 types $\spec{h~|~P(h)}-\spec{\res, h~|~Q(\res, h)}$ is defined as
 _sets_ of state transforming functions, taking a heap satisfying $P$
