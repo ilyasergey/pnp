@@ -2367,13 +2367,87 @@ Qed.
 (** 
 %\begin{exercise}%
 
-Define an verify function [remove_val] which is similar to remove, but
-also returns the value of the last "head" of the list before
-removal. Use Coq's [option] type to account for the possibility of an
-empty list in the result.
+Define and verify function [remove_val] which is similar to remove,
+but also returns the value of the last "head" of the list before
+removal, in addition to the "next" pointer. Use Coq's [option] type to
+account for the possibility of an empty list in the result.
 
 %\end{exercise}%
 *)
+
+(* begin hide *)
+Program Definition remove_val p : {xs}, 
+  STsep (lseq p xs, 
+         [vfun y h => lseq y.1 (behead xs) h /\ 
+                      y.2 = (if xs is x::xs' then Some x else None)]) := 
+  Do (if p == null then ret (p, None) 
+      else x <-- read T p;
+           pnext <-- !(p .+ 1);
+           dealloc p;; 
+           dealloc p .+ 1;;
+           ret (pnext, Some x)). 
+Next Obligation.
+apply: ghR=>i xs H V; case: ifP H=>H1.
+- by rewrite (eqP H1); case/(lseq_null V)=>->->; heval. 
+case/(lseq_pos (negbT H1))=>x [q][h][->] <- /= H2.
+by heval; rewrite 2!unitL.
+Qed.
+(* end hide *)
+
+End LList.
+
+(** 
+
+%\begin{exercise}[Imperative in-place map]% 
+
+Define, specify and verify the imperative higher-order function
+[list_map] that takes arguments two types, [S] and [T], a function [f
+: T -> S] and a head [p] of a single-linked list, described by a
+predicate [lseq], and changes the list in place by applying [f] to
+each of its elements, while preserving the list's structure. The
+specification should reflect the fact that the new "logical" contents
+of the single-linked list are an [f] map-image of the old content.
+
+%\hint% The lemmas [lseq_null] and [lseq_pos], proved previously,
+ might be useful in the proof of the established specification.
+
+%\hint% A tail-recursive call can be verified via HTT's [val_do]
+ lemma, reminiscent to the rule %\Rule{App}%. However, the heap it
+ operates with should be "massaged" appropriately via PCM's lemmas
+ [joinC] and [joinA].
+
+%\end{exercise}%
+
+*)
+
+Definition mapT T S (f : T -> S) : Type := 
+  forall p, {xs}, STsep (@lseq T p xs, 
+                         [vfun y h => y = tt /\ @lseq S p (map f xs) h]).
+
+Program Definition list_map T S p (f : T -> S) :
+   {xs}, STsep (@lseq T p xs, 
+                [vfun y h => y = tt /\ @lseq S p (map f xs) h]) :=
+    Fix (fun (loop : mapT f) (p : ptr) =>      
+      Do (if p == null 
+          then ret tt 
+          else x <-- read T p;
+               next <-- (read ptr p .+ 1);
+               p ::= f x;;
+               loop next)) p.
+Next Obligation.
+apply: ghR=>h xs H V. 
+case X: (p0 == null).
+- apply: val_ret=>_ /=;  split=>//. 
+  by move/eqP: X H=>-> /=; case/(lseq_null V)=>->->. 
+case/negbT /lseq_pos /(_ H): X=>x[next][h'][Z1] Z2 H1; subst h.
+heval.
+move/validR: V=> V1; apply: (gh_ex (behead xs)).
+rewrite [_ \+ h']joinC joinC -joinA; apply: val_do=>//=.
+case=>m[_]H2 V2; split=>//.
+rewrite [_ \+ p0 :-> _]joinC joinC. 
+by rewrite Z1 /=; exists next, m; rewrite joinA.
+Qed.
+
 
 (**
 
@@ -2385,7 +2459,7 @@ separating conjunction [#]).
 
 *)
 
-Definition shape_rev p s := [Pred h | h \In lseq p.1 s.1 # lseq p.2 s.2].
+Definition shape_rev T p s := [Pred h | h \In @lseq T p.1 s.1 # @lseq T p.2 s.2].
 
 (** 
 
@@ -2395,12 +2469,12 @@ type [revT].
 
 *)
 
-Definition revT : Type := 
-  forall p, {ps}, STsep (shape_rev p ps, [vfun y => lseq y (rev ps.1 ++ ps.2)]).
+Definition revT T : Type := 
+  forall p, {ps}, STsep (@shape_rev T p ps, [vfun y => lseq y (rev ps.1 ++ ps.2)]).
 
 Program Definition 
-reverse p : {xs}, STsep (lseq p xs, [vfun y => lseq y (rev xs)]) :=
-  Do (let: reverse := Fix (fun (reverse : revT) p => 
+reverse T p : {xs}, STsep (@lseq T p xs, [vfun y => lseq y (rev xs)]) :=
+  Do (let: reverse := Fix (fun (reverse : revT T) p => 
                         Do (if p.1 == null then ret p.2 
                             else xnext <-- !p.1 .+ 1;
                                  p.1 .+ 1 ::= p.2;;
@@ -2433,8 +2507,5 @@ Qed.
 
 (** %\end{exercise}% *)
 
-End LList.
 
-(* begin hide *)
 End HTT.
-(* end hide *)
