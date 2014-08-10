@@ -470,7 +470,7 @@ image with all libraries preinstalled (including HTT) and Emacs set up
 to work with SSReflect. The image can be obtained from the same
 %\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
 as other artifacts (look for the file
-%\texttt{ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
+%\texttt{Ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
 %\index{VirtualBox}% VirtualBox to be used.%\footnote{Available from
 \url{https://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu
 14.04 and automatically logs in when started with the user
@@ -478,7 +478,7 @@ as other artifacts (look for the file
 necessary). The folder %\texttt{\textasciitilde/misc}% contains the
 sources of SSReflect and Proof General. HTT and this course's lecture
 files are located in %\texttt{\textasciitilde/htt}% and
-%\texttt{\textasciitilde/htt}%, correspondingly.
+%\texttt{\textasciitilde/lectures}%, correspondingly.
 
 * Naming conventions
 
