@@ -472,12 +472,12 @@ to work with SSReflect. The image can be obtained from the same
 as other artifacts (look for the file
 %\texttt{Ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
 %\index{VirtualBox}% VirtualBox to be used.%\footnote{Available from
-\url{https://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu
-14.04 and automatically logs in when started with the user
-%\texttt{coquser}% (use the password %\texttt{coquser}% whenever
-necessary). The folder %\texttt{\textasciitilde/misc}% contains the
-sources of SSReflect and Proof General. HTT and this course's lecture
-files are located in %\texttt{\textasciitilde/htt}% and
+\url{http://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu 14.04
+and automatically logs in when started with the user
+%\texttt{coquser}% (use the password %\texttt{coquser}% whenever it is
+required). The folder %\texttt{\textasciitilde/misc}% contains the
+sources of SSReflect and Proof General. HTT sources and this course's
+lecture files are located in %\texttt{\textasciitilde/htt}% and
 %\texttt{\textasciitilde/lectures}%, correspondingly.
 
 * Naming conventions
