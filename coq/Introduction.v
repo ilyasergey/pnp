@@ -452,8 +452,9 @@ build and are located in the sibling folder): it should build all
 %\texttt{.v}% files in it and serve as a consistency check for your
 setup.
 
-
-
+The solutions to the exercises from the course are available on
+demand: drop me a line if you're
+interested.%\footnote{\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}}%
 
 ** Using a virtual machine 
 
