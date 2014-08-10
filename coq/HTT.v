@@ -1217,10 +1217,9 @@ function has the following (simplified compared to the original one)
 small footprint specification in the [STsep]-notation:
 
 [[
-alloc :
-  forall A : Type, (v : A),
-    STsep (fun h => h = Unit,
-          [vfun (res : ptr) h => h = res :-> v])
+alloc : forall (A : Type) (v : A),
+           STsep (fun h => h = Unit,
+                 [vfun (res : ptr) h => h = res :-> v])
 ]]
 
 %\httn{vfun}%
@@ -1319,8 +1318,10 @@ each component of the goal, we will proceed directly to the proof and
 will build the necessary intuition as we go.
 
 The proof mode for each of the remaining obligations is activated by
-the Vernacular command [Next Obligation] %\ccom{Next Obligation}%,
-which automatically moves some of the assumptions to the context.
+the Vernacular command [Next Obligation], which automatically moves
+some of the assumptions to the context.
+
+%\ccom{Next Obligation}%
 
 *)
 
@@ -2489,7 +2490,7 @@ that it satisfies the given specification.
 %\hint% Try to design the proof on a paper first.
 
 %\hint% It might be a good idea to make use of the previously proved
- lemmas [lseq_null] and [leq_pos], used as _views_.
+ lemmas [lseq_null] and [lseq_pos], used as _views_.
 
 *)
 
