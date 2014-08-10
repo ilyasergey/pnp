@@ -61,7 +61,6 @@ some of the assumptions to the context.
 Next Obligation.
 
 (**
-
 [[
   A : Type
   x : ptr
@@ -77,25 +76,6 @@ Next Obligation.
                exists (B : Type) (w : B), h = x :-> w \+ y :-> Y)
               [vfun _ h => h = x :-> v \+ y :-> Y])))
 ]]
-
-A usual first step in every HTT proof, which deals with a spec with
-logical variables is to "pull them out", so they would just become
-simple assumptions in the goal, allowing one to get rid of the
-[logvar] and [binarify] calls in the goal.%\footnote{In fact, the
-proper handling of the logical variables is surprisingly tricky in a
-type-based encoding, which is what HTT delivers. It is due to the fact
-that the \emph{same} variables can appear in both pre- and
-postconditions. Earlier implementations of HTT used \emph{binary}
-postconditions for this
-purpose~\cite{Nanevski-al:JFP08,Nanevski-al:POPL10}, which was a cause
-of some code duplication in specifications and made the spec look
-differently from those that someone familiar with the standard Hoare
-logic would expect. Current implementation uses an encoding with
-recursive notations to circumvent the code duplication problem. This
-encoding is a source of the observed occurrences of %[logvar]% and
-%[binarify]% definitions in the goal.}% This is what is done by
-applying the lemma [ghR] %\httl{ghR}% to the goal.
-
 *)
 
 apply: ghR. 
@@ -129,41 +109,23 @@ move=>h1 [y Y][B][w]->{h1} _ /=.
    verify (x :-> w \+ y :-> Y) (x ::= v) [vfun _ h => h = x :-> v \+ y :-> Y]
 ]]
 
-%\httn{verify}%
-
-The resulting goal is stated using the [verify]-notation, which means
-in this particular case that in the heap of the shape [x :-> w \+ y
-:-> Y] we need to be able to prove that the result and the produced
-heap of the command [x ::= v] satisfy the predicate [[vfun _ h => h =
-x :-> v \+ y :-> Y]]. This goal can be proved using one of the
-numerous [verify]-lemmas that HTT provides (try executing [Search _
-(verify _ _ _)] to see the full list), however in this particular case
-the program and the goal are so simple and are obviously correct that
-the statement can be proved by means of proof automation, implemented
-in HTT by a brute-force tactic [heval], which just tries a number of
-[verify]-lemmas applicable in this case modulo the shape of the heap.
-%\httt{heval}%
-
 *)
 
 by heval.
+
+(*
+Alternatively:
+ apply: val_write. 
+*)
+
 Qed.
 
-(**
-
-** Verifying the factorial procedure mechanically
-%\label{sec:factver}%
+(** ** Verifying the factorial procedure mechanically
 
 Proving an assignment for two non-aliased pointers was a simple
 exercise, so now we can proceed to a more interesting program, which
 features loops and conditional expressions, namely, imperative
 implementation of the factorial function.
-
-Our specification and verification process will follow precisely the
-story of %Section~\ref{sec:fact-logic}%. We start by defining the
-factorial in the most declarative way---as a pure recursive function
-in Coq itself.
-
 *)
 
 Fixpoint fact_pure n := if n is n'.+1 then n * (fact_pure n') else 1.
@@ -171,8 +133,7 @@ Fixpoint fact_pure n := if n is n'.+1 then n * (fact_pure n') else 1.
 (** 
 
 Next, we define the loop invariant [fact_inv], which constraints the
-heap shape and the values of the involved pointers, [n] and [acc],
-mimicking precisely the definition of $\finv$:
+heap shape and the values of the involved pointers, [n] and [acc].
 
 *)
 
@@ -181,22 +142,6 @@ Definition fact_inv (n acc : ptr) (N : nat) h : Prop :=
   [/\ h = n :-> n' \+ acc :-> a' & 
       (fact_pure n') * a' = fact_pure N].
 
-(** 
-
-To show how separation logic in general and its particular
-implementation in HTT allow one to build the reasoning
-_compositionally_ (i.e., by building the proofs about large programs
-from the facts about their components), we will first provide and
-prove a specification for the internal factorial loop, which, in fact,
-performs all of the interesting computations, so the rest of the
-"main" function only takes care of allocation/deallocation of the
-pointers [n] and [acc]. The loop will be just a function, taking an
-argument of the type unit and ensuring the invariant [fact_inv] in its
-pre- and postcondition, as defined by the following type [fact_tp],
-parametrized by the pointers [n] and [acc].
-
-*)
-
 Definition fact_tp n acc := 
   unit -> {N}, 
      STsep (fact_inv n acc N, 
@@ -204,26 +149,9 @@ Definition fact_tp n acc :=
 
 (** 
 
-The type [fact_tp] ensures additionally that the resulting value is in
-fact a factorial of [N], which is expressed by the conjunct [res =
-fact_pure N]. 
-
-%\index{fixed-point combinator}%
-%\index{Y-combinator|see {fixed-point combinator}}%
-
 The definition of the factorial "accumulator" loop is then represented
 as a recursive function, taking as arguments the two pointers, [n] and
-[acc], and also a unit value. The body of the function is defined
-using the monadic fixpoint operator [Fix]%\httn{Fix}%, whose semantics
-is similar to the semantics of the classical _Y-combinator_, defined
-usually by the equation [Y f = f (Y f)], where [f] is a fixpoint
-operator argument that should be though of as a recursive function
-being defined. Similarly, the fixpoint operator [Fix], provided by
-HTT, takes as arguments a function, which is going to be called
-recursively ([loop, in this case]), its argument and _body_. The named
-function (i.e., [loop]) can be then called from the body recursively.
-In the similar spirit, one can define nested loops in HTT as nested
-calls of the fixpoint operator.
+[acc], and also a unit value. 
 
 *)
 
@@ -246,9 +174,9 @@ the pointers [acc] and [n] into the local variables [a1] and
 represented by the [<--] notation, which corresponds to the _bind_
 operation of the Hoare monad [STsep]. The function then uses Coq's
 standard conditional operator and returns a value of [a1] if [n'] is
-zero using the monadic [ret] operator. %\httl{ret}% In the case of
-[else]-branch, the new values are written to the pointers [acc] and
-[n], after which the function recurs.
+zero using the monadic [ret] operator. In the case of [else]-branch,
+the new values are written to the pointers [acc] and [n], after which
+the function recurs.
 
 Stating the looping function like this leaves us with one obligation
 to prove.
@@ -263,7 +191,7 @@ Next Obligation.
 As in the previous example, we start by transforming the goal, so the
 logical variable [N], coming from the specification of [fact_tp] would
 be exposed as an assumption. We immediately move it to the context
-along with the initial heap [i].%\httl{ghR}%
+along with the initial heap [i].
 
 *)
 
@@ -297,8 +225,7 @@ case=>n' [a'][->{i}] Hi _.
 
 Now the goal has the shape [verify (n :-> n' \+ acc :-> a') ...],
 which is suitable to be hit with the automation by means of the
-[heval] %\httt{heval}% tactic, progressing the goal to the state when
-we should reason about the conditional operator.
+[heval].
 
 *)
 

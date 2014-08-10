@@ -53,7 +53,11 @@ cleanhtt:
 clean:  $(MAKEFILE)
 	make -f $(MAKEFILE) clean
 	rm -f $(MAKEFILE)
-	cd latex; rm -f *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out
+	cd latex; rm -f *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out pnp*.zip
 
 
+ziplec:
+	zip pnp-lectures.zip lectures/*.v lectures/Makefile
 
+zipsol:
+	zip pnp-solutions.zip solutions/*.v 
