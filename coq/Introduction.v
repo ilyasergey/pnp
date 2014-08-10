@@ -462,7 +462,7 @@ on demand: drop me a line if you're interested
 (%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%),
 so I will mail you back the archive.
 
-** Using a virtual machine 
+** Using a virtual machine image
 
 If compiling and installing Coq and SSReflect from scratch looks like
 too much hassle, there is also a possibility to use a virtual machine
