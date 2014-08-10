@@ -2482,29 +2482,48 @@ reverse T p : {xs}, STsep (@lseq T p xs, [vfun y => lseq y (rev xs)]) :=
                                  p.1 .+ 1 ::= p.2;;
                                  reverse (xnext, p.1)))
       in reverse (p, null)).
+
 (** 
 %\noindent%
 We invite the reader to conduct the verification of [reverse], proving
 that it satisfies the given specification.
 
-%\hint% Try to design the proof on a paper first.
-
 %\hint% It might be a good idea to make use of the previously proved
- lemmas [lseq_null] and [lseq_pos], used as _views_.
+ lemmas [lseq_null] and [lseq_pos].
+
+%\hint% Be careful with the logical values of variables passed to the
+[gh_ex] lemma before verifying a recursive call of [reverse].
+
+%\hint% A verification goal to a function defined via [Fix] can be
+reduced via the [val_doR] lemma or similar ones.
+
+%\hint% The [shape_rev] predicate is in fact an existential in
+disguise: it can be proved by providing appropriate witnesses.
+
+%\hint% Rewriting [rev_cons], [cat_rcons] and [cats0] from the [seq]
+library will be useful for establishing equalities between lists.
 
 *)
 
 (* begin hide *)
-Next Obligation. 
-apply: ghR=>i [x1 x2][i1][i2][->] /= [H1 H2] V; case: eqP H1=>[->|E].
-- by case/(lseq_null (validL V))=>->->; rewrite unitL; heval. 
-case/lseq_pos=>[|xd [xn][h'][->] <- /= H1]; first by case: eqP.
-heval; rewrite -!joinA -!(joinCA h'); apply: (gh_ex (behead x1, xd::x2)).
-by apply: val_doR=>//; [heval | move=>x m; rewrite rev_cons cat_rcons]. 
-Qed.
 Next Obligation.
-apply: ghR=>i xs H _; apply: (gh_ex (xs, Nil T)).
-by apply: val_doR=>//; [exists i; heval | move=>x m /=; rewrite cats0]. 
+apply:ghR=>i[xs1 xs2]; case=>h1[h2][->{i}]/=[H1 H2] V1.
+case X: (p0 == null) H1=>H1.
+- apply: val_ret=>/=_; move/eqP: X=>X; subst p0.
+  move/validL: (V1)=>V3; case:(lseq_null V3 H1)=>Z1 Z2; subst xs1 h1=>/=.
+  by rewrite unitL. 
+case/negbT /(lseq_pos) /(_ H1): X=>x[next][h'][Exs]Z H3; subst h1.
+heval; rewrite -!joinA -!(joinCA h'); apply: (gh_ex (behead xs1, x::xs2)).
+apply: val_doR=>//=[V2|].
+ - exists h', (p0 :-> x \+ (p0 .+ 1 :-> p1 \+ h2)); split=>//; split=>//.
+   by exists p1, h2; rewrite !joinA.
+by move=> z m H4 _; rewrite Exs rev_cons cat_rcons.
+Qed.
+
+Next Obligation.
+apply: ghR=>i xs H V /=; apply: (gh_ex (xs, [::])).
+apply: val_doR=>//=[_|]; first by exists i, Unit; rewrite unitR. 
+by rewrite cats0.
 Qed.
 (* end hide *)
 
