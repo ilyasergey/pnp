@@ -769,7 +769,7 @@ predicates defined in [Prop] and, therefore, valid arguments to the
 Although the statement is somewhat obvious, in the setting of Coq's
 inductive definition of natural numbers it should be no big surprise
 that it is proved by induction. We present the proof here, leaving the
-details aside, so the reader could figure them out on his own, as a
+details aside, so the reader could figure them out on her own, as a
 simple exercise.%\ssrt{elim}\ssrt{suff:}\ssrtl{//}%
 
 *)

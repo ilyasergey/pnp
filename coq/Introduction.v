@@ -323,11 +323,11 @@ provided below.
 
   In order to be compiled, Coq requires Objective Caml version 3.11.2
   or later, Camlp5, GNU Make version 3.81 or later (see the
-  <<INSTALL>> file from the archive with sources for more
-  details). Once compiled, the following environment variables should
-  be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration
-  files) to build SSReflect (with the respective paths chosen during
-  the Coq's installation):
+  <<INSTALL>> file from the archive with sources for more details on
+  configuration and installation). Once compiled, the following
+  environment variables should be set (e.g., in <<~/.bashrc>> or
+  <<~/.profile>> configuration files) to build SSReflect (with the
+  respective paths chosen during the Coq's installation):
 
 <<
     export COQBIN="/usr/local/bin/"
@@ -401,15 +401,59 @@ alternatively, a parent catalogue of the %\texttt{bin}% folder
 containing Coq and SSReflect's binaries, where %\texttt{ssrcoq}% has
 been previously copied, as it was suggested).
 
-** Getting HTT sources
+** Getting lecture files and HTT sources
 %\label{sec:htt-sources}%
 
-For the examples of Chapter%~\ref{ch:htt}%, the sources of the Hoare
-Type Theory development will be required. The archive <<htt.zip>> with
-sources and the make script can be downloaded from the course url
-given above. After downloading and unpacking, the sources should be
-compiled via the %\texttt{make}% command, given that Coq and SSReflect
-are properly installed, as described previously.
+The reader is encouraged to download the additional material for this
+course in the form of Coq files with all examples from the manuscript
+plus some additional exercises. The archive with these sources is
+named %\texttt{pnp-lectures.zip}% and can be downloaded from the
+course url given above. The table below describes the correspondence
+between the chapters of the manuscript and the accompanying files.
+
+%
+\vspace{15pt}
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} 
+\\ \hline
+\ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v}
+\\ \hline
+\ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} 
+\\ \hline
+\ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} 
+\\ \hline
+\ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} 
+\\ \hline
+\ref{ch:ssrstyle} & Inductive Reasoning in SSReflect & \texttt{SsrStyle.v} 
+\\ \hline
+\ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} 
+\\ \hline
+\ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} 
+\\ \hline
+\end{tabular} 
+\end{center}
+\vspace{15pt}
+%
+
+For the examples of Chapter%~\ref{ch:htt}% and the corresponding
+lecture source file, the sources of the Hoare Type Theory development
+will be required. The archive <<htt.zip>> with sources and the
+make-script can be downloaded from the course url. After downloading
+and unpacking, the sources should be compiled via the %\texttt{make}%
+command, given that Coq and SSReflect are properly installed, as
+described previously. For the full compatibility with the lecture
+sources, we recommend to place the %\texttt{htt}% and
+%\texttt{lectures}% folders beneath a common parent. After unzipping
+the archive with lectures, run the %\texttt{make}% command from the
+folder %\texttt{lectures}% (assuming that the HTT sources are already
+build and are located in the sibling folder): it should build all
+%\texttt{.v}% files in it and serve as a consistency check for your
+setup.
+
+
+
 
 ** Using a virtual machine 
 
@@ -424,8 +468,9 @@ page as other artifacts (look for the file
 14.04 and automatically logs in when started with the user
 %\texttt{coquser}% (use the password %\texttt{coquser}% whenever
 necessary). The folder %\texttt{\textasciitilde/misc}% contains the
-sources of SSReflect and Proof General, and HTT files are located in
-%\texttt{\textasciitilde/htt}%.
+sources of SSReflect and Proof General. HTT and this course's lecture
+files are located in %\texttt{\textasciitilde/htt}% and
+%\texttt{\textasciitilde/htt}%, correspondingly.
 
 * Naming conventions
 
