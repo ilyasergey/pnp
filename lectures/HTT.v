@@ -252,8 +252,6 @@ case X: (n' == 0).
 
 (** 
 
-Now, the first goal has the form 
-
 [[
   ...
   Hi : fact_pure n' * a' = fact_pure N
@@ -265,12 +263,11 @@ Now, the first goal has the form
 
 To prove it, we will need one of the numerous [val]-lemmas, delivered
 as a part of HTT libraries and directly corresponding to the rules of
-separation logic (%Section~\ref{sec:seplog-rules}%). The general
-recipe on acquiring intuition for the lemmas applicable for each
-particular [verify]-goal is to make use of SSReflect's [Search]
-machinery. For instance, in this particular case, given that the
-command to be verified (i.e., the second argument of [verify]) is [ret
-a'], let us try the following query.
+separation logic. The general recipe on acquiring intuition for the
+lemmas applicable for each particular [verify]-goal is to make use of
+SSReflect's [Search] machinery. For instance, in this particular case,
+given that the command to be verified (i.e., the second argument of
+[verify]) is [ret a'], let us try the following query.
 
 *)
 
@@ -287,11 +284,6 @@ val_ret
    (valid i -> r (Val v) i) -> verify i (ret v) r
 ]]
 
-The lemma has a statement in its conclusion, which seems like it can
-be unified with our goal, so we proceed by applying it.
-
-%\httl{val\_ret}%
-
 *)
 
 - apply: val_ret=>/= _. 
@@ -301,14 +293,7 @@ be unified with our goal, so we proceed by applying it.
 The remaining part of the proof of this goal has absolutely nothing to
 do with program verification and separation logic and accounts to
 combining a number of arithmetical facts in the goal via the
-hypotheses [Hi] and [X]. We proceed by first turing the boolean
-equality in [X] into the propositional on via the view [eqP] and then
-substituting all occurrences of [n'] in the goal and other assumptions
-via Coq's tactic [subst]. The rest of the proof is by providing
-existential witnesses and rewriting [1 * a'] to [a'] in [Hi].
-
-%\ssrt{subst}% 
-
+hypotheses [Hi] and [X]. 
 *)
 
   move/eqP: X=>Z; subst n'.
@@ -334,17 +319,6 @@ heval.
    verify (n :-> (n' - 1) \+ acc :-> (a' * n')) (loop tt)
      [vfun res h => fact_inv n acc N h /\ res = fact_pure N]
 ]]
-
-The next step is somewhat less obvious, as we need to prove the
-specification of the recursive call to [loop], whose spec is also
-stored in our assumption context. Before we can apply a lemma, which
-is an analogue of the %\Rule{App}%, we need to _instantiate_ the
-logical variables of [loop]'s specification (which is described by the
-type [fact_tp]). The spec [fac_tp] features only one logical variable,
-namely [N], so we provide it using the HTT lemma [gh_ex].%\footnote{In
-a case of several logical variables, the lemma should have been
-applied the corresponding number of times with appropriate
-arguments.}%%\httl{gh\_ex}%
 
 *)
 
@@ -378,9 +352,8 @@ apply: val_doR=>// _.
 As in the case of the previous goal, the remaining proof is focused on
 proving a statement about a heap and natural numbers, so we just
 present its proof below without elaborating on the details, as they
-are standard and mostly appeal to propositional reasoning
-(Chapter%~\ref{ch:logic}%) and rewriting by lemmas from SSReflect's
-[ssrnat] module.
+are standard and mostly appeal to propositional reasoning and
+rewriting by lemmas from SSReflect's [ssrnat] module.
 
 *)
 
@@ -407,24 +380,13 @@ Program Definition fact (N : nat) :
       dealloc acc;;
       ret res).
 
-(** 
-
-The specification of [fact] explicitly states that its execution
-starts and terminates in the empty heap; it also constraints its
-result to be a factorial of [N].
-
-*)
-
 Next Obligation.
 
 (** 
 
 Since the spec of [fact] does not have any logical variables (its
 postcondition only mentions its argument [N]), there is no need to
-make use of the [ghR] lemma. However, the current goal is somewhat
-obscure, so to clarify it let us unfold the definition of [conseq]
-(which simply states that the consequence between the inferred type of
-the program and the stated spec should be proved) and simplify the goal.
+make use of the [ghR] lemma. 
 
 *)
 
@@ -443,12 +405,6 @@ rewrite /conseq =>/=.
      (fun (y : ans nat) (m : heap) =>
       i = Unit -> [vfun res h => res = fact_pure N /\ h = Unit] y m)
 ]]
-
-Next, we can rewrite the equality on the heap (which is [Unit]) and
-proceed by two runs of the [heval] tactic, which will take care of the
-allocated pointers yielding new assumptions [n] and [acc], arising
-from the implicit application of the %\Rule{Bind}% rule.
-
 *)
 
 move=>_ ->.
@@ -457,8 +413,7 @@ heval=>n; heval=>acc; rewrite joinC unitR.
 (**
 
 We have now came to the point when the function [fact_acc], which we
-have previously verified, is going to be invoked, so we need to make
-use of what corresponds to the rule %\Rule{App}% again. In this case,
+have previously verified, is going to be invoked. In this case,
 however, the tactic [val_doR] will not work immediately, so we will
 first need to reduce the program to be verified from the binding
 command to a mere function call be means of HTT's [bnd_seq] lemma,
@@ -466,8 +421,6 @@ which tackles the binding _combined_ with a call to a user-defined
 function, and this is exactly our case. Next, we instantiate the
 [fact_acc] specification's logical variable [N] by applying [gh_ex]
 and proceed with the application of [val_doR].
-
-%\httl{bnd\_seq}%
 
 *)
 
@@ -492,183 +445,6 @@ deallocation, so the proof for it is accomplished mostly by applying
 
 by move=>_ _ [[n'][a'][->] _ ->] _; heval.  
 Qed.
-
-(** 
-
-%\begin{exercise}[Swapping two values] \label{ex:swap}%
-
-Implement in HTT a function that takes as arguments two pointers, [x]
-and [y], which point to natural numbers, and swaps their
-values. Reflect this effect in the function's specification and verify
-it.
-
-%\hint% Instead of reading the value of a pointer into a variable [t]
- using the [t <-- !p] notation, you might need to specify the _type_
- of the expected value explicitly by using the "de-sugared" version of
- the command [t <-- read T p], where [T] is the expected type. This
- way, the proof will be more straightforward.
-
-%\end{exercise}%
-
-*)
-
-(* begin hide *)
-Program Definition swap (x y : ptr):
-  {(a b : nat)},
-  STsep (fun h => h = x :-> a \+ y :-> b,
-        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
-  Do (vx <-- read nat x;
-      vy <-- read nat y;
-      x ::= vy;;
-      y ::= vx).
-Next Obligation.
-apply:ghR=>_ [a b]->/= V.
-apply: bnd_seq; apply: val_read=>_.
-apply: bnd_seq; apply: val_readR =>/= _.
-apply: bnd_writeR=>/=.
-by apply val_writeR=>/=.
-Qed.
-(* end hide *)
-
-(**
-
-%\begin{exercise}%
-
-Try to redo the exercise%~\ref{ex:swap}% _without_ using the
-automation provided by the [heval] tactic. The goal of this exercise
-is to explore the library of HTT lemmas, mimicking the rules of the
-separation logic. You can alway displat the whole list of the
-available lemmas by running the command [Search _ (verify _ _ _)] and
-then refine the query for specific programs (e.g., [read] or [write]).
-
-%\end{exercise}%
-*)
-
-(** 
-
-%
-\begin{figure}[t!]
-\begin{alltt}
-
-    fun fib (\var{N} : nat): nat = \{
-      if \var{N} == 0 then ret 0
-       else if \var{N} == 1 then ret 1
-       else n <-- alloc 2;
-            x <-- alloc 1;
-            y <-- alloc 1;
-            res <-- 
-              (fix loop (_ : unit). 
-                 n' <-- !n;
-                 y' <-- !y;
-                 if n' == \var{N} then ret y'
-                 else tmp <-- !x;
-                      x ::= y';;
-                      x' <-- !x;
-                      y ::= x' + tmp;;
-                      n ::= n' + 1;;
-                      loop(tt))(tt).
-            dealloc n;;
-            dealloc x;;
-            dealloc y;;
-            ret res    
-    \}
-\end{alltt}
-\caption{An imperative procedure computing the $N$th Fibonacci
-number.}
-\label{fig:fibcode}
-\end{figure}
-%
-
-%\begin{exercise}[Fibonacci numbers]%
-%\index{Fibonacci numbers}%
-
-Figure%~\ref{fig:fibcode}% presents the pseudocode listing of an
-efficient imperative implementation of the function $\com{fib}$ that
-computes the [N]th Fibonacci number.  Your task will be to prove its
-correctness with respect to the "pure" function [fib_pure] (which you
-should define in plain Coq) as well as the fact that it starts and
-ends in an empty heap.
-
-%\hint% What is the loop invariant of the recursive computation
- defined by means of the [loop] function?
-
-%\hint% Try to decompose the reasoning into verification of several
- code pieces as in the factorial example and then composing them
- together in the "main" function.
-
-%\end{exercise}%
-
-
-*)
-
-
-(* begin hide *)
-Fixpoint fib_pure n := 
-  if n is n'.+1 then
-    if n' is n''.+1 then fib_pure n' + fib_pure n'' else 1
-  else 0.
-
-Definition fib_inv (n x y : ptr) (N : nat) h : Prop := 
-  exists n' x' y': nat, 
-  [/\ h = n :-> n'.+1 \+ x :-> x' \+ y :-> y',
-      x' = fib_pure n' & y' = fib_pure (n'.+1)].
-
-Definition fib_tp n x y N := 
-  unit ->
-     STsep (fib_inv n x y N, 
-           [vfun (res : nat) h => fib_inv n x y N h /\ res = fib_pure N]).
-(* end hide *)
-
-(*
-Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
-  Fix (fun (loop : fib_tp n x y N) (_ : unit) => 
-    Do (n' <-- !n;
-        y' <-- !y;
-        if n' == N then ret y'
-        else tmp <-- !x;
-             x ::= y';;
-             x' <-- !x;
-             y ::= x' + tmp;;
-             n ::= n' + 1;;
-             loop tt)).
-
-Next Obligation.
-move=>h /=[n'][_][_][->{h}]->->.
-heval; case X: (n'.+1 == N)=>//.
-- by apply: val_ret=>_; move/eqP: X=><-/=.
-heval; apply: val_doR=>//. (* This line takes a while due to automation. *)
-move=>_.
-exists (n'.+1), (fib_pure (n'.+1)), (fib_pure n'.+1.+1).
-by rewrite addn1.
-Qed.
-
-Program Definition fib N : 
-  STsep ([Pred h | h = Unit], 
-         [vfun res h => res = fib_pure N /\ h = Unit]) := 
-  Do (
-   if N == 0 then ret 0
-   else if N == 1 then ret 1
-   else n   <-- alloc 2;
-        x <-- alloc 1;
-        y <-- alloc 1;
-        res <-- fib_acc n x y N tt;
-        dealloc n;;
-        dealloc x;;
-        dealloc y;;
-       ret res    
-).
-Next Obligation.
-move=>_ /= ->.
-case N1: (N == 0)=>//; first by move/eqP: N1=>->; apply:val_ret. 
-case N2: (N == 1)=>//; first by move/eqP: N2=>->; apply:val_ret. 
-heval=>n; heval=>x; heval=>y; rewrite unitR joinC [x:->_ \+ _]joinC.
-apply: bnd_seq=>/=.
-apply: val_doR; last first=>//[res h|].
-- case; case=>n'[_][_][->{h}]->->->_.
-  by heval; rewrite !unitR.
-by exists 1, 1, 1.
-Qed.
-*)
 
 (**
 
@@ -1026,6 +802,183 @@ case/(lseq_pos (negbT H1))=>x [q][h][->] <- /= H2.
 by heval; rewrite 2!unitL.
 Qed.
 
+End LList.
+
+(*******************************************************************)
+(**                     * Exercices *                              *)
+(*******************************************************************)
+
+(** 
+---------------------------------------------------------------------
+Exercise [Swapping two values]
+---------------------------------------------------------------------
+
+Implement in HTT a function that takes as arguments two pointers, [x]
+and [y], which point to natural numbers, and swaps their
+values. Reflect this effect in the function's specification and verify
+it.
+
+Hint: Instead of reading the value of a pointer into a variable [t]
+using the [t <-- !p] notation, you might need to specify the _type_ of
+the expected value explicitly by using the "de-sugared" version of the
+command [t <-- read T p], where [T] is the expected type. This way,
+the proof will be more straightforward.
+
+*)
+
+Program Definition swap (x y : ptr):
+  {(a b : nat)},
+  STsep (fun h => h = x :-> a \+ y :-> b,
+        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
+  Do (vx <-- read nat x;
+      vy <-- read nat y;
+      x ::= vy;;
+      y ::= vx).
+Next Obligation.
+apply:ghR=>_ [a b]->/= V.
+by heval.
+Qed.
+
+(**
+---------------------------------------------------------------------
+Exercise [Swapping two values without heval]
+---------------------------------------------------------------------
+
+Try to redo the previous exercise _without_ using the automation
+provided by the [heval] tactic. The goal of this exercise is to
+explore the library of HTT lemmas, mimicking the rules of the
+separation logic. You can alway displat the whole list of the
+available lemmas by running the command [Search _ (verify _ _ _)] and
+then refine the query for specific programs (e.g., [read] or [write]).
+*)
+
+Program Definition swap' (x y : ptr):
+  {(a b : nat)},
+  STsep (fun h => h = x :-> a \+ y :-> b,
+        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
+  Do (vx <-- read nat x;
+      vy <-- read nat y;
+      x ::= vy;;
+      y ::= vx).
+Next Obligation.
+apply:ghR=>_ [a b]->/= V.
+apply: bnd_seq; apply: val_read=>_.
+apply: bnd_seq; apply: val_readR =>/= _.
+apply: bnd_writeR=>/=.
+by apply val_writeR=>/=.
+Qed.
+
+
+(** 
+---------------------------------------------------------------------
+Exercise [Imperative procedure for Fibonacci numbers]
+---------------------------------------------------------------------
+
+The following program is an implementation in pseudocode of an
+efficient imperative implementation of the function [fib] that
+computes the [N]th Fibonacci number.  
+
+    fun fib (N : nat): nat = {
+      if N == 0 then ret 0
+       else if N == 1 then ret 1
+       else n <-- alloc 2;
+            x <-- alloc 1;
+            y <-- alloc 1;
+            res <-- 
+              (fix loop (_ : unit). 
+                 n' <-- !n;
+                 y' <-- !y;
+                 if n' == N then ret y'
+                 else tmp <-- !x;
+                      x ::= y';;
+                      x' <-- !x;
+                      y ::= x' + tmp;;
+                      n ::= n' + 1;;
+                      loop(tt))(tt).
+            dealloc n;;
+            dealloc x;;
+            dealloc y;;
+            ret res    
+    }
+
+Your task will be to prove its correctness with respect to the "pure"
+function [fib_pure] (which you should define in plain Coq) as well as
+the fact that it starts and ends in an empty heap.
+
+Hint: What is the loop invariant of the recursive computation defined
+by means of the [loop] function?
+
+Hint: Try to decompose the reasoning into verification of several code
+pieces as in the factorial example and then composing them together in
+the "main" function.
+
+*)
+
+Fixpoint fib_pure n := 
+  if n is n'.+1 then
+    if n' is n''.+1 then fib_pure n' + fib_pure n'' else 1
+  else 0.
+
+Definition fib_inv (n x y : ptr) (N : nat) h : Prop := 
+  exists n' x' y': nat, 
+  [/\ h = n :-> n'.+1 \+ x :-> x' \+ y :-> y',
+      x' = fib_pure n' & y' = fib_pure (n'.+1)].
+
+Definition fib_tp n x y N := 
+  unit ->
+     STsep (fib_inv n x y N, 
+           [vfun (res : nat) h => fib_inv n x y N h /\ res = fib_pure N]).
+
+Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
+  Fix (fun (loop : fib_tp n x y N) (_ : unit) => 
+    Do (n' <-- !n;
+        y' <-- !y;
+        if n' == N then ret y'
+        else tmp <-- !x;
+             x ::= y';;
+             x' <-- !x;
+             y ::= x' + tmp;;
+             n ::= n' + 1;;
+             loop tt)).
+
+Next Obligation.
+move=>h /=[n'][_][_][->{h}]->->.
+heval; case X: (n'.+1 == N)=>//.
+- by apply: val_ret=>_; move/eqP: X=><-/=.
+heval; apply: val_doR=>//. (* This line takes a while due to automation. *)
+move=>_.
+exists (n'.+1), (fib_pure (n'.+1)), (fib_pure n'.+1.+1).
+by rewrite addn1.
+Qed.
+
+Program Definition fib N : 
+  STsep ([Pred h | h = Unit], 
+         [vfun res h => res = fib_pure N /\ h = Unit]) := 
+  Do (
+   if N == 0 then ret 0
+   else if N == 1 then ret 1
+   else n   <-- alloc 2;
+        x <-- alloc 1;
+        y <-- alloc 1;
+        res <-- fib_acc n x y N tt;
+        dealloc n;;
+        dealloc x;;
+        dealloc y;;
+        ret res).
+
+Next Obligation.
+move=>_ /= ->.
+case N1: (N == 0)=>//; first by move/eqP: N1=>->; apply:val_ret. 
+case N2: (N == 1)=>//; first by move/eqP: N2=>->; apply:val_ret. 
+heval=>n; heval=>x; heval=>y; rewrite unitR joinC [x:->_ \+ _]joinC.
+apply: bnd_seq=>/=.
+apply: val_doR; last first=>//[res h|].
+- case; case=>n'[_][_][->{h}]->->->_.
+  by heval; rewrite !unitR.
+by exists 1, 1, 1.
+Qed.
+
+
 (** 
 %\begin{exercise}%
 
@@ -1038,7 +991,7 @@ account for the possibility of an empty list in the result.
 *)
 
 (* begin hide *)
-Program Definition remove_val p : {xs}, 
+Program Definition remove_val T p : {xs}, 
   STsep (lseq p xs, 
          [vfun y h => lseq y.1 (behead xs) h /\ 
                       y.2 = (if xs is x::xs' then Some x else None)]) := 
@@ -1056,7 +1009,7 @@ by heval; rewrite 2!unitL.
 Qed.
 (* end hide *)
 
-End LList.
+
 
 (** 
 
