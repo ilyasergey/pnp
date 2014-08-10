@@ -407,9 +407,12 @@ been previously copied, as it was suggested).
 The reader is encouraged to download the additional material for this
 course in the form of Coq files with all examples from the manuscript
 plus some additional exercises. The archive with these sources is
-named %\texttt{pnp-lectures.zip}% and can be downloaded from the
-course url given above. The table below describes the correspondence
-between the chapters of the manuscript and the accompanying files.
+named
+%\href{http://racky.imdeasoftware.org/constructive/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}%
+and can be downloaded from the
+%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
+given above. The table below describes the correspondence between the
+chapters of the manuscript and the accompanying files.
 
 %
 \vspace{15pt}
@@ -439,30 +442,34 @@ between the chapters of the manuscript and the accompanying files.
 
 For the examples of Chapter%~\ref{ch:htt}% and the corresponding
 lecture source file, the sources of the Hoare Type Theory development
-will be required. The archive <<htt.zip>> with sources and the
-make-script can be downloaded from the course url. After downloading
-and unpacking, the sources should be compiled via the %\texttt{make}%
-command, given that Coq and SSReflect are properly installed, as
-described previously. For the full compatibility with the lecture
-sources, we recommend to place the %\texttt{htt}% and
-%\texttt{lectures}% folders beneath a common parent. After unzipping
-the archive with lectures, run the %\texttt{make}% command from the
-folder %\texttt{lectures}% (assuming that the HTT sources are already
-build and are located in the sibling folder): it should build all
-%\texttt{.v}% files in it and serve as a consistency check for your
-setup.
+will be required. The archive
+%\href{http://racky.imdeasoftware.org/constructive/pnp/htt.zip}{\texttt{htt.zip}}%
+with sources and the make-script can be downloaded from the
+%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course
+url}%. After downloading and unpacking, the sources should be compiled
+via the %\texttt{make}% command, given that Coq and SSReflect are
+properly installed, as described previously. For the immediate
+compatibility with the lecture sources, it is recommended to place the
+%\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent
+folder. After unzipping the archive with lectures, run the
+%\texttt{make}% command from the folder %\texttt{lectures}% (assuming
+that the HTT sources are already build and are located in the sibling
+folder): it should build all %\texttt{.v}% files in it and serve as a
+consistency check for your setup.
 
-The solutions to the exercises from the course are available on
-demand: drop me a line if you're
-interested.%\footnote{\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}}%
+The solutions for all of the exercises from the course are available
+on demand: drop me a line
+(%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%)
+if you're interested, so I will mail you the archive.
 
 ** Using a virtual machine 
 
 If compiling and installing Coq and SSReflect from scratch looks like
 too much hassle, there is also a possibility to use a virtual machine
 image with all libraries preinstalled (including HTT) and Emacs set up
-to work with SSReflect. The image can be obtained from the same course
-page as other artifacts (look for the file
+to work with SSReflect. The image can be obtained from the same
+%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
+as other artifacts (look for the file
 %\texttt{ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
 %\index{VirtualBox}% VirtualBox to be used.%\footnote{Available from
 \url{https://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu
