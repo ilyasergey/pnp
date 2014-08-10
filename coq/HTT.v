@@ -2373,6 +2373,8 @@ but also returns the _value_ of the last "head" of the list before
 removal, in addition to the "next" pointer. Use Coq's [option] type to
 account for the possibility of an empty list in the result.
 
+%\ssrd{option}%
+
 %\end{exercise}%
 *)
 
@@ -2453,7 +2455,7 @@ Qed.
 
 (**
 
-%\begin{exercise}%
+%\begin{exercise}[In-place list reversal]%
 
 Let us define the following auxiliary predicates, where [shape_rev]
 splits the heap into two disjoint linked lists (by means of the

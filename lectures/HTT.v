@@ -622,19 +622,6 @@ the proof will be more straightforward.
 
 *)
 
-Program Definition swap (x y : ptr):
-  {(a b : nat)},
-  STsep (fun h => h = x :-> a \+ y :-> b,
-        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
-  Do (vx <-- read nat x;
-      vy <-- read nat y;
-      x ::= vy;;
-      y ::= vx).
-Next Obligation.
-apply:ghR=>_ [a b]->/= V.
-by heval.
-Qed.
-
 (**
 ---------------------------------------------------------------------
 Exercise [Swapping two values without heval]
@@ -647,23 +634,6 @@ separation logic. You can alway displat the whole list of the
 available lemmas by running the command [Search _ (verify _ _ _)] and
 then refine the query for specific programs (e.g., [read] or [write]).
 *)
-
-Program Definition swap' (x y : ptr):
-  {(a b : nat)},
-  STsep (fun h => h = x :-> a \+ y :-> b,
-        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
-  Do (vx <-- read nat x;
-      vy <-- read nat y;
-      x ::= vy;;
-      y ::= vx).
-Next Obligation.
-apply:ghR=>_ [a b]->/= V.
-apply: bnd_seq; apply: val_read=>_.
-apply: bnd_seq; apply: val_readR =>/= _.
-apply: bnd_writeR=>/=.
-by apply val_writeR=>/=.
-Qed.
-
 
 (** 
 ---------------------------------------------------------------------
@@ -710,99 +680,17 @@ the "main" function.
 
 *)
 
-Fixpoint fib_pure n := 
-  if n is n'.+1 then
-    if n' is n''.+1 then fib_pure n' + fib_pure n'' else 1
-  else 0.
-
-Definition fib_inv (n x y : ptr) (N : nat) h : Prop := 
-  exists n' x' y': nat, 
-  [/\ h = n :-> n'.+1 \+ x :-> x' \+ y :-> y',
-      x' = fib_pure n' & y' = fib_pure (n'.+1)].
-
-Definition fib_tp n x y N := 
-  unit ->
-     STsep (fib_inv n x y N, 
-           [vfun (res : nat) h => fib_inv n x y N h /\ res = fib_pure N]).
-
-Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
-  Fix (fun (loop : fib_tp n x y N) (_ : unit) => 
-    Do (n' <-- !n;
-        y' <-- !y;
-        if n' == N then ret y'
-        else tmp <-- !x;
-             x ::= y';;
-             x' <-- !x;
-             y ::= x' + tmp;;
-             n ::= n' + 1;;
-             loop tt)).
-
-Next Obligation.
-move=>h /=[n'][_][_][->{h}]->->.
-heval; case X: (n'.+1 == N)=>//.
-- by apply: val_ret=>_; move/eqP: X=><-/=.
-heval; apply: val_doR=>//. (* This line takes a while due to automation. *)
-move=>_.
-exists (n'.+1), (fib_pure (n'.+1)), (fib_pure n'.+1.+1).
-by rewrite addn1.
-Qed.
-
-Program Definition fib N : 
-  STsep ([Pred h | h = Unit], 
-         [vfun res h => res = fib_pure N /\ h = Unit]) := 
-  Do (
-   if N == 0 then ret 0
-   else if N == 1 then ret 1
-   else n   <-- alloc 2;
-        x <-- alloc 1;
-        y <-- alloc 1;
-        res <-- fib_acc n x y N tt;
-        dealloc n;;
-        dealloc x;;
-        dealloc y;;
-        ret res).
-
-Next Obligation.
-move=>_ /= ->.
-case N1: (N == 0)=>//; first by move/eqP: N1=>->; apply:val_ret. 
-case N2: (N == 1)=>//; first by move/eqP: N2=>->; apply:val_ret. 
-heval=>n; heval=>x; heval=>y; rewrite unitR joinC [x:->_ \+ _]joinC.
-apply: bnd_seq=>/=.
-apply: val_doR; last first=>//[res h|].
-- case; case=>n'[_][_][->{h}]->->->_.
-  by heval; rewrite !unitR.
-by exists 1, 1, 1.
-Qed.
-
-
 (** 
 ---------------------------------------------------------------------
 Exercise [Value-returning list beheading]
 ---------------------------------------------------------------------
 
-Define and verify function [remove_val] which is similar to remove,
+Define and verify function [remove_val] which is similar to [remove],
 but also returns the value of the last "head" of the list before
 removal, in addition to the "next" pointer. Use Coq's [option] type to
 account for the possibility of an empty list in the result.
 
 *)
-
-Program Definition remove_val T p : {xs}, 
-  STsep (lseq p xs, 
-         [vfun y h => lseq y.1 (behead xs) h /\ 
-                      y.2 = (if xs is x::xs' then Some x else None)]) := 
-  Do (if p == null then ret (p, None) 
-      else x <-- read T p;
-           pnext <-- !(p .+ 1);
-           dealloc p;; 
-           dealloc p .+ 1;;
-           ret (pnext, Some x)). 
-Next Obligation.
-apply: ghR=>i xs H V; case: ifP H=>H1.
-- by rewrite (eqP H1); case/(lseq_null V)=>->->; heval. 
-case/(lseq_pos (negbT H1))=>x [q][h][->] <- /= H2.
-by heval; rewrite 2!unitL.
-Qed.
 
 (** 
 ---------------------------------------------------------------------
@@ -831,38 +719,9 @@ different representations of inequality.
 
 *)
 
-Definition mapT T S (f : T -> S) : Type := 
-  forall p, {xs}, STsep (@lseq T p xs, 
-                         [vfun y h => y = tt /\ @lseq S p (map f xs) h]).
-
-Program Definition list_map T S p (f : T -> S) :
-   {xs}, STsep (@lseq T p xs, 
-                [vfun y h => y = tt /\ @lseq S p (map f xs) h]) :=
-    Fix (fun (loop : mapT f) (p : ptr) =>      
-      Do (if p == null 
-          then ret tt 
-          else x <-- read T p;
-               next <-- (read ptr p .+ 1);
-               p ::= f x;;
-               loop next)) p.
-Next Obligation.
-apply: ghR=>h xs H V. 
-case X: (p0 == null).
-- apply: val_ret=>_ /=;  split=>//. 
-  by move/eqP: X H=>-> /=; case/(lseq_null V)=>->->. 
-case/negbT /lseq_pos /(_ H): X=>x[next][h'][Z1] Z2 H1; subst h.
-heval.
-move/validR: V=> V1; apply: (gh_ex (behead xs)).
-rewrite [_ \+ h']joinC joinC -joinA; apply: val_do=>//=.
-case=>m[_]H2 V2; split=>//.
-rewrite [_ \+ p0 :-> _]joinC joinC. 
-by rewrite Z1 /=; exists next, m; rewrite joinA.
-Qed.
-
-
 (**
 ---------------------------------------------------------------------
-Exercise [In-place listreversal]
+Exercise [In-place list reversal]
 ---------------------------------------------------------------------
 
 Let us define the following auxiliary predicates, where [shape_rev]
@@ -916,23 +775,13 @@ library will be useful for establishing equalities between lists.
 *)
 
 Next Obligation.
-apply:ghR=>i[xs1 xs2]; case=>h1[h2][->{i}]/=[H1 H2] V1.
-case X: (p0 == null) H1=>H1.
-- apply: val_ret=>/=_; move/eqP: X=>X; subst p0.
-  move/validL: (V1)=>V3; case:(lseq_null V3 H1)=>Z1 Z2; subst xs1 h1=>/=.
-  by rewrite unitL. 
-case/negbT /(lseq_pos) /(_ H1): X=>x[next][h'][Exs]Z H3; subst h1.
-heval; rewrite -!joinA -!(joinCA h'); apply: (gh_ex (behead xs1, x::xs2)).
-apply: val_doR=>//=[V2|].
- - exists h', (p0 :-> x \+ (p0 .+ 1 :-> p1 \+ h2)); split=>//; split=>//.
-   by exists p1, h2; rewrite !joinA.
-by move=> z m H4 _; rewrite Exs rev_cons cat_rcons.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 Next Obligation.
-apply: ghR=>i xs H V /=; apply: (gh_ex (xs, [::])).
-apply: val_doR=>//=[_|]; first by exists i, Unit; rewrite unitR. 
-by rewrite cats0.
+(* fill in your proof here instead of [admit] *)
+admit.
 Qed.
 
 End HTT.
