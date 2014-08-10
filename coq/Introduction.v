@@ -401,7 +401,7 @@ alternatively, a parent catalogue of the %\texttt{bin}% folder
 containing Coq and SSReflect's binaries, where %\texttt{ssrcoq}% has
 been previously copied, as it was suggested).
 
-** Getting lecture files and HTT sources
+** Getting the lecture files and HTT sources
 %\label{sec:htt-sources}%
 
 The reader is encouraged to download the additional material for this
@@ -458,9 +458,9 @@ folder): it should build all %\texttt{.v}% files in it and serve as a
 consistency check for your setup.
 
 The solutions for all of the exercises from the course are available
-on demand: drop me a line
-(%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%)
-if you're interested, so I will mail you the archive.
+on demand: drop me a line if you're interested
+(%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%),
+so I will mail you back the archive.
 
 ** Using a virtual machine 
 

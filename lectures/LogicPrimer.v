@@ -122,7 +122,7 @@ Undo.
 
 Instead of supplying the argument [(1 = 2)] to [False_ind] manually,
 we can leave it to Coq to figure out, what it should be, by using the
-SSReflect [apply:] tactic.%\ssrt{apply:}%
+SSReflect [apply:] tactic.
 
 *)
 
@@ -160,17 +160,11 @@ Qed.
 
 Unlike most of the value-level functions we have seen so far,
 propositions are usually parametrized by other propositions, which
-makes them instances of _polymorphic_ types, as they appear in
-%\index{System $F$}%
-%System~$F$% and %System $F_{\omega}$%. Similarly to these systems, in
-Coq the universal quantifier [forall] (spelled <<forall>>) binds a
-variable immediately following it in the scope of the subsequent
-type.%\footnote{As it has been noticed in Chapter~\ref{ch:funprog} the
-$\forall$-quantifier is Coq's syntactic notation for dependent
-function types, sometimes also referred to a \emph{$\Pi$-types} or
-\emph{dependent product types}.}%%\index{dependent function type}% For
-instance, the transitivity of implication in Coq can be expressed via
-the following proposition:
+makes them instances of _polymorphic_ types, as they appear in System
+F and System F_\omega. Similarly to these systems, in Coq the
+universal quantifier [forall] binds a variable immediately following
+it in the scope of the subsequent type. For instance, the transitivity
+of implication in Coq can be expressed via the following proposition:
 
 %\begin{center}%
 [forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R]
@@ -179,11 +173,10 @@ the following proposition:
 The proposition is therefore _parametrized_ over three propositional
 variables, [P], [Q] and [R], and states that from the proof term of
 type [P -> Q] and a proof term of type [Q -> R] one can receive a
-proof term of type [P -> R].%\footnote{Recall that the arrows have
-right associativity, just like function types in Haskell and OCaml,
-which allows one to apply functions partially, specifying their
-arguments one by one}% Let us now prove these statement in the form of
-theorem.  *)
+proof term of type [P -> R]. Let us now prove these statement in the
+form of theorem.  
+
+*)
 
 Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
 Proof.
@@ -261,11 +254,10 @@ Qed.
 (**
 
 In the future, we will replace the use of trivial tactics, such as
-[exact:] by SSReflect's much more powerful tactics [done],%\ssrt{done}% which
+[exact:] by SSReflect's much more powerful tactics [done], which
 combines a number of standard Coq's tactics in an attempt to finish
 the proof of the current goal and reports an error if it fails to do
-so. 
-*)
+so.  *)
 
 (** ** On forward and backward reasoning
 
@@ -297,9 +289,9 @@ as the proof obtained by means of using the [apply:] tactic.
 These two styles of proving: by providing a direct proof to the goal
 or some part of it, and by first reducing the goal via tactics, are
 usually referred in the mechanized proof community as _forward_ and
-_backward_ proof styles%\index{forward proof style}\index{backward
-proof style}%.
-*)
+_backward_ proof styles.
+
+  *)
 
 (** ** Refining and bookkeeping assumptions 
 
@@ -439,9 +431,9 @@ Qed.
 (**
 
 The datatype of disjunction of [P] and [Q], denoted by [P \/ Q], is
-isomorphic to the [sum] datatype from %Chapter~\ref{ch:funprog}% and
-can be constructed by using one of its two constructors: [or_introl]
-or [or_intror].
+isomorphic to the [sum] datatype from the provious lecture and can be
+constructed by using one of its two constructors: [or_introl] or
+[or_intror].
 
 *)
 
@@ -715,9 +707,10 @@ imply_to_or
 
 Curiously, none of these axioms, if added to Coq, makes its logic
 unsound: it has been rigorously proven (although, not within Coq, due
-to %\Godel%'s incompleteness result) that all classical logic axioms
-are consistent with CIC, and, therefore, don't make it possible to
-derive the falsehood.
+to Godel's incompleteness result) that all classical logic axioms are
+consistent with CIC, and, therefore, don't make it possible to derive
+the falsehood.
+
 *)
 
 (** * Universes and [Prop] impredicativity
@@ -733,15 +726,14 @@ the calculus itself and write generally-recursive programs.
 
 ** Exploring and debugging the universe hierarchy
 
-In the light of %Martin-\loef%'s stratification, the Coq'
-non-polymorphic types, such as [nat], [bool], [unit] or [list nat]
-"live" at the [0]th level of universe hierarchy, namely, in the sort
-[Set]. The polymorphic types, quantifying over the elements of the
-[Set] universe are, therefore located at the higher level, which in
-Coq is denoted as [Type(1)], but in the displays is usually presented
-simply as [Type], as well as all the higher universes. We can enable
-the explicit printing of the universe levels to see how they are
-assigned:
+In the light of Martin-Loef's stratification, the Coq' non-polymorphic
+types, such as [nat], [bool], [unit] or [list nat] "live" at the [0]th
+level of universe hierarchy, namely, in the sort [Set]. The
+polymorphic types, quantifying over the elements of the [Set] universe
+are, therefore located at the higher level, which in Coq is denoted as
+[Type(1)], but in the displays is usually presented simply as [Type],
+as well as all the higher universes. We can enable the explicit
+printing of the universe levels to see how they are assigned:
 
 *)
 
