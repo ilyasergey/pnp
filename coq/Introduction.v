@@ -93,13 +93,13 @@ suitable for teaching purposes.
 - The most recently published book, _Certified Programming with
   Dependent Types_ by Adam Chlipala%~\cite{Chlipala:BOOK}% provides a
   gentle introduction to Coq from the perspective of writing programs
-  that manipulate with _certificates_, i.e., first-class proofs of the
+  that manipulate _certificates_, i.e., first-class proofs of the
   program's correctness. The idea of certified programming is a
   natural fit for a programming language with dependent types, which
   Coq offers, and the book is structured as a series of examples that
-  make the dependently-typed aspect of Coq shine along with intuition
-  behind these examples and a detailed overview of state of the art
-  _proof automation_ techniques.
+  make the dependently-typed aspect of Coq shine, along with the
+  intuition behind these examples and a detailed overview of
+  state-of-the-art _proof automation_ techniques.
 
 Although all the three books have been used in numerous introductory
 courses for Coq with a large success, it is the author's opinion that
@@ -118,7 +118,7 @@ Coq%~\cite{Gontier-al:TR}%:
   possible to compute a result of the vast majority of them (as
   opposed to prove them constructively) as a boolean value, given that
   they are formulated as computable recursive Coq functions, rather
-  than inductive predicates (which is more the spirit of the
+  than inductive predicates (which is more in the spirit of the
   traditional Coq school).
 
 - Instead of supplying the reader with a large vocabulary of tactics
