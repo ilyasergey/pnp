@@ -1417,6 +1417,29 @@ logic module [Classical_Prop].
 
 *)
 
+(*
+--------------------------------------------------------------------
+--------------------------- TODO -----------------------------------
+--------------------------------------------------------------------
+
+In the very same chapter it would be also great to elaborate on the
+proof from counterexample and its inverse (which can be proved only
+for enumerable sets in CIC). More specifically,
+
+(exists x, ~ P x) -> ~ (forall x, P x)
+
+is easy to prove as an exercise in Coq.
+
+Conversely,
+
+~(forall x, P x) -> exists x, ~(P x) 
+
+should be taken as an axiom. However, if x is an element of an
+enumerateble type, this can be established as a proposition (see the
+example on page 414 of the Coq'Art book).
+
+*)
+
 Require Import Classical_Prop.
 
 
