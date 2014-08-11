@@ -467,17 +467,18 @@ so I will mail you back the archive.
 If compiling and installing Coq and SSReflect from scratch looks like
 too much hassle, there is also a possibility to use a virtual machine
 image with all libraries preinstalled (including HTT) and Emacs set up
-to work with SSReflect. The image can be obtained from the same
+to work with SSReflect. The image requires Oracle %\index{VirtualBox}%
+VirtualBox to be used;%\footnote{Available from
+\url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %2~GB%
+size and can be obtained from the same
 %\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
 as other artifacts (look for the file
-%\texttt{Ubuntu-CoqSSR-PnP.ova}%). The image requires Oracle
-%\index{VirtualBox}% VirtualBox to be used.%\footnote{Available from
-\url{http://www.virtualbox.org/wiki/Downloads}.}% It runs Ubuntu 14.04
-and automatically logs in when started with the user
-%\texttt{coquser}% (use the password %\texttt{coquser}% whenever it is
-required). The folder %\texttt{\textasciitilde/misc}% contains the
-sources of SSReflect and Proof General. HTT sources and this course's
-lecture files are located in %\texttt{\textasciitilde/htt}% and
+%\texttt{Ubuntu-CoqSSR-PnP.ova}%). It runs Ubuntu 14.04 and
+automatically logs in when started with the user %\texttt{coquser}%
+(use the password %\texttt{coquser}% whenever it is required). The
+folder %\texttt{\textasciitilde/misc}% contains the sources of
+SSReflect and Proof General. HTT sources and this course's lecture
+files are located in %\texttt{\textasciitilde/htt}% and
 %\texttt{\textasciitilde/lectures}%, correspondingly.
 
 * Naming conventions
