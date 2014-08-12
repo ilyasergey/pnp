@@ -53,7 +53,8 @@ cleanhtt:
 clean:  $(MAKEFILE)
 	make -f $(MAKEFILE) clean
 	rm -f $(MAKEFILE)
-	cd latex; rm -f *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out pnp*.zip
+	rm -f pnp*.zip
+	cd latex; rm -f *.html *.xml *.png *.brf *.css *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out *.xref *.xdv *.tmp *.ncx *.epub *.4tc *.4ct *.mobi *.lg *.idv *.opf
 
 
 ziplec:
