@@ -1,0 +1,20 @@
+Acknowledgements
+----------------
+
+Aleks Nanevski -- idea, inspiration
+Lilia Anisimova -- illustrations
+
+[Proof-reading]
+
+Olivier Danvy
+Boris Koepf
+Andrea Cerone
+Giovanni Bernardi
+Remy Haemmerle
+Jose Francisco Morales
+Leonid Shalupov
+Gleb Mazovetsky
+
+[Misc]
+
+Pierre-Yves Strub -- Coq bundle
