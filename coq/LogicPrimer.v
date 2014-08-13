@@ -53,8 +53,8 @@ is just programming in disguise.
 
 %\index{Calculus of Inductive Constructions}%
 %\index{CIC|see {Calculus~of~Inductive~Constructions}}%
-%\index{Intuitionistic type theory}%
-%\index{Martin-\loef's type theory|see {Intuitionistic type theory}}%
+%\index{intuitionistic type theory}%
+%\index{Martin-\loef's type theory|see {intuitionistic type theory}}%
 %\index{Prop sort@\texttt{Prop} sort}%
 
 The _Calculus of Inductive Constructions_

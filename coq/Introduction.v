@@ -109,9 +109,8 @@ proof assistant that are left underrepresented. This course is
 targeted to fill these gaps, while giving the reader enough background
 to proceed as a Coq hacker on her own. In particular, this manuscript
 describes in detail the following aspects of proof engineering, most
-of which are enabled or empowered by Georges Gonthier et al.'s
-_small-scale reflection_ extension (SSReflect) to
-Coq%~\cite{Gontier-al:TR}%:
+of which are enabled or empowered by Gonthier et al.'s _small-scale
+reflection_ extension (SSReflect) to Coq%~\cite{Gontier-al:TR}%:
 
 - Special treatment is given to the _computational_ nature of
   inductive reasoning about _decidable_ propositions, which makes it
@@ -124,7 +123,7 @@ Coq%~\cite{Gontier-al:TR}%:
 - Instead of supplying the reader with a large vocabulary of tactics
   necessary for everyday Coq hacking, this course focuses on a _very
   small_ but powerful and _complete_ set of proof constructing
-  primitives (of about a dozen in total), supplied by SSReflect or
+  primitives (of about a dozen in total), offered by SSReflect or
   inherited from the vanilla Coq with notable enhancements.
 
 - This course advocates inductive types' _parameters_ as an
@@ -214,8 +213,8 @@ theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order)
 theorem}~\cite{Gonthier-al:ITP13}%.
 
 %\index{four color theorem}%
-%\index{Feit-Thompson theorem}%
 %\index{odd order theorem|see {Feit-Thompson theorem}}%
+%\index{Feit-Thompson theorem}%
 
 SSReflect includes a small but complete set of novel primitives for
 interactive proof construction (tactics), different from the
@@ -301,6 +300,7 @@ downloaded from the following URL.
 %
 
 ** Installing Coq and SSReflect
+%\label{sec:install-coq}%
 
 The sources of this manuscript have been compiled and tested with Coq
 version 8.4 and SSReflect version 1.4. It is not guaranteed that the
@@ -340,13 +340,21 @@ provided below.
   <</usr/local/bin>> in the default case of Unix-like systems). It is
   also recommended to keep SSReflect's sources easily accessible as
   reading them might be helpful when working with libraries (see the
-  files in the folder <<ssreflect-1.4/theories/>>). Upon installing
-  SSReflect via %\texttt{make install}%, the following environment
-  variable should be also set up:
+  files in the folder <<ssreflect-1.4/theories/>>). 
+
+  Upon installing SSReflect via %\texttt{make install}%, the following
+  environment variable should be also set up:
 
 <<
     export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/Ssreflect/" 
 >>
+
+  Alternatively, instead of running %\texttt{make install}%, one can
+  set up the environment variable %\texttt{SSRCOQ\_LIB}% to point to
+  the folder %\texttt{ssreflect-location/theories}%, which contains
+  all SSReflect modules compiled (and %\texttt{ssreflect-location}%
+  denotes the location of the directory where SSReflect has been
+  unpacked to).
 
 ** Emacs set-up
 
@@ -448,14 +456,17 @@ with sources and the make-script can be downloaded from the
 %\href{http://racky.imdeasoftware.org/constructive/pnp/}{course
 url}%. After downloading and unpacking, the sources should be compiled
 via the %\texttt{make}% command, given that Coq and SSReflect are
-properly installed, as described previously. For the immediate
-compatibility with the lecture sources, it is recommended to place the
-%\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent
-folder. After unzipping the archive with lectures, run the
-%\texttt{make}% command from the folder %\texttt{lectures}% (assuming
-that the HTT sources are already build and are located in the sibling
-folder): it should build all %\texttt{.v}% files in it and serve as a
-consistency check for your setup.
+properly installed, as described previously (make sure that the
+environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%)
+are set up properly, as explained in
+Section%~\ref{sec:install-coq}%). For the immediate compatibility with
+the lecture sources, it is recommended to place the %\texttt{htt}% and
+%\texttt{lectures}% folders beneath a common parent folder. After
+unzipping the archive with lectures, run the %\texttt{make}% command
+from the folder %\texttt{lectures}% (assuming that the HTT sources are
+already build and are located in the sibling folder): it should build
+all %\texttt{.v}% files in it and serve as a consistency check for
+your setup.
 
 The solutions for all of the exercises from the course are available
 on demand: drop me a line if you're interested
