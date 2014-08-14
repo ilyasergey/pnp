@@ -15,6 +15,8 @@ Jose Francisco Morales
 Samir Genaim
 Leonid Shalupov
 Gleb Mazovetsky
+William Bowman
+Phillip Mates
 
 [Misc]
 

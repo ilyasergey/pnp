@@ -151,4 +151,5 @@ loadpath.v
 latex/*.v.tex
 latex/*.pdf
 latex/pnp-blx.bib
+pnp*.zip
 

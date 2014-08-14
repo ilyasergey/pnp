@@ -141,8 +141,8 @@ as _assertions_; more specifically, $P$ is called
 just "pre"), whereas $Q$ is called _postcondition_ (or simply
 "post"). The triple $\spec{P}~c~\spec{Q}$ is traditionally referred to
 as _Hoare triple_.%\index{Hoare triple}%%\footnote{The initial syntax
-for the triples by Hoare, was $\specK{P}~\set{c}~\specK{Q}$. The
-notation $\spec{P}~c~\spec{Q}$, which is now used consistently, is due
+for the triples used by Hoare was $\specK{P}~\set{c}~\specK{Q}$. The
+notation $\spec{P}~c~\spec{Q}$, which is used now consistently, is due
 to Niklaus Wirth and emphasizes the comment-like nature of the
 assertions in the syntax reminiscent to the one of Pascal.}% Its
 intuitive semantics can be expressed as follows: %\label{pg:triple}%
