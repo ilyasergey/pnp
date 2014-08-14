@@ -13,6 +13,7 @@ Module HTT.
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
 (** printing of %\texttt{\emph{of}}% *)
+(** printing is %\texttt{\emph{is}}% *)
 (** printing first %\texttt{{first}}% *)
 (** printing last %\texttt{\emph{last}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
@@ -2325,7 +2326,7 @@ which is expressed by SSReflect's [behead] function.
 
 Lemma lseq_pos xs p h : 
         p != null -> h \In lseq p xs -> 
-        exists x, exists r, exists h', 
+        exists x r h', 
           [/\ xs = x :: behead xs, 
               p :-> x \+ (p .+ 1 :-> r \+ h') = h & h' \In lseq r (behead xs)].
 Proof.

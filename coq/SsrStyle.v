@@ -136,11 +136,14 @@ case: c; first by [].
 
 
 %\index{selectors}%
+%\ssrtl{first}%
+%\ssrtl{last}%
+
 Now, right after case-analysing on [c], the proof script specifies
 that the _first_ of the generated subgoals should be solved using [by
-[].]. In this case [first] is called _selector_, and its counterpart
-[last] would specify that the last goal should be taken care of
-instead, before proceeding.
+[].]. In this case %\texttt{first}% is called _selector_, and its
+counterpart %\texttt{last}% would specify that the last goal should be
+taken care of instead, before proceeding.
 
 Finally, if several simple goals can be foreseen as a result of case
 analysis, Coq provides a convenient way to discharge them in a

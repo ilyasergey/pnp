@@ -225,9 +225,9 @@ As it is already hinted by the name of the method, the key insight in
 the proofs by discrimination is to construct a function that can
 distinguish between values of the type with an implicit _definitional
 equality_,%\index{definitional equality}% which relates two values if
-they have identical structure.%\footnote{Naturally, it is not trivial
-to establish definitional equality on \emph{any} values, as the values
-might be of an infinite nature. For instance, establishing the
+they have identical structure.%\footnote{It is not trivial to
+establish computable definitional equality on \emph{any} values, as
+the values might be of an infinite nature. For instance, stating the
 equality of two functions would require checking their results on all
 elements of the common domain, which might be infinite. in this
 respect, the propositional equality acts like it ``compares the
