@@ -79,11 +79,11 @@ Fixpoint rat_to_frac (r: rational) : nat * nat :=
 Exercise [Infinitely-branching trees]
 ---------------------------------------------------------------------
 
-Define an following inductive type of infinitely-branching trees
-(parametrized over a type [T]), whose leafs are represented by a
-constructor that doesn't take parameters and a non-leaf nodes contain
-a value _and_ a function that takes a natural number and returns a
-child of the node with a corresponding natural index.
+Define an inductive type of infinitely-branching trees (parametrized
+over a type [T]), whose leafs are represented by a constructor that
+doesn't take parameters and a non-leaf nodes contain a value _and_ a
+function that takes a natural number and returns a child of the node
+with a corresponding natural index.
 
 Define a boolean function that takes such a tree (instantiated with a
 type [nat]) and an argument of [n] type [nat] and checks whether the
@@ -91,11 +91,12 @@ zero value occurs in it at a node reachable only by indices smaller
 than a number [n]. Then write some "test-cases" for the defined
 function.
 
-%\hint% You might need to define a couple of auxiliary functions for
- this exercise.
+Hint: You might need to define a couple of auxiliary functions for
+this exercise.
 
-%\hint% Sometimes you might need to provide the type arguments to
- constructors explicitly.
+Hint: Sometimes you might need to provide the type arguments to
+constructors explicitly.
+
 *)
 
 Inductive inf_tree (T: Set) := Leaf | Node of T & (nat -> inf_tree T).
