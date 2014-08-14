@@ -243,10 +243,10 @@ machinery also come in handy.
 
 Last, but not least, SSReflect comes with a much improved [Search]
 tool (comparing to the standard one of Coq). Given that a fair part of
-time spent for formally development (either programs and proofs) is
-typically dedicated to reading and understanding the code (or, at
-least, specifications) written by other developers, the [Search] tool
-turns out to be invaluable when it comes to looking for necessary
+time spent for development (either programs and proofs) is typically
+dedicated to reading and understanding the code (or, at least,
+specifications) written by other implementors, the [Search] tool turns
+out to be invaluable when it comes to looking for necessary
 third-party facts to employ in one's own implementation.
 
 In the further chapters of this course, we will not be making
@@ -378,9 +378,9 @@ General and SSReflect sources were unpacked).
     (load-file "~/misc/ssreflect-1.4/pg-ssr.el")
 >>
 
-Linux users, more used to the standard Copy/Paste/Undo keystrokes can
-also find it convenient to enable the Cua mode in Emacs, which can be
-done by adding the following lines into the <<.emacs>> file:
+Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes
+can also find it convenient to enable the Cua mode in Emacs, which can
+be done by adding the following lines into the %\texttt{.emacs}% file:
 
 <<
     (cua-mode t)
@@ -468,7 +468,7 @@ already build and are located in the sibling folder): it should build
 all %\texttt{.v}% files in it and serve as a consistency check for
 your setup.
 
-The solutions for all of the exercises from the course are available
+Solutions for all of the exercises from the course are available
 on demand: drop me a line if you're interested
 (%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%),
 so I will mail you back the archive.

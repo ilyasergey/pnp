@@ -288,16 +288,17 @@ will prefer the interactive proof mode to the "vanilla" program
 definition. It is worth noticing, thought, that even though the
 process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
-_tactics_ in Coq jargon),%\index{Coq/SSReflect tactics}%
-%\index{tactics|seealso {Coq/SSReflect tactics}}% the result of such
-script, given that it eliminates all of the goals, is a valid
-well-typed Coq program. In comparison, in some other dependently-typed
-frameworks (e.g., in Agda%\index{Agda}%), the construction of proof
-terms does not obscure the fact that what is being constructed is a
-program, so the resulting interactive proof process is formulated as
-"filling the holes" in a program (i.e., a proof-term), which is being
-gradually refined. We step away from the discussion on which of these
-two views to the proof term construction is more appropriate.
+_tactics_ in Coq jargon),%\index{Coq/SSReflect
+tactics}\index{tactics}% %\index{tactics|seealso {Coq/SSReflect
+tactics}}% the result of such script, given that it eliminates all of
+the goals, is a valid well-typed Coq program. In comparison, in some
+other dependently-typed frameworks (e.g., in Agda%\index{Agda}%), the
+construction of proof terms does not obscure the fact that what is
+being constructed is a program, so the resulting interactive proof
+process is formulated as "filling the holes" in a program (i.e., a
+proof-term), which is being gradually refined. We step away from the
+discussion on which of these two views to the proof term construction
+is more appropriate.
 
 There is one more important difference between values defined by as
 [Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
@@ -1292,6 +1293,9 @@ case=>a Hs Hst.
 ]]
 Next, we apply the [ex]'s constructor by means of the [exists]
 tactic with an explicit witness value [a]: 
+
+%\ssrt{exists}%
+
 *)
 
 exists a.

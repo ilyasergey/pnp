@@ -33,9 +33,9 @@ Module HTT.
 (** 
 
 In this chapter, we will consider a fairly large case study that makes
-use of most of Coq's features as a programming languages with
-dependent types and as a framework to build proofs and reason about
-mathematical theories.
+use of most of Coq's features as a programming language with dependent
+types and as a framework to build proofs and reason about mathematical
+theories.
 
 Programming language practitioners usually elaborate on the dichotomy
 between _declarative_ and _imperative_ languages, emphasizing the fact
@@ -48,8 +48,8 @@ Ciao%~\cite{Hermenegildo-al:TPLP12}\index{Ciao}%) as well as data
 definition/manipulation languages (e.g., SQL), whose programs are just
 sets of constraints/logical clauses or queries describing the desired
 result, are naturally considered to be declarative. Very often, pure
-functional programming languages (e.g., Haskell) are considered
-declarative as well, The reason for this is the _referential
+functional programming languages (e.g., Haskell) are considered as
+declarative as well. The reason for this is the _referential
 transparency_ property, which ensures that programs in such languages
 %\index{referential transparency}% are in fact effect-free
 expressions, evaluating to some result (similar to mathematical
@@ -74,7 +74,7 @@ transparency), its algebraic properties (e.g., some equalities that
 hold over it) are usually a subject of separate statements, which
 should be proved%~\cite{Bird:BOOK}%. Good example of such properties
 are the commutativity and cancellation properties, which we proved for
-natural numbers concidered as an instance of PCM on
+natural numbers with addition, concidered as an instance of PCM on
 page%~\pageref{pg:addnprops} of Chapter~\ref{ch:depstruct}%. Another
 classical series of examples, which we did not focus in this course,
 are properties of list functions, such as appending and reversal
