@@ -308,7 +308,7 @@ restriction to the computation power of Coq, which therefore is not
 Turing-complete as a programming language (as it supports only
 primitive recursion).
 
-Although Coq is equipped with a number of machinery to _reason_ about
+Although Coq is equipped with an amount of machinery to _reason_ about
 potentially non-terminating programs and prove some useful facts about
 them%\footnote{Typically, this is done by supplying a user-specific
 termination argument, which "strictly reduces" at each function call,
