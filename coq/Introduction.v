@@ -266,7 +266,7 @@ the course are explained using the analogies with constructs adopted
 in practical programming, such as algebraic datatypes, higher-order
 functions, records and monads.
 
-While this manuscript is aiming to be self-contained in its 
+While this manuscript is aiming to be self-contained in its
 presentation of a subset of Coq, it would be %\naive~%to expect it to
 be the _only_ Coq reference used for setting-up a formal
 development. That said, we encourage the reader to use the standard
@@ -291,7 +291,7 @@ In order to be able to follow the manuscript and execute the examples
 provided, the reader is expected to have Coq with SSReflect installed
 at her machine. This section contains some general instructions on the
 installation and set-up. Most of the mentioned below binaries can be
-downloaded from the following URL.
+downloaded from the following URL, accompanying these notes:
 
 %
 \begin{center}
