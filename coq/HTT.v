@@ -745,14 +745,16 @@ the in-place fixpoint operator as
 
 %
 \begin{center}
-\texttt{(fix~f(x:~unit).~if~e~then~c;;~f(tt)~else~ret~tt)(tt)}
+\texttt{(fix~f (x~:~bool).~if~x~then~c;;~f(e')~else~ret~tt)(e)}
 \end{center}
 % 
 
 That is, the function %\texttt{f}% is defined with an argument of the
-unit type and is immediately invoked. If the condition %\texttt{e}% is
-satisfied, the body %\texttt{c}% is executed and the function calls
-itself recursively; otherwise the function just returns a unit result.
+unit type and is immediately invoked. If the condition argument
+$\com{x}$ is satisfied, the body $\com{c}$ is executed and the
+function calls itself recursively with a new argument $\com{e'}$;
+otherwise the function just returns a unit result. For the first time,
+the function is invoked with some initial argument $\com{e}$.
 
 Given this relation between imperative loops and effectful recursive
 functions, we won't be providing a rule for loops in separation logic
