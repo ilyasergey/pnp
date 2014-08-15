@@ -683,7 +683,7 @@ a value.
  {\Gamma \vdash \forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)}}
 \and
 \inferrule*[Right={(App)}]
- {\forall x, \spec{h ~|~ P(x, h) }~f(x)~\spec{\res, h ~|~ Q(x, \res, h)} \in \Gamma}
+ {\Gamma \vdash \forall x, \spec{h ~|~ P(x, h)}~f(x)~\spec{\res, h ~|~ Q(x, \res, h)}}
  {\Gamma \vdash \spec{h ~|~ P(e, h) }~f(e)~\spec{\res, h ~|~ Q(e, \res, h)}}
 \end{mathpar}
 %
