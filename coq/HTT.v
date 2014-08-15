@@ -599,7 +599,7 @@ the pointers are natural.
 \begin{mathpar}
 \inferrule*[Right={(Write)}]
  {}
- {\spec{h ~|~ h = x \mapsto -}~ x ::= e ~\spec{\res, h ~|~ h = x \mapsto e}}
+ {\spec{h ~|~ h = x \mapsto -}~ x ::= e ~\spec{\res, h ~|~ h = x \mapsto e \wedge \res = \com{tt}}}
 \and
 \inferrule*[Right={(Read)}]
  {}
