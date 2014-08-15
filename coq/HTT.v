@@ -1025,9 +1025,10 @@ distinct from the programming with pure functions:
   semantically,%\footnote{Although some mainstream languages prefer to
   blur the distinction between commands and expressions in order to
   save on syntax~\cite{Scala-spec}, at the price of losing the ability
-  to differentiate statically effectful and pure code.}% but sometimes
-  an expression should be treated as a command (with a trivial effect
-  or none of it at all), whose result is the very same expression.
+  to differentiate statically between the effectful and pure code.}%
+  but sometimes an expression should be treated as a command (with a
+  trivial effect or none of it at all), whose result is the very same
+  expression.
 
 These two connectives, allowing one to construct the programs by means
 of binding and embedding expressions into them are captured precisely
