@@ -484,10 +484,10 @@ replaced by its value before it starts evaluating. If the result of
 %\texttt{c1}% is not used by %\texttt{c2}%, we will use the
 abbreviation %\texttt{c1~;;~c2}% to denote this specific case.
 
-Specifications in the simple Hoare logic for mutable variables,
-demonstrated in %Section~\ref{sec:hoare-primer}% are stated over
-mutable local variables, which are implicitly supposed to be all
-distinct, as they have distinct names. In a language with a heap and
+Specifications in the simple Hoare logic demonstrated in
+%Section~\ref{sec:hoare-primer}% are stated over mutable local
+variables, which are implicitly supposed to be all distinct, as they
+have distinct "abstract" names. In a language with a heap and
 pointers, the state is no longer a set of mutable variables, but the
 heap itself, which %\index{heap}% can be thought of as a partial map
 from natural numbers to arbitrary values. In a program, operating with
@@ -506,16 +506,16 @@ specification states it by means of the "points-to" assertions $x
 
 %
 \begin{alltt}
-\(\spec{x\mapsto{-}\wedge{y}\mapsto{Y}}\)\var{x}::=5\(\spec{x\mapsto{5}\wedge{y}\mapsto{Y}}\)
+\(\spec{x\mapsto{-}\wedge{y}\mapsto{Y}}\) \var{x} ::= 5 \(\spec{x\mapsto{5}\wedge{y}\mapsto{Y}}\)
 \end{alltt}
 %
 
 The logical variable $Y$ is of importance, as it is used to state that
-the value of the pointer $y$%\footnote{We will abuse the terminology
-and refer to the values and immutable local variables uniformly, as,
-unlike the setting of Section~\ref{sec:imp-spec}, the later ones are
-assumed to substituted by the former ones during the evaluation
-anyway.}% remains unchanged after the program has terminated. Alas,
+the value of the pointer $y$ remains unchanged after the program has
+terminated.%\footnote{We will abuse the terminology and refer to the
+values and immutable local variables uniformly, as, unlike the setting
+of Section~\ref{sec:imp-spec}, the later ones are assumed to
+substituted by the former ones during the evaluation anyway.}% Alas,
 this specification is not correct, as the conjunction of the two does
 not distinguish between the case when $x$ and $y$ are the same pointer
 and when they are not, which is precisely the aliasing problem. It is
@@ -554,7 +554,7 @@ logic:
 %
 \label{pg:alterx}
 \begin{alltt}
-\(\spec{h | h = x \mapsto - \join y \mapsto Y}\) \var{x}::=5 \(\spec{\res, h | h = x \mapsto 5 \join y \mapsto Y}\)
+\(\spec{h | h = x \mapsto - \join y \mapsto Y}\) \var{x} ::= 5 \(\spec{\res, h | h = x \mapsto 5 \join y \mapsto Y}\)
 \end{alltt}
 %
 
