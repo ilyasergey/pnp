@@ -1029,8 +1029,8 @@ distinct from the programming with pure functions:
 
 These two connectives, allowing one to construct the programs by means
 of binding and embedding expressions into them are captured precisely
-by the $\com{Monad}$ interface, expressed, fo instance, in Haskell via
-the following type class:
+by the $\com{Monad}$ interface, expressed, for instance, in Haskell
+via the following type class:
 
 %
 \begin{alltt}
@@ -1090,6 +1090,8 @@ within the %\texttt{IO}% monad, which indicates that the possible
 effect of the program, which has %\texttt{IO}% in its type, can be
 reading from input or writing into the output
 stream%~\cite{PeytonJones-Wadler:POPL93}%.
+
+%\newpage%
 
 <<
 main = do putStrLn "Enter a character"

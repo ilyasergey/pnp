@@ -739,7 +739,7 @@ Definition natPCMMixin :=
 
 (**
 
-The constructor [PCMMixin], defined in Section~%\ref{sec:packaging}%
+The constructor [PCMMixin], defined in %Section~\ref{sec:packaging}%
 is invoked with five parameters, all of which correspond to the
 properties, ensured by the PCM definition. The rest of the arguments,
 namely, the validity predicate, the join operation and the zero

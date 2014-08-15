@@ -97,8 +97,8 @@ automatic replacements of [y] by [x].
 
 *)
 
-Lemma my_eq_Leibniz A (x y: A) (P: A -> Prop) : P x -> x === y -> P y. 
-Proof. by move=>H; case. Qed.
+Lemma my_eq_Leibniz A (x y: A) (P: A -> Prop) : x === y -> P x -> P y. 
+Proof. by case. Qed.
 
 (** ** Implementing discrimination
 
