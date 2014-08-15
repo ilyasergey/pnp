@@ -859,7 +859,7 @@ result is the factorial of its argument $N$.
 
 %
 \[
-\spec{h ~|~ h = \empty} ~\com{fact}(N)~ \spec{\res, h ~|~ h = \empty \wedge \res = f(N)}
+\spec{h ~|~ h = \hempty} ~\com{fact}(N)~ \spec{\res, h ~|~ h = \hempty \wedge \res = f(N)}
 \]
 %
 
