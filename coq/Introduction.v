@@ -316,10 +316,10 @@ provided below.
 
 - Linux and Mac OS X users can compile Coq 8.4 and SSReflect from
   sources, which would take around two hours of their
-  time.%\footnote{Getting Coq 8.4 using a system specific package
-  manager, such as aptitude of MacPorts is another option, although
-  the Coq version acquired this way is not guaranteed to work with
-  SSReflect 1.4.}%
+  time.%\footnote{Getting Coq 8.4 using a system-specific package
+  manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
+  although the Coq version acquired this way is not guaranteed to work
+  properly with SSReflect 1.4.}%
 
   In order to be compiled, Coq requires Objective Caml version 3.11.2
   or later, Camlp5, GNU Make version 3.81 or later (see the
@@ -389,25 +389,17 @@ be done by adding the following lines into the %\texttt{.emacs}% file:
     (setq cua-keep-region-after-copy t) 
 >>
 
-Every Coq file has the extension extension %\texttt{.v}%. Opening any
-%\texttt{.v}% file will automatically trigger Proof General mode. Once
-the mode is launched, in the menu <<Proof-General>>, choose the item:
-<<
-    Advanced -> Customize -> Coq -> Coq Prog Name
->> 
-and change the value of the variable to
-<<
-    ssreflect-location/bin/ssrcoq
->> 
-or
-<<
-    ssreflect-location\bin\ssrcoq
->>
-for Windows/Cygwin users, where %\texttt{ssreflect-location}% is the
-location of your SSReflect directory with compiled binaries (or,
-alternatively, a parent catalogue of the %\texttt{bin}% folder
-containing Coq and SSReflect's binaries, where %\texttt{ssrcoq}% has
-been previously copied, as it was suggested).
+Every Coq file has the extension %\texttt{.v}%. Opening any
+%\texttt{.v}% file will automatically trigger the Proof General
+mode. Once the mode is launched, in the menu <<Proof-General>>, choose
+the item: << Advanced -> Customize -> Coq -> Coq Prog Name >> and
+change the value of the variable to << ssreflect-location/bin/ssrcoq
+>> or << ssreflect-location\bin\ssrcoq >> for Windows/Cygwin users,
+where %\texttt{ssreflect-location}% is the location of your SSReflect
+directory with compiled binaries (or, alternatively, a parent
+catalogue of the %\texttt{bin}% folder containing Coq and SSReflect's
+binaries, where %\texttt{ssrcoq}% has been previously copied, as it
+was suggested).
 
 ** Getting the lecture files and HTT sources
 %\label{sec:htt-sources}%
