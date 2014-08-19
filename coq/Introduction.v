@@ -472,7 +472,7 @@ too much hassle, there is also a possibility to use a virtual machine
 image with all libraries preinstalled (including HTT) and Emacs set up
 to work with SSReflect. The image requires Oracle %\index{VirtualBox}%
 VirtualBox to be used;%\footnote{Available from
-\url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %2~GB%
+\url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %1.8~GB%
 size and can be obtained from the same
 %\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
 as other artifacts (look for the file
