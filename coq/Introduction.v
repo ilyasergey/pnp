@@ -273,7 +273,7 @@ presentation of a subset of Coq, it would be %\naive~%to expect it to
 be the _only_ Coq reference used for setting-up a formal
 development. That said, we encourage the reader to use the standard
 Coq manual%~\cite{Coq-manual}% as well as SSReflect
-documentation%~\cite{Gontier-al:TR}% whenever a unknown tactic, piece
+documentation%~\cite{Gontier-al:TR}% whenever an unknown tactic, piece
 of syntax or obscure notation is encountered. Coq's [Search],
 %\texttt{Locate}% and [Print] tools, explained in
 %Chapter~\ref{ch:funprog}% are usually of great help when it comes to
