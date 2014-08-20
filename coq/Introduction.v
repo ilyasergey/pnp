@@ -35,9 +35,11 @@ Module Intro.
 
 (**
 
-These lecture notes offer a brief and comprehensive introduction to
-the basic concepts of mechanized reasoning and interactive theorem
-proving using the Coq proof assistant.
+These lecture notes came out of the author's personal experience of
+learning how to structure mechanized reasoning using the Coq proof
+assistant and employ Coq in large-scale research projects. The
+resulting manuscript offers a brief and comprehensive introduction to
+the basic concepts of interactive theorem proving.
 
 The primary audience of this text are the readers with expertise in
 software development and programming and knowledge of discrete
