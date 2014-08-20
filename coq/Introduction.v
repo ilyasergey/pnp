@@ -179,7 +179,7 @@ Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 There is a range of topics that this course does not cover, although
 it is the author's belief that the provided material should be
 sufficient for the reader to proceed to these more advanced subjects
-on her own. Some of the exciting topcis, which are certainly worth
+on her own. Some of the exciting topics, which are certainly worth
 studying but lie beyond the scope of this manuscript, are listed below
 together with pointers to the relevant bibliographic references.
 
@@ -295,7 +295,7 @@ downloaded from the following URL, accompanying these notes:
 
 %
 \begin{center}
-\url{http://racky.imdeasoftware.org/constructive/pnp/}
+\url{http://ilyasergey/pnp/}
 \end{center}
 %
 
@@ -408,9 +408,9 @@ The reader is encouraged to download the additional material for this
 course in the form of Coq files with all examples from the manuscript
 plus some additional exercises. The archive with these sources is
 named
-%\href{http://racky.imdeasoftware.org/constructive/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}%
+%\href{http://ilyasergey/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}%
 and can be downloaded from the
-%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
+%\href{http://ilyasergey/pnp/}{course url}%
 given above. The table below describes the correspondence between the
 chapters of the manuscript and the accompanying files.
 
@@ -443,9 +443,9 @@ chapters of the manuscript and the accompanying files.
 For the examples of Chapter%~\ref{ch:htt}% and the corresponding
 lecture source file, the sources of the Hoare Type Theory development
 will be required. The archive
-%\href{http://racky.imdeasoftware.org/constructive/pnp/htt.zip}{\texttt{htt.zip}}%
+%\href{http://ilyasergey/pnp/htt.zip}{\texttt{htt.zip}}%
 with sources and the make-script can be downloaded from the
-%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course
+%\href{http://ilyasergey/pnp/}{course
 url}%. After downloading and unpacking, the sources should be compiled
 via the %\texttt{make}% command, given that Coq and SSReflect are
 properly installed, as described previously (make sure that the
@@ -474,7 +474,7 @@ to work with SSReflect. The image requires Oracle %\index{VirtualBox}%
 VirtualBox to be used;%\footnote{Available from
 \url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %1.8~GB%
 size and can be obtained from the same
-%\href{http://racky.imdeasoftware.org/constructive/pnp/}{course url}%
+%\href{http://ilyasergey/pnp/}{course url}%
 as other artifacts (look for the file
 %\texttt{Ubuntu-CoqSSR-PnP.ova}%). It runs Ubuntu 14.04 and
 automatically logs in when started with the user %\texttt{coquser}%
