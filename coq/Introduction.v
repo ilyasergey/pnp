@@ -55,7 +55,7 @@ incarnations: as an expressive functional programming language with
 dependent types and as a proof assistant providing support for
 mechanized interactive theorem proving.
 
-By aiming these these two goals, this manuscript is, thus, intended to
+By aiming these two goals, this manuscript is, thus, intended to
 provide a demonstration how the concepts familiar from the mainstream
 programming languages and serving as parts of good programming
 practices can provide illuminating insights about the nature of
