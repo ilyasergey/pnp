@@ -319,7 +319,7 @@ encode potentially non-terminating programs in Coq and reason about
 them), it usually requires some ingenuity to execute
 generally-recursive computations withit Coq. Fortunately, even without
 the possibility to _execute_ any possible program in the system, Coq
-provides a reach tool-set to _encode_ such programs, so a number of
+provides a rich tool-set to _encode_ such programs, so a number of
 statements could be proved about them (as we will see in
 %Chapter~\ref{ch:htt}%), and the encoded programs themselves could be
 later _extracted_ into a general-purpose language, such as Haskell or
