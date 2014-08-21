@@ -645,8 +645,15 @@ will get a function that, upon receiving argument of type [strange]
 will construct an argument of type [empty]! More precisely, the
 existence of a value of type [strange] would allow us to create a
 value of type [empty] and, therefore a value of _any_ type, as was
-previously demonstrated. 
+previously demonstrated. The following definition of the function
+[strange_to_empty] substantiates this observation:
 
+*)
+
+Definition strange_to_empty (s: strange): empty :=
+  strange_rect (fun _ => empty) (fun _ e => e) s.
+
+(**
 To summarize, designing a datatype, which is not inhabited, while not
 trivial, is not impossible, and it is a task of a designer of a
 particular type to make sure that its values in fact can be

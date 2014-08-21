@@ -2,11 +2,6 @@
 
 Module FunProg.
 
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing is %\texttt{\emph{is}}% *)
-
 (** * Enumeration datatypes *)
 
 Inductive unit : Set := tt.
@@ -241,6 +236,9 @@ strange_rect
 ]]
 *)
 
+Definition strange_to_empty (s: strange): empty :=
+  strange_rect (fun _ => empty) (fun s e => e) s.
+
 (** * More datatypes *)
 
 (* Pairs *)
@@ -324,8 +322,6 @@ Print seq.
 [[
 Notation seq := list
 ]]
-
-%\ssrd{list}%
 
 *)
 
@@ -616,7 +612,7 @@ Write a function that take a type [A], a function [f] of type [A ->
 bool] and a list [l], and return the first element [x] in [l], such
 that [f x == true]. 
 
-%\hint% Use Coq's [option] type to account for the fact that the
+Hint: Use Coq's [option] type to account for the fact that the
  function of interest is partially-defined.
 *)
 
@@ -673,7 +669,7 @@ Eval compute in alternate [:: 1;2;3] [:: 4].
      : seq nat
 ]]
 
-%\hint% The reason why the "obvious" elegant solution might fail is
+Hint: The reason why the "obvious" elegant solution might fail is
  that the argument is not strictly decreasing.
 *)
 
@@ -686,7 +682,7 @@ Write a function that has a dependent result type and whose result is
 [true] for natural numbers of the form [4n + 1], [false] for numbers
 of the form [4n + 3] and [n] for numbers of the from [2n].
 
-%\hint% Again, you might need to define a number of auxiliary
+Hint: Again, you might need to define a number of auxiliary
  (possibly, higher-order) functions to complete this exercise.
 *)
 
