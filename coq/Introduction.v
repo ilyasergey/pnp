@@ -35,12 +35,12 @@ Module Intro.
 
 (**
 
-These lecture notes came out of the author's personal experience of
-learning how to structure formal reasoning using the Coq proof
-assistant and employ Coq in large-scale research projects. The
-resulting manuscript offers a brief and practically-oriented
-introduction to the basic concepts of mechanized reasoning and
-interactive theorem proving.
+These lecture notes are the result of the author's personal experience
+of learning how to structure formal reasoning using the Coq proof
+assistant and employ Coq in large-scale research projects. The present
+manuscript offers a brief and practically-oriented introduction to the
+basic concepts of mechanized reasoning and interactive theorem
+proving.
 
 The primary audience of this text are the readers with expertise in
 software development and programming and knowledge of discrete
