@@ -317,7 +317,7 @@ datatype as its argument.}% (for example, Chapter 7 of the
 book%~\cite{Chlipala:BOOK}% provides a broad overview of methods to
 encode potentially non-terminating programs in Coq and reason about
 them), it usually requires some ingenuity to execute
-generally-recursive computations withit Coq. Fortunately, even without
+generally-recursive computations within Coq. Fortunately, even without
 the possibility to _execute_ any possible program in the system, Coq
 provides a rich tool-set to _encode_ such programs, so a number of
 statements could be proved about them (as we will see in
