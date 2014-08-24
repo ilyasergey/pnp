@@ -572,7 +572,7 @@ subsequent chapters.
 Automatically-generated recursion principles for inductively-defined
 datatypes provide a generic (although not universal) scheme to define
 recursive functions for the corresponding values. But what if a type
-is not inhabited, i.e., there are no values in it. We have already
+is not inhabited, i.e., there are no values in it? We have already
 seen such a type---it's [empty], which corresponds to the empty
 set. As any inductive datatype in Coq, it comes with an automatically
 generated generalized recursion principle, so let us check its type:
