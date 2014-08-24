@@ -546,7 +546,7 @@ more examples on the subject.
 
 %\index{dependent function type}% Dependent function types, akin to
 those of [nat_rec] and our [sum_no_zero], which allow the type of the
-result to vary depending on the value of a function's argument are a
+result to vary depending on the value of a function's argument, are a
 powerful way to _specify the behaviour_ of functions, and therefore,
 are often used to "enforce" the dependently-typed programs to work in
 a particular expected way. In Coq, dependent function types are
