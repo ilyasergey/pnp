@@ -537,8 +537,8 @@ integer part of [n/4].
 Exercise [Representing rational numbers]
 ---------------------------------------------------------------------
 
-Every strictly positive rational number can be obtained in aunique
-manned by a succession of applications of functions [N] nad [D] on the
+Every strictly positive rational number can be obtained in a unique
+manner by a succession of applications of functions [N] and [D] on the
 number one, where [N] and [D] defined as follows:
 
 [[

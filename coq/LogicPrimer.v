@@ -262,7 +262,7 @@ Qed.
 
 In fact, typing [Qed] invokes a series of additional checks, which
 ensure the well-formedness of the constructed proof term. Although the
-proof of [true_is_true] is obviously valid, in general there is a
+proof of [true_is_true] is obviously valid, in general, there is a
 number of proof term properties to be checked _a posteriori_ and
 particularly essential in the case of proofs about infinite objects,
 which we do not cover in these course (see %Chapter~13%
@@ -1646,7 +1646,7 @@ higher level, which contains all sets and propositions (i.e., the
 whole sorts [Set] and [Prop]), but does not contain itself. Let us
 call such sort [Type]. It turns out that the self-inclusion [Type :
 Type] leads to another class of paradoxes%~\cite{Coquand:LICS86}%, and
-in order to avoid them the hierarchy of higher-order sorts should be
+in order to avoid them, the hierarchy of higher-order sorts should be
 made infinite and _stratified_. %\index{stratification}%
 Stratification means that each sort has a level number, and is
 contained in a sort of a higher level but not in itself. The described
