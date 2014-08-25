@@ -110,7 +110,7 @@ Fixpoint has_zero (t: @inf_tree nat) n {struct t} : bool :=
   match t with 
   | Leaf => if n is 0 then true else false
   | Node x f => (x == 0) || 
-       (if n is m.+1 then check_subtrees (fun s => has_zero (f s) n) n else false)
+                check_subtrees (fun s => has_zero (f s) n) n
   end.
 
 Eval compute in 
