@@ -1,4 +1,4 @@
-Require Import ssreflect ssrbool ssrnat eqtype.
+Require Import ssreflect ssrbool ssrnat eqtype seq.
 
 Module FunProg.
 
@@ -114,7 +114,7 @@ Fixpoint has_zero (t: @inf_tree nat) n {struct t} : bool :=
   end.
 
 Eval compute in 
-  has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf) else Leaf)) 5.
+  has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf) else Leaf)) 3.
 
 
 (**
@@ -132,7 +132,7 @@ that [f x == true].
 
 Fixpoint first_elt A (f: A -> bool) (l : seq A) : option A := 
   if l is x::xs 
-  then if f x then Some x else first_elt f xs
+  then if f x then Some x else first_elt A f xs
   else None.
 
 (**
@@ -165,14 +165,14 @@ Implement the following higher-order functions on lists
 - tail-recursive list reversal
 *)
 
-Fixpoint fold_left A B (f: B -> A -> B) z (l: seq A): B :=
+Fixpoint fold_left {A B} (f: B -> A -> B) z (l: seq A): B :=
   if l is x::xs 
   then fold_left f (f z x) xs
   else z.
 
 Eval compute in fold_left (fun x y => x + y) 0 [::1;2;4].
 
-Fixpoint fold_right A B (f: A -> B -> B) z (l: seq A): B :=
+Fixpoint fold_right {A B} (f: A -> B -> B) z (l: seq A): B :=
   if l is x::xs 
   then (f x (fold_right f z xs))
   else z.
