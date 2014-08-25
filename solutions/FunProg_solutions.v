@@ -116,7 +116,6 @@ Fixpoint has_zero (t: @inf_tree nat) n {struct t} : bool :=
 Eval compute in 
   has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf) else Leaf)) 3.
 
-
 (**
 ---------------------------------------------------------------------
 Exercise [List-find]
@@ -191,12 +190,22 @@ stutter. Formulate an inductive definition for nostutter. Write some
 
 *)
 
+Fixpoint eqn m n {struct m} :=
+  match (m, n) with
+  | (0, 0) => true
+  | (m'.+1, n'.+1) => eqn m' n'
+  | (_, _) => false
+  end.
+
 Fixpoint nostutter (l : seq nat): bool := 
   if l is x1::xs1 
-  then if xs1 is x2::xs2 then (x1 != x2) && nostutter xs1
+  then if xs1 is x2::xs2 then ~~(eqn x1 x2) && nostutter xs1
                          else true
   else true.
 
+Eval compute in nostutter [:: 1;2;3;4;5].
+
+Eval compute in nostutter [:: 1;2;3;3;4;5].
 
 (** 
 ---------------------------------------------------------------------
@@ -213,11 +222,12 @@ sequences.
 
 Fixpoint alternate (l1 l2 : seq nat) : seq nat := 
 match (l1, l2) with 
-  | ([::], [::]) => [::]
   | ([::], ys) => ys
-  | (xs, [:: ]) => xs
+  | (xs, [::]) => xs
   | (x::xs, y::ys) => x :: y :: (alternate xs ys)
   end. 
+
+Eval compute in alternate [:: 1;2;3;4;5] [:: 1;2;3;4;6].
 
 (**
 ---------------------------------------------------------------------
@@ -246,7 +256,7 @@ Fixpoint dep_value_aux (n: nat): dep_type n -> dep_type n :=
   end.
 
 Fixpoint dep_value (n: nat): dep_type n := 
-  match n return dep_type n with 
+  match n  with 
   | 0 => 0
   | 1 => true
   | n'.+2 => dep_value_aux n' (dep_value n')

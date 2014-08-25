@@ -31,7 +31,13 @@ Now, try to prove it using the same scheme. What goes wrong and how to
 fix it?
 *)
 Proof.
-by move=>H; move/disaster: (my_eq_sym H).
+(* by move=>H; move/disaster: (my_eq_sym H). *)
+Proof.
+move=> H.
+pose D x := if x is 1 then False else True.
+have D2: D 2. 
+by [].
+by case: H D2=> /=.
 Qed.
 
 (**
