@@ -1,4 +1,4 @@
-Require Import ssreflect ssrbool ssrnat.
+Require Import ssreflect ssrbool ssrnat eqtype.
 
 Module FunProg.
 
@@ -12,7 +12,7 @@ Write the function [two_power] of type [nat -> nat], such that
 
 Fixpoint two_power n := match n with 
   | 0 => 1
-  | m.+1 => my_mult 2 (two_power m)
+  | m.+1 => 2 * (two_power m)
   end.
 
 (**
@@ -25,7 +25,7 @@ returns [true] for even numbers and [false] otherwise. Use the
 function we have already defined.
 *)
 
-Fixpoint evenB n := if n is m.+1 then negate (evenB m) else true.
+Fixpoint evenB n := if n is m.+1 then ~~ (evenB m) else true.
 
 
 (**
@@ -99,22 +99,22 @@ constructors explicitly.
 
 *)
 
-Inductive inf_tree (T: Set) := Leaf | Node of T & (nat -> inf_tree T).
+Inductive inf_tree {T: Set} := Leaf | Node of T & (nat -> @inf_tree T).
 
-Fixpoint check_subtrees (f: nat -> inf_tree nat) (checker: inf_tree nat -> bool) n :=
+Fixpoint check_subtrees (checker: nat -> bool) n :=
   if n is m.+1 
-  then checker (f n) || check_subtrees f checker m
-  else checker (f 0).
+  then checker n || check_subtrees checker m
+  else checker 0.
 
-Fixpoint has_zero (t: inf_tree nat) n : bool :=
+Fixpoint has_zero (t: @inf_tree nat) n {struct t} : bool :=
   match t with 
   | Leaf => if n is 0 then true else false
   | Node x f => (x == 0) || 
-       (if n is m.+1 then check_subtrees f (fun s => has_zero s m) n else false)
+       (if n is m.+1 then check_subtrees (fun s => has_zero (f s) n) n else false)
   end.
 
 Eval compute in 
-  has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf nat) else Leaf nat)) 5.
+  has_zero (Node 2 (fun x => if x == 3 then Node 0 (fun x => Leaf) else Leaf)) 5.
 
 
 (**
