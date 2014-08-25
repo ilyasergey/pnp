@@ -15,20 +15,20 @@
 %
 
 In the previous chapter we have seen how main connectives from
-propositional logic. However, the mathematical reasoning only by means
-of propositional logic is still quite limited. In particular, by this
-moment we are still unable to state what does it mean for two objects
-to be _equal_. In this chapter we are going to see how equality can be
-implemented in Coq. Moreover, the statement "_x_ is equal to _y_"
-automatically gives us a way to replace _y_ by _x_ and vice versa in
-the process of reasoning, therefore implementing a discipline of
-_rewriting_---one of the key ingredients of the mathematical
-proof.%\footnote{The reader could have, probably, heard how
-mathematics sometimes is referred to as a "science of rewritings".}%
-Later in the chapter, we will see how rewriting by equality is just a
-particular case of a general proof pattern, which allows one to define
-arbitrary _rewriting rules_ by exploiting Coq's mechanism of _indexed
-type families_.
+propositional logic are encoded in Coq. However, the mathematical
+reasoning only by means of propositional logic is still quite
+limited. In particular, by this moment we are still unable to state
+what does it mean for two objects to be _equal_. In this chapter we
+are going to see how equality can be implemented in Coq. Moreover, the
+statement "_x_ is equal to _y_" automatically gives us a way to
+replace _y_ by _x_ and vice versa in the process of reasoning,
+therefore implementing a discipline of _rewriting_---one of the key
+ingredients of the mathematical proof.%\footnote{The reader could
+have, probably, heard how mathematics sometimes is referred to as a
+"science of rewritings".}% Later in the chapter, we will see how
+rewriting by equality is just a particular case of a general proof
+pattern, which allows one to define arbitrary _rewriting rules_ by
+exploiting Coq's mechanism of _indexed type families_.
 
 *)
 
@@ -69,10 +69,10 @@ similar to the logical connectives we've seen in
 %Chapter~\ref{ch:logic}%. However, there are differences, which are of
 importance. First, equality as a predicate is _parametrized_
 %\index{datatype parameters}% over two arguments: a [Type] [A] of an
-unspecified universe (so, it can be [Set], [Prop] or any of higher
-universes) and an element [x] of type [A]. There is
-nothing particularly new here: we have seen parametrized inductive
-predicates before, for instance, conjunction and disjunction in
+unspecified universe (so, it can be [Set], [Prop] or any of the higher
+universes) and an element [x] of type [A]. There is nothing
+particularly new here: we have seen parametrized inductive predicates
+before, for instance, conjunction and disjunction in
 %Section~\ref{sec:conjdisj}%. The novel part of this definition is
 what comes after the semicolon trailing the parameter list. Unlike all
 previously seen logical connectives, the equality predicate has type
@@ -808,8 +808,8 @@ following this path.
 %\label{sec:enccustom}%
 
 In the rest of this section, we will leverage the intuition behind
-indexed type families considered as _rewriting rules_
-%\index{rewriting rules}%, and will try to encode a "truth table"
+indexed type families considered as _rewriting rules_,
+%\index{rewriting rules}% and will try to encode a "truth table"
 %\index{truth table}% of with two disjoint variants of relation
 between [n] and [m], namely, [m <= n] and [n < m]. The table itself is
 encoded by the following inductive definition:
@@ -987,8 +987,8 @@ case: leqP=>//.
    m < n -> n <= n /\ m <= n
 ]]
 
-The res of the proof employs rewriting by some trivial lemmas from [ssrnat],
-%\ssrm{ssrnat}% but conceptually is very easy.
+The rest of the proof employs rewriting by some trivial lemmas from
+[ssrnat], %\ssrm{ssrnat}% but conceptually is very easy.
 
 *)
 
