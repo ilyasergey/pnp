@@ -351,15 +351,15 @@ TS_neg =
 %\label{sec:propbool}%
 
 As we have already explored in the previous chapters, in CIC, the
-logical foundation of Coq, there is a number of important distinction
-between logical propositions and boolean values. There is an infinite
-number of ways to represent different propositions in the sort [Prop]
-by means of defining the datatypes. In contrast, the type [bool] is
-represented just by two values: [true] and [false]. Moreover, as it
-was discussed in %Chapter~\ref{ch:logic}%, in Coq only those
-propositions are considered to be _true_, whose proof term can be
-constructed. And, of course, there is no such thing as a "proof term
-of [true]", as [true] is simply a value.
+logical foundation of Coq, there is a number of important distinctions
+between logical propositions and boolean values.  In particular, there
+is an infinite number of ways to represent different propositions in
+the sort [Prop] by means of defining the datatypes. In contrast, the
+type [bool] is represented just by two values: [true] and
+[false]. Moreover, as it was discussed in %Chapter~\ref{ch:logic}%, in
+Coq only those propositions are considered to be _true_, whose proof
+term can be constructed. And, of course, there is no such thing as a
+"proof term of [true]", as [true] is simply a value.
 
 A more interesting question, though, is for which propositions [P]
 from the sort [Prop] the proofs can be computed _automatically_ by
@@ -380,7 +380,7 @@ answer, which would indicate whether these two functions are equal
 (point-wise) or not, as it would account to checking the result of the
 both function on each natural number, which, clearly, wouldn't
 terminate. Therefore, the definitional equality of functions is a good
-example of a proposition, which is is undecidable in general, so we
+example of a proposition, which is undecidable in general, so we
 cannot provide a terminating procedure for any values of its arguments
 (i.e., $f_1$ and $f_2$).
 
@@ -389,7 +389,7 @@ definitional equality of functions) does not make them _non-provable_
 for particular cases, as we have clearly observed thorough the past
 few chapters. It usually takes a human intuition, though, to construct
 a proof of an undecidable proposition by means of combining a number
-of hypotheses (i.e., constructing a proof terms), which is what one
+of hypotheses (i.e., constructing a proof term), which is what one
 does when building a proof using tactics in Coq. For instance, if we
 have some extra insight about the two functions $f_1$ and $f_2$, which
 are checked for equality, we might be able to construct the proof of
@@ -421,7 +421,7 @@ Inductive isPrime n : Prop :=
 
 Such definition, although correct, is quite inconvenient to use, as it
 does not provide a direct way to _check_ whether some particular
-number (e.g., 239) is prime or not. Instead, it requires on to
+number (e.g., 239) is prime or not. Instead, it requires one to
 construct a proof of primality for _each_ particular case using the
 constructors (or the contradiction, which would imply that the number
 is not prime). As it's well known, there is a terminating procedure to
@@ -450,7 +450,7 @@ Therefore, we can summarize that the _decidability_ is what draws the
 line between propositions encoded by means of Coq's [Prop] datatypes
 and procedures, returning a [bool] result. [Prop] provides a way to
 encode a _larger_ class of logical statements, in particular, thanks
-to the fact that it allows one to use quantifiers and, therefore
+to the fact that it allows one to use quantifiers and, therefore,
 encode higher-order propositions. The price to pay for the
 expressivity is the necessity to explicitly construct the proofs of
 the encoded statements, which might lead to series of tedious and
@@ -524,15 +524,15 @@ _decidable propositions should be implemented as computable functions
 returning a boolean result_. This simple design pattern makes it
 possible to take full advantage of the computational power of Coq as a
 programming language and prove decidable properties automatically,
-rather then by means of imposing a burden of constructing an explicit
+rather than by means of imposing a burden of constructing an explicit
 proof. We have just seen how a boolean result can be easily injected
 back to the world of propositions. This computational approach to
 proofs is what has been taken by SSReflect to the extreme, making the
 proofs about common mathematical constructions to be very short, as
-most of the proof obligations simply _do not appear_, as the system
-is possible to reduce them by means of performing the computations on
-the fly. Even though, as discussed, some propositions can be only
-encoded as elements of [Prop], our general advice is to rely on the
+most of the proof obligations simply _do not appear_, as the system is
+possible to reduce them by means of performing the computations on the
+fly. Even though, as discussed, some propositions can be only encoded
+as elements of [Prop], our general advice is to rely on the
 computations whenever it is possible.
 
 In the following subsections we will elaborate on some additional
@@ -662,7 +662,7 @@ The lemma [check_prime] employs the boolean conjunction [&&] from the
 boolean value. However simply case-analysing on its component does not
 bring any results. What we want indeed is a way to _decompose_ the
 boolean conjunction into the components and then use the hypothesis
-[H]. This is what could be accomplished easily had we employed the
+[H]. This is what could be accomplished easily, had we employed the
 _propositional conjunction_ [/\] instead, as it comes with a
 case-analysis principle.
 
@@ -824,10 +824,10 @@ fun (b1 b2 : bool) (goal : b1 && b2) =>
 
 As we can see, the calls to the rewriting lemmas [andP] and [orP] were
 implicitly "wrapped" into the call of hints [elimTF] and [introTF],
-correspondingly. Defined by via the conditional operator, both these
-view hints allowed to avoid the second redundant goal, which would be
-had to deal with, had we simply gone with case analysis on [andP] and
-[orP] as rewriting rules.
+correspondingly. Defined via the conditional operator, both these view
+hints allowed us to avoid the second redundant goal, which we would be
+be forced to deal with, had we simply gone with case analysis on
+[andP] and [orP] as rewriting rules.
 
 *)
 

@@ -108,7 +108,7 @@ Fixpoint check_subtrees (checker: nat -> bool) n :=
 
 Fixpoint has_zero (t: @inf_tree nat) n {struct t} : bool :=
   match t with 
-  | Leaf => if n is 0 then true else false
+  | Leaf => false
   | Node x f => (x == 0) || 
                 check_subtrees (fun s => has_zero (f s) n) n
   end.
