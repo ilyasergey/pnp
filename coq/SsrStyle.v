@@ -315,10 +315,11 @@ The second goal is annoyingly trickier.
 ]]
 
 First, let us do some rewritings that make the hypothesis and the goal
-look alike.%\footnote{Recall that% [n.+1] %stands for the
-\emph{value} of the successor of% [n] %, whereas% [n + 1] % is a
-function call, so the whole expression in the goal cannot be just
-trivially simplified and requires some rewritings to be done.}% *)
+look alike.%\footnote{Recall that% [n.+1] %stands for the \emph{value}
+of the successor of% [n], % whereas% [n + 1] % is a function call, so
+the whole expression in the goal cannot be just trivially simplified
+by Coq's computation and requires some rewritings to take the
+convenient form.}% *)
 
 rewrite addn1 addnS addnC !addnS. 
 rewrite addnC addn1 addnS in Hn.
@@ -332,8 +333,8 @@ rewrite addnC addn1 addnS in Hn.
 ]] 
 
 Now, even though the hypothesis [Hn] and the goal are almost the same
-module the natural "[(.+2)]-orbit" of the [evenP] predicate and some
-rewritings, we cannot take an advantage of it right away, and instead
+(modulo the natural "[(.+2)]-orbit" of the [evenP] predicate and some
+rewritings), we cannot take an advantage of it right away, and instead
 are required to case-analysed on the assumption of the form [evenP (n
 + n).+3]:
 
@@ -398,7 +399,7 @@ Sometimes, though, the value "orbits", which can be advantageous for
 the proofs involving [bool]-returning predicates, might require a bit
 trickier induction hypotheses than just the statement required to be
 proved. Let us compare the two proofs of the same fact, formulated
-with [evenP] and [evennb].
+with [evenP] and [evenb].
 
 *)
 
