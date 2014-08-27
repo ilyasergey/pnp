@@ -461,14 +461,14 @@ and ssreflect-1.4/theories/ssrnat.v
 Exercise [Partially-ordered sets]
 ---------------------------------------------------------------------
 
-A partially ordered set order is a pair (T, \pre), such that T is a
-carrier set and \pre is a relation on T, such that
+A partially ordered set order is a pair (T, <==), where T is a carrier
+set and <== is a relation on T, such that
 
-- forall x in T, x \pre x (reflexivity);
+- forall x in T, x <== x (reflexivity);
 
-- forall x, y in T, x \pre y \wedge y \pre x \implies x = y (antisymmetry);
+- forall x, y in T, x <== y /\ y <== x \implies x = y (antisymmetry);
 
-- forall x, y, z in T, x \pre y \wedge y \pre z \implies x \pre z (transitivity).
+- forall x, y, z in T, x <== y /\ y <== z \implies x <== z (transitivity).
 
 Implement a data structure for partially-ordered sets using mixins and
 packed classes. Prove the following laws:
