@@ -49,14 +49,14 @@ predicates, has been supplied by a number of examples in
 proofs by induction of different flavours. Mathematics is a science of
 abstract structures and facts, and formalizing such structures and
 facts is an important component of rigorous reasoning. In
-\textbf{Chapter~\ref{ch:depstruct}} we have learned how a concept of
-records and type classes, familiar from languages like C and Haskell,
-can be directly employed, powered by Coq's dependent types, to encode
-a variety of mathematical structures from the course of abstract
-algebra. \textbf{Chapter~\ref{ch:htt}} brought all of the presented
-the programming and proving concepts together and made them to work in
-concert to tackle a large case study---specifying and verifying
-imperative programs in the framework of Hoare Type Theory.
+\textbf{Chapter~\ref{ch:depstruct}} we have learned how the concepts
+of records and type classes, familiar from languages like C and
+Haskell, can be directly employed, powered by Coq's dependent types,
+to encode a variety of mathematical structures from the course of
+abstract algebra. \textbf{Chapter~\ref{ch:htt}} brought all of the
+presented the programming and proving concepts together and made them
+to work in concert to tackle a large case study---specifying and
+verifying imperative programs in the framework of Hoare Type Theory.
 
 \section*{Future directions}
 

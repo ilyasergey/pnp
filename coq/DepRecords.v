@@ -397,7 +397,7 @@ record's members, rather than to rely on an implicit mechanism of
 field linearization.}%
 
 %\index{Scala}\index{traits}%
-
+%\label{ref:pack_type}%
 *)
 
 Structure pack_type : Type := Pack {type : Type; _ : mixin_of type}.
@@ -407,7 +407,7 @@ Structure pack_type : Type := Pack {type : Type; _ : mixin_of type}.
 The dependent data structure [pack_type] declares two fields: the
 field [type] of type [Type], which described the carrier type of the
 PCM instance, and the actual PCM structure (without an explicit name
-given) of type [mixin_of type]. That is, in order to construct an
+given) of type ([mixin_of type]). That is, in order to construct an
 instance of [pack_type], one will have to provide _both_ arguments:
 the carrier set and a PCM structure for it.
 
@@ -820,17 +820,26 @@ number <- sub_sort ( number_subType )
 ...
 ]]
 
-The displayed list specifies, which implicit canonical instances are
-currently available and will be triggered implicitly. That is, for
-example, whenever an instance of [nat] is available, but in fact it
-should be treated as the [type] field of the [PCM] structure (with all
-getters typed properly), the canonical instance [natPCM] will be
-automatically picked by Coq for such embedding. In other words, the
-machinery of canonical structures allows us to define the policy for
-finding an appropriate _dictionary_ of functions and propositions for
-an arbitrary concrete datatype, whenever it is supposed to have
-them. The mechanism of defining canonical structures for concrete data
-types is reminiscent to the resolution of type class constraints in
+%\index{canonical projections}%
+The displayed list enumerates all _canonical projections_ that specify,
+which implicit canonical instances are currently available and will be
+picked implicitly for appropriate types (on the left of the arrow
+[<-]). That is, for example, whenever an instance of [nat] is
+available, but in fact it should be treated as the [type] field of the
+[PCM] structure (with all getters typed properly), the canonical
+instance [natPCM] will be automatically picked by Coq for such
+embedding. In other words, the machinery of canonical structures
+allows us to define the policy for finding an appropriate _dictionary_
+of functions and propositions for an arbitrary concrete datatype,
+whenever it is supposed to have them. In fact, upon declaring the
+canonical structure [natPCM], the canonical projections are
+registered by Coq for all _named_ fields of the record [PCM], which is
+precisely just the [type] field, since [PCM]'s second component of
+type ([mixin_of type]) was left unnamed (see the definition of
+the record [pack_type] on page%~\pageref{ref:pack_type}%).
+
+The mechanism of defining canonical structures for concrete data types
+is reminiscent to the resolution of type class constraints in
 Haskell%~\cite{Wadler-Blott:POPL89}%. However, unlike Haskell, where
 the resolution algorithm for type class instances is _hard-coded_, in
 the case of Coq one can actually _program_ the way the canonical
