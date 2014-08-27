@@ -147,24 +147,21 @@ Section ClassDef.
 
 Record class_of T := Class {mixin : mixin_of T}.
 
-Structure type : Type := Pack {sort : Type; _ : class_of sort; _ : Type}.
-Local Coercion sort : type >-> Sortclass.
+Structure pack_type : Type := Pack {sort : Type; _ : mixin_of sort}.
+Local Coercion sort : pack_type >-> Sortclass.
 
-Variables (T : Type) (cT : type).
-Definition class := let: Pack _ c _ as cT' := cT return class_of cT' in c.
+Variables (cT : pack_type).
+Definition poset_struct := let: Pack _ c := cT return mixin_of cT in c.
 
-Definition pack (m0 : mixin_of T) := 
-  fun m & phant_id m0 m => Pack (@Class T m) T.
-
-Definition leq := mx_leq (mixin class).
+Definition leq := mx_leq poset_struct.
 
 End ClassDef.
 
 Module Exports.
-Coercion sort : type >-> Sortclass.
-Notation poset := Poset.type.
-Notation PosetMixin := Poset.Mixin.
-Notation Poset T m := (@pack T _ m id).
+Coercion sort : pack_type >-> Sortclass.
+Notation poset := pack_type.
+Notation PosetMixin := Mixin.
+Notation Poset T m := (@Pack T m).
 
 Notation "x <== y" := (Poset.leq x y) (at level 70).
 
@@ -172,13 +169,13 @@ Section Laws.
 Variable T : poset.
 
 Lemma poset_refl (x : T) : x <== x.
-Proof. by case: T x=>S [[leq B R]]. Qed.
+Proof. by case: T x=>S [leq B R]. Qed.
 
 Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
-Proof. by case: T x y=>S [[l R A Tr]] *; apply: (A). Qed.
+Proof. by case: T x y=>S [l R A Tr] *; apply: (A). Qed.
 
 Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
-Proof. by case: T y x z=>S [[l R A Tr]] ? x y z; apply: (Tr). Qed.
+Proof. by case: T y x z=>S [l R A Tr] ? x y z; apply: (Tr). Qed.
 End Laws.
 End Exports.
 End Poset.

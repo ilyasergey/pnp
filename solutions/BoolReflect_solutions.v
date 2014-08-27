@@ -134,18 +134,7 @@ Qed.
 
 Lemma xorAb (b1 b2 b3: bool) : (XOR (XOR b1 b2) b3) <-> (XOR b1 (XOR b2 b3)). 
 Proof.
-split=>H. 
-apply: (xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3)); first by case: b1 {H}; constructor.
-- by apply/xorP.
-- rewrite -xorbA. 
-  apply/(xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3)=>//; first by apply/xorP. 
-  case: b3 {H} =>//; constructor=>//.
-apply: (xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3). 
-- by apply/xorP.
-- case: b3 {H}; constructor=>//.
-rewrite xorbA. 
-apply/(xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3))=>//; last by apply/xorP. 
-case: b1 {H} =>//; constructor=>//.
+by rewrite /XOR; case: b1; case: b2; case: b3; intuition.
 Qed.
 
 (** 

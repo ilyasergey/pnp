@@ -10,7 +10,7 @@ Unset Printing Implicit Defensive.
 
 (** * Encoding partial commutative monoids *)
 
-Module PCMDef.
+Module PCMDef. 
 
 (**
 
@@ -461,11 +461,8 @@ and ssreflect-1.4/theories/ssrnat.v
 Exercise [Partially-ordered sets]
 ---------------------------------------------------------------------
 
-A partially ordered set order is a triple (T, \pre, \bot), such that T
-is a carrier set, \pre is a relation on T and \bot is an element of T,
-such that
-
-- forall x in T, \bot \pre x (\bot is a bottom element);
+A partially ordered set order is a pair (T, \pre), such that T is a
+carrier set and \pre is a relation on T, such that
 
 - forall x in T, x \pre x (reflexivity);
 
@@ -476,7 +473,6 @@ such that
 Implement a data structure for partially-ordered sets using mixins and
 packed classes. Prove the following laws:
 
-Lemma botP (x : T) : bot <== x.
 Lemma poset_refl (x : T) : x <== x.
 Lemma poset_asym (x y : T) : x <== y -> y <== x -> x = y.
 Lemma poset_trans (y x z : T) : x <== y -> y <== z -> x <== z.
