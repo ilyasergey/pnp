@@ -43,6 +43,20 @@ rewrite -ltnS in H1.
 by move: (ltn_trans H1 (ltnSn n.+2)).
 Qed.
 
+Lemma nat2_ind (P: nat -> Prop): 
+  P 0 -> P 1 -> (forall n, P n -> P (n.+2)) -> forall n, P n.
+Proof.
+move=> H0 H1 H n. 
+suff: (P n /\ P (n.+1)) by case.
+by elim: n=>//n; case=> H2 H3; split=>//; last by apply: H.
+Qed.
+
+Lemma div2_le' n: div2 n <= n.
+Proof.
+elim/nat2_ind : n=>//= n Hn. 
+by rewrite ltnS leqW //.
+Qed.
+
 (** 
 ---------------------------------------------------------------------
 Exercise [Some facts about beautiful numbers]
