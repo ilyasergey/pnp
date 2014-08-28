@@ -798,6 +798,7 @@ accumulator when the iteration variable becomes zero. In the
 pseudocode, the %\texttt{fact}% program is implemented as follows:
 
 %
+\label{ref:facto}
 \begin{alltt}
 fun fact (\var{N} : nat): nat = \{
   n   <-- alloc(\var{N});
@@ -1263,11 +1264,11 @@ Program Definition alter_x A (x : ptr) (v : A):
 
 %\ccom{Program Definition}%
 
-The Coq's command [Program Definition] is similar to the standard
-definition [Definition] except for the fact that it allows the
-expression being defined to have a type, whose some components haven't
-yet been type-checked and remain to be filled by the programmer,
-similarly to Agda's %\index{Agda}% incremental
+The Coq's command %\texttt{Program}% [Definition] is similar to the
+standard definition [Definition] except for the fact that it allows
+the expression being defined to have a type, whose some components
+haven't yet been type-checked and remain to be filled by the
+programmer, similarly to Agda's %\index{Agda}% incremental
 development%~\cite{Sozeau:TYPES06}%. That is, basing on the expression
 itself ([Do (x ::= v)]), Coq will infer _the most general type_ that
 the expression can be allowed to have, and then it becomes a
@@ -1284,8 +1285,8 @@ of [do]-notation.
 %\httn{Do}%
 
 The type of the program [alter_x] is specified explicitly via the
-[STsep]-notation. There are two logical variables: the value of the
-[y] and the value [Y] of type [n], which is referenced by [y]. The
+[STsep]-notation. There are two logical variables: the pointer [y] and
+the value [Y] of type [nat], which is referenced by [y]. The
 precondition states the existence of some type [B] and value [w], such
 that [x] points to it. The postcondition specifies that the result is
 of type [unit] (and, therefore, is unconstrained), and the content of
@@ -1493,7 +1494,7 @@ usually by the equation [Y f = f (Y f)], where [f] is a fixpoint
 operator argument that should be though of as a recursive function
 being defined. Similarly, the fixpoint operator [Fix], provided by
 HTT, takes as arguments a function, which is going to be called
-recursively ([loop, in this case]), its argument and _body_. The named
+recursively ([loop], in this case), its argument and _body_. The named
 function (i.e., [loop]) can be then called from the body recursively.
 In the similar spirit, one can define nested loops in HTT as nested
 calls of the fixpoint operator.
@@ -1513,7 +1514,7 @@ Program Definition fact_acc (n acc : ptr): fact_tp n acc :=
 (** 
 
 The body of the accumulator loop function reproduces precisely the
-factorial implementation in pseudocode. It first reads the values of
+factorial implementation in pseudocode from page%~\pageref{ref:facto}%. It first reads the values of
 the pointers [acc] and [n] into the local variables [a1] and
 [n']. Notice that the binding of the local immutable variables is
 represented by the [<--] notation, which corresponds to the _bind_
@@ -2183,8 +2184,8 @@ the latest release.
 * Specifying and verifying programs with linked lists
 
 We conclude this chapter with a _tour de force_ of separation logic in
-HTT by considering specification verification of programs operating
-with single-linked lists. Unlike the factorial example, an
+HTT by considering specification and verification of programs
+operating with single-linked lists. Unlike the factorial example, an
 implementation of single-linked lists truly relies on pointers, and
 specifying such datatypes and programs is an area where separation
 logic shines.
@@ -2342,7 +2343,7 @@ Qed.
 (** 
 
 We can finally define and specify the HTT procedure [remove], which
-returns the current head of the list and returns the pointer to its
+removes the current head of the list and returns the pointer to its
 next element (or [null]) if the list is empty.
 
 *)
