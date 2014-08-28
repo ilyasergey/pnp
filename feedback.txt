@@ -1,0 +1,10 @@
+Feedback on the notes
+------------------
+
+1. DB: the tactic 'apply' is never properly explained. Probably, some
+   analogy should be given wrt., for instance, _modus ponens_.
+
+2. Explain the application of 'case' tactics for the goal of the shape
+   (A -> B) -> B. 
+
+

@@ -941,7 +941,7 @@ End PCMExamples.
 %\index{partially ordered set}%
 
 A partially ordered set order is a pair $(T, \pre)$, such that $T$ is
-a set and $\pre$ is a relation on $T$, such that
+a set and $\pre$ is a (propositional) relation on $T$, such that
 
 %
 \begin{enumerate}

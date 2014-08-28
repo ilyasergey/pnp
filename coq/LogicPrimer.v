@@ -1275,9 +1275,13 @@ subsequent statement, not just the proposition _S a_.
 
 Proof.
 
-(** First, we decompose the first existential sum into the witness [a]
+(** 
+
+First, we decompose the first existential product into the witness [a]
 and the proposition [Hst], and also store the universally-quantified
-implication assumption with the name [Hst]. *)
+implication assumption with the name [Hst].
+
+*)
 
 case=>a Hs Hst.
 (** 
