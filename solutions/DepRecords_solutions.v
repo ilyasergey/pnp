@@ -76,7 +76,10 @@ Lemma joinCA (x y z : U) : x \+ (y \+ z) = y \+ (x \+ z).
 Proof. by rewrite joinA (joinC x) -joinA. Qed.
 
 Lemma validL (x y : U) : valid (x \+ y) -> valid x.
-Proof. case: U x y=>tp [v j z Cj Aj Uj /= Mj inv f]; apply: Mj. Qed.
+Proof. 
+case: U x y=>tp [v j z Cj Aj Uj /= Mj inv f]. 
+by apply: Mj. 
+Qed.
 
 Lemma validR (x y : U) : valid (x \+ y) -> valid y.
 Proof. by rewrite joinC; apply: validL. Qed.

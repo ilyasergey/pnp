@@ -186,7 +186,6 @@ Hint: Use the tactic [constructor i] to prove a goal, which is an
 n-ary disjunction, which is satisfied if its i-th disjunct is true.
 
 *)
-
 Lemma repr3 n : n >= 8 -> 
   exists k, [\/ n = 3 * k + 8, n = 3 * k + 9 | n = 3 * k + 10].
 Proof.
@@ -330,9 +329,10 @@ concatenation [++].
 Lemma appears_in_app (xs ys : seq X) (x:X): 
      appears_in x (xs ++ ys) = appears_in x xs || appears_in x ys.
 Proof.
-elim: xs=>// a ls Hi.
-rewrite cat_cons //=.
-by case: (a == x).
+elim: xs=>//= a ls Hi. 
+case: (a == x).
+by simpl.
+by [].
 Qed.
 
 (** 
