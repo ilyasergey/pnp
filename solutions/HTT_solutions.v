@@ -104,8 +104,7 @@ Program Definition swap (x y : ptr):
       x ::= vy;;
       y ::= vx).
 Next Obligation.
-apply:ghR=>_ [a b]->/= V.
-by heval.
+by apply:ghR=>_ [a b]->/= _; heval.
 Qed.
 
 (**
@@ -124,17 +123,17 @@ then refine the query for specific programs (e.g., [read] or [write]).
 Program Definition swap' (x y : ptr):
   {(a b : nat)},
   STsep (fun h => h = x :-> a \+ y :-> b,
-        [vfun (_: unit) h => h = x :-> b \+ y :-> a]) :=
+        [vfun _ h => h = x :-> b \+ y :-> a]) :=
   Do (vx <-- read nat x;
       vy <-- read nat y;
       x ::= vy;;
       y ::= vx).
 Next Obligation.
-apply:ghR=>_ [a b]->/= V.
-apply: bnd_seq; apply: val_read=>_.
-apply: bnd_seq; apply: val_readR =>/= _.
-apply: bnd_writeR=>/=.
-by apply val_writeR=>/=.
+apply:ghR=>_ [a b]-> _.
+apply: bnd_seq; apply: val_read => _.
+apply: bnd_seq; apply: val_readR => _.
+apply: bnd_seq; apply: val_write => _.
+by apply val_writeR.
 Qed.
 
 
