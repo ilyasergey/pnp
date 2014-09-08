@@ -158,8 +158,8 @@ as a recursive function, taking as arguments the two pointers, [n] and
 
 Program Definition fact_acc (n acc : ptr): fact_tp n acc := 
   Fix (fun (loop : fact_tp n acc) (_ : unit) => 
-    Do (a1 <-- !acc;
-        n' <-- !n;
+    Do (a1 <-- read nat acc;
+        n' <-- read nat n;
         if n' == 0 then ret a1
         else acc ::= a1 * n';;
              n ::= n' - 1;;

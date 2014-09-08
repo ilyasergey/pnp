@@ -172,9 +172,9 @@ discussion is continued by revising important principles of proofs by
 induction in Coq and providing pointers to the standard SSReflect
 libraries, which should be used as a main component for everyday
 mathematical reasoning. The course concludes by reconciling all of the
-described concepts and Coq/SSReflect reasoning principles by tacking a
-large case study---verifying imperative programs within the framework
-of Nanevski et al.'s Hoare Type
+described concepts and Coq/SSReflect reasoning principles by tackling
+a large case study---verifying imperative programs within the
+framework of Nanevski et al.'s Hoare Type
 Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 
 ** What this course is not about
