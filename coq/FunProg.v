@@ -753,7 +753,7 @@ fst : forall A B : Type, A * B -> A
 Check snd.
 (**
 [[
-fst : forall A B : Type, A * B -> A
+fst : forall A B : Type, A * B -> B
 ]]
 
 Curiously, the notation "[_ * _]" is not hard-coded into Coq, but

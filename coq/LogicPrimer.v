@@ -696,7 +696,7 @@ and use parentheses to resolve ambiguities!
 (* begin hide*)
 Theorem all_imp_dist A (P Q: A -> Prop): 
   (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
-Proof. by move=> H1 H2 z; apply: H1; apply: H2. Qed.
+Proof. move => H1 H2 z; apply: H1; apply: H2. Qed.
 (* end hide*)
 
 (**
