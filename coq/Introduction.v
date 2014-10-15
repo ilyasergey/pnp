@@ -219,7 +219,7 @@ theorem}~\cite{Gonthier-al:ITP13}%.
 %\index{odd order theorem|see {Feit-Thompson theorem}}%
 %\index{Feit-Thompson theorem}%
 
-SSReflect includes a small but complete set of novel primitives for
+SSReflect includes a small set of powerful novel primitives for
 interactive proof construction (tactics), different from the
 traditional set provided by Coq. It also comes with a large library of
 various algebraic structures, ranging from natural numbers to graphs,
