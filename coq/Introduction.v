@@ -125,9 +125,9 @@ reflection_ extension (SSReflect) to Coq%~\cite{Gontier-al:TR}%:
 
 - Instead of supplying the reader with a large vocabulary of tactics
   necessary for everyday Coq hacking, this course focuses on a _very
-  small_ but powerful and _complete_ set of proof constructing
-  primitives (of about a dozen in total), offered by SSReflect or
-  inherited from the vanilla Coq with notable enhancements.
+  small_ but expressive set of proof constructing primitives (of about
+  a seven in total), offered by SSReflect or inherited from the
+  vanilla Coq with notable enhancements.
 
 - This course advocates inductive types' _parameters_ as an
   alternative to _indices_ as a way of reasoning about explicit
