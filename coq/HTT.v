@@ -711,9 +711,9 @@ rule of conjunction %\Rule{Conj}% serves for:
 \spr{Conj}
 \begin{mathpar}
 \inferrule*[Right={(Conj)}]
- {\spec{h ~|~ P_1(h) }~c~\spec{\res, h ~|~ Q_1(\res, h)} \\
- \spec{h ~|~ P_2(h) }~c~\spec{\res, h ~|~ Q_2(\res, h)}}
- {\spec{h ~|~ P_1(h) \wedge P_2(h)}~ c~\spec{\res, h ~|~ Q_1(\res, h) \wedge Q_2(\res, h)}}
+ {\spec{h ~|~ P(h) }~c~\spec{\res, h ~|~ Q_1(\res, h)} \\
+ \spec{h ~|~ P(h) }~c~\spec{\res, h ~|~ Q_2(\res, h)}}
+ {\spec{h ~|~ P(h)}~ c~\spec{\res, h ~|~ Q_1(\res, h) \wedge Q_2(\res, h)}}
 \end{mathpar}
 %
 
