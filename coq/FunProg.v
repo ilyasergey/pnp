@@ -1073,7 +1073,7 @@ Section NatUtilSection.
 
 (** 
 
-We not define a _variable_ [n] of type [n], whose scope is lexically
+We now define a _variable_ [n] of type [n], whose scope is lexically
 limited by the section [NatUtilSection] (including its internal
 sections). One can think of variables declared this way as of%\ccom{Variable}%
 unspecified values, which we assume to be available outside of the
