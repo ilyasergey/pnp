@@ -22,5 +22,4 @@ William Bowman
 
 [Misc]
 
-
 Pierre-Yves Strub -- Coq bundle
