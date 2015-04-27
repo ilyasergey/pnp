@@ -1501,7 +1501,6 @@ calls of the fixpoint operator.
 
 *)
 
-
 Program Definition fact_acc (n acc : ptr): fact_tp n acc := 
   Fix (fun (loop : fact_tp n acc) (_ : unit) => 
     Do (a1 <-- !acc;
