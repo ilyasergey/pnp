@@ -516,6 +516,11 @@ terminology and blur the distinction between entities that belong to
 Galina, Vernacular or Coq as a framework, and will be referring to
 them simply as "Coq terms", "Coq tactics" and "Coq commands".
 
+In the program displays, interleaving with the text, some mathematical
+symbols, such as $\forall$, $\exists$ and $\rightarrow$, will be
+displayed in Unicode, whereas in the actual program code they are
+still spelled in ASCII, e.g., %\texttt{forall}%, [exists] and
+%\texttt{->}%, correspondingly.
 
 *)
 

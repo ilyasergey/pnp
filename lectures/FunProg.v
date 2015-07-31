@@ -123,9 +123,9 @@ nat_rect =
 
 *)
 
-Definition my_plus1 n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
+Definition my_plus'' n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
 
-Eval compute in my_plus1 16 12.
+Eval compute in my_plus'' 16 12.
 
 (** 
 [    = 28 : (fun _ : nat => nat) 16]
@@ -139,10 +139,10 @@ Check nat_rec.
 Definition sum_no_zero n := 
  let: P := (fun n => if n is 0 then unit else nat) in
  nat_rec P tt (fun n' m => 
-match n' return P n' -> _ with
-   | 0 => fun _ => 1
-   | n1.+1 => fun m => my_plus m (n'.+1) 
-end m) n.
+ match n' return P n' -> _ with
+ | 0 => fun _ => 1
+ | n1.+1 => fun m => my_plus m (n'.+1) 
+ end m) n.
 
 (*
 Definition three_to_unit n := 
@@ -190,7 +190,7 @@ Definition sum_no_zero' n :=
  nat_rec P tt (fun n' m => 
 match n' with
    | 0 => fun _ => 1
-   | n1.+1 => fun m => my_plus m (n'.+1) 
+   | n''.+1 => fun m => my_plus m (n'.+1) 
 end m) n.
 ]]
 

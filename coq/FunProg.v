@@ -207,14 +207,18 @@ Require Import Ssreflect.ssrnat.
 Probably, the most basic function working on natural numbers is their
 addition. Even though such function is already implemented in the vast
 majority of the programming languages (including Coq), let us do it
-from scratch using the definition of [nat] from above. Since [nat] is a
-recursive type, the addition of two natural numbers [n] and [m] should
-be defined recursively as well. In Coq, recursive functions are
+from scratch using the definition of [nat] from above. Since [nat] is
+a recursive type, the addition of two natural numbers [n] and [m]
+should be defined recursively as well. In Coq, recursive functions are
 defined via the keyword [Fixpoint]. In the following definition of the
 [my_plus] function, we will make use of Ssreflect's infix notation
 [.+1] (with no spaces between the characters) as an alternative to the
-standard [nat]'s recursive constructor [S].  Also, Coq provides a
-convenient notation [0] to the _zero_ constructor [O].
+standard [nat]'s recursive constructor [S].%\footnote{It is important
+to bear in mind that \texttt{.+1} is not just a function for
+incrementation, but also is a datatype constructor, allowing one to
+obtain the Peano successor of a number \texttt{n} by taking
+\texttt{n.+1}.}% Also, Coq provides a convenient notation [0] to the
+_zero_ constructor [O].
 
 *)
 
@@ -234,7 +238,7 @@ demonstrates the use of Ssreflect alternative to Coq's standard
 \texttt{let} command, not trailed with a colon. We will be making use
 of Ssreflect's \texttt{let:} consistently, as it provides additional
 benefits with respect to in-place pattern matching, which we will see
-further.}% The function [my_plus] is recursive on its _first_
+later.}% The function [my_plus] is recursive on its _first_
 argument, which is being decreased in the body, so [n'] is a
 _predecessor_ of [n], which is passed as an argument to the recursive
 call. We can now check the result of evaluation of [my_plus] via Coq's
@@ -302,7 +306,7 @@ being consistently decreased at each function
 call.%\footnote{Sometimes, it is possible to ``help'' Coq to guess
 such argument using the explicit annotation \texttt{struct} right
 after the function parameter list, e.g., %[{struct n}]% in the case of
-%[my_plus]%.}% This criteria is sufficient to insure the termination
+%[my_plus]%.}% This criteria is sufficient to ensure the termination
 of all functions in Coq. Of course, such termination check is a severe
 restriction to the computation power of Coq, which therefore is not
 Turing-complete as a programming language (as it supports only
@@ -412,27 +416,27 @@ nat_rect =
 
 Abstracting away from the details, we can see that [nat_rect] is
 indeed a function with three parameters (the keyword [fun] is similar
-the lambda notation and is common in the family of ML-like languages).
-The body of [nat_rect] is implemented as a recursive function (defined
-via the keyword [fix]) taking an argument [n] of type
-[nat]. Internally, it proceeds similarly to our implementation of
-[my_plus]: if the argument [n] is zero, then the "default" value [f] of
-type [P 0] is returned. Otherwise, the function proceeds recursively
-with a smaller argument [n0] by applying the "step" function [f0] to
-the [n0] and the result of recursive call [F n0].
+to the lambda notation and is common in the family of ML-like
+languages).  The body of [nat_rect] is implemented as a recursive
+function (defined via the keyword [fix]) taking an argument [n] of
+type [nat]. Internally, it proceeds similarly to our implementation of
+[my_plus]: if the argument [n] is zero, then the "default" value [f]
+of type [P 0] is returned. Otherwise, the function proceeds
+recursively with a smaller argument [n0] by applying the "step"
+function [f0] to the [n0] and the result of recursive call [F n0].
 
 Therefore, the summing function can be implemented via the [nat]'s
 recursion combinator as follows:
 *)
 
-Definition my_plus1 n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
+Definition my_plus'' n m := nat_rec (fun _ => nat) m (fun n' m' => m'.+1) n.
 
-Eval compute in my_plus1 16 12.
+Eval compute in my_plus'' 16 12.
 
 (** 
 [    = 28 : (fun _ : nat => nat) 16]
 
-The result of invoking [my_plus1] is expectable. Notice, however, that
+The result of invoking [my_plus''] is expectable. Notice, however, that
 when defining it we didn't have to use the keyword [Fixpoint] (or,
 equivalently, [fix]), since all recursion has been "sealed" within the
 definition of the combinator [nat_rect].
@@ -453,10 +457,10 @@ Check nat_rec.
 Definition sum_no_zero n := 
  let: P := (fun n => if n is 0 then unit else nat) in
  nat_rec P tt (fun n' m => 
-match n' return P n' -> _ with
-   | 0 => fun _ => 1
-   | n1.+1 => fun m => my_plus m (n'.+1) 
-end m) n.
+ match n' return P n' -> _ with
+ | 0 => fun _ => 1
+ | n''.+1 => fun m => my_plus m (n'.+1) 
+ end m) n.
 
 (*
 Definition three_to_unit n := 
@@ -520,7 +524,7 @@ Definition sum_no_zero' n :=
  nat_rec P tt (fun n' m => 
 match n' with
    | 0 => fun _ => 1
-   | n1.+1 => fun m => my_plus m (n'.+1) 
+   | n''.+1 => fun m => my_plus m (n'.+1) 
 end m) n.
 ]]
 
@@ -537,12 +541,12 @@ m : P n'
 The term "m" has type "P n'" while it is expected to have type "nat".
 ]]
 
-In general, dependent pattern matching is quite powerful tool, which,
-however, should be used with a great caution, as it makes assisting
-Coq type checker to be a rather non-trivial task. In the was majority
-of the cases dependent pattern matching can be avoided. We address the
-curious reader to the Chapter 8 of the book%~\cite{Chlipala:BOOK}% for
-more examples on the subject.
+In general, dependent pattern matching is a quite powerful tool,
+which, however, should be used with a great caution, as it makes
+assisting the Coq type checker a rather non-trivial task. In the vast
+majority of the cases dependent pattern matching can be avoided. We
+address the curious reader to the Chapter 8 of the
+book%~\cite{Chlipala:BOOK}% for more examples on the subject.
 
 %\index{dependent function type}% Dependent function types, akin to
 those of [nat_rec] and our [sum_no_zero], which allow the type of the
@@ -737,7 +741,7 @@ notation is also used by Coq to denote the multiplication of natural
 numbers), so it is given a specific _interpretation scope_. That is,
 when the expression [nat * unit] will appear in the type position, it
 will be interpreted as a type [pair nat unit] rather than like an
-(erroneous) attempt to "multiply" two types as they were integers. 
+(erroneous) attempt to "multiply" two types as if they were integers.
 
 Coq comes with a number of functions for manipulating datatypes, such
 as pair. For instance, the first and second components of a pair:
