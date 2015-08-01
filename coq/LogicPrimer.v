@@ -43,7 +43,7 @@ sort [Prop], similarly to how first-order types inhabit
 sort are usually referred to as \emph{inductive
 predicates}.\index{inductive predicates}}% The "values" that have
 elements of [Prop] as their types are usually referred to as _proofs_
-or _proof terms_, the naming convention which stems out of the ide of
+or _proof terms_, the naming convention which stems out of the idea of
 %\index{Curry-Howard correspondence}% %\emph{Curry-Howard
 Correspondence}~\cite{Curry:34,Howard:80}%.%\footnote{\url{http://en.wikipedia.org/wiki/Curry-Howard_correspondence}}%
 Sometimes, the Curry-Howard Correspondence is paraphrased as
@@ -150,8 +150,8 @@ as higher-order propositions.
 
 We start our acquaintance with propositional logic in Coq by
 demonstrating how the two simplest propositions, the truth and the
-falsehood, are encoded. Once again, let us remind that, unlike in the
-propositional logic, in Coq these two are _not_ the only possible
+falsehood, are encoded. Once again, let us remember that, unlike in
+the propositional logic, in Coq these two are _not_ the only possible
 propositional _values_, and soon we will see how a wide range of
 propositions different from mere truth or falsehood are
 implemented. From now on, we will be always including to the
@@ -229,8 +229,8 @@ shows a _goal_ of the proof---the type of the value to be constructed
 ([True] in this case), which is located below the double line. Above
 the line one can usually see the context of _assumptions_, which can
 be used in the %\index{assumption}% process of constructing the
-proof. Currently, the assumption context is empty, as theorem we
-stated does not make any and ventures to proof [True] out of thin
+proof. Currently, the assumption context is empty, as the theorem we
+stated does not make any and ventures to prove [True] out of thin
 air. Fortunately, this is quite easy to do, as from the formulation of
 the [True] type we already know that it is inhabited by its only
 constructor [I]. The next line proved the _exact_ value of the type of
@@ -285,8 +285,8 @@ convenient as an interactive proof mode, when it comes to the
 construction of large proofs, arising from complicated
 statements. This is why, when it comes to proving propositions, we
 will prefer the interactive proof mode to the "vanilla" program
-definition. It is worth noticing, thought, that even though the
-process of proof construction in Coq usually looks more like writing a
+definition. It is worth noticing, though, that even though the process
+of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
 _tactics_ in Coq jargon),%\index{Coq/Ssreflect
 tactics}\index{tactics}% %\index{tactics|seealso {Coq/Ssreflect
@@ -300,13 +300,13 @@ proof-term), which is being gradually refined. We step away from the
 discussion on which of these two views to the proof term construction
 is more appropriate.
 
-There is one more important difference between values defined by as
+There is one more important difference between values defined as
 [Definition]s %\ccom{Definition}\ccom{Theorem}% and [Theorem]s. While
 both define what in fact is a proof terms for the declared type, the
 value bound by [Definition] is _transparent_: it can be executed by
 means of unfolding and subsequent evaluation of its body. In contrast,
 a proof term bound by means of [Theorem] is _opaque_, which means that
-its body cannot be evaluated and serves the only purpose: establish
+its body cannot be evaluated and serves only one purpose: establish
 the fact that the corresponding type (the theorem's statement) is
 inhabited, and, therefore is true.  This distinction between
 definitions and theorems arises from the notion of _proof
@@ -342,20 +342,19 @@ definition evaluates to it body, i.e., the value of the constructor
 
 (**
 
-A more practical analogy for the discussed above distinction can be
-drawn if one will think of [Definition]s as of mere functions,
-packaged into libraries and intended to be used by third-party
-clients. In the same spirit, on can think of [Theorem]s as of facts
-that need to be checked only once when established, so no one would
-bother to re-prove them again, knowing that they are valid, and just
-appeal to their types (statement) without exploring the
-proof.%\footnote{While we consider this to be a valid analogy to the
-process of functioning of the mathematical community, it is only true
-in spirit. In the real life, the statements proved once, are usually
-re-proved by students for didactical reasons, in order to understand
-the proof principles and be able to produce other proofs. Furthermore,
-the history of mathematics witnessed a number of proofs that have been
-later invalidated as being non-valid. Luckily, the
+A more practical analogy for the above distinction can be drawn if one
+will think of [Definition]s as of mere functions, packaged into
+libraries and intended to be used by third-party clients. In the same
+spirit, one can think of [Theorem]s as of facts that need to be
+checked only once when established, so no one would bother to re-prove
+them again, knowing that they are valid, and just appeal to their
+types (statement) without exploring the proof.%\footnote{While we
+consider this to be a valid analogy to the mathematical community
+functions, it is only true in spirit. In the real life, the statements
+proved once, are usually re-proved by students for didactical reasons,
+in order to understand the proof principles and be able to produce
+other proofs. Furthermore, the history of mathematics witnessed a
+number of proofs that have been later invalidated. Luckily, the
 mechanically-checked proofs are usually not a subject of this
 problem.}% This is similar to what is happening during the oral
 examinations on mathematical disciplines: a student is supposed to
@@ -401,7 +400,7 @@ False_ind
 ]]
 
 That is, _any_ proposition can be derived from the falsehood by means
-of implication.%\footnote{In the light of the Curry-Howard analogy, at
+of implication.%\footnote{In light of the Curry-Howard analogy, at
 \index{Curry-Howard correspondence} this moment it shouldn't come as a
 surprise that Coq uses the arrow notation \texttt{->} both for
 function types and for propositional implication: after all, they both
@@ -546,14 +545,14 @@ proof term of type [P -> R].%\footnote{Recall that the arrows have
 right associativity, just like function types in Haskell and OCaml,
 which allows one to apply functions partially, specifying their
 arguments one by one}% Let us now prove these statement in the form of
-theorem.  *)
+a theorem.  *)
 
 Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
 Proof.
 
 (** 
 
-Our goal is the statement of the theorem, its type. The frist thing we
+Our goal is the statement of the theorem, its type. The first thing we
 are going to do is to "peel off" some of the goal assumptions---the
 [forall]-bound variables---and move them from the goal to the
 assumption context (i.e., from below to above the double line). This
@@ -719,14 +718,15 @@ imp_trans =
 Argument scopes are [type_scope type_scope type_scope _ _ _]
 ]]
 
-Even though the proof term looks somewhat furry, this is almost
+Even though the proof term looks somewhat hairy, this is almost
 exactly our initial proof term from the first proof attempt: [H2 (H1
 a)]. The only difference is that the hypotheses [H1] and [H2] are
-_eta-expanded_,%\index{eta-expansion}% that is instead of simply [H1] the proof terms
-features its operational equivalent [fun b: B => H2 b]. Otherwise, the
-printed program term indicates that the proof obtained by means of
-direct application of [H1] and [H2] is the same (modulo eta-expansion)
-as the proof obtained by means of using the [apply:] tactic.
+_eta-expanded_,%\index{eta-expansion}% that is instead of simply [H1]
+the proof terms features its operational equivalent [fun b: B => H2
+b]. Otherwise, the printed program term indicates that the proof
+obtained by means of direct application of [H1] and [H2] is the same
+(modulo eta-expansion) as the proof obtained by means of using the
+[apply:] tactic.
 
 These two styles of proving: by providing a direct proof to the goal
 or some part of it, and by first reducing the goal via tactics, are
@@ -736,11 +736,11 @@ proof style}%.
 
 - The _backward_ proof style assumes that the goal is being gradually
   transformed by means of applying some tactics, until its proof
-  becomes trivial and can be completed by means of a basic tactics,
+  becomes trivial and can be completed by means of basic tactics,
   like [exact:] or [done].
 
 - The _forward_ proof style assumes that the human prover has some
-  "foresight" with respect to the goal he is going to prove, so she
+  "foresight" with respect to the goal she is going to prove, so she
   can define some "helper" entities as well as to adapt the available
   assumptions, which will then be used to solve the goal. Typical
   example of the forward proofs are the proofs from the classical
@@ -817,7 +817,8 @@ subgoal 2 (ID 142) is:
 ]]
 
 The proof forked into two goals, since [H] had two arguments, which we
-can now fulfil separately, as they trivially are our assumptions.
+can now fulfill separately, as they trivially are our assumptions.  
+
 *)
 
 done. 
@@ -1100,7 +1101,7 @@ proposition [P \/ ~ P] is true by the axiom of the excluded middle
 whereas in Coq, proving [P \/ ~ P] would amount to _constructing_ the
 proof of either [P] or [~ P]. Let us illustrate it with a specific
 example. If [P] is a proposition stating that [P = NP], then the
-classical logic's the tautology [P \/ ~ P] holds, although it does not
+classical logic's tautology [P \/ ~ P] holds, although it does not
 contribute to the proof of either of the disjuncts. In constructive
 logic, which Coq is an implementation of, in the trivial assumptions
 given the proof of [P \/ ~ P], we would be able to extract the proof
@@ -1153,7 +1154,7 @@ Proof. by move=>p H; move : (H p). Qed.
 (** 
 
 One extremely useful theorem from propositional logic involving
-negation is _contraposition_. It states states that in an implication, the
+negation is _contraposition_. It states that in an implication, the
 assumption and the goal can be flipped if inverted.
 
 *)
