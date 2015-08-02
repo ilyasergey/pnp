@@ -1214,7 +1214,7 @@ Locate "exists".
 *)
 
 Print ex.
-
+ 
 (**
 [[
 Inductive ex (A : Type) (P : A -> Prop) : Prop :=

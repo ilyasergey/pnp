@@ -742,7 +742,7 @@ numbers), so it is given a specific _interpretation scope_. That is,
 when the expression [nat * unit] will appear in the type position, it
 will be interpreted as a type [pair nat unit] rather than like an
 (erroneous) attempt to "multiply" two types as if they were integers.
-
+ 
 Coq comes with a number of functions for manipulating datatypes, such
 as pair. For instance, the first and second components of a pair:
 *)
@@ -759,6 +759,7 @@ Check snd.
 [[
 fst : forall A B : Type, A * B -> B
 ]]
+
 
 Curiously, the notation "[_ * _]" is not hard-coded into Coq, but
 rather is defined as a lightweight syntactic sugar on top of standard
