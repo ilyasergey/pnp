@@ -22,17 +22,16 @@ Module SsrStyle.
 
 (** 
 
-In the previous chapters of this course, we have made an acquaintance
+In the previous chapters of this course, we have become acquainted
 with the main concepts of constructive logic, Coq and
 Ssreflect. However, the proofs we have seen so far are mostly done by
 case analysis, application of hypotheses and various forms of
-rewriting. In this chapter we will consider in more details the proofs
+rewriting. In this chapter we will consider in more detail the proofs
 that employ inductive reasoning as their main component. We will see
-how such proofs are typically structured in Ssreflect, so the
-corresponding scripts would become very concise, yet readable and
-maintainable. We will also learn a few common techniques that will
-help to adapt the induction hypothesis for a goal, so it would become
-suitable.
+how such proofs are typically structured in Ssreflect, making the
+corresponding scripts very concise, yet readable and maintainable. We
+will also learn a few common techniques that will help to adapt an
+induction hypothesis to become more suitable for a goal.
 
 In the rest of the chapter we will be constantly relying on a series
 of standard Ssreflect modules, such as [ssrbool], [ssrnat] and
