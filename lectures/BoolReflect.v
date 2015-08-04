@@ -1,6 +1,7 @@
 (**  %\chapter{Views and Boolean Reflection}% *)
 
-Require Import ssreflect ssrfun eqtype ssrnat ssrbool.
+Require Import Ssreflect.ssreflect Ssreflect.ssrfun Ssreflect.eqtype. 
+Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
@@ -215,7 +216,7 @@ construct a proof of primality for _each_ particular case using the
 constructors (or the contradiction, which would imply that the number
 is not prime). *)
 
-Require Import prime.
+Require Import MathComp.prime.
 Eval compute in prime 239.
 (** 
 [[
@@ -505,7 +506,7 @@ propositional equality can be beneficial.
 
 *)
 
-Require Import eqtype.
+Require Import Ssreflect.eqtype.
 Definition foo (x y: nat) := if x == y then 1 else 0.
 
 (** 
@@ -569,14 +570,14 @@ Lemma xorP_gen (b1 b2 : bool)(P1 P2: Prop):
   reflect P1 b1 -> reflect P2 b2 -> reflect (XOR P1 P2) (xorb b1 b2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma xorP (b1 b2 : bool): reflect (XOR b1 b2) (xorb b1 b2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 ---------------------------------------------------------------------
@@ -599,8 +600,8 @@ Prove the following equivalence lemma between to versions of [XOR]:
 Lemma XORequiv P Q: XOR P Q <-> XOR' P Q.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 The final step is to use the equivalence we have just proved in order
@@ -616,8 +617,8 @@ following proof to be a one-liner.
 Lemma xorP' (b1 b2 : bool): reflect (XOR' b1 b2) (xorb b1 b2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
  
 (** 
 ---------------------------------------------------------------------
@@ -634,15 +635,15 @@ following lemmas in one line each.
 Lemma xorbC (b1 b2: bool) : (xorb b1 b2) = (xorb b2 b1). 
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma xorbA (b1 b2 b3: bool) : (xorb (xorb b1 b2) b3) = (xorb b1 (xorb b2 b3)). 
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (** 
@@ -666,14 +667,14 @@ represented y booleans (without using the [intuition] tactic):
 Lemma xorCb (b1 b2: bool) : (XOR b1 b2) <-> (XOR b2 b1). 
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma xorAb (b1 b2 b3: bool) : (XOR (XOR b1 b2) b3) <-> (XOR b1 (XOR b2 b3)). 
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 

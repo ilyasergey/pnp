@@ -403,7 +403,6 @@ Definition double {A} (f: A -> A) (x: A) := f (f x).
 Fixpoint nat_iter (n : nat) {A} (f : A -> A) (x : A) : A :=
   if n is S n' then f (nat_iter n' f x) else x.
 
-
 Lemma double2 A (x: A) f t: 
   t = double f x -> double f t = nat_iter 4 f x.
 Proof.

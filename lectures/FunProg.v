@@ -26,7 +26,7 @@ unit
 
 Inductive empty : Set := .
 
-Require Import ssreflect ssrbool.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
 
 Print bool.
 (** 
@@ -66,7 +66,7 @@ Print nat.
 
 *)
 
-Require Import ssrnat.
+Require Import Ssreflect.ssrnat.
 
 Fixpoint my_plus n m := 
  match n with 
@@ -315,7 +315,7 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-Require Import seq.
+Require Import Ssreflect.seq.
 Print seq.
 
 (** 
@@ -498,7 +498,7 @@ fact
 (**                     * Exercices *                              *)
 (*******************************************************************)
 
-Require Import eqtype.
+Require Import Ssreflect.eqtype.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.

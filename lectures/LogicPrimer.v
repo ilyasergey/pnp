@@ -30,7 +30,7 @@ corresponding to these statements.
 
 (** * The truth and the falsehood in Coq *)
 
-Require Import ssreflect.
+Require Import Ssreflect.ssreflect.
 
 Print True.
 
@@ -833,8 +833,7 @@ Theorem all_imp_ist A (P Q: A -> Prop):
   (forall x: A, P x -> Q x) -> (forall y, P y) -> forall z, Q z. 
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
 
 (**
 ---------------------------------------------------------------------
@@ -847,15 +846,13 @@ Theorem or_distributes_over_and P Q R:
   P \/ (Q /\ R) <-> (P \/ Q) /\ (P \/ R).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
 
 Theorem or_distributes_over_and_2 P Q R :
   (P \/ Q) /\ (P \/ R) -> P \/ (Q /\ R).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
 
 (**
 ---------------------------------------------------------------------
@@ -873,8 +870,7 @@ equivalence of the two propositions. *)
 Goal forall A (S: A -> Prop), my_ex A S <-> exists y: A, S y.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
  
 (** 
 Hint: the propositional equivalence [<->] is just a conjunction of
@@ -893,8 +889,8 @@ Theorem dist_exists_or (X : Type) (P Q : X -> Prop):
   (exists x, P x \/ Q x) <-> (exists x, P x) \/ (exists x, Q x).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 ---------------------------------------------------------------------
@@ -906,8 +902,8 @@ Prove the following  theorem. Can you explain the proof?
 Theorem two_is_three A: (exists x : A, (forall R : A -> Prop, R x)) -> 2 = 3.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 ---------------------------------------------------------------------
@@ -930,14 +926,14 @@ invited to deomnstrate it by proving the following statements.
 Theorem di_false: (forall P Q: Prop, dys_imp P Q) -> False.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Theorem dc_false: (forall P Q: Prop, dys_contrap P Q) -> False.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 ---------------------------------------------------------------------
@@ -952,8 +948,8 @@ allows one to derive [False].
 Theorem excluded_middle_irrefutable: forall (P : Prop), ~~(P \/ ~ P).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 ---------------------------------------------------------------------
@@ -973,32 +969,32 @@ Definition implies_to_or := forall P Q: Prop, (P -> Q) -> (~P \/ Q).
 Lemma peirce_dn: peirce -> double_neg.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma dn_em : double_neg -> excluded_middle.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma em_dmnan: excluded_middle -> de_morgan_not_and_not.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma dmnan_ito : de_morgan_not_and_not -> implies_to_or.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma ito_peirce : implies_to_or -> peirce.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 
@@ -1033,8 +1029,8 @@ Theorem not_forall_exists A (P : A -> Prop):
   (forall x: A, P x) -> ~(exists y: A, ~ P y).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 
@@ -1048,8 +1044,8 @@ Theorem not_exists_forall :
     ~ (exists x, ~ P x) -> (forall x, P x).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End LogicPrimer.
 

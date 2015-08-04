@@ -2,7 +2,8 @@
 
 Module DepRecords.
 
-Require Import ssreflect ssrbool ssrnat ssrfun.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
+Require Import Ssreflect.ssrnat Ssreflect.ssrfun.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -212,50 +213,50 @@ Proove the rest of the PCM laws.
 Lemma joinAC (x y z : U) : x \+ y \+ z = x \+ z \+ y.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma joinCA (x y z : U) : x \+ (y \+ z) = y \+ (x \+ z).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma validL (x y : U) : valid (x \+ y) -> valid x.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma validR (x y : U) : valid (x \+ y) -> valid y.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma unitL (x : U) : (@Unit U) \+ x = x.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma unitR (x : U) : x \+ (@Unit U) = x.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 Lemma valid_unit : valid (@Unit U).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (*******************************************************************)

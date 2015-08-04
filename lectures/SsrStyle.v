@@ -10,7 +10,9 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 
 *)
 
-Require Import ssreflect ssrbool ssrnat eqtype.
+Require Import Ssreflect.ssreflect Ssreflect.eqtype. 
+Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
+
 
 (**  * Structuring the proof scripts
 
@@ -581,7 +583,7 @@ Lemma conj4' P1 P2 P3 P4 : [ /\ P1, P2, P3 & P4] -> P3.
 Proof. by case. Qed.
 
 
-Require Import ssrfun.
+Require Import Ssreflect.ssrfun.
 Locate "_ ^~ _".
 (** 
 [[
@@ -593,7 +595,7 @@ function, which applies its argument to the list [[:: 1; 2; 3]]:
 
 *)
 
-Require Import seq.
+Require Import Ssreflect.seq.
 Check map ^~ [:: 1; 2; 3].
 
 (**
@@ -741,8 +743,8 @@ after removal of [x] from [xs2], the length of the resulting list
 *)
 
 rewrite ltnS in H1; apply: leq_trans H1. 
-rewrite -(count_predC (pred1 x) xs2) -count_filter.
-rewrite -addn1 addnC leq_add2r -has_count.
+rewrite -(count_predC (pred1 x) xs2) -addn1 addnC. 
+rewrite /xs2' size_filter leq_add2r -has_count.
 
 (**
 [[
@@ -784,8 +786,8 @@ using the [nat2_ind] induction principle. Then prove it using
 Lemma div2_le n: div2 n <= n.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 ---------------------------------------------------------------------
@@ -800,8 +802,8 @@ Hint: Choose wisely, what to build the induction on.
 Lemma b_timesm n m: beautiful n ->  beautiful (m * n).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (**
@@ -830,26 +832,26 @@ finding the necessary rewriting lemmas from the [ssrnat] module.
 Lemma gorgeous_plus13 n: gorgeous n -> gorgeous (n + 13).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma beautiful_gorgeous (n: nat) : beautiful n -> gorgeous n.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma g_times2 (n: nat): gorgeous n -> gorgeous (n * 2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (** 
@@ -904,14 +906,14 @@ Lemma repr3 n : n >= 8 ->
   exists k, [\/ n = 3 * k + 8, n = 3 * k + 9 | n = 3 * k + 10].
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma gorg3 n : gorgeous (3 * n).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -923,8 +925,8 @@ lemmas [repr3] and [gorg3] in the subgoals of the proof.
 Lemma gorg_criteria n : n >= 8 -> gorgeous n.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -935,8 +937,8 @@ This makes the proof of the following lemma trivial.
 Lemma gorg_refl' n: n >= 8 -> reflect (gorgeous n) true.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (** 
@@ -952,26 +954,26 @@ module might be particularly useful here.
 Lemma not_g1: ~(gorgeous 1).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma not_g2: ~(gorgeous 2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma not_g4: ~(gorgeous 4).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma not_g7: ~(gorgeous 7).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -982,8 +984,8 @@ relating [gorgeous] and [gorgeous_b].
 Lemma gorg_refl n : reflect (gorgeous n) (gorgeous_b n).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 ---------------------------------------------------------------------
@@ -1016,8 +1018,8 @@ Lemma appears_in_app (xs ys : seq X) (x:X):
      appears_in x (xs ++ ys) = appears_in x xs || appears_in x ys.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -1043,8 +1045,8 @@ Theorem norep_disj_app l1 l2:
   no_repeats l1 -> no_repeats l2 -> disjoint l1 l2 -> no_repeats (l1 ++ l2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End Appears_bool.
 
@@ -1079,8 +1081,8 @@ Lemma appears_in_appP (xs ys : seq Y) (x:Y):
      appears_inP x (xs ++ ys) <-> appears_inP x xs \/ appears_inP x ys.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -1100,8 +1102,8 @@ Theorem norep_disj_appP l1 l2:
   no_repeatsP l1 -> no_repeatsP l2 -> disjointP l1 l2 -> no_repeatsP (l1 ++ l2).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End Appears_Prop.
 
@@ -1137,8 +1139,8 @@ Lemma allP T P test:
   forall ls, reflect (all P ls) (allb test ls).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End SsrStyle.
 

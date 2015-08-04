@@ -4,7 +4,8 @@ Module HTT.
 
 (** * Elements of Hoare Type Theory *)
 
-Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat. 
+Require Import Ssreflect.eqtype Ssreflect.seq Ssreflect.ssrfun.
 
 Add LoadPath "./../htt".
 Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
@@ -776,12 +777,12 @@ library will be useful for establishing equalities between lists.
 
 Next Obligation.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Next Obligation.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End HTT.

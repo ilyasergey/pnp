@@ -1,7 +1,8 @@
 (** %\chapter{Equality and Rewriting Principles}% *)
 
 Module Rewriting.
-Require Import ssreflect ssrfun eqtype ssrnat ssrbool.
+Require Import Ssreflect.ssreflect Ssreflect.ssrfun Ssreflect.eqtype. 
+Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
@@ -221,6 +222,9 @@ implementation, as demonstrated by the following example.
 *)
 
 Definition double A (f: A -> A) (x: A) := f (f x).
+
+Fixpoint nat_iter (n : nat) {A} (f : A -> A) (x : A) : A :=
+  if n is S n' then f (nat_iter n' f x) else x.
 
 Lemma double2 A (x: A) f t: 
   t = double f x -> double f t = nat_iter 4 f x.
@@ -715,8 +719,8 @@ fix it?
 *)
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (**
 ---------------------------------------------------------------------
@@ -731,8 +735,8 @@ Lemma rewrite_is_fun T (f : T -> T -> T) (a b c : T):
   f (f b a) c = f a (f c b).     
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 
 (**
@@ -745,20 +749,20 @@ Prove the following lemmas about [maxn].
 Lemma max_l m n: n <= m -> maxn m n = m.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma succ_max_distr_r n m : (maxn n m).+1 = maxn (n.+1) (m.+1).
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 Lemma plus_max_distr_l m n p: maxn (p + n) (p + m) = p + maxn n m.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 (** 
 
@@ -806,6 +810,7 @@ rewrite ltn_neqAle eqn_leq; case: ltnP; first by constructor.
 by rewrite leq_eqVlt orbC; case: leqP; constructor; first exact/eqnP.
 Qed.
 
+
 (** 
 Let us define the minimum function [minn] on natural numbers as
 follows:
@@ -820,7 +825,7 @@ Prove the following lemma about [minm] and [maxn]:
 Lemma addn_min_max m n : minn m n + maxn m n = m + n.
 Proof.
 (* fill in your proof here instead of [admit] *)
-admit.
-Qed.
+Admitted.
+
 
 End Rewriting.
