@@ -1,4 +1,5 @@
-Require Import ssreflect ssrfun ssrbool ssrnat seq path pred.
+Require Import Ssreflect.ssreflect Ssreflect.ssrfun Ssreflect.ssrbool Ssreflect.ssrnat Ssreflect.seq.
+Require Import MathComp.path pred.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Import Prenex Implicits.

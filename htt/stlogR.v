@@ -1,5 +1,6 @@
 Set Automatic Coercions Import.
-Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat. 
+Require Import Ssreflect.eqtype Ssreflect.seq Ssreflect.ssrfun.
 Require Import pred prelude pcm unionmap heap heaptac stmod stsep stlog. 
 Set Implicit Arguments.
 Unset Strict Implicit.

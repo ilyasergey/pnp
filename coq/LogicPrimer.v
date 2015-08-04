@@ -161,7 +161,7 @@ with propositions and proofs.
 
 *)
 
-Require Import ssreflect.
+Require Import Ssreflect.ssreflect.
 
 (**
 

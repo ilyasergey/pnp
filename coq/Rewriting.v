@@ -34,7 +34,7 @@ exploiting Coq's mechanism of _indexed type families_.
 
 (* begin hide *)
 Module Rewriting.
-Require Import ssreflect.
+Require Import Ssreflect.ssreflect.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 (* end hide *)
@@ -398,7 +398,11 @@ implementation, as demonstrated by the following example.
 
 *)
 
-Definition double A (f: A -> A) (x: A) := f (f x).
+Definition double {A} (f: A -> A) (x: A) := f (f x).
+
+Fixpoint nat_iter (n : nat) {A} (f : A -> A) (x : A) : A :=
+  if n is S n' then f (nat_iter n' f x) else x.
+
 
 Lemma double2 A (x: A) f t: 
   t = double f x -> double f t = nat_iter 4 f x.
@@ -472,7 +476,8 @@ rewriting operation should be performed.}%
 
 *)
 
-Require Import ssrnat.
+Require Import Ssreflect.ssrnat.
+
 Definition f x y :=  x + y.
 
 Goal forall x y, x + y + (y + x) = f y x + f y x.
@@ -750,7 +755,7 @@ from a motivating example in the form of an "obvious" lemma.
 
 *)
 
-Require Import ssrbool eqtype.
+Require Import Ssreflect.ssrbool Ssreflect.eqtype.
 
 Lemma huh n m: (m <= n) /\ (m > n) -> False.
 
@@ -1136,7 +1141,7 @@ End Rewriting.
 
 * Axioms about equality
 
-Require Import ssrfun Eqdep.
+Require Import Ssreflect.ssrfun Eqdep.
 Check Streicher_K.
 Inductive type := Nat | Bool. 
 Fixpoint typeDenote t :=

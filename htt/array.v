@@ -1,5 +1,6 @@
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
-Require Import fintype tuple finfun finset.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat.
+Require Import Ssreflect.eqtype Ssreflect.ssrfun Ssreflect.seq.
+Require Import Ssreflect.fintype MathComp.tuple MathComp.finfun MathComp.finset.
 Require Import pred pcm unionmap heap heaptac domain stmod stsep stlog stlogR. 
 Set Implicit Arguments.
 Unset Strict Implicit.

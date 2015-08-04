@@ -1,4 +1,4 @@
-Require Import ssreflect ssrbool ssrfun ssrnat eqtype seq pred prelude. 
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrfun Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.seq pred prelude. 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 

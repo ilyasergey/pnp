@@ -1,4 +1,4 @@
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun Ssreflect.seq.
 Require Import idynamic ordtype finmap pcm.
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -12,7 +12,7 @@ Module UM.
 Section UM.
 Variables (K : ordType) (V : Type) (p : pred K).
 
-Structure base := 
+Inductive base := 
   Undef | Def (f : {finMap K -> V}) of all p (supp f).
 
 Section FormationLemmas.
@@ -1669,7 +1669,7 @@ Lemma um_ind' (P : U -> Prop) :
          P um_undef -> P Unit ->
          (forall k v f, P f -> valid (k \\-> v \+ f) -> P (k \\-> v \+ f)) ->
          forall f, P f.
-Proof. exact: gen_ind'. Qed.
+Proof. by move=>H1 H2 H3; apply: gen_ind'. Qed.
 
 End UMPointsToLemmas.
 

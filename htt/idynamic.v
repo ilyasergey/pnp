@@ -1,4 +1,4 @@
-Require Import ssreflect ssrfun Eqdep prelude.
+Require Import Ssreflect.ssreflect Ssreflect.ssrfun Eqdep prelude.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.

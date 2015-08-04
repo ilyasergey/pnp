@@ -77,7 +77,7 @@ first.
 
 *)
 
-Require Import ssreflect.
+Require Import Ssreflect.ssreflect.
 
 (** 
 
@@ -438,7 +438,7 @@ and getting a boolean answer:
 
 *)
 
-Require Import ssrnat prime.
+Require Import Ssreflect.ssrnat MathComp.prime.
 Eval compute in prime 239.
 (** 
 [[
@@ -504,7 +504,7 @@ example:
 
 *)
 
-Require Import ssrbool.
+Require Import Ssreflect.ssrbool.
 Goal prime (16 + 14) -> False.
 Proof. done. Qed.
 
@@ -1028,7 +1028,7 @@ the familiar propositional equality can be beneficial.
 
 *)
 
-Require Import eqtype.
+Require Import Ssreflect.eqtype.
 Definition foo (x y: nat) := if x == y then 1 else 0.
 
 (** 

@@ -106,7 +106,8 @@ As usual, we will require a number of SSReflect package imported.
 
 *)
 
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool. 
+Require Import Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun.
 
 (** 
 

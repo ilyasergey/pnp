@@ -1,4 +1,5 @@
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path fintype ordtype.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun Ssreflect.seq. 
+Require Import MathComp.path Ssreflect.fintype ordtype.
 Require Import pred prelude.
 Set Implicit Arguments.
 Unset Strict Implicit.

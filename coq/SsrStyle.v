@@ -40,7 +40,8 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 
 *)
 
-Require Import ssreflect ssrbool ssrnat eqtype.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
+Require Import Ssreflect.ssrnat Ssreflect.eqtype.
 
 (** 
 
@@ -1210,7 +1211,7 @@ respect to the second argument:%\index{currying}%
 
 *) 
 
-Require Import ssrfun.
+Require Import Ssreflect.ssrfun.
 Locate "_ ^~ _".
 (** 
 [[
@@ -1222,7 +1223,7 @@ function, which applies its argument to the list [[:: 1; 2; 3]]:
 
 *)
 
-Require Import seq.
+Require Import Ssreflect.seq.
 Check map ^~ [:: 1; 2; 3].
 
 (**
@@ -1433,8 +1434,8 @@ and the size of the resulting list.
 *)
 
 rewrite ltnS in H1; apply: leq_trans H1. 
-rewrite -(count_predC (pred1 x) xs2) -count_filter.
-rewrite -addn1 addnC leq_add2r -has_count.
+rewrite -(count_predC (pred1 x) xs2) -addn1 addnC. 
+rewrite /xs2' size_filter leq_add2r -has_count.
 
 (**
 [[

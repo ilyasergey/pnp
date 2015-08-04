@@ -106,7 +106,7 @@ the following modules into our file using the [Require Import]
 
 *)
 
-Require Import ssreflect ssrbool.
+Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
 printing it: %\ccom{Print}% 
@@ -200,7 +200,7 @@ import yet another SSReflect library:
 
 *)
 
-Require Import ssrnat.
+Require Import Ssreflect.ssrnat.
 
 (** 
 
@@ -778,7 +778,7 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-Require Import seq.
+Require Import Ssreflect.seq.
 Print seq.
 
 (** 
