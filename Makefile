@@ -22,7 +22,7 @@ endef
 
 
 COQ_MK := coq_makefile
-COQ_MK_FLAGS := $(VS) COQC = "\$$(COQBIN)coqc" COQLIBS = " -R . \"\" -R ./htt \"\" "COQFLAGS = "-q \$$(OPT) \$$(COQLIBS)"
+COQ_MK_FLAGS := $(VS) COQC = "\$$(COQBIN)coqc" COQLIBS = " -R ./htt \"\"" COQFLAGS = "-q \$$(OPT) \$$(COQLIBS)"
 
 $(MAKEFILE): 
 	cd htt && make && cd ..
