@@ -1,4 +1,4 @@
-Require Import ssreflect.
+Require Import Ssreflect.ssreflect.
 
 Lemma Nikov A (P : A -> A -> Prop): 
   (exists !x, exists y, P x y) -> 
@@ -12,7 +12,7 @@ rewrite -E; last by case: G3=>y'; case=> Z _; exists y'.
 by apply/eq_sym; apply: G1; exists x2.
 Qed.
 
-Require Import eqtype ssrbool.
+Require Import Ssreflect.eqtype Ssreflect.ssrbool.
 
 Definition Q x y : Prop := 
   (x == true) && (y == true) || (x == false).

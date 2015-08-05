@@ -126,7 +126,7 @@ Inductive bool : Set :=  true : bool | false : bool
 
 Let us now try to define some functions that operate with the bool
 datatype ignoring for a moment the fact that most of them, if not all,
-are already defined in the standard Coq/SSReflect library.  Our first
+are already defined in the standard Coq/Ssreflect library.  Our first
 function will simply negate the boolean value and return its opposite:
 
 *)
@@ -194,7 +194,7 @@ are in fact two sides of the same coin.
 
 For now, let us write some functions dealing with natural numbers.  In
 order to work conveniently with the elements of type [nat], we will
-import yet another SSReflect library:
+import yet another Ssreflect library:
 
 %\ssrm{ssrnat}%
 
@@ -211,7 +211,7 @@ from scratch using the definition of [nat] from above. Since [nat] is a
 recursive type, the addition of two natural numbers [n] and [m] should
 be defined recursively as well. In Coq, recursive functions are
 defined via the keyword [Fixpoint]. In the following definition of the
-[my_plus] function, we will make use of SSReflect's infix notation
+[my_plus] function, we will make use of Ssreflect's infix notation
 [.+1] (with no spaces between the characters) as an alternative to the
 standard [nat]'s recursive constructor [S].  Also, Coq provides a
 convenient notation [0] to the _zero_ constructor [O].
@@ -230,9 +230,9 @@ Here, we deliberately used less concise notation in order to
 demonstrate the syntax [let: x := e1 in e2] construct, which,
 similarly to Haskell and OCaml allows, one to bind intermediate
 computations within expressions.%\footnote{The same example also
-demonstrates the use of SSReflect alternative to Coq's standard
+demonstrates the use of Ssreflect alternative to Coq's standard
 \texttt{let} command, not trailed with a colon. We will be making use
-of SSReflect's \texttt{let:} consistently, as it provides additional
+of Ssreflect's \texttt{let:} consistently, as it provides additional
 benefits with respect to in-place pattern matching, which we will see
 further.}% The function [my_plus] is recursive on its _first_
 argument, which is being decreased in the body, so [n'] is a
@@ -250,7 +250,7 @@ Eval compute in my_plus 5 7.
 (** 
 [  = 12 : nat] 
 
-The same function could be written quite a bit shorter via SSReflect's
+The same function could be written quite a bit shorter via Ssreflect's
 pattern-matching [if-is]-notation, which is a convenient alternative
 to pattern matching with only two alternatives:
 
@@ -763,7 +763,7 @@ syntax by defining their own notations. We will also see how is it
 possible to find what a particular notation means.
 
 The arsenal of a functional programmer in Coq would be incomplete
-without proper sum and list datatypes:%\footnote{In SSReflect's
+without proper sum and list datatypes:%\footnote{In Ssreflect's
 enhanced library lists are paraphrased as the% [seq] % datatype, which
 is imported from the module% [seq].%}% 
 
@@ -854,11 +854,11 @@ Eval compute in alternate [:: 1;2;3] [:: 4].
 (** * Searching for definitions and notations
 
 Of course, we could keep enumerating datatypes and operations on them
-from the standard Coq/SSReflect library (which is quite large), but
+from the standard Coq/Ssreflect library (which is quite large), but
 it's always better for a starting Coq hacker to have a way to find
 necessary definitions on her own. Fortunately, Coq provides a very
 powerful search tool, whose capabilities are greatly amplified by
-SSReflect. Its use is better demonstrated by examples.%\ccom{Search}%
+Ssreflect. Its use is better demonstrated by examples.%\ccom{Search}%
 
 *)
 
@@ -920,7 +920,7 @@ Search _ (_ * _: Type).
 (**
 
 A detailed explanation of the syntax of [Search] tool as well as
-additional examples can be found in Chapter 10 of SSReflect
+additional examples can be found in Chapter 10 of Ssreflect
 documentation%~\cite{Gontier-al:TR}%.
 
 When working with someone's Coq development, sometimes it might be not
@@ -970,7 +970,7 @@ In the previous sections of this chapter we have already seen the way
 inductive datatypes are defined in the setting "traditional"
 Coq. These are the definitions that will be displayed when using the
 [Print] utility. However, in the rest of the development in this book,
-we will be using a version of Coq, enhanced with the SSReflect tool,
+we will be using a version of Coq, enhanced with the Ssreflect tool,
 which, in particular, provides more concise notation for defining
 constructors. For instance, as an alternative to the standard
 definition of the product datatype, we can define our own product in

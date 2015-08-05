@@ -28,7 +28,7 @@ proofs by case analysis and rewriting. In this chapter, we will show
 how the custom rewriting machinery can be taken to the whole new level
 and be used to facilitate the reasoning about _computable_ properties
 and predicates. We will consider a series of insights that lead to the
-idea of the _small-scale reflection_, the heart of the SSReflect
+idea of the _small-scale reflection_, the heart of the Ssreflect
 %\index{small-scale reflection|textbf}% %\index{reflection|see
 {small-scale reflection}}% framework, which blurs the boundaries
 between computable predicates defined in the sort [Prop] (see
@@ -52,7 +52,7 @@ reflection}}%
 We will elaborate more on the differences between predicates stated by
 means of [Prop] and [bool] in %Section~\ref{sec:propbool}%. The term
 _small-scale reflection_, which gives the name to the whole framework
-of SSReflect, emphasizes the two complementary ways of building
+of Ssreflect, emphasizes the two complementary ways of building
 proofs: by means of intuitionistic inference (i.e., using the
 constructors of datatypes defined in [Prop]) and by means of mere
 computation (i.e., with [bool]-returning function). These two ways,
@@ -66,13 +66,13 @@ the language itself and, hence, allows one to modify the program's
 behaviour at runtime.}% which makes this reflection _small-scale_.
 
 Unfortunately, the proper explanation of the implementation of the
-reflection mechanism between [Prop] and [bool] in SSReflect strongly
+reflection mechanism between [Prop] and [bool] in Ssreflect strongly
 relies on the _views_ machinery, so let us begin by describing it
 first.
 
 %\newpage%
 
-* Proving with views in SSReflect
+* Proving with views in Ssreflect
 %\label{sec:views}\index{views|textbf}%
 
 *)
@@ -116,7 +116,7 @@ move=>p; move: (H1 p).
 (** 
 
 This proof pattern of "switching the view" turns out to be so frequent
-that SSReflect introduces a special _view_ tactical %\texttt{/}% for
+that Ssreflect introduces a special _view_ tactical %\texttt{/}% for
 it, which is typically combined with the standard [move] or [case]
 tactics. In particular, the last proof line could be replaced by the
 following:
@@ -207,7 +207,7 @@ us to conclude the proof.
 %\label{seq:viewseq}%
 
 So far we have explored only views that help to weaken the hypothesis
-using the view lemma, which is an implication. In fact, SSReflect's
+using the view lemma, which is an implication. In fact, Ssreflect's
 view mechanism is elaborated enough to deal with view lemmas defined
 by means of equivalence (double implication) %\texttt{<->}%, and the
 system can figure out itself, "in which direction" the view lemma
@@ -235,7 +235,7 @@ In the example from %Section~\ref{seq:viewseq}%, we have seen how
 views can deal with equivalences. The mentioned elaboration, which
 helped the system to recognize, in which direction the double
 implication hypothesis [STequiv] should have been used, is not
-hard-coded into SSReflect. Instead, it is provided by a flexible
+hard-coded into Ssreflect. Instead, it is provided by a flexible
 mechanism of %\index{view hints}% _view hints_, which allows one to
 specify view lemmas that should be applied _implicitly_ whenever it is
 necessary and can be figured out unambiguously.
@@ -243,7 +243,7 @@ necessary and can be figured out unambiguously.
 In the case of the proof of the [ST_False] lemma the view hint [iffRL]
 from the included module [ssreflect]%\footnote{Implicit view hints are
 defined by means of \texttt{Hint View}\ccom{Hint View} command, added
-to Coq by SSReflect. See the implementation of the module
+to Coq by Ssreflect. See the implementation of the module
 %[ssrbool]%\ssrm{ssrbool} and Section 9.8 of the Reference
 Manual~\cite{Gontier-al:TR}.}% %\ssrm{ssreflect}% has been "fired" in
 order to adapt the hypothesis [STequiv], so the adapted variant could
@@ -282,7 +282,7 @@ necessary arguments [a] and [b], inferred by the system from the goal,
 so the type of [(STequiv a b)] would match the parameter type of
 [iffRL], and the whole application would allow to make a view switch
 in the goal.  What is left behind the scenes is the rest of the
-attempts made by Coq/SSReflect in its search for a suitable implicit
+attempts made by Coq/Ssreflect in its search for a suitable implicit
 view, which ended when the system has finally picked [iffRL].
 
 In general, the design of powerful view hints is non-trivial, as they
@@ -300,7 +300,7 @@ interpret the goal by means of combining the Coq's standard [apply]
 and [exact] tactics with the view tactical%~\texttt{/}%. In the case
 if [H] is a view lemma, which is just an implication [P -> Q], where
 [Q] is the statement of the goal, the enhanced tactic [apply/ H] will
-work exactly as the standard SSReflect's [apply:], that is, it will
+work exactly as the standard Ssreflect's [apply:], that is, it will
 replace the goal [Q] with [H]'s assumption [P] to prove.
 
 However, interpreting goals via views turns out to be very beneficial
@@ -427,7 +427,7 @@ constructors (or the contradiction, which would imply that the number
 is not prime). As it's well known, there is a terminating procedure to
 compute whether the number is prime or not by means of _enumerating_
 all potential divisors of [n] from [1] to the square root of [n]. Such
-procedure is actually implemented in the SSReflect's [prime]
+procedure is actually implemented in the Ssreflect's [prime]
 %\ssrm{prime}% module and proved correct with respect to the
 definition similar to the one above,%\footnote{Although the
 implementation and the proof are somewhat non-trivial, as they require
@@ -487,7 +487,7 @@ example brings us to the insight that the [bool]-returning functions
 (i.e., decidable predicates) can be naturally _injected_
 %\index{injection}% into propositions of sort [Prop] by simply
 comparing their result with [true] via propositional equality, defined
-in Chapter%~\ref{ch:eqrew}%. This is what is done by SSReflect
+in Chapter%~\ref{ch:eqrew}%. This is what is done by Ssreflect
 automatically using the implicit %\index{coercion}\ccom{Coercion}%
 _coercion_, imported by the [ssrbool] module:%\ssrm{ssrbool}%
 
@@ -511,7 +511,7 @@ Proof. done. Qed.
 (** 
 
 As we can see, the proof is rather short, and, in fact, done by
-Coq/SSReflect fully automatically. In fact, the system first
+Coq/Ssreflect fully automatically. In fact, the system first
 _computes_ the value of [prime (16 + 14)], which is, obviously
 [false]. Then the boolean value [false] is coerced into the
 propositional equality [false = true], as previously described. The
@@ -527,7 +527,7 @@ programming language and prove decidable properties automatically,
 rather than by means of imposing a burden of constructing an explicit
 proof. We have just seen how a boolean result can be easily injected
 back to the world of propositions. This computational approach to
-proofs is what has been taken by SSReflect to the extreme, making the
+proofs is what has been taken by Ssreflect to the extreme, making the
 proofs about common mathematical constructions to be very short, as
 most of the proof obligations simply _do not appear_, as the system is
 possible to reduce them by means of performing the computations on the
@@ -629,7 +629,7 @@ section, the computable equality is not always possible to
 implement. Fortunately, it can be implemented for a large class of
 datatypes, such as booleans, natural numbers, lists and sets (of
 elements with computable equality), and it was implemented in
-SSReflect, so one can take an advantage of it in the
+Ssreflect, so one can take an advantage of it in the
 proofs.%\footnote{The way the computable equality is encoded so it
 would work uniformly for different types is an interesting topic by
 itself, so we postpone its explanation until
@@ -675,7 +675,7 @@ Abort.
 (**
 
 This is why we need a mechanism to conveniently switch between two
-possible representation. SSReflect solves this problem by employing
+possible representation. Ssreflect solves this problem by employing
 the familiar rewriting machinery (%see Section~\ref{sec:indexed} of
 Chapter~\ref{ch:eqrew}%) and introducing the inductive predicate
 family [reflect], which connects propositions an booleans:
@@ -731,7 +731,7 @@ The true power of the [reflect] predicate, though, is that it might be
 put to work with arbitrary logical connectives and user-defined
 predicates, therefore delivering the rewriting principles, allowing
 one to switch between [bool] and [Prop] (in the decidable case) by
-means of rewriting lemmas. SSReflect comes with a number of such
+means of rewriting lemmas. Ssreflect comes with a number of such
 lemmas, so let us consider one of them, [andP].
 
 *)
@@ -774,7 +774,7 @@ Qed.
 (** 
 
 Although the example above is a valid usage of the reflected
-propositions, SSReflect leverages the rewriting with respect to
+propositions, Ssreflect leverages the rewriting with respect to
 boolean predicates even more by defining a number of _hint views_ for
 the rewriting lemmas that make use of the [reflect] predicates. This
 allows one to use the rewriting rules (e.g., [andP]) in the form of
@@ -1023,7 +1023,7 @@ reflected, are equalities.
 Postponing the description of a generic mechanism for declaring
 polymorphic decidable equalities until %Chapter~\ref{ch:depstruct}%,
 let us see how switching between decidable [bool]-returning equality
-[==] (defined in the SSReflect's module [eqtype]%\ssrm{eqtype}%) and
+[==] (defined in the Ssreflect's module [eqtype]%\ssrm{eqtype}%) and
 the familiar propositional equality can be beneficial.
 
 *)
@@ -1067,6 +1067,136 @@ tactical, so the rest of the proof is simply by computation.
 by move/eqP=>->.
 Qed.
 
+
+(**
+
+%\begin{exercise}%
+
+Sometimes, the statement ``there exists unique $x$ and $y$, such that
+$P(x, y)$ holds'' is mistakingly formalized as $\exists ! x~\exists !
+y~P(x, y)$. In fact, the latter assertion is much weaker than the
+previous one. The goal of this exercise is to demonstrate this
+formally.%\footnote{I am grateful to Vladimir Reshetnikov
+(\href{https://twitter.com/vreshetnikov}{\texttt{@vreshetnikov}}) for
+making this observation on Twitter.}%
+
+First, prove the following lemma, stating that the first assertion can
+be weakened from the second one.
+
+*)
+
+Lemma ExistsUnique1 A (P : A -> A -> Prop): 
+  (exists !x, exists y, P x y) -> 
+  (exists !x, exists y, P y x) ->
+  (exists !x, exists !y, P x y).
+
+(**
+
+The notation [exists ! x, P x] is an abbreviation for the sigma-type,
+whose second component is the higher-order predicate unique, defined
+as follows:
+
+*)
+
+Print unique.
+
+(**
+[[
+unique = 
+fun (A : Type) (P : A -> Prop) (x : A) =>
+P x /\ (forall x' : A, P x' -> x = x')
+     : forall A : Type, (A -> Prop) -> A -> Prop
+]]
+
+As we can see, the definition [unique] not just ensures that [P x]
+holds (the left conjunct), but also that any [x'] satisfying [P] is,
+in fact, equal to [x]. As on the top level [unique] is merely a
+conjunction, it can be decomposed by [case] and proved using the
+[split] tactics.
+
+*)
+
+(* begin hide *)
+Proof.
+case=>x1[[y1 Pxy1]] G1[x2[[y2 Pxy2]] G2]; exists y2; split.
+- by exists x2; split=>// x0 Pxy0; apply: G2; exists y2.
+move=>x'. move:(G1 x')=>E G3.
+rewrite -E; last by case: G3=>y'; case=> Z _; exists y'.
+suff X: x1 = y2; first by [].
+by apply: G1; exists x2.
+Qed.
+(* end hide *)
+
+(**
+
+Next, let us make sure that the statement in the conclusion of lemma
+[ExistsUnique1], in fact, admits predicates, satisfied by non-uniquely
+defined pair [(x, y)]. You goal is to prove that the following
+predicate [Q], which obviously satisfied by [(true, true)], [(false,
+true)] and [(false, false)] is nevertheless a subject of the second
+statement.
+
+*)
+
+Definition Q x y : Prop := 
+  (x == true) && (y == true) || (x == false).
+
+Lemma qlm : (exists !x, exists !y, Q x y).
+
+(* begin hide *)
+Proof.
+exists true; split; first by exists true; split=> //; case=>//.
+case=>//; rewrite /Q; case; case=>/=; case=>_ G.
+- by move:(G false (eqxx false)).
+by move:(G true (eqxx true)). 
+Qed.
+(* end hide *)
+
+(**
+
+%hint% The following lemma [eqxx], stating that the boolean equality
+ [x == x] always holds, might be useful for instantiating arguments
+ for hypotheses you will get during the proof.
+
+*)
+
+Check eqxx.
+
+(**
+[[
+eqxx
+     : forall (T : eqType) (x : T), x == x
+]]
+
+Finally, you are invited to prove that the second statement is
+_strictly_ weaker than the first one by proving the following lemma,
+which states that the reversed implication of the two statements for
+an arbitrary predicate [P] implies falsehood.
+
+*)
+
+Lemma ExistsUnique2 : 
+  (forall A (P : A -> A -> Prop),
+   (exists !x, exists !y, P x y) ->
+   (exists !x, exists y, P x y) /\ (exists !x, exists y, P y x)) ->
+  False.
+
+(* begin hide *)
+Proof.
+move/(_ _ _ qlm); rewrite /Q/=; case=> H1 H2.
+case: H1; case; case; case; case=> //= _.
+- move=>G1; move:(G1 false)=>/=G2. 
+  by suff: true = false by []; last by apply: G2; exists true.
+- move=>G1; move:(G1 true)=>/=G2. 
+  by suff: false = true by []; last by apply: G2; exists true.
+- move=>G1; move:(G1 true)=>/=G2. 
+  by suff: false = true by []; last by apply: G2; exists true.
+Qed.
+(* end hide *)
+
+(**
+%\end{exercise}%
+*)
 
 (* begin hide *)
 End BoolReflect.

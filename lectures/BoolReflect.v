@@ -690,5 +690,109 @@ automatically solving goals in propositional logic.
 
 *)
 
+(**
+---------------------------------------------------------------------
+Exercise [Uniquely existing pairs of elements]
+---------------------------------------------------------------------
+
+Sometimes, the statement ``there exists unique $x$ and $y$, such that
+$P(x, y)$ holds'' is mistakingly formalized as $\exists ! x \exists !
+y P(x, y)$. In fact, the latter assertion is much weaker than the
+previous one. The goal of this exercise is to demonstrate this
+formally.
+
+First, prove the following lemma, stating that the first assertion can
+be weakened from the second one.
+
+*)
+
+Lemma ExistsUnique1 A (P : A -> A -> Prop): 
+  (exists !x, exists y, P x y) -> 
+  (exists !x, exists y, P y x) ->
+  (exists !x, exists !y, P x y).
+
+(**
+
+The notation [exists ! x, P x] is an abbreviation for the sigma-type,
+whose second component is the higher-order predicate unique, defined
+as follows:
+
+*)
+
+Print unique.
+
+(**
+[[
+unique = 
+fun (A : Type) (P : A -> Prop) (x : A) =>
+P x /\ (forall x' : A, P x' -> x = x')
+     : forall A : Type, (A -> Prop) -> A -> Prop
+]]
+
+As we can see, the definition [unique] not just ensures that [P x]
+holds (the left conjunct), but also that any [x'] satisfying [P] is,
+in fact, equal to [x]. As on the top level [unique] is merely a
+conjunction, it can be decomposed by [case] and proved using the
+[split] tactics.
+
+*)
+
+Proof.
+Admitted.
+
+(**
+
+Next, let us make sure that the statement in the conclusion of lemma
+[ExistsUnique1], in fact, admits predicates, satisfied by non-uniquely
+defined pair [(x, y)]. You goal is to prove that the following
+predicate [Q], which obviously satisfied by [(true, true)], [(false,
+true)] and [(false, false)] is nevertheless a subject of the second
+statement.
+
+*)
+
+Definition Q x y : Prop := 
+  (x == true) && (y == true) || (x == false).
+
+Lemma qlm : (exists !x, exists !y, Q x y).
+Proof.
+Admitted.
+
+(**
+
+%hint% The following lemma [eqxx], stating that the boolean equality
+ [x == x] always holds, might be useful for instantiating arguments
+ for hypotheses you will get during the proof.
+
+*)
+
+Check eqxx.
+
+(**
+[[
+eqxx
+     : forall (T : eqType) (x : T), x == x
+]]
+
+Finally, you are invited to prove that the second statement is
+_strictly_ weaker than the first one by proving the following lemma,
+which states that the reversed implication of the two statements for
+an arbitrary predicate [P] implies falsehood.
+
+*)
+
+Lemma ExistsUnique2 : 
+  (forall A (P : A -> A -> Prop),
+   (exists !x, exists !y, P x y) ->
+   (exists !x, exists y, P x y) /\ (exists !x, exists y, P y x)) ->
+  False.
+Proof.
+Admitted.
+
+
+(**
+%\end{exercise}%
+*)
+
 
 End BoolReflect.

@@ -1614,7 +1614,7 @@ To prove it, we will need one of the numerous [val]-lemmas, delivered
 as a part of HTT libraries and directly corresponding to the rules of
 separation logic (%Section~\ref{sec:seplog-rules}%). The general
 recipe on acquiring intuition for the lemmas applicable for each
-particular [verify]-goal is to make use of SSReflect's [Search]
+particular [verify]-goal is to make use of Ssreflect's [Search]
 machinery. For instance, in this particular case, given that the
 command to be verified (i.e., the second argument of [verify]) is [ret
 a'], let us try the following query.
@@ -1726,7 +1726,7 @@ As in the case of the previous goal, the remaining proof is focused on
 proving a statement about a heap and natural numbers, so we just
 present its proof below without elaborating on the details, as they
 are standard and mostly appeal to propositional reasoning
-(Chapter%~\ref{ch:logic}%) and rewriting by lemmas from SSReflect's
+(Chapter%~\ref{ch:logic}%) and rewriting by lemmas from Ssreflect's
 [ssrnat] module.
 
 *)
@@ -2326,7 +2326,7 @@ The next lemma, [lseq_pos], states that is a head of a linked list,
 defined by a heap [h], is not [null], then it can be "beheaded". That
 is, there will exist a head value [x], a "next" [r] and a residual
 heap [h'], such that the heap [h'] corresponds to the list's tail,
-which is expressed by SSReflect's [behead] function.
+which is expressed by Ssreflect's [behead] function.
 
 *)
 

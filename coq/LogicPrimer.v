@@ -155,7 +155,7 @@ propositional logic, in Coq these two are _not_ the only possible
 propositional _values_, and soon we will see how a wide range of
 propositions different from mere truth or falsehood are
 implemented. From now on, we will be always including to the
-development the standard SSReflect's module [ssreflect],
+development the standard Ssreflect's module [ssreflect],
 %\ssrm{ssreflect}% which imports some necessary machinery for dealing
 with propositions and proofs.
 
@@ -288,8 +288,8 @@ will prefer the interactive proof mode to the "vanilla" program
 definition. It is worth noticing, thought, that even though the
 process of proof construction in Coq usually looks more like writing a
 _script_, consisting from a number of commands (which are called
-_tactics_ in Coq jargon),%\index{Coq/SSReflect
-tactics}\index{tactics}% %\index{tactics|seealso {Coq/SSReflect
+_tactics_ in Coq jargon),%\index{Coq/Ssreflect
+tactics}\index{tactics}% %\index{tactics|seealso {Coq/Ssreflect
 tactics}}% the result of such script, given that it eliminates all of
 the goals, is a valid well-typed Coq program. In comparison, in some
 other dependently-typed frameworks (e.g., in Agda%\index{Agda}%), the
@@ -441,7 +441,7 @@ Undo.
 
 Instead of supplying the argument [(1 = 2)] to [False_ind] manually,
 we can leave it to Coq to figure out, what it should be, by using the
-SSReflect [apply:] tactic.%\ssrt{apply:}%
+Ssreflect [apply:] tactic.%\ssrt{apply:}%
 
 *)
 
@@ -564,8 +564,8 @@ preparatory step for the future reasoning.
 
 %\index{tacticals}%
 %\index{bookkeeping}%
-%\index{tacticals|seealso {Coq/SSReflect tacticals}}%
-SSReflect offers a tactic and small but powerful toolkit of
+%\index{tacticals|seealso {Coq/Ssreflect tacticals}}%
+Ssreflect offers a tactic and small but powerful toolkit of
 _tacticals_ (i.e., higher-order tactics) for bookkeeping. In
 particular, for moving the bound variables from "bottom to the top",
 one should use a combination of the "no-op" tactic [move]%\ssrt{move}%
@@ -671,7 +671,7 @@ Qed.
 (**
 
 In the future, we will replace the use of trivial tactics, such as
-[exact:] by SSReflect's much more powerful tactics [done],%\ssrt{done}% which
+[exact:] by Ssreflect's much more powerful tactics [done],%\ssrt{done}% which
 combines a number of standard Coq's tactics in an attempt to finish
 the proof of the current goal and reports an error if it fails to do
 so. 
@@ -752,7 +752,7 @@ proof style}%.
 While the standard Coq is very well supplied with a large number of
 tactics that support reasoning in the backward style, it is less
 convenient for the forward-style reasoning. This aspect of the tool is
-significantly enhanced by SSReflect, which introduces a small number
+significantly enhanced by Ssreflect, which introduces a small number
 of helping tactics, drastically simplifying the forward proofs, as we
 will see in the subsequent chapters.
 
@@ -779,7 +779,7 @@ goal matches its conclusion. However, let us do something slightly
 different: _move_ the statement of [imp_trans] into the goal,
 simultaneously with specifying it (or, equivalently, partially
 applying) to the assumptions [H1] and [H2]. Such move "to the bottom
-part" in SSReflect is implemented by means of the %\ssrtl{:}% [:]
+part" in Ssreflect is implemented by means of the %\ssrtl{:}% [:]
 tactical, following the [move] command:
 
 *)
@@ -1032,7 +1032,7 @@ Qed.
 
 (** 
 
-The use of SSReflect's tactical [by]%\ssrtl{by}% makes sure that its
+The use of Ssreflect's tactical [by]%\ssrtl{by}% makes sure that its
 argument tactic ([right] in this case) succeeds and the proof of the
 goal completes, similarly to the trailing [done]. If the sequence of
 tactics [left; right] wouldn't prove the goal, a proof script error
@@ -1049,7 +1049,7 @@ case=>x.
 
 (** 
 
-Notice how the case analysis via the SSReflect's [case] tactic was
+Notice how the case analysis via the Ssreflect's [case] tactic was
 combined here with the trailing [=>]. It resulted in moving the
 constructor parameter in _each_ of the subgoals from the goal
 assumptions to the assumption context. The types of [x] are different
@@ -1174,7 +1174,7 @@ move /H.
 ]]
 
 The syntax [move / H] (spaces in between are optional) stands for one
-of the most powerful features of SSReflect, called _views_ (see
+of the most powerful features of Ssreflect, called _views_ (see
 %Section~9 of~\cite{Gontier-al:TR}%), which allows one to _weaken_ the
 assumption in the goal part of the proof on the fly by applying a
 hypothesis [H] to the top assumption in the goal. In the script above
@@ -1314,7 +1314,7 @@ Qed.
 %\begin{exercise}%
 
 Let us define our own version [my_ex] of the existential quantifier
-using the SSReflect notation for constructors:
+using the Ssreflect notation for constructors:
 
 *)
 
@@ -1348,6 +1348,7 @@ Qed.
 (** 
 
 %\end{exercise}%
+
 
 ** A conjunction and disjunction analogy
 
@@ -1591,13 +1592,13 @@ Qed.
  etc. %\ssrt{rewrite}%
 
 %\hint% To facilitate the forward reasoning by contradiction, you can
- use the SSReflect tactic [suff: P], %\ssrt{suff:}% where [P] is
+ use the Ssreflect tactic [suff: P], %\ssrt{suff:}% where [P] is
  an arbitrary proposition. The system will then require you to prove
  that [P] implies the goal _and_ [P] itself.
 
-%\ssrt{admit}%
+%\ccom{Admitted}%
 
-%\hint% Stuck with a tricky proof? Use the Coq [admit] tactic as a
+%\hint% Stuck with a tricky proof? Use the Coq [Admitted] keyword as a
  "stub" for an unfinished proof of a goal, which, nevertheless will be
  considered completed by Coq. You can always get back to an admitted
  proof later.

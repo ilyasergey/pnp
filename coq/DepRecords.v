@@ -102,7 +102,7 @@ course of abstract algebra---partial commutative monoids, and implement
 them using Coq's native constructs: dependent records and canonical
 structures.
 
-As usual, we will require a number of SSReflect package imported.
+As usual, we will require a number of Ssreflect package imported.
 
 *)
 
@@ -229,7 +229,7 @@ unit_op is defined
 %\index{record types|see {dependent records}}%
 
 The syntax of Coq's dependent records is reminiscent to the one of
-records in C. Following SSReflect's naming
+records in C. Following Ssreflect's naming
 pattern%~\cite{Garillot-al:TPHOL09}%, we call the record type (defined
 in a dedicated module for the reasons explained further) [mixin_of]
 and its only constructor [Mixin]. The reasons for such naming
@@ -244,7 +244,7 @@ the partiality of the [join_op] operation (the result is undefined,
 whenever the corresponding value of [T] is non-valid). Next, the PCM
 record lists five unnamed PCM _properties_, which should be satisfied
 whenever the record is instantiated and are defined using the standard
-propositions from SSReflect's [ssrfun] %\ssrm{ssrfun}% module (see
+propositions from Ssreflect's [ssrfun] %\ssrm{ssrfun}% module (see
 %Section~\ref{sec:funprops}%). In particular, the PCM type definition
 requires the operation to be [commutative] and [associative]. It also
 states that if $a \join b \neq \bot$ then $a \neq \bot$ (the same
@@ -316,7 +316,7 @@ the [pcm] argument of the lemma into its components, replacing those
 of no interest with wildcards [_]. The [join] and [unit], therefore,
 bind the operation and the identity element, whereas [Hc] and [Hlu]
 are the commutativity and left-unit properties, named explicitly in
-the scope of the proof. The trailing SSReflect's simplification
+the scope of the proof. The trailing Ssreflect's simplification
 tactical %\texttt{/=}\ssrtl{/=}% replaces the calls to the getters in
 the goal (e.g., [join_op pcm]) by the bound identifiers. The proof can
 be now accomplished by a series of rewritings by the [Hc] and [Hlu]
@@ -993,7 +993,7 @@ Axiom fext : forall A (B : A -> Type) (f1 f2 : forall x, B x),
 ** Types with decidable equalities
 %\index{decidable equality}%
 
-When working with SSReflect and its libraries, one will always come
+When working with Ssreflect and its libraries, one will always come
 across multiple canonical instances of a particularly important
 dependent record type---a structure with decidable equality. As it has
 been already demonstrated in %Section~\ref{sec:eqrefl}%, for concrete
@@ -1004,7 +1004,7 @@ seamlessly by means of using the view lemma [eqP], leveraging the
 b2)].%\ssrd{reflect}% Let us now show how the decidable equality is
 defined and instantiated.
 
-The module [eqtype]%\ssrm{eqtype}% of SSReflect's standard library
+The module [eqtype]%\ssrm{eqtype}% of Ssreflect's standard library
 provides a definition of the equality mixin and packaged class of the
 familiar shape, which, after some simplifications, boil to the
 following ones:
@@ -1035,7 +1035,7 @@ instance). Therefore, in order to make a relation [op] to be a
 decidable equality on [T], one needs to prove that, in fact, it is
 equivalent to the standard, propositional equality.
 
-Subsequently, SSReflect libraries deliver the canonical instances of
+Subsequently, Ssreflect libraries deliver the canonical instances of
 the decidable equality structure to all commonly used concrete
 datatypes. For example, the decidable equality for natural numbers is
 implemented in the [ssrnat]%\ssrm{ssrnat}% module by the following

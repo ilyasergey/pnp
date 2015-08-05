@@ -113,7 +113,7 @@ targeted to fill these gaps, while giving the reader enough background
 to proceed as a Coq hacker on her own. In particular, this manuscript
 describes in detail the following aspects of proof engineering, most
 of which are enabled or empowered by Gonthier et al.'s _small-scale
-reflection_ extension (SSReflect) to Coq%~\cite{Gontier-al:TR}%:
+reflection_ extension (Ssreflect) to Coq%~\cite{Gontier-al:TR}%:
 
 - Special treatment is given to the _computational_ nature of
   inductive reasoning about _decidable_ propositions, which makes it
@@ -126,7 +126,7 @@ reflection_ extension (SSReflect) to Coq%~\cite{Gontier-al:TR}%:
 - Instead of supplying the reader with a large vocabulary of tactics
   necessary for everyday Coq hacking, this course focuses on a _very
   small_ but expressive set of proof constructing primitives (of about
-  a seven in total), offered by SSReflect or inherited from the
+  a seven in total), offered by Ssreflect or inherited from the
   vanilla Coq with notable enhancements.
 
 - This course advocates inductive types' _parameters_ as an
@@ -138,7 +138,7 @@ reflection_ extension (SSReflect) to Coq%~\cite{Gontier-al:TR}%:
   elaboration on the idea of using _datatype indices_ as a tool to
   define client-specific conditional _rewriting rules_.
 
-- These manuscript explains the essentials of SSReflect's _boolean
+- These manuscript explains the essentials of Ssreflect's _boolean
   reflection_ between the sort [Prop] and the datatype [bool] as a
   particular case of conditional rewriting, following the spirit of
   the computational approach to the proofs of decidable propositions.
@@ -169,10 +169,10 @@ definition of the propositional equality and the way to encode custom
 rewriting rules, which then culminates with a discussion on the
 boolean reflection and reasoning by means of computation. This
 discussion is continued by revising important principles of proofs by
-induction in Coq and providing pointers to the standard SSReflect
+induction in Coq and providing pointers to the standard Ssreflect
 libraries, which should be used as a main component for everyday
 mathematical reasoning. The course concludes by reconciling all of the
-described concepts and Coq/SSReflect reasoning principles by tackling
+described concepts and Coq/Ssreflect reasoning principles by tackling
 a large case study---verifying imperative programs within the
 framework of Nanevski et al.'s Hoare Type
 Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
@@ -201,12 +201,12 @@ together with pointers to the relevant bibliographic references.
   and verify low-level and concurrent
   programs%~\cite{Nanevski-al:ESOP14,Chlipala:PLDI11,Feng-al:PLDI06,Cai-al:PLDI07}%.
 
-** Why SSReflect?
+** Why Ssreflect?
 
-%\index{SSReflect|textbf}%
+%\index{Ssreflect|textbf}%
 
 A significant part of this course's material is presented using the
-SSReflect extension of Coq%~\cite{Gontier-al:TR}%, developed as a part
+Ssreflect extension of Coq%~\cite{Gontier-al:TR}%, developed as a part
 of the Mathematical Components
 project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}%
 in order to facilitate the automated reasoning in very large
@@ -219,32 +219,32 @@ theorem}~\cite{Gonthier-al:ITP13}%.
 %\index{odd order theorem|see {Feit-Thompson theorem}}%
 %\index{Feit-Thompson theorem}%
 
-SSReflect includes a small set of powerful novel primitives for
+Ssreflect includes a small set of powerful novel primitives for
 interactive proof construction (tactics), different from the
 traditional set provided by Coq. It also comes with a large library of
 various algebraic structures, ranging from natural numbers to graphs,
 finite sets and algebras, formalized and shipped with exhaustive
-toolkits of lemmas and facts about them. Finally, SSReflect introduces
+toolkits of lemmas and facts about them. Finally, Ssreflect introduces
 some mild modifications to Coq's native syntax and the semantics of
 the proof script interpreter, which makes the produced proofs
 significantly more concise.
 
-Using SSReflect for the current development is not the goal by itself:
+Using Ssreflect for the current development is not the goal by itself:
 a large part of the manuscript could be presented using traditional
 Coq without any loss in the insights but, perhaps, some loss in
-brevity. However, what is more important, using SSReflect's libraries
+brevity. However, what is more important, using Ssreflect's libraries
 and tactics makes it much easier to stress the main points of this
 course, namely, that (a) the proof construction process should rely on
 Coq's native computational machinery as much as possible and (b)
 rewriting (in particular, by equality) is one of the most important
 proof techniques, which should be mastered and leveraged in the
-proofs. Luckily, the way most of the lemmas in SSReflect libraries are
+proofs. Luckily, the way most of the lemmas in Ssreflect libraries are
 implemented makes them immediately suitable to use for rewritings,
 which directly follows the natural mathematical intuition. The
-enhancements SSReflect brings over the standard Coq rewriting
+enhancements Ssreflect brings over the standard Coq rewriting
 machinery also come in handy.
 
-Last, but not least, SSReflect comes with a much improved [Search]
+Last, but not least, Ssreflect comes with a much improved [Search]
 tool (comparing to the standard one of Coq). Given that a fair part of
 time spent for development (either programs and proofs) is typically
 dedicated to reading and understanding the code (or, at least,
@@ -253,7 +253,7 @@ out to be invaluable when it comes to looking for necessary
 third-party facts to employ in one's own implementation.
 
 In the further chapters of this course, we will not be making
-distinction between native Coq and SSReflect-introduced commands,
+distinction between native Coq and Ssreflect-introduced commands,
 tactics and tacticals, and will keep the combined lists of them in the
 Index section at the end of the manuscript.
 
@@ -273,7 +273,7 @@ While this manuscript is aiming to be self-contained in its
 presentation of a subset of Coq, it would be %\naive~%to expect it to
 be the _only_ Coq reference used for setting-up a formal
 development. That said, we encourage the reader to use the standard
-Coq manual%~\cite{Coq-manual}% as well as SSReflect
+Coq manual%~\cite{Coq-manual}% as well as Ssreflect
 documentation%~\cite{Gontier-al:TR}% whenever an unknown tactic, piece
 of syntax or obscure notation is encountered. Coq's [Search],
 %\texttt{Locate}% and [Print] tools, explained in
@@ -291,7 +291,7 @@ tools.
 * Setup
 
 In order to be able to follow the manuscript and execute the examples
-provided, the reader is expected to have Coq with SSReflect installed
+provided, the reader is expected to have Coq with Ssreflect installed
 at her machine. This section contains some general instructions on the
 installation and set-up. Most of the mentioned below binaries can be
 downloaded from the following URL, accompanying these notes:
@@ -302,11 +302,11 @@ downloaded from the following URL, accompanying these notes:
 \end{center}
 %
 
-** Installing Coq and SSReflect
+** Installing Coq and Ssreflect
 %\label{sec:install-coq}%
 
 The sources of this manuscript have been compiled and tested with Coq
-version 8.4 and SSReflect version 1.4. It is not guaranteed that the
+version 8.4 and Ssreflect version 1.4. It is not guaranteed that the
 same examples will work seamlessly with different versions. Therefore,
 several recipes on how to build install the necessary software are
 provided below.
@@ -314,22 +314,22 @@ provided below.
 - Windows users are encouraged to use Pierre-Yves Strub's installer
   with the Coq bundle,%\footnote{Available from
   \url{http://pierre-yves.strub.nu/}.}% which already contains all the
-  necessary components including Coq v8.4pl2, SSReflect v1.4 and Emacs
+  necessary components including Coq v8.4pl2, Ssreflect v1.4 and Emacs
   with Proof General installed.
 
-- Linux and Mac OS X users can compile Coq 8.4 and SSReflect from
+- Linux and Mac OS X users can compile Coq 8.4 and Ssreflect from
   sources, which would take around two hours of their
   time.%\footnote{Getting Coq 8.4 using a system-specific package
   manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
   although the Coq version acquired this way is not guaranteed to work
-  properly with SSReflect 1.4.}%
+  properly with Ssreflect 1.4.}%
 
   In order to be compiled, Coq requires Objective Caml version 3.11.2
   or later, Camlp5, GNU Make version 3.81 or later (see the
   <<INSTALL>> file from the archive with sources for more details on
   configuration and installation). Once compiled, the following
   environment variables should be set (e.g., in <<~/.bashrc>> or
-  <<~/.profile>> configuration files) to build SSReflect (with the
+  <<~/.profile>> configuration files) to build Ssreflect (with the
   respective paths chosen during the Coq's installation):
 
 <<
@@ -337,15 +337,15 @@ provided below.
     export COQ_MK="/usr/local/bin/coq_makefile"
 >>
 
-  After compiling SSReflect, the file <<bin/ssrcoq>> should be created
+  After compiling Ssreflect, the file <<bin/ssrcoq>> should be created
   in the <<ssreflect-1.4>> folder. It should be then manually copied
   to the same folder where the Coq binaries are located (e.g.,
   <</usr/local/bin>> in the default case of Unix-like systems). It is
-  also recommended to keep SSReflect's sources easily accessible as
+  also recommended to keep Ssreflect's sources easily accessible as
   reading them might be helpful when working with libraries (see the
   files in the folder <<ssreflect-1.4/theories/>>). 
 
-  Upon installing SSReflect via %\texttt{make install}%, the following
+  Upon installing Ssreflect via %\texttt{make install}%, the following
   environment variable should be also set up:
 
 <<
@@ -355,8 +355,8 @@ provided below.
   Alternatively, instead of running %\texttt{make install}%, one can
   set up the environment variable %\texttt{SSRCOQ\_LIB}% to point to
   the folder %\texttt{ssreflect-location/theories}%, which contains
-  all SSReflect modules compiled (and %\texttt{ssreflect-location}%
-  denotes the location of the directory where SSReflect has been
+  all Ssreflect modules compiled (and %\texttt{ssreflect-location}%
+  denotes the location of the directory where Ssreflect has been
   unpacked to).
 
 ** Emacs set-up
@@ -371,13 +371,13 @@ instructions below. Upon downloading and unpacking, add the following
 lines into the <<.emacs>> configuration file located in the home
 directory in Unix and in <<C:\>> root in Windows (possibly replacing
 the %\texttt{\textasciitilde/misc/}% part with the path where Proof
-General and SSReflect sources were unpacked).
+General and Ssreflect sources were unpacked).
 
 <<
     ;; Proof General support
     (load-file "~/misc/ProofGeneral-4.2/generic/proof-site.el") 
 
-    ;; SSReflect support 
+    ;; Ssreflect support 
     (load-file "~/misc/ssreflect-1.4/pg-ssr.el")
 >>
 
@@ -398,9 +398,9 @@ mode. Once the mode is launched, in the menu <<Proof-General>>, choose
 the item: << Advanced -> Customize -> Coq -> Coq Prog Name >> and
 change the value of the variable to << ssreflect-location/bin/ssrcoq
 >> or << ssreflect-location\bin\ssrcoq >> for Windows/Cygwin users,
-where %\texttt{ssreflect-location}% is the location of your SSReflect
+where %\texttt{ssreflect-location}% is the location of your Ssreflect
 directory with compiled binaries (or, alternatively, a parent
-catalogue of the %\texttt{bin}% folder containing Coq and SSReflect's
+catalogue of the %\texttt{bin}% folder containing Coq and Ssreflect's
 binaries, where %\texttt{ssrcoq}% has been previously copied, as it
 was suggested).
 
@@ -432,7 +432,7 @@ chapters of the manuscript and the accompanying files.
 \\ \hline
 \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} 
 \\ \hline
-\ref{ch:ssrstyle} & Inductive Reasoning in SSReflect & \texttt{SsrStyle.v} 
+\ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} 
 \\ \hline
 \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} 
 \\ \hline
@@ -450,7 +450,7 @@ will be required. The archive
 with sources and the make-script can be downloaded from the
 %\href{http://ilyasergey.net/pnp/}{course
 url}%. After downloading and unpacking, the sources should be compiled
-via the %\texttt{make}% command, given that Coq and SSReflect are
+via the %\texttt{make}% command, given that Coq and Ssreflect are
 properly installed, as described previously (make sure that the
 environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%)
 are set up properly, as explained in
@@ -470,10 +470,10 @@ so I will mail you back the archive.
 
 ** Using a virtual machine image
 
-If compiling and installing Coq and SSReflect from scratch looks like
+If compiling and installing Coq and Ssreflect from scratch looks like
 too much hassle, there is also a possibility to use a virtual machine
 image with all libraries preinstalled (including HTT) and Emacs set up
-to work with SSReflect. The image requires Oracle %\index{VirtualBox}%
+to work with Ssreflect. The image requires Oracle %\index{VirtualBox}%
 VirtualBox to be used;%\footnote{Available from
 \url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %1.8~GB%
 size and can be obtained from the same
@@ -483,7 +483,7 @@ as other artifacts (look for the file
 automatically logs in when started with the user %\texttt{coquser}%
 (use the password %\texttt{coquser}% whenever it is required). The
 folder %\texttt{\textasciitilde/misc}% contains the sources of
-SSReflect and Proof General. HTT sources and this course's lecture
+Ssreflect and Proof General. HTT sources and this course's lecture
 files are located in %\texttt{\textasciitilde/htt}% and
 %\texttt{\textasciitilde/lectures}%, correspondingly.
 

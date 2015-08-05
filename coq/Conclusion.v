@@ -39,7 +39,7 @@ minds. In \textbf{Chapter~\ref{ch:boolrefl}}, we have seen how the
 same switch can be implemented seamlessly in Coq using the boolean
 reflection machinery.  With the introduction of boolean reflection,
 our journey in the world of interactive theorem proving took a path,
-paved by Gonthier's et al.'s SSReflect extension, embracing and
+paved by Gonthier's et al.'s Ssreflect extension, embracing and
 leveraging the computational power of Coq as a programming language to
 the extreme. The motto ``let Coq compute a part of the proof for you,
 since it's a programming language after all!'', witnessed by

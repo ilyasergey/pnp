@@ -134,7 +134,7 @@ Notation "x === y" := (my_eq x y) (at level 70).
 
 As we can see, this definition literally repeats the Coq's standard
 definition of propositional equality. The reason for the code
-duplication is that SSReflect provides a specific treatment of Coq's
+duplication is that Ssreflect provides a specific treatment of Coq's
 standard equality predicate, so the case-analysis on its instances is
 completely superseded by the powerful [rewrite] tactics, which we will
 see in %Section~\ref{sec:rewriting}% of this chapter. Alas, this
@@ -236,7 +236,7 @@ of two elements.}% In particular, natural numbers can be compared
 against each other by means of direct pattern matching, which is
 decidable for them, thanks to the inductive definition. Using this
 insight we define a local "discriminating" function [D] using the
-SSReflect's enhanced [pose] %\ssrt{pose}% tactic:
+Ssreflect's enhanced [pose] %\ssrt{pose}% tactic:
 
  *)
 
@@ -260,7 +260,7 @@ pose D x := if x is 2 then False else True.
 Now, proving [D 1] is [True] can be accomplished by simple executing
 [D] with appropriate arguments (recall that [D] is an
 always-terminating function, whose result is a computable value). That
-SSReflect's tactic [have]%\ssrt{have}% allows to declare the local
+Ssreflect's tactic [have]%\ssrt{have}% allows to declare the local
 fact, which can be then proved in-place by simple computation (which
 is performed via [by []]).
 
@@ -360,7 +360,7 @@ Qed.
 Now we know what drives the reasoning by equality and discrimination,
 so let us forget about the home-brewed predicate [my_eq] and use the
 standard equality instead. Happily, the discrimination pattern we used
-to implement "by hand" now is handled by Coq/SSReflect automatically,
+to implement "by hand" now is handled by Coq/Ssreflect automatically,
 so the trivially false equalities deliver the proofs right away by
 simply typing [done]. 
 
@@ -384,7 +384,7 @@ typically targeted on formulating and proving small auxiliary
 hypotheses about equalities in the forward-style reasoning and then
 exploiting the derived equalities by means of rewriting in the goal
 and, occasionally, other assumptions in the context. All rewriting
-machinery is handled by SSReflect's enhanced [rewrite]%\ssrt{rewrite}%
+machinery is handled by Ssreflect's enhanced [rewrite]%\ssrt{rewrite}%
 tactics, and in this section we focus on its particular uses.
 
 ** Unfolding definitions and in-place rewritings
@@ -467,7 +467,7 @@ left, in contrast to %\texttt{->}%, which rewrites left to right.
 
 The reverse operation to folding is done by using [rewrite -/...]
 instead of [rewrite /...]%\footnote{As the reader will notice soon, it
-is a general pattern with SSReflect's rewriting to prefix a
+is a general pattern with Ssreflect's rewriting to prefix a
 \texttt{rewrite} argument with \texttt{-}, if the \emph{reverse}
 rewriting operation should be performed.}%
 
@@ -500,7 +500,7 @@ rewrite /f.
    x + y + (y + x) = y + x + (y + x)
 ]]
 
-We can now reduce the goal by appealing to SSReflect's [congr]
+We can now reduce the goal by appealing to Ssreflect's [congr]
 tactics, which takes advantage of the fact that equality implies
 Leibniz' equality, in particular, with respect to the addition taken
 as a function, so the external addition of equal elements can be
@@ -520,7 +520,7 @@ congr (_ + _).
 ]]
 
 Now, the only thing left to prove is that the addition is commutative,
-so at this point we will just make use of SSReflect's [ssrnat] library
+so at this point we will just make use of Ssreflect's [ssrnat] library
 lemma for integer addition.
 
 *)
@@ -627,7 +627,7 @@ move=>m n.
 
 The proof will proceed by induction on [m]. We have already seen the
 use of the [case] tactics, which just performs the case
-analysis. Another SSReflect tactic [elim] %\ssrt{elim}% generalizes
+analysis. Another Ssreflect tactic [elim] %\ssrt{elim}% generalizes
 [case] by applying the default induction principle ([nat_ind] in this
 case) with the respect to the remaining goal (that is, the predicate
 [[forall p : nat, m + (n + p) = n + (m + p)]]) is to be proven by
@@ -731,7 +731,7 @@ is applicable not only to the goal, but also to hypotheses in the
 assumption context using the [rewrite H1 in H2] syntax (where [H1] is
 the rewriting hypothesis and [H2] is a hypothesis, where the rewriting
 should happen). There are many more tricks that can be done with
-rewritings, and we address the reader to %Chapter~7 of SSReflect
+rewritings, and we address the reader to %Chapter~7 of Ssreflect
 manual~\cite{Gontier-al:TR}%.
 
 *)
@@ -760,11 +760,11 @@ Lemma huh n m: (m <= n) /\ (m > n) -> False.
 
 (**
 
-From now on, we will be consistently including yet another SSReflect
+From now on, we will be consistently including yet another Ssreflect
 modules, [ssrbool] and [eqtype], %\ssrm{ssrbool}\ssrm{eqtype}% into
 our development. The need for them is due to the smooth combination of
 reasoning with [Prop]ositions and [bool]eans, which is a subject of
-the next chapter. Even though in SSReflect's library, relations on
+the next chapter. Even though in Ssreflect's library, relations on
 natural numbers, such as [<=] and [>], are defined as _boolean_
 functions, so far we recommend to the reader to think of them as of
 predicates defined in [Prop] and, therefore, valid arguments to the
@@ -1054,7 +1054,7 @@ Qed.
 
 (** 
 %\hint% It might be useful to employ the lemmas [ltnNge], [leqNgt],
- [ltnS] and similar to them from SSReflect's [ssrnat] %\ssrm{ssrnat}%
+ [ltnS] and similar to them from Ssreflect's [ssrnat] %\ssrm{ssrnat}%
  module. Use the [Search] command to find propositions that might help
  you to deal with the goal.
 

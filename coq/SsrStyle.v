@@ -1,4 +1,4 @@
-(** %\chapter{Inductive Reasoning in SSReflect}
+(** %\chapter{Inductive Reasoning in Ssreflect}
 \label{ch:ssrstyle}
 % *)
 
@@ -24,18 +24,18 @@ Module SsrStyle.
 
 In the previous chapters of this course, we have made an acquaintance
 with the main concepts of constructive logic, Coq and
-SSReflect. However, the proofs we have seen so far are mostly done by
+Ssreflect. However, the proofs we have seen so far are mostly done by
 case analysis, application of hypotheses and various forms of
 rewriting. In this chapter we will consider in more details the proofs
 that employ inductive reasoning as their main component. We will see
-how such proofs are typically structured in SSReflect, so the
+how such proofs are typically structured in Ssreflect, so the
 corresponding scripts would become very concise, yet readable and
 maintainable. We will also learn a few common techniques that will
 help to adapt the induction hypothesis for a goal, so it would become
 suitable.
 
 In the rest of the chapter we will be constantly relying on a series
-of standard SSReflect modules, such as [ssrbool], [ssrnat] and
+of standard Ssreflect modules, such as [ssrbool], [ssrnat] and
 [eqtype], which we import right away.
 
 *)
@@ -49,9 +49,9 @@ Require Import Ssreflect.ssrnat Ssreflect.eqtype.
 
 An important part of the proof process is keeping to an established
 proof layout, which helps to maintain the proofs readable and restore
-the intuition driving the prover's hand.  SSReflect offers a number of
+the intuition driving the prover's hand.  Ssreflect offers a number of
 syntactic primitives that help to maintain such a layout, and in this
-section we give a short overview of them. As usual, the SSReflect
+section we give a short overview of them. As usual, the Ssreflect
 reference manual%~\cite{Gontier-al:TR}% (Chapter 6) provides an
 exhaustive formal definition of each primitive's semantics, so we will
 just cover the base cases here, hoping that the subsequent proofs will
@@ -296,7 +296,7 @@ elim: n=>//[| n Hn]; first by rewrite addn0 add0n; case=>//.
 
 We start the proof by induction on [n], which is triggered by [elim:
 n].%\footnote{Remember that the [elim], \ssrt{elim} as most of other
-SSReflect's tactics operates on the top assumption.}% The subsequent
+Ssreflect's tactics operates on the top assumption.}% The subsequent
 two goals (for the zero and the successor cases) are then simplified
 via %\texttt{//}% and the induction variable and hypothesis are given
 the names [n] and [Hn], respectively, in the second goal (as described
@@ -545,7 +545,7 @@ Now, we are going to proceed with the proof by _selective_ induction
 on [n], such that some of its occurrences in the goal will be a
 subject of inductive reasoning (namely, the second one), and some
 others will be left generalized (that is, bound by a forall-quantified
-variable). We do so by using SSReflect's tactics [elim] with explicit
+variable). We do so by using Ssreflect's tactics [elim] with explicit
 _occurrence selectors_.  %\index{occurrence selectors}%
 
 *)
@@ -1156,9 +1156,9 @@ Qed.
 
 %\end{exercise}%
 
-* Working with SSReflect libraries
+* Working with Ssreflect libraries
 
-As it was mentioned in %Chapter~\ref{ch:intro}%, SSReflect extension
+As it was mentioned in %Chapter~\ref{ch:intro}%, Ssreflect extension
 to Coq comes with an impressive number of libraries for reasoning
 about the large collection of discrete datatypes and structures,
 including but not limited to booleans, natural numbers, sequences,
@@ -1170,14 +1170,14 @@ also introduce a lot of notations that are worth being re-used in
 order to make the proof scripts tractable, yet concise.
 
 We would like to conclude this chapter with a short overview of a
-subset of the standard SSReflect programming and naming policies,
+subset of the standard Ssreflect programming and naming policies,
 which will, hopefully, simplify the use of the libraries in a
 standalone development.
 
 ** Notation and standard properties of algebraic operations
 %\label{sec:funprops}%
 
-SSReflect's module [ssrbool] introduces convenient notation for
+Ssreflect's module [ssrbool] introduces convenient notation for
 predicate connectives, such as [/\] and [\/]. In particular, multiple
 conjunctions and disjunctions are better to be written as [[ /\ P1, P2
 & P3]] and [[ \/ P1, P2 | P3]], respectively, opposed to [P1 /\ P2 /\
@@ -1205,7 +1205,7 @@ hypothesis [p3]. In the second formulation, [conj4'], the case
 analysis immediately decomposed the whole 4-conjunction into the
 separate assumptions.
 
-For functions of arity bigger than one, SSReflect's module [ssrfun]
+For functions of arity bigger than one, Ssreflect's module [ssrfun]
 also introduces convenient notation, allowing them to be curried with
 respect to the second argument:%\index{currying}%
 
@@ -1264,7 +1264,7 @@ Coq's canonical structures, which is a topic of
 %\label{sec:liblists}%
 
 Lists, being one of the most basic inductive datatypes, are usually a
-subject of a lot of exercises for the fresh Coq hackers. SSReflect's
+subject of a lot of exercises for the fresh Coq hackers. Ssreflect's
 modules [seq] %\ssrm{seq}% collect a number of the most commonly used
 procedures on lists and their properties, as well as some non-standard
 induction principles, drastically simplifying the reasoning.
@@ -1323,7 +1323,7 @@ The property [has_repeats] is stated over the lists with elements that
 have decidable equality, which we have considered in
 %Section~\ref{sec:eqrefl}%. Following the computational approach, it
 is a boolean function, which makes use of the boolean disjunction [||]
-and SSReflect's element inclusion predicate [\in], which is similar to
+and Ssreflect's element inclusion predicate [\in], which is similar to
 defined in the module [seq].
 
 The following lemma states that for two lists [xs1] and [xs2], is the
@@ -1339,7 +1339,7 @@ Theorem dirichlet xs1 xs2 :
 (** 
 
 Let us go through the proof of this statement, as it is interesting by
-itself in its intensive use os SSReflect's library lemmas from the
+itself in its intensive use os Ssreflect's library lemmas from the
 [seq] module.
 
 *)
@@ -1448,7 +1448,7 @@ rewrite /xs2' size_filter leq_add2r -has_count.
 ]]
 
 The remaining goal can be proved by _reflecting_ the boolean
-proposition [has] into its [Prop]-counterpart [exists2] from SSReflect
+proposition [has] into its [Prop]-counterpart [exists2] from Ssreflect
 library. The switch is done using the view [hasP], and the proof is
 completed by supplying explicitly the existential witness%~%[x].
 
