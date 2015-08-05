@@ -332,13 +332,14 @@ In order to be compiled, Coq requires Objective Caml version 3.12.1 or
 later, Camlp5 version 6.02 or later, GNU Make version 3.81 or later
 (see the <<INSTALL>> file from the archive with sources for more
 details on configuration and installation).%\footnote{If you are
-installing a newer version of Coq replacing an older one, you might
-need to erase the folder with obsolete Coq libraries, e.g.,
-\texttt{/usr/local/lib/coq}, manually, before running \texttt{make
-install}. Without this, Ssreflect might emit some errors during its
-compilation.}% Once compiled and installed, the following environment
-variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths 
-chosen during the Coq's installation):
+installing a newer version of Coq, replacing an older one, you might
+need to erase first the folder with obsolete Coq libraries, e.g.,
+\texttt{/usr/local/lib/coq}, before running \texttt{make
+install}. Without doing so, Ssreflect might emit some errors during
+its compilation.}% Once compiled and installed, the following
+environment variables should be set (e.g., in <<~/.bashrc>> or
+<<~/.profile>> configuration files) to build Ssreflect (with the
+respective paths chosen during the Coq's installation):
 
 <<
     export COQBIN="/usr/local/bin/"
@@ -530,6 +531,25 @@ symbols, such as $\forall$, $\exists$ and $\rightarrow$, will be
 displayed in Unicode, whereas in the actual program code they are
 still spelled in ASCII, e.g., %\texttt{forall}%, [exists] and
 %\texttt{->}%, correspondingly.
+
+* Acknowledgements
+
+This course was inspired by the fantastic experience of working with
+Aleks Nanevski on verification of imperative and concurrent programs
+during the author's stay at IMDEA Software Institue.  Aleks'
+inimitable sense of beauty when it comes to formal proofs has been one
+of the main principles guiding the design of these lecture notes.
+
+A lot of valuable feedback on earlier versions of the notes was
+received from Amal Ahmed, Jim Apple, Daniil Berezun, Giovanni
+Bernardi, Dmitri Boulytchev, William J. Bowman, Kirill Bryantsev,
+Santiago Cuellar, Andrea Cerone, Olivier Danvy, %R\'{e}my Haemmerle%,
+%Jos\'{e}% Francisco Morales, Phillip Mates, Gleb Mazovetskiy, Anton
+Podkopaev, and Leonid Shalupov.
+
+Lilia Anisimova has drawn the mascot picture %``Le Coq
+M\'{e}canis\'{e}''% for the front page.
+
 
 *)
 
