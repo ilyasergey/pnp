@@ -58,7 +58,7 @@ ziplec:
 	zip pnp-lectures.zip lectures/*.v lectures/Makefile
 
 ziphtt:
-	zip htt.zip htt/*.v htt/Makefile
+	zip htt.zip htt/*.v htt/Makefile htt/Makefile.build
 
 zipsol:
 	zip pnp-solutions.zip solutions/*.v 
