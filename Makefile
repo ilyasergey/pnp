@@ -51,6 +51,7 @@ clean:  $(MAKEFILE)
 	make -f $(MAKEFILE) clean
 	rm -f $(MAKEFILE)
 	rm -f pnp*.zip
+	rm -f htt.zip
 	cd latex; rm -f *.html *.xml *.brf *.css *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out *.xref *.xdv *.tmp *.ncx *.epub *.4tc *.4ct *.mobi *.lg *.idv *.opf
 
 
@@ -58,7 +59,7 @@ ziplec:
 	zip pnp-lectures.zip lectures/*.v lectures/Makefile
 
 ziphtt:
-	zip htt.zip htt/*.v htt/Makefile htt/Makefile.build
+	zip htt.zip htt/*.v htt/Makefile htt/Makefile.build	
 
 zipsol:
 	zip pnp-solutions.zip solutions/*.v 
