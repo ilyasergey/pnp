@@ -488,7 +488,7 @@ VirtualBox to be used;%\footnote{Available from
 size and can be obtained from the same
 %\href{http://ilyasergey.net/pnp/}{course url}%
 as other artifacts (look for the file
-%\texttt{Ubuntu-CoqSSR-PnP.ova}%). It runs Ubuntu 14.04 and
+%\texttt{Ubuntu-CoqSsr-PnP.ova}%). It runs Ubuntu 14.04 and
 automatically logs in when started with the user %\texttt{coquser}%
 (use the password %\texttt{coquser}% whenever it is required). The
 folder %\texttt{\textasciitilde/misc}% contains the sources of
