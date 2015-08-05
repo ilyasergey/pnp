@@ -113,7 +113,10 @@ targeted to fill these gaps, while giving the reader enough background
 to proceed as a Coq hacker on her own. In particular, this manuscript
 describes in detail the following aspects of proof engineering, most
 of which are enabled or empowered by Gonthier et al.'s _small-scale
-reflection_ extension (Ssreflect) to Coq%~\cite{Gontier-al:TR}%:
+reflection_ extension (Ssreflect) to Coq%~\cite{Gontier-al:TR}% and
+its accompanying library called Mathematical Components:
+
+%\index{Mathematical Components}%
 
 - Special treatment is given to the _computational_ nature of
   inductive reasoning about _decidable_ propositions, which makes it
@@ -206,8 +209,8 @@ together with pointers to the relevant bibliographic references.
 %\index{Ssreflect|textbf}%
 
 A significant part of this course's material is presented using the
-Ssreflect extension of Coq%~\cite{Gontier-al:TR}%, developed as a part
-of the Mathematical Components
+Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying
+libraries, developed as a part of the Mathematical Components
 project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}%
 in order to facilitate the automated reasoning in very large
 mathematical developments, in particular, the fully formal
@@ -238,11 +241,11 @@ course, namely, that (a) the proof construction process should rely on
 Coq's native computational machinery as much as possible and (b)
 rewriting (in particular, by equality) is one of the most important
 proof techniques, which should be mastered and leveraged in the
-proofs. Luckily, the way most of the lemmas in Ssreflect libraries are
-implemented makes them immediately suitable to use for rewritings,
-which directly follows the natural mathematical intuition. The
-enhancements Ssreflect brings over the standard Coq rewriting
-machinery also come in handy.
+proofs. Luckily, the way most of the lemmas in Ssreflect and
+Mathematical Components libraries are implemented makes them
+immediately suitable to use for rewritings, which directly follows the
+natural mathematical intuition. The enhancements Ssreflect brings over
+the standard Coq rewriting machinery also come in handy.
 
 Last, but not least, Ssreflect comes with a much improved [Search]
 tool (comparing to the standard one of Coq). Given that a fair part of
@@ -293,7 +296,7 @@ tools.
 In order to be able to follow the manuscript and execute the examples
 provided, the reader is expected to have Coq with Ssreflect installed
 at her machine. This section contains some general instructions on the
-installation and set-up. Most of the mentioned below binaries can be
+installation and set-up. Most of the mentioned below sources can be
 downloaded from the following URL, accompanying these notes:
 
 %
@@ -302,62 +305,66 @@ downloaded from the following URL, accompanying these notes:
 \end{center}
 %
 
-** Installing Coq and Ssreflect
+** Installing Coq, Ssreflect and Mathematical Components
 %\label{sec:install-coq}%
 
 The sources of this manuscript have been compiled and tested with Coq
-version 8.4 and Ssreflect version 1.4. It is not guaranteed that the
-same examples will work seamlessly with different versions. Therefore,
-several recipes on how to build install the necessary software are
-provided below.
+version 8.5 beta 2 and Ssreflect/Mathematical Components version
+1.5. It is not guaranteed that the same examples will work seamlessly
+with different versions. Therefore, several recipes on how to build
+install the necessary software are provided below.
 
-- Windows users are encouraged to use Pierre-Yves Strub's installer
-  with the Coq bundle,%\footnote{Available from
-  \url{http://pierre-yves.strub.nu/}.}% which already contains all the
-  necessary components including Coq v8.4pl2, Ssreflect v1.4 and Emacs
-  with Proof General installed.
+(* - Windows users are encouraged to use Pierre-Yves Strub's installer *)
+(*   with the Coq bundle,%\footnote{Available from *)
+(*   \url{http://pierre-yves.strub.nu/}.}% which already contains all the *)
+(*   necessary components including Coq v8.4pl2, Ssreflect v1.4 and Emacs *)
+(*   with Proof General installed. *)
 
-- Linux and Mac OS X users can compile Coq 8.4 and Ssreflect from
-  sources, which would take around two hours of their
-  time.%\footnote{Getting Coq 8.4 using a system-specific package
-  manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
-  although the Coq version acquired this way is not guaranteed to work
-  properly with Ssreflect 1.4.}%
+Linux and Mac OS X users can compile Coq 8.5 beta 2, Ssreflect and
+Mathematical Components version 1.5 from sources, which would take
+around an hour of their time.%\footnote{Getting Coq using a
+system-specific package manager, such as \emph{aptitude} or
+\emph{MacPorts} is another option, although the Coq version acquired
+this way is not guaranteed to work properly with
+Ssreflect/Mathematical Components 1.5.}%
 
-  In order to be compiled, Coq requires Objective Caml version 3.11.2
-  or later, Camlp5, GNU Make version 3.81 or later (see the
-  <<INSTALL>> file from the archive with sources for more details on
-  configuration and installation). Once compiled, the following
-  environment variables should be set (e.g., in <<~/.bashrc>> or
-  <<~/.profile>> configuration files) to build Ssreflect (with the
-  respective paths chosen during the Coq's installation):
+In order to be compiled, Coq requires Objective Caml version 3.12.1 or
+later, Camlp5 version 6.02 or later, GNU Make version 3.81 or later
+(see the <<INSTALL>> file from the archive with sources for more
+details on configuration and installation).%\footnote{If you are
+installing a newer version of Coq replacing an older one, you might
+need to erase the folder with obsolete Coq libraries, e.g.,
+\texttt{/usr/local/lib/coq}, manually, before running \texttt{make
+install}. Without this, Ssreflect might emit some errors during its
+compilation.}% Once compiled and installed, the following environment
+variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths 
+chosen during the Coq's installation):
 
 <<
     export COQBIN="/usr/local/bin/"
     export COQ_MK="/usr/local/bin/coq_makefile"
 >>
 
-  After compiling Ssreflect, the file <<bin/ssrcoq>> should be created
-  in the <<ssreflect-1.4>> folder. It should be then manually copied
-  to the same folder where the Coq binaries are located (e.g.,
-  <</usr/local/bin>> in the default case of Unix-like systems). It is
-  also recommended to keep Ssreflect's sources easily accessible as
-  reading them might be helpful when working with libraries (see the
-  files in the folder <<ssreflect-1.4/theories/>>). 
+After compiling and installing Ssreflect on top of Coq, as described
+in the corresponding <<INSTALL>> file of the archive, you should be
+able to compile and install the Mathematical Components libraries
+using the same process. It is also recommended to keep
+Ssreflect/MathComp's sources easily accessible as reading them might
+be helpful when working with libraries (for instance, put them to the
+folders <<~/misc/ssreflect-1.5/theories>> and <<~/misc/mathcomp-1.5/theories>>).
 
-  Upon installing Ssreflect via %\texttt{make install}%, the following
-  environment variable should be also set up:
+Upon installing Ssreflect via %\texttt{make install}%, the following
+environment variable should be also set up: 
 
 <<
     export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/Ssreflect/" 
 >>
 
-  Alternatively, instead of running %\texttt{make install}%, one can
-  set up the environment variable %\texttt{SSRCOQ\_LIB}% to point to
-  the folder %\texttt{ssreflect-location/theories}%, which contains
-  all Ssreflect modules compiled (and %\texttt{ssreflect-location}%
-  denotes the location of the directory where Ssreflect has been
-  unpacked to).
+Alternatively, instead of running %\texttt{make install}%, one can set
+up the environment variable %\texttt{SSRCOQ\_LIB}% to point to the
+folder %\texttt{ssreflect-location/theories}%, which contains all
+Ssreflect modules compiled (and %\texttt{ssreflect-location}% denotes
+the location of the directory where Ssreflect has been unpacked to).
 
 ** Emacs set-up
 
@@ -378,7 +385,7 @@ General and Ssreflect sources were unpacked).
     (load-file "~/misc/ProofGeneral-4.2/generic/proof-site.el") 
 
     ;; Ssreflect support 
-    (load-file "~/misc/ssreflect-1.4/pg-ssr.el")
+    (load-file "~/misc/ssreflect-1.5/pg-ssr.el")
 >>
 
 Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes
@@ -394,15 +401,17 @@ be done by adding the following lines into the %\texttt{.emacs}% file:
 
 Every Coq file has the extension %\texttt{.v}%. Opening any
 %\texttt{.v}% file will automatically trigger the Proof General
-mode. Once the mode is launched, in the menu <<Proof-General>>, choose
-the item: << Advanced -> Customize -> Coq -> Coq Prog Name >> and
-change the value of the variable to << ssreflect-location/bin/ssrcoq
->> or << ssreflect-location\bin\ssrcoq >> for Windows/Cygwin users,
-where %\texttt{ssreflect-location}% is the location of your Ssreflect
-directory with compiled binaries (or, alternatively, a parent
-catalogue of the %\texttt{bin}% folder containing Coq and Ssreflect's
-binaries, where %\texttt{ssrcoq}% has been previously copied, as it
-was suggested).
+mode. 
+
+(* Once the mode is launched, in the menu <<Proof-General>>, choose *)
+(* the item: << Advanced -> Customize -> Coq -> Coq Prog Name >> and *)
+(* change the value of the variable to << ssreflect-location/bin/ssrcoq *)
+(* >> or << ssreflect-location\bin\ssrcoq >> for Windows/Cygwin users, *)
+(* where %\texttt{ssreflect-location}% is the location of your Ssreflect *)
+(* directory with compiled binaries (or, alternatively, a parent *)
+(* catalogue of the %\texttt{bin}% folder containing Coq and Ssreflect's *)
+(* binaries, where %\texttt{ssrcoq}% has been previously copied, as it *)
+(* was suggested). *)
 
 ** Getting the lecture files and HTT sources
 %\label{sec:htt-sources}%
