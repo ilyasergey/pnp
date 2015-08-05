@@ -256,7 +256,7 @@ EvenSS
 ]]
 *)
 
-apply: (EvenSS _ _)=>//.
+apply: (EvenSS _ (m' + m))=>//.
 
 (**
 
@@ -499,7 +499,7 @@ Inductive beautiful (n: nat) : Prop :=
 
 The number is beautiful if it's either [0], [3], [5] or a sum of two
 beautiful numbers. Indeed, there are many ways to decompose some
-numbers into the sum $3 \times n + 5 \times n$. Encoding a function,
+numbers into the sum $3 * n + 5 * n$. Encoding a function,
 which checks whether a number is beautiful or not, although not
 impossible, is not entirely trivial (and, in particular, it's not
 trivial to prove the correctness of such function with respect to the

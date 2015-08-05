@@ -59,7 +59,7 @@ provide more intuition on typical usage scenarios.
 ** Bullets and terminators
 
 The proofs proceeding by induction and case analysis typically require
-to prove several goals, one by one, in a sequence picked by the
+us to prove several goals, one by one, in a sequence picked by the
 system.  It is considered to be a good practice to indent the subgoals
 (except for the last one) when there are several to prove. For
 instance, let us consider the following almost trivial lemma:
@@ -72,7 +72,7 @@ Lemma andb_true_elim b c: b && c -> c = true.
 
 Indeed, the reflection machinery, presented in
 %Section~\ref{sec:reflect} of Chapter~\ref{ch:boolrefl}%, makes this
-proof to be a one liner ([by case/andP.]). However, for the sake of
+proof a one liner ([by case/andP.]). However, for the sake of
 demonstration, let us not appeal to it this time and do the proof as
 it would be done in a traditional Coq style: by mere case analysis.
 
@@ -112,7 +112,7 @@ done], %\ssrt{done}%, which do exactly the same.
 
 Notice that the first goal was indented and preceded by the _bullet_
 [-]. %\index{bullets}% The bullet token, preceding a tactic
-invocation, has no operational effect to the proof and serves solely
+invocation, has no operational effect on the proof and serves solely
 for the readability purposes. Alternative forms of tokens are
 %\texttt{+}% and %\texttt{*}%.
 
@@ -169,7 +169,7 @@ Yet another possible way to prove the statement of our subject lemma
 is by employing Coq's _repetition_ tactical [do]%\ssrtl{do}%. The
 script of the form [do !tac.] tries to apply the tactic [tac] as many
 times as possible, as long as new goals are generated or no more goals
-is left to prove.%\footnote{Be careful, though, as such proof script
+are left to prove.%\footnote{Be careful, though, as such proof script
 might never terminate if more and more new goals will be generated
 after each application of the iterated tactic. That said, while Coq
 itself enjoys the strong normalization property (i.e., the programs in
@@ -193,10 +193,10 @@ by do ![done | apply: eqxx | case: b | case: c].
 (** 
 
 Notice that we have added two tactics into the alternative list,
-[done] and [apply: eqxx], which were deemed to fail. The script,
+[done] and [apply: eqxx], which were doomed to fail. The script,
 nevertheless, has succeeded, as the remaining two tactics, [case: b]
 and [case: c], did all the job. Lastly, notice that the [do]-tactical
-can be specified _how many_ times should it try to run each tactic
+can be specified _how many_ times it should try to run each tactic
 from the list by using the restricted form [do n!tac], where [n] is
 the number of attempts (similarly to iterating the [rewrite]
 tactics). The lemma above could be completed by the script of the form

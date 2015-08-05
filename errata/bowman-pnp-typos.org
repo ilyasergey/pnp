@@ -118,7 +118,7 @@
 ** SsrStyle.v
 - line 257
   - Proof of evenP_plus doesn't work: line "apply: (EvenSS _ _=>//)."
-  - change to "apply: (EvenSS _ (m'+m))=>//."
+    - change to "apply: (EvenSS _ (m'+m))=>//."
 - line 500 (in comment)
   - "Indeed there are many ... sum $3 \times n + 5 \times n$ ..."
   - Change equation to "3*m+5*n"
