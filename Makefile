@@ -57,5 +57,8 @@ clean:  $(MAKEFILE)
 ziplec:
 	zip pnp-lectures.zip lectures/*.v lectures/Makefile
 
+ziphtt:
+	zip htt.zip htt/*.v htt/Makefile
+
 zipsol:
 	zip pnp-solutions.zip solutions/*.v 
