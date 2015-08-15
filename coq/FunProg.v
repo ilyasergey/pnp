@@ -331,7 +331,7 @@ OCaml in order to be executed (see%~\cite[Chapter
 10]{Bertot-Casteran:BOOK}% for detailed description of the
 extraction).
 
-So, why ensuring termination in Coq is so important? The reason for
+So, why is ensuring termination in Coq so important? The reason for
 this will be better understood once we introduce the way Coq works
 with logical statements and propositions. For now, it should be enough
 to accept the fact that in order to ensure the logical calculus
