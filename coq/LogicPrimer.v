@@ -65,10 +65,11 @@ to be just regular values of the "programming" language it
 defines. Therefore, the process of constructing the proofs of Coq is
 very similar to the process of writing the programs. Intuitively, when
 one asks a question "Whether the proposition [P] is _true_?", what is
-meant in fact is "Whether the _proof_ of [P] can be constructed?" This
-is an unusual twist, which is crucial for understanding the concept of
-the "truth" and proving propositions in CIC (and, equivalently, in Coq),
-so we specifically outline it here in the form of a motto:
+meant in fact is "Whether the _proof_ of [P] can be
+constructed?". This is an unusual twist, which is crucial for
+understanding the concept of the "truth" and proving propositions in
+CIC (and, equivalently, in Coq), so we specifically outline it here in
+the form of a motto:
 
 %
 \begin{center}
