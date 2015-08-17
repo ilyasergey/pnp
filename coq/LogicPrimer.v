@@ -1035,9 +1035,9 @@ Qed.
 (** 
 
 The use of Ssreflect's tactical [by]%\ssrtl{by}% makes sure that its
-argument tactic ([right] in this case) succeeds and the proof of the
-goal completes, similarly to the trailing [done]. If the sequence of
-tactics [left; right] wouldn't prove the goal, a proof script error
+argument tactic ([right; left] in this case) succeeds and the proof of
+the goal completes, similarly to the trailing [done]. If the sequence
+of tactics [left; right] wouldn't prove the goal, a proof script error
 would be reported.
 
 The statements that have a disjunction as their assumption are usually
