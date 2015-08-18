@@ -1253,7 +1253,7 @@ proposition.
 The proofs of propositions that assume existential quantification are
 simply the proofs by case analysis: destructing the only constructor
 of [ex], immediately provides its arguments: a witness [x] and the
-predicate [P] it satisfies. The proofs, where the existential
+predicate [P], satisfied by [x]. The proofs, where the existential
 quantification is a goal, can be completed by applying the constructor
 [ex_intro] directly or by using a specialized Coq's tactic [exists z],
 which does exactly the same, instantiating the first parameter of the
