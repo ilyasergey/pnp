@@ -98,7 +98,7 @@ principles_. To understand, what the indexed datatype definition has
 to do with rewriting, let us take a close look at the definition of
 [eq]. The type of its only constructor [eq_refl] is a bit misleading,
 as it looks like it is applied to two arguments: [x] and ... [x]. To
-disambiguate it, we shall put some parentheses, so, it fact, it should
+disambiguate it, we shall put some parentheses, so, in fact, it should
 read%~%as
 
 [[
@@ -186,9 +186,8 @@ Qed.
 
 Our next exercise will be to show that the predicate we have just
 defined implies Leibniz equality. The proof is accomplished in one
-%\index{Leibniz equality}% line by first moving the assumption [P x]
-to the top and then case-analysing on the equality, which leads to the
-automatic replacements of [y] by [x].
+%\index{Leibniz equality}% line by case-analysing on the equality,
+which leads to the automatic replacements of [y] by [x].
 
 *)
 
