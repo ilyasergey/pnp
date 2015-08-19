@@ -464,9 +464,9 @@ Notice that the tactical has a companion one %\texttt{<-}\ssrtl{<-}%,
 which performs the rewriting by an equality assumption from right to
 left, in contrast to %\texttt{->}%, which rewrites left to right.
 
-The reverse operation to folding is done by using [rewrite -/...]
-instead of [rewrite /...]%\footnote{As the reader will notice soon, it
-is a general pattern with Ssreflect's rewriting to prefix a
+_Folding_, the reverse operation to unfolding, is done by using [rewrite
+-/...]  instead of [rewrite /...]%\footnote{As the reader will notice
+soon, it is a general pattern with Ssreflect's rewriting to prefix a
 \texttt{rewrite} argument with \texttt{-}, if the \emph{reverse}
 rewriting operation should be performed.}%
 
@@ -813,9 +813,9 @@ following this path.
 In the rest of this section, we will leverage the intuition behind
 indexed type families considered as _rewriting rules_,
 %\index{rewriting rules}% and will try to encode a "truth table"
-%\index{truth table}% of with two disjoint variants of relation
-between [n] and [m], namely, [m <= n] and [n < m]. The table itself is
-encoded by the following inductive definition:
+%\index{truth table}% with two disjoint variants of relation between
+[n] and [m], namely, [m <= n] and [n < m]. The table itself is encoded
+by the following inductive definition:
 
 %\ssrd{leq\_xor\_gtn}%
 
