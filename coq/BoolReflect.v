@@ -178,10 +178,10 @@ Qed.
 (** 
 
 The last proof script first moved for assumptions to the context, so
-the goal became [(P -> Q -> R) -> R]. Next, it partially applied the
-top assumption [(P -> Q -> R)] to [p : P] from the context and moved
-the result back to the goal, so it became [(P -> Q) -> P -> Q], which
-is trivially provable.
+the goal became [(P -> Q -> R) -> Q -> R]. Next, it partially applied
+the top assumption [(P -> Q -> R)] to [p : P] from the context and
+moved the result back to the goal, so it became [(Q -> R) -> Q -> R],
+which is trivially provable.
 
 It is also possible to use views in combination with the [case]
 tactics, which first performs the "view switch" via the view lemma
@@ -198,7 +198,7 @@ Qed.
 
 (** 
 
-What is happened is that the combined tactic [case/H] first switched
+What has happened is that the combined tactic [case/H] first switched
 the top assumption of the goal from [P] to [Q /\ R] and then
 case-analysed on it, which gave the proof of [R] right away, allowing
 us to conclude the proof.
@@ -399,15 +399,14 @@ does not seem possible to implement an always-terminating procedure
 that would automatically decide whether they are equal or not.
 
 The above said does not mean that all possible propositions should be
-implemented as instances of [Prop], making their clients to construct
-the always construct their proofs, when it is necessary, since,
-fortunately, some propositions are _decidable_, so it is possible to
-construct a decision procedure for them. A good example of such
-proposition is a predicate, which ensures that a number [n] is
-prime. Of course, in Coq one can easily encode primality of a natural
-number by means of the following inductive predicate, which ensures
-that [n] is prime if it is [1] or has no other natural divisors but
-[1] and [n] itself.
+implemented as instances of [Prop], making their clients to always
+construct their proofs, when it is necessary, since, fortunately, some
+propositions are _decidable_, so it is possible to construct a
+decision procedure for them. A good example of such proposition is a
+predicate, which ensures that a number [n] is prime. Of course, in Coq
+one can easily encode primality of a natural number by means of the
+following inductive predicate, which ensures that [n] is prime if it
+is [1] or has no other natural divisors but [1] and [n] itself.
 
 %\ssrd{isPrime}%
 
@@ -579,7 +578,7 @@ possibilities: when it returned [true] or [false].%\footnote{We have
 already seen an instance of such case analysis inf the proof of the
 %[leqP]% lemma in Section~\ref{sec:enccustom} of
 Chapter~\ref{ch:eqrew}, although deliberately did not elaborate on it
-back then.}% This makes is particularly pleasant to reason about the
+back then.}% This makes it particularly pleasant to reason about the
 programs and specifications that use conditionals, which is
 demonstrated by the following example.
 
