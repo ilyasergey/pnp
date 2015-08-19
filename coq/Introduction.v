@@ -547,8 +547,8 @@ Santiago Cuellar, Andrea Cerone, Olivier Danvy, %R\'{e}my Haemmerle%,
 %Jos\'{e}% Francisco Morales, Phillip Mates, Gleb Mazovetskiy, Anton
 Podkopaev, and Leonid Shalupov.
 
-Lilia Anisimova has drawn the mascot picture %``Le Coq
-M\'{e}canis\'{e}''% for the front page.
+Lilia Anisimova has drawn the mascot picture %\emph{Le Coq
+M\'{e}canis\'{e}}% for the front page.
 
 
 *)
