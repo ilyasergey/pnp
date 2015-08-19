@@ -867,9 +867,8 @@ Qed.
 %\end{exercise}%
 
 To practice with proofs by induction, let us consider yet another
-inductive predicate, borrowed fro Pierce et al.'s course and defining
-which of natural numbers are _gorgeous_.  
-%\index{gorgeous numbers}%
+inductive predicate, borrowed from Pierce et al.'s course and defining
+which of natural numbers are _gorgeous_.  %\index{gorgeous numbers}%
 
 %\ssrd{gorgeous}%
 
@@ -1009,7 +1008,7 @@ The ultimate goal of this exercise is to prove the statement [reflect
 representations are equivalent. Let us divide the proof into two stages:
 
 - The first stage is proving that all numbers greater or equal than
-  [8] are gorgeous. To prove thism it might be useful to have the
+  [8] are gorgeous. To prove this it might be useful to have the
   following two facts established:
 
 %\hint% Use the tactic [constructor i] to prove a goal, which is an
@@ -1199,7 +1198,7 @@ right-associated conjunctions, which was done by means of the _product
 naming_ pattern [[...]],%\footnote{The same introduction pattern works
 in fact for \emph{any} product type with one constructor, e.g., the
 existential quantification (see Chapter~\ref{ch:logic}).}% so
-eventually all levels vere "peeled off", and we got the necessary
+eventually all levels were "peeled off", and we got the necessary
 hypothesis [p3]. In the second formulation, [conj4'], the case
 analysis immediately decomposed the whole 4-conjunction into the
 separate assumptions.
