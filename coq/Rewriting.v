@@ -1052,8 +1052,9 @@ Qed.
 (* end hide *)
 
 (** 
+
 %\hint% It might be useful to employ the lemmas [ltnNge], [leqNgt],
- [ltnS] and similar to them from Ssreflect's [ssrnat] %\ssrm{ssrnat}%
+ [ltnS] and similar from Ssreflect's [ssrnat] %\ssrm{ssrnat}%
  module. Use the [Search] command to find propositions that might help
  you to deal with the goal.
 
