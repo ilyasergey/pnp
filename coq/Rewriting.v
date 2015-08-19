@@ -571,7 +571,7 @@ Qed.
 
 (** 
 
-The _r-pattern_ %\index{r-pattern}% (redex pattern) [[y + _]],
+The _r-pattern_ %\index{r-pattern}% (regex pattern) [[y + _]],
 preceding the lemma to be used for rewriting, specifies, which
 subexpression of the goal should be a subject of rewriting. When
 non-ambiguous, some parts of the expressions can be replaced by
