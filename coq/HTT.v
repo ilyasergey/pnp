@@ -1675,6 +1675,7 @@ Implement in HTT a function that takes as arguments two pointers, [x]
 and [y], which point to natural numbers, and swaps their
 values. Reflect this effect in the function's specification and verify
 it.
+
 %\hint% Instead of reading the value of a pointer into a variable [t]
  using the [t <-- !p] notation, you might need to specify the _type_
  of the expected value explicitly by using the "de-sugared" version of
@@ -1753,8 +1754,10 @@ computes the [N]th Fibonacci number.  Your task will be to prove its
 correctness with respect to the "pure" function [fib_pure] (which you
 should define in plain Coq) as well as the fact that it starts and
 ends in an empty heap.
+
 %\hint% What is the loop invariant of the recursive computation
  defined by means of the [loop] function?
+
 %\hint% Try to decompose the reasoning into verification of several
  code pieces as in the factorial example and then composing them
  together in the "main" function.
@@ -2188,12 +2191,15 @@ predicate [lseq], and changes the list in place by applying [f] to
 each of its elements, while preserving the list's structure. The
 specification should reflect the fact that the new "logical" contents
 of the single-linked list are an [f] map-image of the old content.
+
 %\hint% The lemmas [lseq_null] and [lseq_pos], proved previously,
  might be useful in the proof of the established specification.
+
 %\hint% A tail-recursive call can be verified via HTT's [val_do]
  lemma, reminiscent to the rule %\Rule{App}%. However, the heap it
  operates with should be "massaged" appropriately via PCM's lemmas
  [joinC] and [joinA].
+
 %\end{exercise}%
 *)
 
@@ -2259,14 +2265,19 @@ reverse T p : {xs}, STsep (@lseq T p xs, [vfun y => lseq y (rev xs)]) :=
 %\noindent%
 We invite the reader to conduct the verification of [reverse], proving
 that it satisfies the given specification.
+
 %\hint% It might be a good idea to make use of the previously proved
  lemmas [lseq_null] and [lseq_pos].
+
 %\hint% Be careful with the logical values of variables passed to the
 [gh_ex] lemma before verifying a recursive call of [reverse].
+
 %\hint% A verification goal to a function defined via [Fix] can be
 reduced via the [val_doR] lemma or similar ones.
+
 %\hint% The [shape_rev] predicate is in fact an existential in
 disguise: it can be proved by providing appropriate witnesses.
+
 %\hint% Rewriting [rev_cons], [cat_rcons] and [cats0] from the [seq]
 library will be useful for establishing equalities between lists.
 *)
