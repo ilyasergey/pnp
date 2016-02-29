@@ -330,16 +330,56 @@ named
 and can be downloaded from the
 %\href{http://ilyasergey.net/pnp/}{course url}% given above. The table
 below describes the correspondence between the chapters of the
-manuscript and the accompanying files.  % \vspace{15pt} \begin{center}
-\begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter
-title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional
-Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} &
-Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew}
-& Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline
-\ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v}
-\\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect &
-\texttt{SsrStyle.v}
-\\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} % For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory development will be required. The archive %\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with sources and the make-script can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and unpacking, the sources should be compiled via the %\texttt{make}% command, given that Coq and Ssreflect are properly installed, as described previously (make sure that the environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as explained in Section%~\ref{sec:install-coq}%). For the immediate compatibility with the lecture sources, it is recommended to place the %\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent folder. After unzipping the archive with lectures, run the %\texttt{make}% command from the folder %\texttt{lectures}% (assuming that the HTT sources are already build and are located in the sibling folder): it should build all %\texttt{.v}% files in it and serve as a consistency check for your setup.  Solutions for all of the exercises from the course are available on demand: drop me a line if you're interested (%\href{mailto:ilya.sergey@imdea.org}{\texttt{ilya.sergey@imdea.org}}%), so I will mail you back the archive.
+manuscript and the accompanying files.  
+
+%
+\vspace{15pt}
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} 
+\\ \hline
+\ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v}
+\\ \hline
+\ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} 
+\\ \hline
+\ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} 
+\\ \hline
+\ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} 
+\\ \hline
+\ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} 
+\\ \hline
+\ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} 
+\\ \hline
+\ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} 
+\\ \hline
+\end{tabular} 
+\end{center}
+\vspace{15pt}
+%
+
+For the examples of Chapter%~\ref{ch:htt}% and the corresponding
+lecture source file, the sources of the Hoare Type Theory development
+will be required. The archive
+%\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with
+sources and the make-script can be downloaded from the
+%\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and
+unpacking, the sources should be compiled via the %\texttt{make}%
+command, given that Coq and Ssreflect are properly installed, as
+described previously (make sure that the environment variables
+%\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as
+explained in Section%~\ref{sec:install-coq}%). For the immediate
+compatibility with the lecture sources, it is recommended to place the
+%\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent
+folder. After unzipping the archive with lectures, run the
+%\texttt{make}% command from the folder %\texttt{lectures}% (assuming
+that the HTT sources are already build and are located in the sibling
+folder): it should build all %\texttt{.v}% files in it and serve as a
+consistency check for your setup.  Solutions for all of the exercises
+from the course are available on demand: drop me a line if you're
+interested
+(%\href{mailto:i.sergey@ucl.ac.uk}{\texttt{i.sergey@ucl.ac.uk}}%), so
+I will mail you back the archive.
 
 ** Using a virtual machine image
 
