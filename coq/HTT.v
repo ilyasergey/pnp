@@ -2123,7 +2123,7 @@ Qed.
 (** 
 We can finally define and specify the HTT procedure [remove], which
 removes the current head of the list and returns the pointer to its
-next element (or [null]) if the list is empty.
+next element or [null] if the list is empty.
 *)
 
 
