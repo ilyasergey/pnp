@@ -253,8 +253,7 @@ need to erase first the folder with obsolete Coq libraries, e.g.,
 \texttt{/usr/local/lib/coq}, before running \texttt{make
 install}. Without doing so, Ssreflect might emit some errors during
 its compilation.}% Once compiled and installed, the following
-environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> 
-configuration files) to build Ssreflect (with the
+environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the
 respective paths chosen during the Coq's installation):
 
 << 
