@@ -1,40 +1,36 @@
+all: default lecsol doc
+
 MODULES      := Introduction FunProg LogicPrimer Rewriting BoolReflect SsrStyle DepRecords HTT Conclusion
-VS           := $(MODULES:%=coq/%.v)
 TEX          := $(MODULES:%=latex/%.v.tex)
-RELEASE      := $(VS) Makefile
-ssr.pname    := $(SSRCOQ_LIB)
-ssr.lname    := Ssreflect
-COQLIBS      := ssr
-MAKEFILE     := Makefile.coq
 COQNOTES     := pnp
+
+default: 
+	cd htt && make && cd ..
+	cd coq && make && cd ..
+
+lecsol: default
+	cd lectures && make -f Makefile.coq && cd ..
+	cd solutions && make -f Makefile.coq && cd ..
+
+cleanhtt:
+	cd htt && make -f Makefile.coq clean && cd ..
+
+cleancoq:
+	cd coq && make -f Makefile.coq clean && cd ..
+
+cleanlec:
+	cd lectures && make -f Makefile.coq clean && cd ..
+
+cleansol:
+	cd solutions && make -f Makefile.coq clean && cd ..
+
+clean: cleansol cleanlec cleancoq cleanhtt
 
 .PHONY: coq clean doc
 
-all: coq doc
-
-coq: $(MAKEFILE)
-	make -f $(MAKEFILE)
-
-SCRUB=
-define scrub
-$(if $(SCRUB),sed -e 's|\.opt||' $1 > $1.tmp; mv $1.tmp $1;)
-endef
-
-
-COQ_MK := coq_makefile
-COQ_MK_FLAGS := $(VS) COQC = "\$$(COQBIN)coqc" COQLIBS = " -R ./htt \"\"" COQFLAGS = "-q \$$(OPT) \$$(COQLIBS)"
-
-$(MAKEFILE): 
-	cd htt && make && cd ..
-	$(COQ_MK) $(COQ_MK_FLAGS) -o $(MAKEFILE)
-	$(call scrub,Makefile.coq)
-
-%.vo: %.v
-	$(MAKE) -f $(MAKEFILE) $@
-
 doc: latex/$(COQNOTES).pdf
 
-latex/%.v.tex: Makefile coq/%.v coq/%.glob
+latex/%.v.tex: Makefile coq/%.v coq/%.glob coq/Introduction.v coq/FunProg.v coq/LogicPrimer.v coq/Rewriting.v coq/BoolReflect.v coq/SsrStyle.v coq/DepRecords.v coq/HTT.v coq/Conclusion.v
 	cd coq ; coqdoc --interpolate --latex --body-only -s \
 		$*.v -o ../latex/$*.v.tex
 
@@ -44,22 +40,11 @@ latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/p
 latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
 	cd latex && pdflatex $* && pdflatex $* && bibtex $* -min-crossrefs=99 && makeindex $* && pdflatex $* && pdflatex $*
 
-cleanhtt:
-	cd htt && make clean && cd ..
+ziplec: cleanlec
+	zip pnp-lectures.zip lectures/*.v lectures/Makefile lectures/_CoqProject
 
-clean:  $(MAKEFILE)
-	make -f $(MAKEFILE) clean
-	rm -f $(MAKEFILE)
-	rm -f pnp*.zip
-	rm -f htt.zip
-	cd latex; rm -f *.html *.xml *.brf *.css *.log *.aux *.dvi *.v.tex *.toc *.bbl *.blg *.idx *.ilg *.pdf *.ind *.out *.xref *.xdv *.tmp *.ncx *.epub *.4tc *.4ct *.mobi *.lg *.idv *.opf
+ziphtt: cleanhtt
+	zip htt.zip htt/*.v htt/Makefile htt/_CoqProject
 
-
-ziplec:
-	zip pnp-lectures.zip lectures/*.v lectures/Makefile
-
-ziphtt:
-	zip htt.zip htt/*.v htt/Makefile htt/Makefile.build	
-
-zipsol:
-	zip pnp-solutions.zip solutions/*.v 
+zipsol: cleansol
+	zip pnp-solutions.zip solutions/*.v solutions/_CoqProject

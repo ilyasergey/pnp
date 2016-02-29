@@ -1,15 +1,6 @@
 (** %\chapter{Functional Programming in Coq}
       \label{ch:funprog}% *)
 
-(* begin hide *)
-Module FunProg.
-(* end hide *)
-
-(** printing done %\texttt{\emph{done}}% *)
-(** printing congr %\texttt{\emph{congr}}% *)
-(** printing of %\texttt{\emph{of}}% *)
-(** printing is %\texttt{\emph{is}}% *)
-
 (** 
 
 Our journey to the land of mechanized reasoning and interactive
@@ -101,12 +92,15 @@ The type [bool] is familiar to every programmer. In Coq, it is
 unsurprisingly defined by providing exactly two constructors: [true]
 and [false]. Since [bool] is already provided by the standard Coq
 library, we do not need to define it ourselves. Instead, we include
-the following modules into our file using the [Require Import]
-%\ccom{Require Import}% command:
+the following modules into our file using the [From ... Require
+Import] %\ccom{Require Import}% %\ccom{From}% command:%\footnote{The
+\textsf{From ...} premise is optional, and in this particular case
+it allows to include libraries from %[mathcomp.ssreflect]% without additional qualifiers.}%
 
 *)
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
 printing it: %\ccom{Print}% 
@@ -200,7 +194,8 @@ import yet another Ssreflect library:
 
 *)
 
-Require Import Ssreflect.ssrnat.
+From mathcomp.ssreflect
+Require Import ssrnat.
 
 (** 
 
@@ -783,7 +778,8 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-Require Import Ssreflect.seq.
+From mathcomp.ssreflect
+Require Import seq.
 Print seq.
 
 (** 
@@ -1196,7 +1192,3 @@ fact
      : nat -> nat
 ]]
 *)
-
-(* begin hide *)
-End FunProg.
-(* end hide *)

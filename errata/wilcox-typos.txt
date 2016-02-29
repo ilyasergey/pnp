@@ -1,0 +1,121 @@
+page 6: "these manuscript" -> "this manuscript"
+
+page 17: nat_ind not highlighted (potentially intentional?)
+
+page 45: "by proving n goal" -> "by proving n goals"
+
+page 62: "yet another Ssreflect modules" -> "two more Ssreflect modules" or something?
+
+page 64: "the lemma eqP" -> "the lemma leqP"
+
+page 69: "this prove" -> "this proof"
+
+page 69: "PQequiv" -> "STequiv"
+
+page 71: You mention that we can only print the body of a Definition, not a Theorem. I don't think this is true, but I may be mistaken. My understanding was that we can print either body, and Definition/Theorem are synonyms. Now, if the Definition or Theorem is ended with Qed instead of Defined, then the body will not be accessible to computation. 
+
+page 71: in two places: "such program" -> "... such programs" or "...such a program" 
+
+page 72: "account to" -> "amount to" ?
+
+page 72: You use the phrase "definitional equality" in a way that is confusing to me. I think of definitional equality as synonymous with "convertability" or "equal by definition" or "equal by computation". It is something built in to the metatheory that is only indirectly accessible from inside Coq. You use the phrase only one other place in the book, on page 55, where your usage seems to agree with mine. But here, you seem to be suggesting that a definitional equality can be a proposition within Coq, which, in my view, it cannot. Only the propositional equality (as defined by an inductive type definition) can be a proposition in Coq. I think if you just said "extensional equality" or even just "equality" instead of "definitional equality" everywhere on this page, that would be correct in my view. Otherwise, maybe you could add a footnote explaining what you mean by "definitional" here that is different from page 55. 
+
+page 72: It seems the constructor IsOne of isPrime is redundant with IsOther, since IsOther does not require n to be greater than 1. Also it is a little confusing since MathComp.prime does not consider 1 to be prime (people always disagree on this :\ ).
+
+page 73: extra space before "coercion"
+
+page 73: extra space before comma in "Haskell ,"
+
+page 74, footnote 5: "inf the proof" -> "in the proof"
+
+There are a couple places where a one-line proof starts with "by" and ends with "=>//", but my impression is that these are the same except that "by" asserts that the proof is done. Is it typical style to use both instead of just "by"?
+
+page 78: "represented y booleans" -> "represented by booleans"
+
+page 80: The word "hint" before the hint about eqxx is not typeset like the other hints.
+
+page 82: extra space and comma in "or tac; done, , which do..."
+
+page 83: "as many of decidable" -> "as many decidable" or "as many of the decidable"
+
+page 83: "one can defined" -> "one can define"
+
+page 84, footnote 2: "[elim]" should be formatted in fixed-width font without the brackets?
+
+page 88: "adde" -> "add"
+
+page 91: "proof the following" -> "prove the following"
+
+page 94: "which is similar to defined in the module seq" not sure what this is trying to say
+
+page 94: "os" -> "of"
+
+page 95: "if is" -> "if it is"
+
+page 95: "predC construct" -> "predC constructs"
+
+page 95: "a negation" -> "the negation" unless you're trying to make a point that the negation is somehow not unique?
+
+page 97: "became to be" -> "came to be"
+
+page 97: "the nature's phenomenons" -> "nature's phenomenons" or "the phenomenons of nature" or "natural phenomenons" (also maybe use "phenomena" as the plural)
+
+page 97: "the couple a" -> "which couple a" or new sentence "They couple a..." 
+
+page 101: "more precisely" -> "More precisely"
+
+page 104: "Proove" -> "Prove"
+
+page 108: "that the by writing" -> "that by writing"
+
+page 111: extra space in "fact  that"
+
+page 111: "concidered" -> "considered"
+
+page 118: "only the value of the pointer x has not changed" -> "... x has changed" (delete the "not"!)
+
+page 119: extra space before the comma in "small footprint ,"
+
+page 119: "smalles" -> "smallest"
+
+page 119: "pos-condition" -> "post-condition"
+
+page 119: "can substituted" -> "can be substituted"
+
+page 119: "module" -> "modulo"
+
+page 121: "the rule about would" -> "the rule above would"
+
+page 125: "whose nature captured by the monad" -> "whose nature is captured by the monad"
+
+page 128: "pointe" -> "pointer"
+
+page 128: "The Coq's command" -> "The Coq command" or "Coq's command"
+
+page 128: overfull hbox in that same paragraph; sloppypar would probably take care of it.
+
+page 128: "whose some" -> "some of whose"
+
+page 128: "basing on" -> "based on"
+
+page 128: "which the content" -> "while the content"
+
+page 129, footnote 11: "Current implementation" -> "The current implementation" 
+
+page 131: it would be nice if "<--" was typeset in monospace
+
+page 135: "alway displat" -> "always display"
+
+page 137, footnote 13: "reasond" -> "reason"
+
+page 140: "lseg_neq" -> "lseq" ?
+
+page 141: "(or null) if the list is empty" -> "(or null if the list is empty)" 
+
+page 143: "dependently-part" -> "dependently-typed part"
+
+page 143: straight quotes around "switch" should be typographical quotes ``''
+
+page 144: "advice" -> "advise"
+
+page 144: straight quotes -> typographical quotes

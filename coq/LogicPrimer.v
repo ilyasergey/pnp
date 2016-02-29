@@ -6,16 +6,12 @@
 (** printing of %\texttt{\emph{of}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing admit %\texttt{\emph{admit}}% *)
-
+(** printing From %\textsf{{From}}% *)
 
 (** %
 \chapter{Propositional Logic}
 \label{ch:logic}
 % *)
-
-(* begin hide *)
-Module LogicPrimer.
-(* end hide *)
 
 (** 
 
@@ -160,10 +156,15 @@ development the standard Ssreflect's module [ssreflect],
 %\ssrm{ssreflect}% which imports some necessary machinery for dealing
 with propositions and proofs.
 
-*)
+ *)
 
-Require Import Ssreflect.ssreflect.
+From mathcomp.ssreflect Require Import ssreflect.
 
+(* begin hide *)
+Module LogicPrimer.
+
+(* end hide *)
+ 
 (**
 
 The truth is represented in Coq as a datatype of sort [Prop] with just
@@ -1361,7 +1362,7 @@ properties of both quantifications, so let us elabore on it for a bit.
 
 In order to prove the conjunction [P1 /\ ... /\ Pn], one needs to
 establish that _all_ propositions [P1 ... Pn] hold, which in the
-finite case can be done by proving [n] goal, for each statement
+finite case can be done by proving [n] goals, for each statement
 separately (and this is what the [split] tactic helps to
 do). Similarly, in order to prove the propositions [forall x: A, P x],
 one needs to prove that [P x] holds for _any_ [x] of type [A]. Since

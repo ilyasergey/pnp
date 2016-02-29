@@ -1,5 +1,5 @@
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun Ssreflect.seq. 
-Require Import MathComp.path Ssreflect.fintype.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq fintype path. 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
@@ -59,7 +59,9 @@ End Exports.
 End Ordered.
 Export Ordered.Exports.
 
-Prenex Implicits ord.
+Definition oleq (T : ordType) (t1 t2 : T) := ord t1 t2 || (t1 == t2).
+
+Prenex Implicits ord oleq.
 
 Section Lemmas.
 Variable T : ordType.
@@ -75,6 +77,16 @@ Proof. by case: T x y=>s [b [m]]. Qed.
 
 Lemma nsym (x y : T) : ord x y -> ord y x -> False.
 Proof. by move=>E1 E2; move: (trans E1 E2); rewrite irr. Qed. 
+
+Lemma otrans : transitive (@oleq T).
+Proof.
+move=>x y z /=; case/orP; last by move/eqP=>->.
+rewrite /oleq; move=>T1; case/orP; first by move/(trans T1)=>->.
+by move/eqP=><-; rewrite T1. 
+Qed.
+
+Lemma sorted_oleq s : sorted (@ord T) s -> sorted (@oleq T) s.
+Proof. by elim: s=>[|x s IH] //=; apply: sub_path=>z y; rewrite /oleq=>->. Qed.
 
 End Lemmas. 
 
@@ -97,6 +109,7 @@ case H2: (ord x y); case H3: (ord y x).
 by move: (total x y); rewrite H1 H2 H3.
 Qed.
 End Totality. 
+
 
 (* Monotone (i.e. strictly increasing) functions for Ord Types *)
 Section Mono.

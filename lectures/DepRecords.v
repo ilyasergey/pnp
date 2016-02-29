@@ -1,13 +1,12 @@
 (** %\chapter{Encoding Mathematical Structures}% *)
 
-Module DepRecords.
-
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
-Require Import Ssreflect.ssrnat Ssreflect.ssrfun.
-
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat ssrfun.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
+
+Module DepRecords.
 
 (** * Encoding partial commutative monoids *)
 

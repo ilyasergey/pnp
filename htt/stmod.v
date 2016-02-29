@@ -1,6 +1,6 @@
 Set Automatic Coercions Import.
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrfun. 
-Require Import Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.seq.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrfun ssrnat eqtype seq.
 Require Import pred prelude idynamic pcm unionmap heap domain.
 Set Implicit Arguments.
 Unset Strict Implicit.

@@ -1,7 +1,5 @@
 (** %\chapter{Functional Programming in Coq} *)
 
-Module FunProg.
-
 (** * Enumeration datatypes *)
 
 Inductive unit : Set := tt.
@@ -26,7 +24,8 @@ unit
 
 Inductive empty : Set := .
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool.
 
 Print bool.
 (** 
@@ -66,7 +65,8 @@ Print nat.
 
 *)
 
-Require Import Ssreflect.ssrnat.
+From mathcomp.ssreflect
+Require Import ssrnat.
 
 Fixpoint my_plus n m := 
  match n with 
@@ -315,7 +315,7 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-Require Import Ssreflect.seq.
+From mathcomp.ssreflect Require Import seq.
 Print seq.
 
 (** 
@@ -498,7 +498,7 @@ fact
 (**                     * Exercices *                              *)
 (*******************************************************************)
 
-Require Import Ssreflect.eqtype.
+From mathcomp.ssreflect Require Import eqtype.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -685,5 +685,3 @@ of the form [4n + 3] and [n] for numbers of the from [2n].
 Hint: Again, you might need to define a number of auxiliary
  (possibly, higher-order) functions to complete this exercise.
 *)
-
-End FunProg.

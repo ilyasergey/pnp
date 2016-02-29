@@ -1,7 +1,7 @@
 (**  %\chapter{Views and Boolean Reflection}% *)
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrfun Ssreflect.eqtype. 
-Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
+From mathcomp.ssreflect
+Require Import ssreflect ssrfun eqtype ssrnat ssrbool prime eqtype.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
@@ -216,7 +216,6 @@ construct a proof of primality for _each_ particular case using the
 constructors (or the contradiction, which would imply that the number
 is not prime). *)
 
-Require Import MathComp.prime.
 Eval compute in prime 239.
 (** 
 [[
@@ -506,7 +505,6 @@ propositional equality can be beneficial.
 
 *)
 
-Require Import Ssreflect.eqtype.
 Definition foo (x y: nat) := if x == y then 1 else 0.
 
 (** 

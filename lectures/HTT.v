@@ -1,14 +1,15 @@
 (** %\chapter{Case Study: Program Verification in Hoare Type Theory}% *)
 
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+Add LoadPath "./../htt".
+Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
+
+
 Module HTT.
 
 (** * Elements of Hoare Type Theory *)
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat. 
-Require Import Ssreflect.eqtype Ssreflect.seq Ssreflect.ssrfun.
-
-Add LoadPath "./../htt".
-Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
 
 Set Implicit Arguments.
 Unset Strict Implicit.

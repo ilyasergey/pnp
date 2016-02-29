@@ -1,16 +1,9 @@
-(** %\chapter{Inductive Reasoning in Ssreflect}
-\label{ch:ssrstyle}
-% *)
-
-(* begin hide *)
-Module SsrStyle.
-(* end hide *)
-
 (** remove printing ~ *)
 (** printing ~ %\textasciitilde% *)
 (** printing R $R$ *)
 (** printing done %\texttt{\emph{done}}% *)
 (** printing congr %\texttt{\emph{congr}}% *)
+(** printing From %\textsf{{From}}% *)
 (** printing of %\texttt{\emph{of}}% *)
 (** printing is %\texttt{\emph{is}}% *)
 (** printing first %\texttt{{first}}% *)
@@ -19,6 +12,10 @@ Module SsrStyle.
 (** printing have %\texttt{\emph{have}}% *)
 (** printing View %\texttt{\emph{View}}% *)
 
+
+(** %\chapter{Inductive Reasoning in Ssreflect}
+\label{ch:ssrstyle}
+% *)
 
 (** 
 
@@ -39,8 +36,14 @@ of standard Ssreflect modules, such as [ssrbool], [ssrnat] and
 
 *)
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool.
-Require Import Ssreflect.ssrnat Ssreflect.eqtype.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
+
+(* begin hide *)
+Module SsrStyle.
+(* end hide *)
+
+
 
 (** 
 
@@ -108,7 +111,7 @@ discriminations to see if the proof can be completed. If the current
 goal is solved, [by tac.] simply terminates and proceeds to the next
 goal; otherwise it reports a proof script error. Alternative
 equivalent uses of the same principle would be [tac; by [].] or [tac;
-done], %\ssrt{done}%, which do exactly the same.
+done],%\ssrt{done}% which do exactly the same.
 
 Notice that the first goal was indented and preceded by the _bullet_
 [-]. %\index{bullets}% The bullet token, preceding a tactic
@@ -213,7 +216,7 @@ Qed.
 It has been already discussed in %Chapter~\ref{ch:boolrefl}% that,
 even though a lot of interesting propositions are inherently
 undecidable and should be, therefore, represented in Coq as instances
-of the sort [Prop], one should strive to implement as many of
+of the sort [Prop], one should strive to implement as many 
 _decidable_ propositions as possible as [bool]-returning
 function. Such "computational" approach to the propositions turns out
 to pay off drastically in the long-term perspective, as most of the
@@ -223,7 +226,7 @@ predicates defined both as inductive datatypes and boolean functions
 and compare the proofs of various properties stated over the
 alternative representations.
 
-One can defined the fact that the only natural number which is equal
+One can define the fact that the only natural number which is equal
 to zero is the zero itself, as shown below:
 
 %\ssrd{isZero}%
@@ -294,7 +297,7 @@ elim: n=>//[| n Hn]; first by rewrite addn0 add0n; case=>//.
 (** 
 
 We start the proof by induction on [n], which is triggered by [elim:
-n].%\footnote{Remember that the [elim], \ssrt{elim} as most of other
+n].%\footnote{Remember that the %[elim]%, \ssrt{elim} as most of other
 Ssreflect's tactics operates on the top assumption.}% The subsequent
 two goals (for the zero and the successor cases) are then simplified
 via %\texttt{//}% and the induction variable and hypothesis are given
@@ -610,7 +613,7 @@ case=>//.
    forall n0 : nat, n0 < n.+1 -> evenb n0.+1 -> evenb m -> evenb (n0.+1 + m)
 ]]
 
-Doing _one more_ case analysis will adde one more [1] to the induction
+Doing _one more_ case analysis will add one more [1] to the induction
 variable [n0], which will bring us to the desired [(.+2)]-orbit.
 
 *)
@@ -847,7 +850,7 @@ Qed.
 
 %\begin{exercise}%
 
-Proof the following theorem about beautiful numbers.
+Prove the following theorem about beautiful numbers.
 
 *)
 
@@ -1209,7 +1212,6 @@ respect to the second argument:%\index{currying}%
 
 *) 
 
-Require Import Ssreflect.ssrfun.
 Locate "_ ^~ _".
 (** 
 [[
@@ -1221,7 +1223,6 @@ function, which applies its argument to the list [[:: 1; 2; 3]]:
 
 *)
 
-Require Import Ssreflect.seq.
 Check map ^~ [:: 1; 2; 3].
 
 (**
@@ -1315,14 +1316,14 @@ Variable A : eqType.
 Fixpoint has_repeats (xs : seq A) :=
   if xs is x :: xs' then (x \in xs') || has_repeats xs' else false.
 
-(** 
+(**
 
 The property [has_repeats] is stated over the lists with elements that
 have decidable equality, which we have considered in
 %Section~\ref{sec:eqrefl}%. Following the computational approach, it
 is a boolean function, which makes use of the boolean disjunction [||]
-and Ssreflect's element inclusion predicate [\in], which is similar to
-defined in the module [seq].
+and Ssreflect's element inclusion predicate [\in], which is defined in
+the module [seq].
 
 The following lemma states that for two lists [xs1] and [xs2], is the
 size [xs2] is strictly smaller than the size of [xs1], but
@@ -1337,7 +1338,7 @@ Theorem dirichlet xs1 xs2 :
 (** 
 
 Let us go through the proof of this statement, as it is interesting by
-itself in its intensive use os Ssreflect's library lemmas from the
+itself in its intensive use of Ssreflect's library lemmas from the
 [seq] module.
 
 *)
@@ -1370,7 +1371,7 @@ elim: xs1 xs2=>[|x xs1 IH] xs2 //= H1 H2.
 
 Next, exactly in the case of a paper-and-pencil proof, we perform the
 case-analysis on the fact [(x \in xs1)], i.e., whether the "head"
-element [x] occurs in the remainder of the list [xs1]. If is,
+element [x] occurs in the remainder of the list [xs1]. If it is,
 the proof is trivial and automatically discharged.
 
 *)
@@ -1389,7 +1390,7 @@ _only_ representative of its class in the original "long" list.  For
 the further inductive reasoning, we will have to remove the same
 element from the "shorter" list [xs2], which is done using the
 following filtering operation ([pred1 x] checks every element for
-equality to [x] and [predC] construct a negation of the passed
+equality to [x] and [predC] constructs the negation of the passed
 predicate), resulting in the list [xs2'], to which the induction
 hypothesis is applied, resulting in two goals
 

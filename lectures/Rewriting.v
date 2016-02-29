@@ -1,8 +1,9 @@
 (** %\chapter{Equality and Rewriting Principles}% *)
 
+From mathcomp.ssreflect
+Require Import ssreflect ssrfun eqtype ssrnat ssrbool.
+
 Module Rewriting.
-Require Import Ssreflect.ssreflect Ssreflect.ssrfun Ssreflect.eqtype. 
-Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 

@@ -1,5 +1,6 @@
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun Ssreflect.seq.
-Require Import pred prelude ordtype domain finmap.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
+Require Import pred prelude ordtype finmap.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -18,13 +19,13 @@ Record mixin_of (T : Type) := Mixin {
     _ : associative join_op;
     _ : left_id unit_op join_op;
     (* monotonicity of valid *)
-    _ : forall x y, valid_op (join_op x y) -> valid_op x; 
+    _ : forall x y, valid_op (join_op x y) -> valid_op x;
     (* unit is valid *)
     _ : valid_op unit_op}.
 
 Section ClassDef.
 
-Notation class_of := mixin_of (only parsing). 
+Notation class_of := mixin_of (only parsing).
 
 Structure type : Type := Pack {sort : Type; _ : class_of sort; _ : Type}.
 Local Coercion sort : type >-> Sortclass.
@@ -33,7 +34,7 @@ Variables (T : Type) (cT : type).
 Definition class := let: Pack _ c _ as cT' := cT return class_of cT' in c.
 
 Definition pack c := @Pack T c T.
-Definition clone := fun c & cT -> T & phant_id (pack c) cT => pack c. 
+Definition clone := fun c & cT -> T & phant_id (pack c) cT => pack c.
 
 Definition valid := valid_op class.
 Definition join := join_op class.
@@ -43,8 +44,8 @@ End ClassDef.
 
 Implicit Arguments unit [cT].
 
-Definition morph_axiom (A B : type) (f : sort A -> sort B) := 
-  f unit = unit /\ forall x y, f (join x y) = join (f x) (f y). 
+Definition morph_axiom (A B : type) (f : sort A -> sort B) :=
+  f unit = unit /\ forall x y, f (join x y) = join (f x) (f y).
 
 Module Exports.
 Coercion sort : type >-> Sortclass.
@@ -64,16 +65,16 @@ Notation valid := valid.
 Notation Unit := unit.
 
 Implicit Arguments unit [cT].
-Prenex Implicits join unit. 
+Prenex Implicits join unit.
 
 Section Morphism.
 Variables A B : pcm.
 
 Structure pcm_morph_type := PCMMorph {
-  pcm_func :> A -> B; 
-  _ : morph_axiom pcm_func}. 
+  pcm_func :> A -> B;
+  _ : morph_axiom pcm_func}.
 
-Definition pcm_morph_for of phant (A -> B) := pcm_morph_type. 
+Definition pcm_morph_for of phant (A -> B) := pcm_morph_type.
 Identity Coercion type_of_pcm_morph : pcm_morph_for >-> pcm_morph_type.
 
 End Morphism.
@@ -81,7 +82,7 @@ End Morphism.
 Notation "{ 'pcm_morph' fT }" := (pcm_morph_for (Phant fT))
   (at level 0, format "{ 'pcm_morph'  '[hv' fT ']' }") : type_scope.
 
-(* Restating the laws, with the notation. *) 
+(* Restating the laws, with the notation. *)
 (* Plus some additional derived lemmas.   *)
 
 Section Laws.
@@ -119,7 +120,7 @@ Variable f : {pcm_morph U -> V}.
 Lemma fjoin x y : f (x \+ y) = f x \+ f y.
 Proof. by case: f=>? []. Qed.
 
-Lemma funit : f Unit = Unit. 
+Lemma funit : f Unit = Unit.
 Proof. by case: f=>? []. Qed.
 
 End Laws.
@@ -140,7 +141,7 @@ Proof. by []. Qed.
 
 Definition pcmE := (pcm_joinE, pcm_validE, pcm_unitE).
 
-End UnfoldingRules. 
+End UnfoldingRules.
 
 End Exports.
 
@@ -150,11 +151,12 @@ Export PCM.Exports.
 
 (* definition of precision for an arbitrary PCM U *)
 
-Definition precise (U : pcm) (P : Pred U) := 
-  forall s1 s2 t1 t2, 
+Definition precise (U : pcm) (P : Pred U) :=
+  forall s1 s2 t1 t2,
     valid (s1 \+ t1) ->
     s1 \+ t1 = s2 \+ t2 ->
     s1 \In P -> s2 \In P -> s1 = s2.
+
 
 (****************************************************)
 (* Sometimes we want to construct PCM's by lifting. *)
@@ -168,7 +170,7 @@ Record mixin_of (T : Type) := Mixin {
   ounit_op : T;
   ojoin_op : T -> T -> option T;
   ojoinC_op : forall x y, ojoin_op x y = ojoin_op y x;
-  ojoinA_op : forall x y z, 
+  ojoinA_op : forall x y z,
     obind (ojoin_op x) (ojoin_op y z) = obind (ojoin_op^~ z) (ojoin_op x y);
   ounitL_op : forall x, ojoin_op ounit_op x = Some x}.
 
@@ -202,7 +204,7 @@ Notation "[ 'unlifted' 'of' T 'for' C ]" := (@clone T C _ idfun id)
 Notation "[ 'unlifted' 'of' T ]" := (@clone T _ _ id id)
   (at level 0, format "[ 'unlifted'  'of'  T ]") : form_scope.
 
-Notation ounit := ounit. 
+Notation ounit := ounit.
 Notation ojoin := ojoin.
 
 Implicit Arguments ounit [cT].
@@ -210,7 +212,7 @@ Implicit Arguments ounit [cT].
 Lemma ojoinC (U : unlifted) (x y : U) : ojoin x y = ojoin y x.
 Proof. by case: U x y=>T [ou oj ojC]. Qed.
 
-Lemma ojoinA (U : unlifted) (x y z : U) : 
+Lemma ojoinA (U : unlifted) (x y z : U) :
         obind (ojoin x) (ojoin y z) = obind (@ojoin U^~ z) (ojoin x y).
 Proof. by case: U x y z=>T [ou oj ojC ojA]. Qed.
 
@@ -227,36 +229,36 @@ Export Unlifted.Exports.
 (* Lifting turns an unlifted structure into a PCM *)
 (**************************************************)
 
-Module Lift.  
-Section Lift.  
-Variable A : unlifted. 
+Module Lift.
+Section Lift.
+Variable A : unlifted.
 
 Structure lift : Type := Undef | Up of A.
 
 Let unit := Up ounit.
 
-Let valid := 
+Let valid :=
   [fun x : lift => if x is Up _ then true else false].
 
-Let join := 
-  [fun x y : lift => 
-     if (x, y) is (Up v, Up w) then 
+Let join :=
+  [fun x y : lift =>
+     if (x, y) is (Up v, Up w) then
        if ojoin v w is Some u then Up u
-       else Undef 
+       else Undef
      else Undef].
 
 Lemma joinC (x y : lift) : join x y = join y x.
 Proof. by case: x y=>[|x][|y] //=; rewrite ojoinC. Qed.
 
 Lemma joinA (x y z : lift) : join x (join y z) = join (join x y) z.
-Proof. 
+Proof.
 case: x y z =>[|x][|y][|z] //=; first by case: (ojoin x y).
 case E1: (ojoin y z)=>[v1|].
 - case E2: (ojoin x y)=>[v2|];
   by move: (ojoinA x y z); rewrite E1 E2 /=; move=>->.
 case E2: (ojoin x y)=>[v2|] //.
 by move: (ojoinA x y z); rewrite E1 E2 /= =><-.
-Qed. 
+Qed.
 
 Lemma unitL x : join unit x = x.
 Proof. by case: x=>[|x] //=; rewrite ounitL. Qed.
@@ -276,23 +278,23 @@ Notation up a := (@Lift.Up _ a).
 
 (* A view for pattern-matching lifted pcm's *)
 
-CoInductive lift_spec A : lift A -> Type := 
+CoInductive lift_spec A : lift A -> Type :=
 | undef_spec : lift_spec undef
-| up_spec : forall a : A, lift_spec (up a). 
+| up_spec : forall a : A, lift_spec (up a).
 
 Lemma liftP A (x : lift A) : lift_spec x.
 Proof. by case: x=>[|a]; [apply: undef_spec | apply: up_spec]. Qed.
 
-Definition liftPCMMixin A := 
-  PCMMixin (@Lift.joinC A) (@Lift.joinA A) 
+Definition liftPCMMixin A :=
+  PCMMixin (@Lift.joinC A) (@Lift.joinA A)
            (@Lift.unitL A) (@Lift.validL A) (@Lift.validU A).
 Canonical liftPCM A := Eval hnf in PCM (lift A) (liftPCMMixin A).
 
 (* simplifying up-up expressions *)
 
-Lemma upupE (A : unlifted) (a1 a2 : A) : 
-        up a1 \+ up a2 = 
-        if ojoin a1 a2 is Some a then up a else undef. 
+Lemma upupE (A : unlifted) (a1 a2 : A) :
+        up a1 \+ up a2 =
+        if ojoin a1 a2 is Some a then up a else undef.
 Proof. by []. Qed.
 
 (* We can prove that lifting preserves equality types *)
@@ -301,9 +303,9 @@ Module LiftEqType.
 Section LiftEqType.
 Variable (A : eqType) (c : Unlifted.mixin_of A).
 
-Let U := (Unlifted A c). 
+Let U := (Unlifted A c).
 
-Definition lift_eq (u v : lift U) := 
+Definition lift_eq (u v : lift U) :=
   match u, v with
     Lift.Up a, Lift.Up b => a == b
   | Lift.Undef, Lift.Undef => true
@@ -335,19 +337,19 @@ Canonical old_heapPCM := Eval hnf in PCM heap old_heapPCMMixin.
 
 (* nats with addition are a pcm *)
 
-Definition natPCMMixin := 
+Definition natPCMMixin :=
   PCMMixin addnC addnA add0n (fun x y => @id true) (erefl _).
 Canonical natPCM := Eval hnf in PCM nat natPCMMixin.
 
 (* also with multiplication, but we don't make that one canonical *)
 
-Definition multPCMMixin := 
-  PCMMixin mulnC mulnA mul1n (fun x y => @id true) (erefl _). 
+Definition multPCMMixin :=
+  PCMMixin mulnC mulnA mul1n (fun x y => @id true) (erefl _).
 Definition multPCM := Eval hnf in PCM nat multPCMMixin.
 
 (* with max too *)
 
-Definition maxPCMMixin := 
+Definition maxPCMMixin :=
   PCMMixin maxnC maxnA max0n (fun x y => @id true) (erefl _).
 Definition maxPCM := Eval hnf in PCM nat maxPCMMixin.
 
@@ -357,8 +359,8 @@ Structure mutex := own | nown.
 
 Module MutexUnlift.
 
-Definition mutex_eq x y := 
-  match x, y with 
+Definition mutex_eq x y :=
+  match x, y with
     own, own => true
   | nown, nown => true
   | _, _ => false
@@ -367,7 +369,7 @@ Definition mutex_eq x y :=
 Lemma mutex_eqP : Equality.axiom mutex_eq.
 Proof. by case; case; constructor. Qed.
 
-Definition ojoin x y := 
+Definition ojoin x y :=
   match x, y with
     own, nown => Some own
   | nown, own => Some own
@@ -380,7 +382,7 @@ Let ounit := nown.
 Lemma ojoinC x y : ojoin x y = ojoin y x.
 Proof. by case: x; case: y. Qed.
 
-Lemma ojoinA x y z : 
+Lemma ojoinA x y z :
         obind (ojoin x) (ojoin y z) = obind (ojoin^~ z) (ojoin x y).
 Proof. by case: x; case: y; case: z. Qed.
 
@@ -392,7 +394,7 @@ End MutexUnlift.
 Definition mutexEqMixin := EqMixin MutexUnlift.mutex_eqP.
 Canonical mutexEqType := Eval hnf in EqType mutex mutexEqMixin.
 
-Definition mutexUnliftedMixin := 
+Definition mutexUnliftedMixin :=
   UnliftedMixin MutexUnlift.ojoinC MutexUnlift.ojoinA MutexUnlift.ounitL.
 Canonical mutexUnlifted := Eval hnf in Unlifted mutex mutexUnliftedMixin.
 
@@ -413,20 +415,20 @@ Definition pjoin := [fun x1 x2 : tp => (x1.1 \+ x2.1, x1.2 \+ x2.2)].
 Definition punit : tp := (Unit, Unit).
 
 Lemma joinC x y : pjoin x y = pjoin y x.
-Proof. 
-move: x y => [x1 x2][y1 y2] /=. 
-by rewrite (joinC x1) (joinC x2). 
+Proof.
+move: x y => [x1 x2][y1 y2] /=.
+by rewrite (joinC x1) (joinC x2).
 Qed.
 
 Lemma joinA x y z : pjoin x (pjoin y z) = pjoin (pjoin x y) z.
 Proof.
-move: x y z => [x1 x2][y1 y2][z1 z2] /=. 
+move: x y z => [x1 x2][y1 y2][z1 z2] /=.
 by rewrite (joinA x1) (joinA x2).
 Qed.
 
 Lemma validL x y : pvalid (pjoin x y) -> pvalid x.
 Proof.
-move: x y => [x1 x2][y1 y2] /=. 
+move: x y => [x1 x2][y1 y2] /=.
 by case/andP=>D1 D2; rewrite (validL D1) (validL D2).
 Qed.
 
@@ -439,7 +441,7 @@ Proof. by rewrite /pvalid /= !valid_unit. Qed.
 End ProdPCM.
 End ProdPCM.
 
-Definition prodPCMMixin U V := 
+Definition prodPCMMixin U V :=
   PCMMixin (@ProdPCM.joinC U V) (@ProdPCM.joinA U V)
            (@ProdPCM.unitL U V) (@ProdPCM.validL U V) (@ProdPCM.validU U V).
 Canonical prodPCM U V := Eval hnf in PCM (_ * _) (@prodPCMMixin U V).
@@ -463,7 +465,7 @@ Lemma uvalidL x y : uvalid (ujoin x y) -> uvalid x.
 Proof. by []. Qed.
 
 Lemma uunitL x : ujoin uunit x = x.
-Proof. by case: x. Qed. 
+Proof. by case: x. Qed.
 
 Lemma uvalidU : uvalid uunit.
 Proof. by []. Qed.
@@ -471,8 +473,8 @@ Proof. by []. Qed.
 End UnitPCM.
 End UnitPCM.
 
-Definition unitPCMMixin := 
-  PCMMixin UnitPCM.ujoinC UnitPCM.ujoinA 
+Definition unitPCMMixin :=
+  PCMMixin UnitPCM.ujoinC UnitPCM.ujoinA
            UnitPCM.uunitL UnitPCM.uvalidL UnitPCM.uvalidU.
 Canonical unitPCM := Eval hnf in PCM unit unitPCMMixin.
 
@@ -483,7 +485,7 @@ Lemma unitL x : true && x = x. Proof. by []. Qed.
 End BoolConjPCM.
 
 Definition boolPCMMixin := PCMMixin andbC andbA BoolConjPCM.unitL
-                           (fun x y => @id true) (erefl _). 
+                           (fun x y => @id true) (erefl _).
 Canonical boolConjPCM := Eval hnf in PCM bool boolPCMMixin.
 
 (* finite maps with disjoint union are a pcm *)
@@ -494,25 +496,25 @@ Variables (K : ordType) (V : Type).
 
 Structure finmap := Undef | Def of {finMap K -> V}.
 
-Definition valid (f : finmap) := 
+Definition valid (f : finmap) :=
   if f is Def _ then true else false.
 
-Definition join (f1 f2 : finmap) := 
-  if (f1, f2) is (Def m1, Def m2) then 
+Definition join (f1 f2 : finmap) :=
+  if (f1, f2) is (Def m1, Def m2) then
     if disj m1 m2 then Def (fcat m1 m2)
     else Undef
   else Undef.
 
 Definition unit := Def (@nil K V).
 
-Lemma joinC f1 f2 : join f1 f2 = join f2 f1. 
-Proof. 
+Lemma joinC f1 f2 : join f1 f2 = join f2 f1.
+Proof.
 case: f1 f2=>[|m1][|m2] //; rewrite /join.
 by case: ifP=>E; rewrite disjC E // fcatC.
 Qed.
 
 Lemma joinCA f1 f2 f3 : join f1 (join f2 f3) = join f2 (join f1 f3).
-Proof. 
+Proof.
 case: f1 f2 f3=>[|m1][|m2][|m3] //.
 rewrite /join; case E1: (disj m2 m3); last first.
 - by case E2: (disj m1 m3)=>//; rewrite disj_fcat E1 andbF.
@@ -541,7 +543,7 @@ Notation finmap := finmap.
 Section Exports.
 Variables (K : ordType) (V : Type).
 
-Definition finmapPCMMixin := 
+Definition finmapPCMMixin :=
   PCMMixin (@joinC K V) (@joinA K V) (@unitL K V) (@validL K V) (@validU K V).
 Canonical finmapPCM := Eval hnf in PCM (finmap K V) finmapPCMMixin.
 

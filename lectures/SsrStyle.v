@@ -1,5 +1,7 @@
 (** %\chapter{Inductive Reasoning in SSReflect}% *)
 
+From mathcomp.ssreflect
+Require Import ssreflect eqtype ssrnat ssrbool ssrfun seq.
 Module SsrStyle.
 
 (** 
@@ -10,8 +12,6 @@ of standard SSReflect modules, such as [ssrbool], [ssrnat] and
 
 *)
 
-Require Import Ssreflect.ssreflect Ssreflect.eqtype. 
-Require Import Ssreflect.ssrnat Ssreflect.ssrbool.
 
 
 (**  * Structuring the proof scripts
@@ -583,7 +583,6 @@ Lemma conj4' P1 P2 P3 P4 : [ /\ P1, P2, P3 & P4] -> P3.
 Proof. by case. Qed.
 
 
-Require Import Ssreflect.ssrfun.
 Locate "_ ^~ _".
 (** 
 [[
@@ -595,7 +594,6 @@ function, which applies its argument to the list [[:: 1; 2; 3]]:
 
 *)
 
-Require Import Ssreflect.seq.
 Check map ^~ [:: 1; 2; 3].
 
 (**

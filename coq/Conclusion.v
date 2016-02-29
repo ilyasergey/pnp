@@ -22,7 +22,7 @@ in \textbf{Chapter~\ref{ch:logic}}. At that point a number of familiar
 logical connectives came in the new light of Curry-Howard
 correspondence with respect to the familiar datatypes. Introducing
 universal and existential quantification, though, required to appeal
-to the dependently-part of Coq as a programming language, which moved
+to the dependently-typed part of Coq as a programming language, which moved
 us beyond a simple propositional logic, so we could make statements
 over arbitrary entities, not just propositions. At the same point we
 had the first encounter with Coq's proof construction machinery. To
@@ -32,7 +32,7 @@ defined in Coq and how it is used for proofs by rewriting. In the
 process we have learned that equality is just one way to encode a
 rewriting principle and seen how custom rewriting principles can be
 encoded in Coq. It turned out that one of the most useful rewriting
-principles is the ability to "switch" in the reasoning between the
+principles is the ability to ``switch'' in the reasoning between the
 constructive and computable formulation of decidable propositions---a
 trick that working mathematicians perform on the fly in their
 minds. In \textbf{Chapter~\ref{ch:boolrefl}}, we have seen how the
@@ -73,11 +73,11 @@ is also a skill, which can fill one with a feeling of excitement from
 a progressive reasoning process and the rewarding sense of achievement
 that few human activities bring.
 
-With this respect, it seems natural to advice the reader to pick a
+With this respect, it seems natural to advise the reader to pick a
 project on her own and put it to the rails of machine-assisted
 proving. Sadly, formalizing things just for the sake of formalization
 is rarely a pleasant experience, and re-doing someone's results in Coq
-just to "have them in Coq at any price" is not a glorious goal by
+just to ``have them in Coq at any price'' is not a glorious goal by
 itself. What is less obvious is that setting up mathematical reasoning
 in Coq usually brings some \emph{brand new} insights that usually come
 from directions no one expected. Such insights might be due to

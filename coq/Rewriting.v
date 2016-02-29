@@ -7,6 +7,7 @@
 (** printing is %\texttt{\emph{is}}% *)
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
+(** printing From %\textsf{{From}}% *)
 
 
 (** %
@@ -32,11 +33,13 @@ exploiting Coq's mechanism of _indexed type families_.
 
 *)
 
-(* begin hide *)
-Module Rewriting.
-Require Import Ssreflect.ssreflect.
+From mathcomp.ssreflect
+Require Import ssreflect ssrnat ssrbool eqtype.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
+
+(* begin hide *)
+Module Rewriting.
 (* end hide *)
 
 (** * Propositional equality in Coq
@@ -474,8 +477,6 @@ rewriting operation should be performed.}%
 
 *)
 
-Require Import Ssreflect.ssrnat.
-
 Definition f x y :=  x + y.
 
 Goal forall x y, x + y + (y + x) = f y x + f y x.
@@ -753,21 +754,19 @@ from a motivating example in the form of an "obvious" lemma.
 
 *)
 
-Require Import Ssreflect.ssrbool Ssreflect.eqtype.
-
 Lemma huh n m: (m <= n) /\ (m > n) -> False.
 
 (**
 
-From now on, we will be consistently including yet another Ssreflect
-modules, [ssrbool] and [eqtype], %\ssrm{ssrbool}\ssrm{eqtype}% into
-our development. The need for them is due to the smooth combination of
-reasoning with [Prop]ositions and [bool]eans, which is a subject of
-the next chapter. Even though in Ssreflect's library, relations on
-natural numbers, such as [<=] and [>], are defined as _boolean_
-functions, so far we recommend to the reader to think of them as of
-predicates defined in [Prop] and, therefore, valid arguments to the
-[/\] connective.
+From now on, we will be consistently including yet another couple of
+Ssreflect modules, [ssrbool] and [eqtype],
+%\ssrm{ssrbool}\ssrm{eqtype}% into our development. The need for them
+is due to the smooth combination of reasoning with [Prop]ositions and
+[bool]eans, which is a subject of the next chapter. Even though in
+Ssreflect's library, relations on natural numbers, such as [<=] and
+[>], are defined as _boolean_ functions, so far we recommend to the
+reader to think of them as of predicates defined in [Prop] and,
+therefore, valid arguments to the [/\] connective.
 
 Although the statement is somewhat obvious, in the setting of Coq's
 inductive definition of natural numbers it should be no big surprise
@@ -923,7 +922,7 @@ subgoal 2 (ID 638) is:
 We would recommend to try stepping this line several times, back and
 forth to see, what is happening. Two goals were generated, so let us
 focus on the first one, as the second one will proceed by
-analogy. Case-analysing on the statement of the lemma [eqP] resulted
+analogy. Case-analysing on the statement of the lemma [leqP] resulted
 in two different "options", as one would expect from the shape of the
 table. The first, case, [m <= n], resulted in generating the
 assumption [m <= n], as it is an argument of the corresponding

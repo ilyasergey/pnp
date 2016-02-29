@@ -1,14 +1,3 @@
-(** 
-%
-\chapter{Encoding Mathematical Structures}
-\label{ch:depstruct}
-% 
-*)
-
-(* begin hide *)
-Module DepRecords.
-(* end hide *)
-
 (** remove printing ~ *)
 (** printing ~ %\textasciitilde% *)
 (** printing R $R$ *)
@@ -23,19 +12,27 @@ Module DepRecords.
 (** printing >-> %\texttt{>->}% *)
 (** printing bot $\bot$ *)
 (** printing <== $\pre$ *)
+(** printing From %\textsf{{From}}% *)
 
+
+(** 
+%
+\chapter{Encoding Mathematical Structures}
+\label{ch:depstruct}
+% 
+*)
 
 
 (**  
 
 Long before programming has been established as a discipline,
-mathematics became to be perceived as a science of building
+mathematics came to be perceived as a science of building
 abstractions and summarizing important properties of various entities
-necessary for describing the nature's phenomenons.%\footnote{In
+necessary for describing nature's phenomenons.%\footnote{In
 addition to being a science of rewriting, as we have already covered
 in Chapter~\ref{ch:eqrew}.}% From the basic course of algebra, we are
 familiar with a number of mathematical structures, such as monoids,
-groups, rings, fields etc., the couple a _carrier_ set (or a number of
+groups, rings, fields etc., which couple a _carrier_ set (or a number of
 sets), a number of operations on it (them), and a collection of
 properties of the set itself and operations on them.
 
@@ -106,8 +103,14 @@ As usual, we will require a number of Ssreflect package imported.
 
 *)
 
-Require Import Ssreflect.ssreflect Ssreflect.ssrbool. 
-Require Import Ssreflect.ssrnat Ssreflect.eqtype Ssreflect.ssrfun.
+From mathcomp.ssreflect
+Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
+
+(* begin hide *)
+Module DepRecords.
+(* end hide *)
+
+
 
 (** 
 
@@ -376,7 +379,7 @@ be given properties from other algebraic data structures (e.g.,
 lattices), which are essentially orthogonal to those of a
 PCM. Moreover, at some point one might be interested in implementing
 the proper inheritance of the PCM structure with respect to the
-carrier type [T]. more precisely, if the type [T] comes with some
+carrier type [T]. More precisely, if the type [T] comes with some
 additional operations, they should be available from it, even if it's
 seen as being "wrapped" into the PCM structure. That said, if [T] is
 proven to be a PCM, one should be able to use this fact as well as the
@@ -561,7 +564,7 @@ Qed.
 (** 
 
 %\begin{exercise}[PCM laws]% 
-Proove the rest of the PCM laws.
+Prove the rest of the PCM laws.
 
 *)
 
@@ -923,7 +926,7 @@ the mechanism, which will perform such conversion implicitly. Even
 though Coq is capable of figuring out what PCM is necessary for a
 particular type (if the necessary canonical instance is defined),
 e.g., when seeing [(a b : nat)] being used, it infers the [natPCM],
-alas, it's not powerful enough to infer that the by writing the
+alas, it's not powerful enough to infer that by writing the
 addition function [+] on natural numbers, we mean the PCM's
 join. However, if necessary, in most of the cases the conversion like
 this can be done by manual rewriting using the following trivial

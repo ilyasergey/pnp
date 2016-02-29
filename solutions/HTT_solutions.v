@@ -1,5 +1,6 @@
-Add LoadPath "./../htt".
+From mathcomp.ssreflect
 Require Import ssreflect ssrbool ssrnat seq eqtype ssrfun.
+Add LoadPath "./../htt".
 Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.  
 
 Set Implicit Arguments.
@@ -133,7 +134,7 @@ apply:ghR=>_ [a b]-> _.
 apply: bnd_seq; apply: val_read => _.
 apply: bnd_seq; apply: val_readR => _.
 apply: bnd_seq; apply: val_write => _.
-by apply val_writeR.
+by apply: val_writeR.
 Qed.
 
 
@@ -199,7 +200,7 @@ Definition fib_tp n x y N :=
 
 Program Definition fib_acc (n x y : ptr) N: fib_tp n x y N := 
   Fix (fun (loop : fib_tp n x y N) (_ : unit) => 
-    Do (n' <-- !n;
+    Do (n' <-- read nat n;
         y' <-- !y;
         if n' == N then ret y'
         else tmp <-- !x;
@@ -319,7 +320,7 @@ Program Definition list_map T S p (f : T -> S) :
                loop next)) p.
 Next Obligation.
 apply: ghR=>h xs H V. 
-case X: (p0 == null).
+case X: (p == null).
 - apply: val_ret=>_ /=;  split=>//. 
   by move/eqP: X H=>-> /=; case/(lseq_null V)=>->->. 
 case/negbT /lseq_pos /(_ H): X=>x[next][h'][Z1] Z2 H1; subst h.
@@ -327,7 +328,7 @@ heval.
 move/validR: V=> V1; apply: (gh_ex (behead xs)).
 rewrite [_ \+ h']joinC joinC -joinA; apply: val_do=>//=.
 case=>m[_]H2 V2; split=>//.
-rewrite [_ \+ p0 :-> _]joinC joinC. 
+rewrite [_ \+ p :-> _]joinC joinC. 
 by rewrite Z1 /=; exists next, m; rewrite joinA.
 Qed.
 
@@ -389,14 +390,14 @@ library will be useful for establishing equalities between lists.
 
 Next Obligation.
 apply:ghR=>i[xs1 xs2]; case=>h1[h2][->{i}]/=[H1 H2] V1.
-case X: (p0 == null) H1=>H1.
-- apply: val_ret=>/=_; move/eqP: X=>X; subst p0.
+case X: (p == null) H1=>H1.
+- apply: val_ret=>/=_; move/eqP: X=>X; subst p.
   move/validL: (V1)=>V3; case:(lseq_null V3 H1)=>Z1 Z2; subst xs1 h1=>/=.
   by rewrite unitL. 
 case/negbT /(lseq_pos) /(_ H1): X=>x[next][h'][Exs]Z H3; subst h1.
 heval; rewrite -!joinA -!(joinCA h'); apply: (gh_ex (behead xs1, x::xs2)).
 apply: val_doR=>//=[V2|].
- - exists h', (p0 :-> x \+ (p0 .+ 1 :-> p1 \+ h2)); split=>//; split=>//.
+ - exists h', (p :-> x \+ (p .+ 1 :-> p1 \+ h2)); split=>//; split=>//.
    by exists p1, h2; rewrite !joinA.
 by move=> z m H4 _; rewrite Exs rev_cons cat_rcons.
 Qed.

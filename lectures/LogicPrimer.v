@@ -1,5 +1,8 @@
 (** %\chapter{Propositional Logic}% *)
 
+From mathcomp.ssreflect
+Require Import ssreflect.
+
 Module LogicPrimer.
 
 
@@ -29,8 +32,6 @@ corresponding to these statements.
 *)
 
 (** * The truth and the falsehood in Coq *)
-
-Require Import Ssreflect.ssreflect.
 
 Print True.
 

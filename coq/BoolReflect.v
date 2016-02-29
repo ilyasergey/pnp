@@ -1,14 +1,3 @@
-(** 
-
-%\chapter{Views and Boolean Reflection}
-\label{ch:boolrefl}%
-
-*)
-
-(* begin hide *)
-Module BoolReflect.
-(* end hide *)
-
 (** remove printing ~ *)
 (** printing ~ %\textasciitilde% *)
 (** printing R $R$ *)
@@ -18,6 +7,14 @@ Module BoolReflect.
 (** printing suff %\texttt{\emph{suff}}% *)
 (** printing have %\texttt{\emph{have}}% *)
 (** printing View %\texttt{\emph{View}}% *)
+(** printing From %\textsf{{From}}% *)
+
+(** 
+
+%\chapter{Views and Boolean Reflection}
+\label{ch:boolrefl}%
+
+*)
 
 (** 
 
@@ -77,7 +74,12 @@ first.
 
 *)
 
-Require Import Ssreflect.ssreflect.
+From mathcomp.ssreflect
+Require Import ssreflect ssrnat prime ssrbool eqtype.
+
+(* begin hide *)
+Module BoolReflect.
+(* end hide *)
 
 (** 
 
@@ -165,7 +167,7 @@ by move=>P Q R p H /(H p).
 
 (**
 
-In fact, this prove can be shortened even further by using the view
+In fact, this proof can be shortened even further by using the view
 notation for the _top_ assumption (denoted using the underscore):
 
 *)
@@ -212,7 +214,7 @@ view mechanism is elaborated enough to deal with view lemmas defined
 by means of equivalence (double implication) %\texttt{<->}%, and the
 system can figure out itself, "in which direction" the view lemma
 should be applied. Let us demonstrate it with the following example,
-which makes use of the hypothesis [PQequiv],%\footnote{The Coq's
+which makes use of the hypothesis [STequiv],%\footnote{The Coq's
 command \texttt{Hypothesis} is a synonym for \texttt{Axiom} and
 \texttt{Variable}.\ccom{Hypothesis}\ccom{Variable}\ccom{Axiom}}% whose
 nature is irrelevant for the illustration purposes:
@@ -316,7 +318,7 @@ apply/STequiv.
 done.
 Qed.
 
-(** 
+(**
 
 The view switch on the goal via [apply/STequiv] immediately changed
 the goal from [S ((negb a) || a)] to [T (negb a)], so the rest of the
@@ -324,11 +326,10 @@ proof becomes trivial. Again, notice that the system managed to infer
 the right arguments for the [STequiv] hypothesis by analysing the
 goal.
 
-Now, if we print the body of [TS_neg] (we can do it since it has been
-defined via [Definition] rather than [Theorem]), we will be able to
-see how an application of the implicit application of the view lemma
-[iffLR] of type [forall P Q : Prop, (P <-> Q) -> P -> Q] has been
-inserted, allowing for the construction of the proof term:
+Now, if we print the body of [TS_neg], we will be able to see how an
+application of the implicit application of the view lemma [iffLR] of
+type [forall P Q : Prop, (P <-> Q) -> P -> Q] has been inserted,
+allowing for the construction of the proof term:
 
 *)
 
@@ -364,9 +365,9 @@ term can be constructed. And, of course, there is no such thing as a
 A more interesting question, though, is for which propositions [P]
 from the sort [Prop] the proofs can be computed _automatically_ by
 means of running a program, whose result will be an answer to the
-question "Whether [P] holds?". Therefore, such program should always
+question "Whether [P] holds?". Therefore, such programs should always
 _terminate_ and, upon terminating, say "true" or "false". The
-propositions, for which a construction of such program (even a very
+propositions, for which a construction of such programs (even a very
 inefficient one) is possible, are referred to %\index{decidability}%
 as _decidable_ ones. Alas, as it was discussed in
 %Section~\ref{sec:propsort} of Chapter~\ref{ch:logic}%, quite a lot of
@@ -377,15 +378,15 @@ such that contain quantifiers. For instance, it is not possible to
 implement a higher-order function, which would take two arbitrary
 functions $f_1$ and $f_2$ of type [nat -> nat] and return a boolean
 answer, which would indicate whether these two functions are equal
-(point-wise) or not, as it would account to checking the result of the
+(point-wise) or not, as it would amount to checking the result of the
 both function on each natural number, which, clearly, wouldn't
-terminate. Therefore, the definitional equality of functions is a good
+terminate. Therefore, the propositional equality of functions is a good
 example of a proposition, which is undecidable in general, so we
 cannot provide a terminating procedure for any values of its arguments
 (i.e., $f_1$ and $f_2$).
 
 However, the _undecidability_ of higher-order propositions (like the
-definitional equality of functions) does not make them _non-provable_
+propositional equality of functions) does not make them _non-provable_
 for particular cases, as we have clearly observed thorough the past
 few chapters. It usually takes a human intuition, though, to construct
 a proof of an undecidable proposition by means of combining a number
@@ -398,23 +399,14 @@ proofs so far. Again, even if the functions are unknown upfront, it
 does not seem possible to implement an always-terminating procedure
 that would automatically decide whether they are equal or not.
 
-The above said does not mean that all possible propositions should be
-implemented as instances of [Prop], making their clients to always
-construct their proofs, when it is necessary, since, fortunately, some
-propositions are _decidable_, so it is possible to construct a
-decision procedure for them. A good example of such proposition is a
-predicate, which ensures that a number [n] is prime. Of course, in Coq
-one can easily encode primality of a natural number by means of the
-following inductive predicate, which ensures that [n] is prime if it
-is [1] or has no other natural divisors but [1] and [n] itself.
+The above said does not mean that all possible propositions should be implemented as instances of [Prop], making their clients to always construct their proofs, when it is necessary, since, fortunately, some propositions are _decidable_, so it is possible to construct a decision procedure for them. A good example of such proposition is a predicate, which ensures that a number [n] is prime. Of course, in Coq one can easily encode primality of a natural number by means of the following inductive predicate, which ensures that [n] is prime if it is [1] or has no other natural divisors but [1] and [n] itself.
 
 %\ssrd{isPrime}%
 
 *)
 
-Inductive isPrime n : Prop := 
- | IsOne of n = 1
- | IsOther of forall n1 n2, n = n1 * n2 -> (n1 = 1 /\ n2 = n) \/ (n1 = n /\ n2 = 1).
+Definition isPrime n : Prop :=
+  forall n1 n2, n = n1 * n2 -> (n1 = 1 /\ n2 = n) \/ (n1 = n /\ n2 = 1).
 
 (** 
 
@@ -437,7 +429,6 @@ and getting a boolean answer:
 
 *)
 
-Require Import Ssreflect.ssrnat MathComp.prime.
 Eval compute in prime 239.
 (** 
 [[
@@ -487,7 +478,7 @@ example brings us to the insight that the [bool]-returning functions
 %\index{injection}% into propositions of sort [Prop] by simply
 comparing their result with [true] via propositional equality, defined
 in Chapter%~\ref{ch:eqrew}%. This is what is done by Ssreflect
-automatically using the implicit %\index{coercion}\ccom{Coercion}%
+automatically using the implicit%\index{coercion}\ccom{Coercion}%
 _coercion_, imported by the [ssrbool] module:%\ssrm{ssrbool}%
 
 [[
@@ -495,15 +486,14 @@ Coercion is_true (b: bool) := b = true
 ]]
 
 This coercion can be seen as an implicit type conversion, familiar
-from the languages like Scala or Haskell
-%\index{Scala}\index{Haskell}%, and it inserted by Coq automatically
+from the languages like Scala or Haskell, 
+%\index{Scala}\index{Haskell}%and it inserted by Coq automatically
 every time it expects to see a proposition of sort [Prop], but instead
 encounters a boolean value. Let us consider the following goal as an
 example:
 
 *)
 
-Require Import Ssreflect.ssrbool.
 Goal prime (16 + 14) -> False.
 Proof. done. Qed.
 
@@ -575,7 +565,7 @@ Another advantage of the boolean predicates is that they automatically
 come with a natural case analysis principle: reasoning about an
 outcome of a particular predicate, one can always consider two
 possibilities: when it returned [true] or [false].%\footnote{We have
-already seen an instance of such case analysis inf the proof of the
+already seen an instance of such case analysis in the proof of the
 %[leqP]% lemma in Section~\ref{sec:enccustom} of
 Chapter~\ref{ch:eqrew}, although deliberately did not elaborate on it
 back then.}% This makes it particularly pleasant to reason about the
@@ -614,7 +604,7 @@ specification as well. The evaluation completes the proof.
 
 *)
 
-by case: (prime n)=>//.
+by case: (prime n).
 Qed.
 
 (**
@@ -720,7 +710,7 @@ case analysis, as with any other rewriting rules:
 *)
 
 Goal false -> False.
-Proof. by case:falseP=>//. Qed.
+Proof. by case:falseP. Qed.
 
 (**
 
@@ -953,7 +943,7 @@ considered as a boolean function.
 *)
 
 Lemma xorbC (b1 b2: bool) : (xorb b1 b2) = (xorb b2 b1). 
-Proof. by case: b1; case: b2=>//. Qed.
+Proof. by case: b1; case: b2. Qed.
 
 Lemma xorbA (b1 b2 b3: bool) : (xorb (xorb b1 b2) b3) = (xorb b1 (xorb b2 b3)). 
 Proof. by case: b1; case: b2; case: b3=>//. Qed.
@@ -967,7 +957,7 @@ the following exercise.
 %\begin{exercise}%
 
 Prove the following specialized lemmas for decidable propositions
-represented y booleans (without using the [intuition] tactic):
+represented by booleans (without using the [intuition] tactic):
 
 *)
 
@@ -986,13 +976,13 @@ apply: (xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3)); first by case: b1 {H}; constru
 - by apply/xorP.
 - rewrite -xorbA. 
   apply/(xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3)=>//; first by apply/xorP. 
-  case: b3 {H} =>//; constructor=>//.
+  by case: b3 {H} =>//; constructor.
 apply: (xorP_gen (xorb b1 b2) b3 (XOR b1 b2) b3). 
 - by apply/xorP.
-- case: b3 {H}; constructor=>//.
+- by case: b3 {H}; constructor.
 rewrite xorbA. 
 apply/(xorP_gen b1 (xorb b2 b3) b1 (XOR b2 b3))=>//; last by apply/xorP. 
-case: b1 {H} =>//; constructor=>//.
+by case: b1 {H} =>//; constructor.
 Qed.
 (* end hide *)
 
@@ -1027,7 +1017,6 @@ the familiar propositional equality can be beneficial.
 
 *)
 
-Require Import Ssreflect.eqtype.
 Definition foo (x y: nat) := if x == y then 1 else 0.
 
 (** 
@@ -1144,7 +1133,7 @@ Lemma qlm : (exists !x, exists !y, Q x y).
 
 (* begin hide *)
 Proof.
-exists true; split; first by exists true; split=> //; case=>//.
+exists true; split; first by exists true; split=> //; case.
 case=>//; rewrite /Q; case; case=>/=; case=>_ G.
 - by move:(G false (eqxx false)).
 by move:(G true (eqxx true)). 
@@ -1153,7 +1142,7 @@ Qed.
 
 (**
 
-%hint% The following lemma [eqxx], stating that the boolean equality
+%\hint% The following lemma [eqxx], stating that the boolean equality
  [x == x] always holds, might be useful for instantiating arguments
  for hypotheses you will get during the proof.
 
