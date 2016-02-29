@@ -199,7 +199,9 @@ sufficient for the reader to proceed to these more advanced subjects on her own.
 
 A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
 
-%\index{four color theorem}% \index{odd order theorem|see {Feit-Thompson theorem}}% \index{Feit-Thompson theorem}%
+%\index{four color theorem}% 
+%\index{odd order theorem|see {Feit-Thompson theorem}}% 
+%\index{Feit-Thompson theorem}%
 
 Ssreflect includes a small set of powerful novel primitives for interactive proof construction (tactics), different from the traditional set provided by Coq. It also comes with a large library of various algebraic structures, ranging from natural numbers to graphs, finite sets and algebras, formalized and shipped with exhaustive toolkits of lemmas and facts about them. Finally, Ssreflect introduces some mild modifications to Coq's native syntax and the semantics of the proof script interpreter, which makes the produced proofs significantly more concise.
 
@@ -251,12 +253,14 @@ need to erase first the folder with obsolete Coq libraries, e.g.,
 \texttt{/usr/local/lib/coq}, before running \texttt{make
 install}. Without doing so, Ssreflect might emit some errors during
 its compilation.}% Once compiled and installed, the following
-environment variables should be set (e.g., in <<~/.bashrc>> or
-<<~/.profile>> configuration files) to build Ssreflect (with the
+environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> 
+configuration files) to build Ssreflect (with the
 respective paths chosen during the Coq's installation):
 
-<< export COQBIN="/usr/local/bin/" export
-COQ_MK="/usr/local/bin/coq_makefile" >>
+<< 
+export COQBIN="/usr/local/bin/" 
+export COQ_MK="/usr/local/bin/coq_makefile" 
+>>
 
 After compiling and installing Ssreflect on top of Coq, as described
 in the corresponding <<INSTALL>> file of the archive, you should be
@@ -269,8 +273,9 @@ folder <<~/misc/mathcomp-1.6>>).
 Upon installing Ssreflect via %\texttt{make install}%, the following
 environment variable should be also set up:
 
-<< export
-SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" >>
+<< 
+export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" 
+>>
 
 Alternatively, instead of running %\texttt{make install}%, one can set
 up the environment variable %\texttt{SSRCOQ\_LIB}% to point to the
@@ -287,26 +292,29 @@ text editor provides a convenient environment for Coq development,
 thanks to the Proof General mode. After downloading and installing
 Emacs, clone the Git rpository of Proof General,%\footnote{Available
 from \url{https://github.com/emacsattic/proofgeneral}.}% following the
-instructions below. Upon cloning, for instance, into the folder
-<<~/misc/PG/>>, add the following lines into the <<.emacs>>
-configuration file located in the home directory in Unix and in
-<<C:\>> root in Windows (possibly replacing the
+instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> 
+and add the following lines into the %\texttt{.emacs}%
+configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the
 %\texttt{\textasciitilde/misc/}% part with the path where Proof
 General repository was cloned and Ssreflect sources were unpacked,
 correspondingly).
 
-<< ;; Proof General support (load-file
-"~/misc/ProofGeneral-4.2/generic/proof-site.el")
+<< 
+;; Proof General support (load-file
+"~/misc/PG/generic/proof-site.el")
 
 ;; Ssreflect support (load-file
-"~/misc.mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el") >>
+"~/misc.mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el") 
+>>
 
 Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes
 can also find it convenient to enable the Cua mode in Emacs, which can
 be done by adding the following lines into the %\texttt{.emacs}% file:
 
-<< (cua-mode t) (setq cua-auto-tabify-rectangles nil)
-(transient-mark-mode 1) (setq cua-keep-region-after-copy t) >>
+<< 
+(cua-mode t) (setq cua-auto-tabify-rectangles nil)
+(transient-mark-mode 1) (setq cua-keep-region-after-copy t) 
+>>
 
 Every Coq file has the extension %\texttt{.v}%. Opening any
 %\texttt{.v}% file will automatically trigger the Proof General mode.
