@@ -197,7 +197,15 @@ sufficient for the reader to proceed to these more advanced subjects on her own.
 
 %\index{Ssreflect|textbf}%
 
-A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
+A significant part of this course's material is presented using the
+Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying
+libraries, developed as a part of the Mathematical Components
+project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}%
+in order to facilitate the automated reasoning in very large
+mathematical developments, in particular, the fully formal
+machine-checked proofs of the %\emph{four color
+theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order)
+theorem}~\cite{Gonthier-al:ITP13}%.
 
 %\index{four color theorem}% 
 %\index{odd order theorem|see {Feit-Thompson theorem}}% 
@@ -291,8 +299,7 @@ text editor provides a convenient environment for Coq development,
 thanks to the Proof General mode. After downloading and installing
 Emacs, clone the Git rpository of Proof General,%\footnote{Available
 from \url{https://github.com/emacsattic/proofgeneral}.}% following the
-instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> 
-and add the following lines into the %\texttt{.emacs}%
+instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> and add the following lines into the %\texttt{.emacs}%
 configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the
 %\texttt{\textasciitilde/misc/}% part with the path where Proof
 General repository was cloned and Ssreflect sources were unpacked,
@@ -441,15 +448,16 @@ during the author's stay at IMDEA Software Institue.  Aleks'
 inimitable sense of beauty when it comes to formal proofs has been one
 of the main principles guiding the design of these lecture notes.
 
-A lot of valuable feedback on earlier versions of the notes was
-provided by Michael D. Adams, Amal Ahmed, Jim Apple, Daniil Berezun,
-Giovanni Bernardi, Dmitri Boulytchev, William J. Bowman, Kirill
-Bryantsev, Santiago Cuellar, Andrea Cerone, Olivier Danvy, %R\'{e}my
-Haemmerle%, %Jos\'{e}% Francisco Morales, Phillip Mates, Gleb
-Mazovetskiy, Anton Podkopaev, Leonid Shalupov and James R. Wilcox.
+I'm grateful to Michael D. Adams, Amal Ahmed, Jim Apple, Daniil
+Berezun, Giovanni Bernardi, Dmitri Boulytchev, William J. Bowman,
+Kirill Bryantsev, Santiago Cuellar, Andrea Cerone, Olivier Danvy,
+%R\'{e}my Haemmerle%, %Jos\'{e}% Francisco Morales, Phillip Mates,
+Gleb Mazovetskiy, Anton Podkopaev, Leonid Shalupov and James R. Wilcox who
+provided a lot of valuable feedback and found countless typos in
+earlier versions of the notes.
 
-Lilia Anisimova has drawn the mascot picture %\emph{Le Coq
-M\'{e}canis\'{e}}% for the front page.
+The mascot picture %\emph{Le Coq M\'{e}canis\'{e}}% on the front page
+is created by Lilia Anisimova.
 
 
 *)
