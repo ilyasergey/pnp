@@ -997,7 +997,7 @@ Check my_pair 1 tt.
 Error: The term "1" has type "nat" while it is expected to have type "Type".
 ]]
 
-The error message is cause by the fact that the constructor has
+The error message is caused by the fact that the constructor has
 expected the type parameters to be provided _explicitly_ first, so the
 value above should in fact has been created by calling [my_pair nat
 unit 1 tt]. Since mentioning types every time is tedious, we can now

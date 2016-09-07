@@ -83,109 +83,38 @@ suitable for teaching purposes.
   Yves Bertot and Pierre %Cast\'{e}ran~\cite{Bertot-Casteran:BOOK}% is
   a great and exhaustive overview of Coq as a formal system and a
   tool, covering both logical foundations, reasoning methodologies,
-  automation tools and offering large number of examples and exercises
-  (from which this course borrows some).
+  automation tools and offering large number of examples and
+  exercises (from which this course borrows some).
 
-- Benjamin Pierce et al.'s _Software Foundations_ electronic
-  book%~\cite{Pierce-al:SF}% introduces Coq development from an angle
-  of the basic research in programming languages, focusing primarily
-  on formalization of program language semantics and type systems,
-  which serve both as main motivating examples of Coq usage and a
-  source of intuition for explaining Coq's logical foundations.
+- Benjamin Pierce et al.'s _Software Foundations_ electronic book%~\cite{Pierce-al:SF}% introduces Coq development from an angle of the basic research in programming languages, focusing primarily on formalization of program language semantics and type systems, which serve both as main motivating examples of Coq usage and a source of intuition for explaining Coq's logical foundations.
 
-- The most recently published book, _Certified Programming with
-  Dependent Types_ by Adam Chlipala%~\cite{Chlipala:BOOK}% provides a
-  gentle introduction to Coq from the perspective of writing programs
-  that manipulate _certificates_, i.e., first-class proofs of the
-  program's correctness. The idea of certified programming is a
-  natural fit for a programming language with dependent types, which
-  Coq offers, and the book is structured as a series of examples that
-  make the dependently-typed aspect of Coq shine, along with the
-  intuition behind these examples and a detailed overview of
-  state-of-the-art _proof automation_ techniques.
+- The most recently published book, _Certified Programming with Dependent Types_ by Adam Chlipala%~\cite{Chlipala:BOOK}% provides a gentle introduction to Coq from the perspective of writing programs that manipulate _certificates_, i.e., first-class proofs of the program's correctness. The idea of certified programming is a natural fit for a programming language with dependent types, which Coq offers, and the book is structured as a series of examples that make the dependently-typed aspect of Coq shine, along with the intuition behind these examples and a detailed overview of state-of-the-art _proof automation_ techniques.
 
-Although all the three books have been used in numerous introductory
-courses for Coq with a large success, it is the author's opinion that
-there are still some topics essential for grasping the intuition
-behind rigorous and boilerplate-free mathematical reasoning via a
-proof assistant that are left underrepresented. This course is
-targeted to fill these gaps, while giving the reader enough background
-to proceed as a Coq hacker on her own. In particular, this manuscript
-describes in detail the following aspects of proof engineering, most
-of which are enabled or empowered by Gonthier et al.'s _small-scale
-reflection_ extension (Ssreflect) to Coq%~\cite{Gontier-al:TR}% and
-its accompanying library called Mathematical Components:
+Although all the three books have been used in numerous introductory courses for Coq with a large success, it is the author's opinion that there are still some topics essential for grasping the intuition behind rigorous and boilerplate-free mathematical reasoning via a proof assistant that are left underrepresented. This course is targeted to fill these gaps, while giving the reader enough background to proceed as a Coq hacker on her own. In particular, this manuscript describes in detail the following aspects of proof engineering, most of which are enabled or empowered by Gonthier et al.'s _small-scale reflection_ extension (Ssreflect) to Coq%~\cite{Gontier-al:TR}% and its accompanying library called Mathematical Components:
 
 %\index{Mathematical Components}%
 
-- Special treatment is given to the _computational_ nature of
-  inductive reasoning about _decidable_ propositions, which makes it
-  possible to compute a result of the vast majority of them (as
-  opposed to prove them constructively) as a boolean value, given that
-  they are formulated as computable recursive Coq functions, rather
-  than inductive predicates (which is more in the spirit of the
-  traditional Coq school).
+- Special treatment is given to the _computational_ nature of inductive reasoning about _decidable_ propositions, which makes it possible to compute a result of the vast majority of them (as opposed to prove them constructively) as a boolean value, given that they are formulated as computable recursive Coq functions, rather than inductive predicates (which is more in the spirit of the traditional Coq school).
 
-- Instead of supplying the reader with a large vocabulary of tactics
-  necessary for everyday Coq hacking, this course focuses on a _very
-  small_ but expressive set of proof constructing primitives (of about
-  a seven in total), offered by Ssreflect or inherited from the
-  vanilla Coq with notable enhancements.
+- Instead of supplying the reader with a large vocabulary of tactics necessary for everyday Coq hacking, this course focuses on a _very small_ but expressive set of proof constructing primitives (of about a seven in total), offered by Ssreflect or inherited from the vanilla Coq with notable enhancements.
 
-- This course advocates inductive types' _parameters_ as an
-  alternative to _indices_ as a way of reasoning about explicit
-  equalities in datatypes with constraints.
+- This course advocates inductive types' _parameters_ as an alternative to _indices_ as a way of reasoning about explicit equalities in datatypes with constraints.
 
-- The reasoning by rewriting is first presented from the perspective
-  of Coq's definition of the propositional equality and followed by
-  elaboration on the idea of using _datatype indices_ as a tool to
-  define client-specific conditional _rewriting rules_.
+- The reasoning by rewriting is first presented from the perspective of Coq's definition of the propositional equality and followed by elaboration on the idea of using _datatype indices_ as a tool to define client-specific conditional _rewriting rules_.
 
-- This manuscript explains the essentials of Ssreflect's _boolean
-  reflection_ between the sort [Prop] and the datatype [bool] as a
-  particular case of conditional rewriting, following the spirit of
-  the computational approach to the proofs of decidable propositions.
+- This manuscript explains the essentials of Ssreflect's _boolean reflection_ between the sort [Prop] and the datatype [bool] as a particular case of conditional rewriting, following the spirit of the computational approach to the proofs of decidable propositions.
 
-- Formal encoding of familiar mathematical structures (e.g., monoids
-  and lattices) is presented by means of Coq's _dependent records_ and
-  overloading mathematical operations using the mechanism of
-  _canonical instances_.
+- Formal encoding of familiar mathematical structures (e.g., monoids and lattices) is presented by means of Coq's _dependent records_ and overloading mathematical operations using the mechanism of _canonical instances_.
 
-- A novel (from a teaching perspective) case study is considered,
-  introducing the readers to the concepts of Hoare Type Theory and
-  describing the basics of type-based reasoning about _imperative
-  programs_ by means of _shallow embedding_.
+- A novel (from a teaching perspective) case study is considered, introducing the readers to the concepts of Hoare Type Theory and describing the basics of type-based reasoning about _imperative programs_ by means of _shallow embedding_.
 
 ** What this course is about
 
-Besides the enumerated above list of topics, which are described in
-detail and supported by a number of examples, this course supplies
-some amount of "standard" material required to introduce a reader with
-a background in programming and classical mathematical disciplines to
-proof engineering and program development in Coq. It starts from
-explaining how simple functional programs and datatypes can be defined
-and executed in the programming environment of Coq, proceeding to the
-definition of propositional logic connectives and elements of
-interactive proof construction. Building further on the programming
-intuitions about algebraic datatypes, this manuscript introduces a
-definition of the propositional equality and the way to encode custom
-rewriting rules, which then culminates with a discussion on the
-boolean reflection and reasoning by means of computation. This
-discussion is continued by revising important principles of proofs by
-induction in Coq and providing pointers to the standard Ssreflect
-libraries, which should be used as a main component for everyday
-mathematical reasoning. The course concludes by reconciling all of the
-described concepts and Coq/Ssreflect reasoning principles by tackling
-a large case study---verifying imperative programs within the
-framework of Nanevski et al.'s Hoare Type
-Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
+Besides the enumerated above list of topics, which are described in detail and supported by a number of examples, this course supplies some amount of "standard" material required to introduce a reader with a background in programming and classical mathematical disciplines to proof engineering and program development in Coq. It starts from explaining how simple functional programs and datatypes can be defined and executed in the programming environment of Coq, proceeding to the definition of propositional logic connectives and elements of interactive proof construction. Building further on the programming intuitions about algebraic datatypes, this manuscript introduces a definition of the propositional equality and the way to encode custom rewriting rules, which then culminates with a discussion on the boolean reflection and reasoning by means of computation. This discussion is continued by revising important principles of proofs by induction in Coq and providing pointers to the standard Ssreflect libraries, which should be used as a main component for everyday mathematical reasoning. The course concludes by reconciling all of the described concepts and Coq/Ssreflect reasoning principles by tackling a large case study---verifying imperative programs within the framework of Nanevski et al.'s Hoare Type Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 
 ** What this course is not about
 
-There is a range of topics that this course does not cover, although
-it is the author's belief that the provided material should
-be
-sufficient for the reader to proceed to these more advanced subjects on her own. Some of the exciting topics, which are certainly worth studying but lie beyond the scope of this manuscript, are listed below together with pointers to the relevant bibliographic references.
+There is a range of topics that this course does not cover, although it is the author's belief that the provided material should be sufficient for the reader to proceed to these more advanced subjects on her own. Some of the exciting topics, which are certainly worth studying but lie beyond the scope of this manuscript, are listed below together with pointers to the relevant bibliographic references.
 
 - Reasoning about infinite objects in Coq via of co-induction (see Chapters 5 and 7 of the book%~\cite{Chlipala:BOOK}% as well as the research papers%~\cite{Hur-al:POPL13,Leroy-Grall:IC09}%).
 
@@ -197,19 +126,9 @@ sufficient for the reader to proceed to these more advanced subjects on her own.
 
 %\index{Ssreflect|textbf}%
 
-A significant part of this course's material is presented using the
-Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying
-libraries, developed as a part of the Mathematical Components
-project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}%
-in order to facilitate the automated reasoning in very large
-mathematical developments, in particular, the fully formal
-machine-checked proofs of the %\emph{four color
-theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order)
-theorem}~\cite{Gonthier-al:ITP13}%.
+A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
 
-%\index{four color theorem}% 
-%\index{odd order theorem|see {Feit-Thompson theorem}}% 
-%\index{Feit-Thompson theorem}%
+%\index{four color theorem}% \index{odd order theorem|see {Feit-Thompson theorem}}% \index{Feit-Thompson theorem}%
 
 Ssreflect includes a small set of powerful novel primitives for interactive proof construction (tactics), different from the traditional set provided by Coq. It also comes with a large library of various algebraic structures, ranging from natural numbers to graphs, finite sets and algebras, formalized and shipped with exhaustive toolkits of lemmas and facts about them. Finally, Ssreflect introduces some mild modifications to Coq's native syntax and the semantics of the proof script interpreter, which makes the produced proofs significantly more concise.
 
@@ -233,159 +152,48 @@ In order to be able to follow the manuscript and execute the examples provided, 
 
 % \begin{center} \url{http://ilyasergey.net/pnp} \end{center} %
 
-** Installing Coq, Ssreflect and Mathematical Components
-%\label{sec:install-coq}%
+** Installing Coq, Ssreflect and Mathematical Components %\label{sec:install-coq}%
 
-The sources of this manuscript have been compiled and tested with Coq
-version 8.5 and Ssreflect/Mathematical Components version 1.6. It is
-not guaranteed that the same examples will work seamlessly with
-different versions. Therefore, several recipes on how to build install
-the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.5 and Ssreflect/Mathematical Components version 1.6. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
 
 
 
-Linux and Mac OS X users can compile Coq 8.5, Ssreflect and
-Mathematical Components version 1.6 from sources, which would take
-around an hour of their time.%\footnote{Getting Coq using a
-system-specific package manager, such as \emph{aptitude} or
-\emph{MacPorts} is another option, although the Coq version acquired
-this way is not guaranteed to work properly with
-Ssreflect/Mathematical Components 1.6.}%
+Linux and Mac OS X users can compile Coq 8.5, Ssreflect and Mathematical Components version 1.6 from sources, which would take around an hour of their time.%\footnote{Getting Coq using a system-specific package manager, such as \emph{aptitude} or \emph{MacPorts} is another option, although the Coq version acquired this way is not guaranteed to work properly with Ssreflect/Mathematical Components 1.6.}%
 
-In order to be compiled, Coq requires Objective Caml version 4.02.2 or
-later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later
-(see the <<INSTALL>> file from the archive with sources for more
-details on configuration and installation).%\footnote{If you are
-installing a newer version of Coq, replacing an older one, you might
-need to erase first the folder with obsolete Coq libraries, e.g.,
-\texttt{/usr/local/lib/coq}, before running \texttt{make
-install}. Without doing so, Ssreflect might emit some errors during
-its compilation.}% Once compiled and installed, the following
-environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the
-respective paths chosen during the Coq's installation):
+In order to be compiled, Coq requires Objective Caml version 4.02.2 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
 
-<< 
-export COQBIN="/usr/local/bin/" 
-export COQ_MK="/usr/local/bin/coq_makefile" 
->>
+<< export COQBIN="/usr/local/bin/" export COQ_MK="/usr/local/bin/coq_makefile" >>
 
-After compiling and installing Ssreflect on top of Coq, as described
-in the corresponding <<INSTALL>> file of the archive, you should be
-able to compile and install the Mathematical Components libraries
-using the same process. It is also recommended to keep
-Ssreflect/MathComp's sources easily accessible as reading them might
-be helpful when working with libraries (for instance, put them to the
-folder <<~/misc/mathcomp-1.6>>).
+After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6>>).
 
-Upon installing Ssreflect via %\texttt{make install}%, the following
-environment variable should be also set up:
+Upon installing Ssreflect via %\texttt{make install}%, the following environment variable should be also set up:
 
-<< 
-export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" 
->>
+<< export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" >>
 
-Alternatively, instead of running %\texttt{make install}%, one can set
-up the environment variable %\texttt{SSRCOQ\_LIB}% to point to the
-folder %\texttt{ssreflect-location/mathcomp/ssreflect}%, which
-contains all Ssreflect modules compiled (and
-%\texttt{ssreflect-location}% denotes the location of the directory
-where Ssreflect has been unpacked to).
+Alternatively, instead of running %\texttt{make install}%, one can set up the environment variable %\texttt{SSRCOQ\_LIB}% to point to the folder %\texttt{ssreflect-location/mathcomp/ssreflect}%, which contains all Ssreflect modules compiled (and %\texttt{ssreflect-location}% denotes the location of the directory where Ssreflect has been unpacked to).
 
 ** Emacs set-up
 
-Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or
-Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users)
-text editor provides a convenient environment for Coq development,
-thanks to the Proof General mode. After downloading and installing
-Emacs, clone the Git rpository of Proof General,%\footnote{Available
-from \url{https://github.com/emacsattic/proofgeneral}.}% following the
-instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> and add the following lines into the %\texttt{.emacs}%
-configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the
-%\texttt{\textasciitilde/misc/}% part with the path where Proof
-General repository was cloned and Ssreflect sources were unpacked,
-correspondingly).
+Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git rpository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% following the instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> and add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General repository was cloned and Ssreflect sources were unpacked, correspondingly).
 
-<< 
-;; Proof General support (load-file
-"~/misc/PG/generic/proof-site.el")
+<< ;; Proof General support (load-file "~/misc/PG/generic/proof-site.el")
 
-;; Ssreflect support (load-file
-"~/misc.mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el") 
->>
+;; Ssreflect support (load-file "~/misc.mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el") >>
 
-Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes
-can also find it convenient to enable the Cua mode in Emacs, which can
-be done by adding the following lines into the %\texttt{.emacs}% file:
+Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
-<< 
-(cua-mode t) (setq cua-auto-tabify-rectangles nil)
-(transient-mark-mode 1) (setq cua-keep-region-after-copy t) 
->>
+<< (cua-mode t) (setq cua-auto-tabify-rectangles nil) (transient-mark-mode 1) (setq cua-keep-region-after-copy t) >>
 
-Every Coq file has the extension %\texttt{.v}%. Opening any
-%\texttt{.v}% file will automatically trigger the Proof General mode.
+Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file will automatically trigger the Proof General mode.
 
 
 ** Getting the lecture files and HTT sources %\label{sec:htt-sources}%
 
-The reader is encouraged to download the additional material for this
-course in the form of Coq files with all examples from the manuscript
-plus some additional exercises. The archive with these sources is
-named
-%\href{http://ilyasergey.net/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}%
-and can be downloaded from the
-%\href{http://ilyasergey.net/pnp/}{course url}% given above. The table
-below describes the correspondence between the chapters of the
-manuscript and the accompanying files.  
+The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The archive with these sources is named %\href{http://ilyasergey.net/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}% and can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}% given above. The table below describes the correspondence between the chapters of the manuscript and the accompanying files.
 
-%
-\vspace{15pt}
-\begin{center}
-\begin{tabular}{|c|l|l|}
-\hline
-\textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} 
-\\ \hline
-\ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v}
-\\ \hline
-\ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} 
-\\ \hline
-\ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} 
-\\ \hline
-\ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} 
-\\ \hline
-\ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} 
-\\ \hline
-\ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} 
-\\ \hline
-\ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} 
-\\ \hline
-\end{tabular} 
-\end{center}
-\vspace{15pt}
-%
+% \vspace{15pt} \begin{center} \begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} \\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} \\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} %
 
-For the examples of Chapter%~\ref{ch:htt}% and the corresponding
-lecture source file, the sources of the Hoare Type Theory development
-will be required. The archive
-%\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with
-sources and the make-script can be downloaded from the
-%\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and
-unpacking, the sources should be compiled via the %\texttt{make}%
-command, given that Coq and Ssreflect are properly installed, as
-described previously (make sure that the environment variables
-%\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as
-explained in Section%~\ref{sec:install-coq}%). For the immediate
-compatibility with the lecture sources, it is recommended to place the
-%\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent
-folder. After unzipping the archive with lectures, run the
-%\texttt{make}% command from the folder %\texttt{lectures}% (assuming
-that the HTT sources are already build and are located in the sibling
-folder): it should build all %\texttt{.v}% files in it and serve as a
-consistency check for your setup.  Solutions for all of the exercises
-from the course are available on demand: drop me a line if you're
-interested
-(%\href{mailto:i.sergey@ucl.ac.uk}{\texttt{i.sergey@ucl.ac.uk}}%), so
-I will mail you back the archive.
+For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory development will be required. The archive %\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with sources and the make-script can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and unpacking, the sources should be compiled via the %\texttt{make}% command, given that Coq and Ssreflect are properly installed, as described previously (make sure that the environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as explained in Section%~\ref{sec:install-coq}%). For the immediate compatibility with the lecture sources, it is recommended to place the %\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent folder. After unzipping the archive with lectures, run the %\texttt{make}% command from the folder %\texttt{lectures}% (assuming that the HTT sources are already build and are located in the sibling folder): it should build all %\texttt{.v}% files in it and serve as a consistency check for your setup.  Solutions for all of the exercises from the course are available on demand: drop me a line if you're interested (%\href{mailto:i.sergey@ucl.ac.uk}{\texttt{i.sergey@ucl.ac.uk}}%), so I will mail you back the archive.
 
 ** Using a virtual machine image
 
@@ -452,9 +260,9 @@ I'm grateful to Michael D. Adams, Amal Ahmed, Jim Apple, Daniil
 Berezun, Giovanni Bernardi, Dmitri Boulytchev, William J. Bowman,
 Kirill Bryantsev, Santiago Cuellar, Andrea Cerone, Olivier Danvy,
 %R\'{e}my Haemmerle%, %Jos\'{e}% Francisco Morales, Phillip Mates,
-Gleb Mazovetskiy, Anton Podkopaev, Leonid Shalupov and James R. Wilcox who
-provided a lot of valuable feedback and found countless typos in
-earlier versions of the notes.
+Gleb Mazovetskiy, Anton Podkopaev, Leonid Shalupov, Jan Stolarek and
+James R. Wilcox who provided a lot of valuable feedback and found
+countless typos in earlier versions of the notes.
 
 The mascot picture %\emph{Le Coq M\'{e}canis\'{e}}% on the front page
 is created by Lilia Anisimova.
