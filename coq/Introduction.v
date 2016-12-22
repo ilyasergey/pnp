@@ -154,17 +154,17 @@ In order to be able to follow the manuscript and execute the examples provided, 
 
 ** Installing Coq, Ssreflect and Mathematical Components %\label{sec:install-coq}%
 
-The sources of this manuscript have been compiled and tested with Coq version 8.5 and Ssreflect/Mathematical Components version 1.6. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.6 and Ssreflect/Mathematical Components version 1.6.1. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
 
 
 
-Linux and Mac OS X users can compile Coq 8.5, Ssreflect and Mathematical Components version 1.6 from sources, which would take around an hour of their time.%\footnote{Getting Coq using a system-specific package manager, such as \emph{aptitude} or \emph{MacPorts} is another option, although the Coq version acquired this way is not guaranteed to work properly with Ssreflect/Mathematical Components 1.6.}%
+Linux and Mac OS X users can compile Coq 8.6, Ssreflect and Mathematical Components version 1.6.1 from sources, which would take around an hour of their time.%\footnote{Getting Coq using a system-specific package manager, such as \emph{aptitude} or \emph{MacPorts} is another option, although the Coq version acquired this way is not guaranteed to work properly with Ssreflect/Mathematical Components 1.6.1.}%
 
 In order to be compiled, Coq requires Objective Caml version 4.02.2 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
 
 << export COQBIN="/usr/local/bin/" export COQ_MK="/usr/local/bin/coq_makefile" >>
 
-After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6>>).
+After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6.1>>).
 
 Upon installing Ssreflect via %\texttt{make install}%, the following environment variable should be also set up:
 
@@ -178,7 +178,7 @@ Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnot
 
 << ;; Proof General support (load-file "~/misc/PG/generic/proof-site.el")
 
-;; Ssreflect support (load-file "~/misc.mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el") >>
+;; Ssreflect support (load-file "~/misc/mathcomp-1.6.1/mathcomp/ssreflect/pg-ssr.el") >>
 
 Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
