@@ -152,7 +152,7 @@ In order to be able to follow the manuscript and execute the examples provided, 
 
 % \begin{center} \url{http://ilyasergey.net/pnp} \end{center} %
 
-Alternatively, you can clone the the sources of these lecture notes, along with al exercises from its public GitHub repository:
+Alternatively, you can clone the the sources of these lecture notes, along with the exercises and the solution from the following public GitHub repository:
 
 % \begin{center} \url{https://github.com/ilyasergey/pnp} \end{center} %
 
