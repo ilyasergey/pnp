@@ -166,7 +166,10 @@ Linux and Mac OS X users can compile Coq 8.6, Ssreflect and Mathematical Compone
 
 In order to be compiled, Coq requires Objective Caml version 4.02.2 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
 
-<< export COQBIN="/usr/local/bin/" export COQ_MK="/usr/local/bin/coq_makefile" >>
+<< 
+export COQBIN="/usr/local/bin/" 
+export COQ_MK="/usr/local/bin/coq_makefile" 
+>>
 
 After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6.1>>).
 
@@ -180,13 +183,22 @@ Alternatively, instead of running %\texttt{make install}%, one can set up the en
 
 Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git rpository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% following the instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> and add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General repository was cloned and Ssreflect sources were unpacked, correspondingly).
 
-<< ;; Proof General support (load-file "~/misc/PG/generic/proof-site.el")
+<< 
+;; Proof General support 
+(load-file "~/misc/PG/generic/proof-site.el")
 
-;; Ssreflect support (load-file "~/misc/mathcomp-1.6.1/mathcomp/ssreflect/pg-ssr.el") >>
+;; Ssreflect support 
+(load-file "~/misc/mathcomp-1.6.1/mathcomp/ssreflect/pg-ssr.el") 
+>>
 
 Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
-<< (cua-mode t) (setq cua-auto-tabify-rectangles nil) (transient-mark-mode 1) (setq cua-keep-region-after-copy t) >>
+<< 
+(cua-mode t) 
+(setq cua-auto-tabify-rectangles nil) 
+(transient-mark-mode 1) 
+(setq cua-keep-region-after-copy t) 
+>>
 
 Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file will automatically trigger the Proof General mode.
 
