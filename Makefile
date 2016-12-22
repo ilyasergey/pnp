@@ -1,4 +1,4 @@
-all: default lecsol doc
+all: default doc
 
 MODULES      := Introduction FunProg LogicPrimer Rewriting BoolReflect SsrStyle DepRecords HTT Conclusion
 TEX          := $(MODULES:%=latex/%.v.tex)
@@ -8,18 +8,11 @@ default:
 	cd htt && make && cd ..
 	cd coq && make && cd ..
 
-lecsol: default
-	cd lectures && make -f Makefile.coq && cd ..
-	cd solutions && make -f Makefile.coq && cd ..
-
 cleanhtt:
 	cd htt && make -f Makefile.coq clean && cd ..
 
 cleancoq:
 	cd coq && make -f Makefile.coq clean && cd ..
-
-cleanlec:
-	cd lectures && make -f Makefile.coq clean && cd ..
 
 cleansol:
 	cd solutions && make -f Makefile.coq clean && cd ..
