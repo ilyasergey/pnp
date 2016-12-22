@@ -152,6 +152,10 @@ In order to be able to follow the manuscript and execute the examples provided, 
 
 % \begin{center} \url{http://ilyasergey.net/pnp} \end{center} %
 
+Alternatively, you can clone the the sources of these lecture notes, along with al exercises from its public GitHub repository:
+
+% \begin{center} \url{https://github.com/ilyasergey/pnp} \end{center} %
+
 ** Installing Coq, Ssreflect and Mathematical Components %\label{sec:install-coq}%
 
 The sources of this manuscript have been compiled and tested with Coq version 8.6 and Ssreflect/Mathematical Components version 1.6.1. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
@@ -193,7 +197,9 @@ The reader is encouraged to download the additional material for this course in 
 
 % \vspace{15pt} \begin{center} \begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} \\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} \\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} %
 
-For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory development will be required. The archive %\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with sources and the make-script can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and unpacking, the sources should be compiled via the %\texttt{make}% command, given that Coq and Ssreflect are properly installed, as described previously (make sure that the environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as explained in Section%~\ref{sec:install-coq}%). For the immediate compatibility with the lecture sources, it is recommended to place the %\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent folder. After unzipping the archive with lectures, run the %\texttt{make}% command from the folder %\texttt{lectures}% (assuming that the HTT sources are already build and are located in the sibling folder): it should build all %\texttt{.v}% files in it and serve as a consistency check for your setup.  Solutions for all of the exercises from the course are available on demand: drop me a line if you're interested (%\href{mailto:i.sergey@ucl.ac.uk}{\texttt{i.sergey@ucl.ac.uk}}%), so I will mail you back the archive.
+For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory development will be required. The archive %\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with sources and the make-script can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and unpacking, the sources should be compiled via the %\texttt{make}% command, given that Coq and Ssreflect are properly installed, as described previously (make sure that the environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as explained in Section%~\ref{sec:install-coq}%). For the immediate compatibility with the lecture sources, it is recommended to place the %\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent folder. After unzipping the archive with lectures, run the %\texttt{make}% command from the folder %\texttt{lectures}% (assuming that the HTT sources are already build and are located in the sibling folder): it should build all %\texttt{.v}% files in it and serve as a consistency check for your setup.  
+
+Solutions for all of the exercises can be found in the folder %\texttt{solutions}% of the GitHub project.
 
 ** Using a virtual machine image
 
