@@ -1,4 +1,4 @@
-# Lecture notes for a short course on proving/programming in Coq via SSReflect
+# Lecture notes on proving/programming in Coq/Ssreflect
 
 ## Building the project and the book
 
