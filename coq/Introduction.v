@@ -128,7 +128,7 @@ There is a range of topics that this course does not cover, although it is the a
 
 A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
 
-%\index{four color theorem}% \index{odd order theorem|see {Feit-Thompson theorem}}% \index{Feit-Thompson theorem}%
+%\index{four color theorem}% %\index{odd order theorem|see {Feit-Thompson theorem}}% %\index{Feit-Thompson theorem}%
 
 Ssreflect includes a small set of powerful novel primitives for interactive proof construction (tactics), different from the traditional set provided by Coq. It also comes with a large library of various algebraic structures, ranging from natural numbers to graphs, finite sets and algebras, formalized and shipped with exhaustive toolkits of lemmas and facts about them. Finally, Ssreflect introduces some mild modifications to Coq's native syntax and the semantics of the proof script interpreter, which makes the produced proofs significantly more concise.
 
