@@ -1104,7 +1104,7 @@ building HTT from the sources).
 
 From mathcomp.ssreflect
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Add LoadPath "../htt".
+Add LoadPath "../htt" as HTT.
 From HTT
 Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.
 

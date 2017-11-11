@@ -29,5 +29,6 @@ latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.t
 	cd latex && pdflatex $* && pdflatex $* && bibtex $* -min-crossrefs=99 && makeindex $* && pdflatex $* && pdflatex $*
 
 zip:
-	zip pnp.zip Makefile lectures/*.v coq/*.v solutions/*.v htt/*.v latex/*.sty latex/*.bib latex/pnp.tex latex/*.png _CoqProject
+	rm pnp.zip
+	zip pnp.zip ../pnp/Makefile ../pnp/lectures/*.v ../pnp/coq/*.v ../pnp/solutions/*.v ../pnp/htt/*.v ../pnp/latex/*.sty ../pnp/latex/*.bib ../pnp/latex/pnp.tex ../pnp/latex/*.png ../pnp/latex/defs.tex ../pnp/_CoqProject
 
