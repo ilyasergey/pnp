@@ -1,8 +1,5 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
-From mathcomp
-Require Import path.
-Require Import idynamic ordtype finmap pcm.
+From mathcomp Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path.
+From HTT Require Import idynamic ordtype finmap pcm.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -308,9 +305,9 @@ Definition keys_of : cT -> seq K := keys_of_op (mixin class).
 
 End ClassDef.
 
-Implicit Arguments um_undef [K V cT].
-Implicit Arguments empty [K V cT].
-Implicit Arguments pts [K V cT].
+Arguments um_undef [K V cT].
+Arguments empty [K V cT].
+Arguments pts [K V cT].
 Prenex Implicits to um_undef empty pts.
 
 Section Lemmas.

@@ -2,7 +2,8 @@ From mathcomp.ssreflect
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq fintype.
 From mathcomp.ssreflect
 Require Import tuple finfun finset.
-Require Import pred pcm unionmap heap heaptac domain stmod stsep stlog stlogR. 
+From HTT
+Require Import pred pcm unionmap heap heaptac domain stmod stsep stlog stlogR.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 

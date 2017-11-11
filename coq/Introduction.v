@@ -156,15 +156,34 @@ Alternatively, you can clone the the sources of these lecture notes, along with 
 
 % \begin{center} \url{https://github.com/ilyasergey/pnp} \end{center} %
 
-** Installing Coq, Ssreflect and Mathematical Components %\label{sec:install-coq}%
+** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.6 and Ssreflect/Mathematical Components version 1.6.1. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.7 and Ssreflect/Mathematical Components version 1.6.4. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+
+The easiest way to obtain the necessary versions of Coq/Ssreflect is
+to install them via OPAM package manager
+(%\url{https://opam.ocaml.org/}%): 
+
+<< 
+opam install coq
+>>
 
 
+In order to install Mathematical
+Componens and Ssreflect, you will need to register the corresponding
+repository and then install the package as follows:
 
-Linux and Mac OS X users can compile Coq 8.6, Ssreflect and Mathematical Components version 1.6.1 from sources, which would take around an hour of their time.%\footnote{Getting Coq using a system-specific package manager, such as \emph{aptitude} or \emph{MacPorts} is another option, although the Coq version acquired this way is not guaranteed to work properly with Ssreflect/Mathematical Components 1.6.1.}%
+<< 
+opam repo add coq-released https://coq.inria.fr/opam/released 
+opam install coq-mathcomp-ssreflect.1.6.4 
+>>
 
-In order to be compiled, Coq requires Objective Caml version 4.02.2 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
+Alternatively, you can compile Coq 8.7, Ssreflect and Mathematical
+Components version 1.6.4 from sources, which would take around an hour.%\footnote{Getting Coq using a system-specific package
+manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
+although the Coq version acquired this way is not guaranteed to work
+properly with Ssreflect/Mathematical Components 1.6.4.}%
+In order to be compiled, Coq requires Objective Caml version 4.05.0 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
 
 << 
 export COQBIN="/usr/local/bin/" 
@@ -181,14 +200,16 @@ Alternatively, instead of running %\texttt{make install}%, one can set up the en
 
 ** Emacs set-up
 
-Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git rpository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% following the instructions below. Upon cloning, for instance, into the folder <<~/misc/PG/>> and add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General repository was cloned and Ssreflect sources were unpacked, correspondingly).
+Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git rpository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% and Mathematical Components%
+footnote{Available from \url{https://github.com/math-comp/math-comp}}% following the instructions below.
+Upon cloning both epositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>> add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General and Ssreflet/MathComp repositories were).
 
 << 
 ;; Proof General support 
 (load-file "~/misc/PG/generic/proof-site.el")
 
 ;; Ssreflect support 
-(load-file "~/misc/mathcomp-1.6.1/mathcomp/ssreflect/pg-ssr.el") 
+(load-file "~/misc/math-comp/mathcomp/ssreflect/pg-ssr.el") 
 >>
 
 Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
@@ -203,31 +224,20 @@ Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also 
 Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file will automatically trigger the Proof General mode.
 
 
-** Getting the lecture files and HTT sources %\label{sec:htt-sources}%
+** Getting the lecture files and solutions
 
-The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The archive with these sources is named %\href{http://ilyasergey.net/pnp/pnp-lectures.zip}{\texttt{pnp-lectures.zip}}% and can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}% given above. The table below describes the correspondence between the chapters of the manuscript and the accompanying files.
+The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The archive with these sources is named %\href{http://ilyasergey.net/pnp/pnp.zip}{\texttt{pnp.zip}}% and can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}% given above.
+The Coq files accompanying lectures (with solutions omitted) are contained in the %\texttt{lectures}% folder.
+For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory (HTT) development will be required. 
+The current version of the notes includes the ready-to-use up-to-date sources of HTT in the folder %\texttt{htt}%.
+Solutions for all of the exercises can be found in the folder %\texttt{solutions}% of the GitHub project accessible by the link above.
+
+After the sources are downloaded and unzipped, run <<make>> from the root folder. This will build all necessary libraries, lectures, solutions for the exercises, and the lecture notes. The resulting PDF file is %\texttt{latex/pnp.pdf}%.
+
+The table below describes the correspondence between the chapters of the manuscript and the accompanying files.
 
 % \vspace{15pt} \begin{center} \begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} \\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} \\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} %
 
-For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory development will be required. The archive %\href{http://ilyasergey.net/pnp/htt.zip}{\texttt{htt.zip}}% with sources and the make-script can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}%. After downloading and unpacking, the sources should be compiled via the %\texttt{make}% command, given that Coq and Ssreflect are properly installed, as described previously (make sure that the environment variables %\texttt{COQBIN}% and %\texttt{SSRCOQ\_LIB}%) are set up properly, as explained in Section%~\ref{sec:install-coq}%). For the immediate compatibility with the lecture sources, it is recommended to place the %\texttt{htt}% and %\texttt{lectures}% folders beneath a common parent folder. After unzipping the archive with lectures, run the %\texttt{make}% command from the folder %\texttt{lectures}% (assuming that the HTT sources are already build and are located in the sibling folder): it should build all %\texttt{.v}% files in it and serve as a consistency check for your setup. Solutions for all of the exercises can be found in the folder %\texttt{solutions}% of the GitHub project accessible by the link above.
-
-** Using a virtual machine image
-
-If compiling and installing Coq and Ssreflect from scratch looks like
-too much hassle, there is also a possibility to use a virtual machine
-image with all libraries preinstalled (including HTT) and Emacs set up
-to work with Ssreflect. The image requires Oracle %\index{VirtualBox}%
-VirtualBox to be used;%\footnote{Available from
-\url{http://www.virtualbox.org/wiki/Downloads}.}% it is about %1.8~GB%
-size and can be obtained from the same
-%\href{http://ilyasergey.net/pnp/}{course url}% as other artifacts
-(look for the file %\texttt{Ubuntu-CoqSsr-PnP.ova}%). It runs Ubuntu
-14.04 and automatically logs in when started with the user
-%\texttt{coquser}% (use the password %\texttt{coquser}% whenever it is
-required). The folder %\texttt{\textasciitilde/misc}% contains the
-sources of Ssreflect and Proof General. HTT sources and this course's
-lecture files are located in %\texttt{\textasciitilde/htt}% and
-%\texttt{\textasciitilde/lectures}%, correspondingly.
 
 * Naming conventions
 

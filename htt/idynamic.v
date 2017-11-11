@@ -1,6 +1,5 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrfun.
-Require Import Eqdep prelude.
+Require Import ssreflect ssrfun Eqdep.
+From HTT Require Import prelude.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -24,7 +23,7 @@ Unset Printing Implicit Defensive.
 Section IndexedDynamic.
 Variable (I : Type) (sort : I -> Type).
 
-Structure idynamic := idyn (A : I) of sort A.
+Inductive idynamic := idyn (A : I) of sort A.
 
 Definition idyn_tp (x : idynamic) : I := let: idyn A _ := x in A.
 
@@ -65,9 +64,7 @@ Proof. by move=>E; rewrite -{A2}E in v2 *; move/ijmE=>->. Qed.
 End IndexedDynamic.
 
 Prenex Implicits idyn_tp idyn_val idyn_injT idyn_inj.
-
-Implicit Arguments icoerce [I A B].
-
+Arguments icoerce [I] sort [A B].
 Hint Resolve ijmeq_refl.
 
 

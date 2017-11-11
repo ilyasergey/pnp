@@ -1,7 +1,5 @@
-Set Automatic Coercions Import.
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat ssrfun seq eqtype.
-Require Import pred pcm unionmap heap stmod.
+From mathcomp Require Import ssreflect ssrbool ssrnat ssrfun seq eqtype.
+From HTT Require Import pred pcm unionmap heap stmod.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
@@ -60,7 +58,7 @@ Notation "[ s ]" := (fr s).
 Definition STbin A (s : spec A) := STspec [s]. 
 
 (* hide the spec *)
-Structure ST A := with_spec (s : spec A) of STbin s.
+Inductive ST A := with_spec (s : spec A) of STbin s.
 
 Definition spec_of A (e : ST A) := let: with_spec s _ := e in s.
 Definition pre_of A := [fun e : ST A => (spec_of e).1]. 
@@ -68,9 +66,9 @@ Definition post_of A := [fun e : ST A => (spec_of e).2].
 Definition code_of A (e : ST A) := 
   let: with_spec _ c := e return STbin (spec_of e) in c.
 
-Implicit Arguments pre_of [A].
-Implicit Arguments post_of [A].
-Implicit Arguments with_spec [A].
+Arguments pre_of [A].
+Arguments post_of [A].
+Arguments with_spec [A].
 Prenex Implicits pre_of post_of.
 
 Coercion with_spec : STbin >-> ST.

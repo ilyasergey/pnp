@@ -1,7 +1,7 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
-Require Import pred.
+Require Import ssreflect ssrbool ssrfun. 
 Require Import Eqdep ClassicalFacts.
+From mathcomp Require Import ssrnat eqtype seq.
+From HTT Require Import pred.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -43,7 +43,7 @@ Notation " R ===> R' " := (@Morphisms.respectful _ _ R R')
 (* not included in the other libraries *)
 
 Definition inj_pair2 := @inj_pair2.
-Implicit Arguments inj_pair2 [U P p x y].
+Arguments inj_pair2 [U P p x y].
 Prenex Implicits inj_pair2.
 
 Lemma inj_sval A P : injective (@sval A P).
@@ -158,9 +158,7 @@ Qed.
 
 End ReflectConnectives.
 
-Implicit Arguments and6P [b1 b2 b3 b4 b5 b6].
-Implicit Arguments or5P [b1 b2 b3 b4 b5].
-Implicit Arguments or6P [b1 b2 b3 b4 b5 b6].
+Arguments and6P [b1 b2 b3 b4 b5 b6].
+Arguments or5P [b1 b2 b3 b4 b5].
+Arguments or6P [b1 b2 b3 b4 b5 b6].
 Prenex Implicits and6P or5P or6P.
-
-

@@ -1,8 +1,6 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrfun ssrbool ssrnat seq eqtype.
-From mathcomp
-Require Import path.
-Require Import pred.
+Require Import ssreflect ssrfun. 
+From mathcomp.ssreflect Require Import ssrbool ssrnat seq eqtype path.
+From HTT Require Import pred.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Import Prenex Implicits.

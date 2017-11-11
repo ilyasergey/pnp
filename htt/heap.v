@@ -1,8 +1,6 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
-From mathcomp
-Require Import path div.
-Require Import Eqdep pred idynamic ordtype pcm finmap unionmap.
+From mathcomp Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq path div.
+Require Import Eqdep.
+From HTT Require Import pred idynamic ordtype pcm finmap unionmap.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -683,51 +681,51 @@ Lemma defPtUnO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) = [&& x != null, valid h & x \notin dom h].
 Proof. by rewrite partitionE hvalidPtUn. Qed.
 
-Implicit Arguments defPtUnO [A h v f].
+Arguments defPtUnO [A h] x [v f].
 
 Lemma defPt_nullO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) -> x != null.
 Proof. by rewrite partitionE; apply: hvalidPt_cond. Qed.
 
-Implicit Arguments defPt_nullO [A h x v f].
+Arguments defPt_nullO [A h x v f].
 
 Lemma defPt_defO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) -> valid h.
 Proof. by rewrite partitionE; apply: hvalidPtV. Qed.
 
-Implicit Arguments defPt_defO [A h v f].
+Arguments defPt_defO [A h] x [v f].
 
 Lemma defPt_domO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) -> x \notin dom h.
 Proof. by rewrite partitionE; apply: hvalidPtD. Qed.
 
-Implicit Arguments defPt_domO [A h v f].
+Arguments defPt_domO [A h] x [v f].
 
 Lemma domPtUnO A h x (v : A) (f : partition (x :-> v) h) :
         dom (untag f) =i
         [pred y | valid (untag f) & (x == y) || (y \in dom h)].
 Proof. by rewrite partitionE; apply: hdomPtUn. Qed.
 
-Implicit Arguments domPtUnO [A h v f].
+Arguments domPtUnO [A h] x [v f].
 
 Lemma lookPtUnO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) -> find x (untag f) = Some (@idyn _ id _ v).
 Proof. by rewrite partitionE; apply: hfindPtUn. Qed.
 
-Implicit Arguments lookPtUnO [A h x v f].
+Arguments lookPtUnO [A h x v f].
 
 Lemma freePtUnO A h x (v : A) (f : partition (x :-> v) h) :
         valid (untag f) -> free x (untag f) = h.
 Proof. by rewrite partitionE; apply: hfreePtUn. Qed.
 
-Implicit Arguments freePtUnO [A h x v f].
+Arguments freePtUnO [A h x v f].
 
 Lemma updPtUnO A1 A2 x i (v1 : A1) (v2 : A2)
                (f : forall k, partition k i) :
         upd x (@idyn _ id _ v2) (untag (f (x :-> v1))) = f (x :-> v2).
 Proof. by rewrite !partitionE; apply: hupdPtUn. Qed.
 
-Implicit Arguments updPtUnO [A1 A2 x i v1 v2].
+Arguments updPtUnO [A1 A2 x i v1 v2].
 
 Lemma cancelTO A1 A2 h1 h2 x (v1 : A1) (v2 : A2)
                (f1 : partition (x :-> v1) h1)
@@ -735,7 +733,7 @@ Lemma cancelTO A1 A2 h1 h2 x (v1 : A1) (v2 : A2)
         valid (untag f1) -> f1 = f2 :> heap -> A1 = A2.
 Proof. by rewrite !partitionE; apply: hcancelT. Qed.
 
-Implicit Arguments cancelTO [A1 A2 h1 h2 v1 v2 f1 f2].
+Arguments cancelTO [A1 A2 h1 h2] x [v1 v2 f1 f2].
 
 Lemma cancelO A h1 h2 x (v1 v2 : A)
               (f1 : partition (x :-> v1) h1)
@@ -744,7 +742,7 @@ Lemma cancelO A h1 h2 x (v1 v2 : A)
         [/\ v1 = v2, valid h1 & h1 = h2].
 Proof. by rewrite !partitionE; apply: hcancelV. Qed.
 
-Implicit Arguments cancelO [A h1 h2 v1 v2 f1 f2].
+Arguments cancelO [A h1 h2] x [v1 v2 f1 f2].
 
 Lemma domPtUnXO A (v : A) x i (f : partition (x :-> v) i) :
         valid (untag f) -> x \in dom (untag f).

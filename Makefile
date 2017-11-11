@@ -4,20 +4,15 @@ MODULES      := Introduction FunProg LogicPrimer Rewriting BoolReflect SsrStyle 
 TEX          := $(MODULES:%=latex/%.v.tex)
 COQNOTES     := pnp
 
-default: 
-	cd htt && make && cd ..
-	cd coq && make && cd ..
+default: Makefile.coq
+	make -f Makefile.coq
 
-cleanhtt:
-	cd htt && make -f Makefile.coq clean && cd ..
+clean: Makefile.coq
+	make -f Makefile.coq clean
+	rm -f Makefile.coq
 
-cleancoq:
-	cd coq && make -f Makefile.coq clean && cd ..
-
-cleansol:
-	cd solutions && make -f Makefile.coq clean && cd ..
-
-clean: cleansol cleanlec cleancoq cleanhtt
+Makefile.coq: _CoqProject
+	coq_makefile -f _CoqProject > Makefile.coq
 
 .PHONY: coq clean doc
 
@@ -33,11 +28,6 @@ latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/p
 latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
 	cd latex && pdflatex $* && pdflatex $* && bibtex $* -min-crossrefs=99 && makeindex $* && pdflatex $* && pdflatex $*
 
-ziplec: cleanlec
-	zip pnp-lectures.zip lectures/*.v lectures/Makefile lectures/_CoqProject
+zip:
+	zip pnp.zip Makefile lectures/*.v coq/*.v solutions/*.v htt/*.v latex/*.sty latex/*.bib latex/pnp.tex latex/*.png _CoqProject
 
-ziphtt: cleanhtt
-	zip htt.zip htt/*.v htt/Makefile htt/_CoqProject
-
-zipsol: cleansol
-	zip pnp-solutions.zip solutions/*.v solutions/_CoqProject
