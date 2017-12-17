@@ -56,7 +56,7 @@ incarnations: as an expressive functional programming language with
 dependent types and as a proof assistant providing support for
 mechanized interactive theorem proving.
 
-By aiming these two goals, this manuscript is, thus, intended to
+By aiming for these two goals, this manuscript is, thus, intended to
 provide a demonstration how the concepts familiar from the mainstream
 programming languages and serving as parts of good programming
 practices can provide illuminating insights about the nature of
@@ -126,7 +126,7 @@ There is a range of topics that this course does not cover, although it is the a
 
 %\index{Ssreflect|textbf}%
 
-A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{http://www.msr-inria.fr/projects/mathematical-components-2/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
+A significant part of this course's material is presented using the Ssreflect extension of Coq%~\cite{Gontier-al:TR}% and its accompanying libraries, developed as a part of the Mathematical Components project%\footnote{\url{https://math-comp.github.io/math-comp/}}% in order to facilitate the automated reasoning in very large mathematical developments, in particular, the fully formal machine-checked proofs of the %\emph{four color theorem}~\cite{Gonthier:AMS08}% and %\emph{Feit-Thompson (odd order) theorem}~\cite{Gonthier-al:ITP13}%.
 
 %\index{four color theorem}% %\index{odd order theorem|see {Feit-Thompson theorem}}% %\index{Feit-Thompson theorem}%
 
@@ -170,7 +170,7 @@ opam install coq
 
 
 In order to install Mathematical
-Componens and Ssreflect, you will need to register the corresponding
+Components and Ssreflect, you will need to register the corresponding
 repository and then install the package as follows:
 
 << 
@@ -183,14 +183,14 @@ Components version 1.6.4 from sources, which would take around an hour.%\footnot
 manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
 although the Coq version acquired this way is not guaranteed to work
 properly with Ssreflect/Mathematical Components 1.6.4.}%
-In order to be compiled, Coq requires Objective Caml version 4.05.0 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
+In order to be compiled, Coq requires Objective Caml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
 
 << 
 export COQBIN="/usr/local/bin/" 
 export COQ_MK="/usr/local/bin/coq_makefile" 
 >>
 
-After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6.1>>).
+After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.6.4>>).
 
 Upon installing Ssreflect via %\texttt{make install}%, the following environment variable should be also set up:
 
@@ -200,9 +200,9 @@ Alternatively, instead of running %\texttt{make install}%, one can set up the en
 
 ** Emacs set-up
 
-Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git rpository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% and Mathematical Components%
+Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% and Mathematical Components%
 footnote{Available from \url{https://github.com/math-comp/math-comp}}% following the instructions below.
-Upon cloning both epositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>> add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General and Ssreflet/MathComp repositories were).
+Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>> add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General and Ssreflect/MathComp repositories were).
 
 << 
 ;; Proof General support 
@@ -225,8 +225,9 @@ Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file w
 
 
 ** Getting the lecture files and solutions
+%\label{sec:get-files}%
 
-The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The archive with these sources is named %\href{http://ilyasergey.net/pnp/pnp.zip}{\texttt{pnp.zip}}% and can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course url}% given above.
+The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The archive with these sources is named %\href{http://ilyasergey.net/pnp/pnp.zip}{\texttt{pnp.zip}}% and can be downloaded from the %\href{http://ilyasergey.net/pnp/}{course URL}% given above.
 The Coq files accompanying lectures (with solutions omitted) are contained in the %\texttt{lectures}% folder.
 For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory (HTT) development will be required. 
 The current version of the notes includes the ready-to-use up-to-date sources of HTT in the folder %\texttt{htt}%.
