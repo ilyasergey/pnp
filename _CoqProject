@@ -28,11 +28,11 @@ coq/SsrStyle.v
 coq/DepRecords.v
 coq/HTT.v
 coq/Conclusion.v
-solutions/FunProg_Solutions.v
-solutions/LogicPrimer_Solutions.v
-solutions/Rewriting_Solutions.v
-solutions/BoolReflect_Solutions.v
-solutions/SsrStyle_Solutions.v
-solutions/DepRecords_Solutions.v
-solutions/HTT_Solutions.v
+solutions/FunProg_solutions.v
+solutions/LogicPrimer_solutions.v
+solutions/Rewriting_solutions.v
+solutions/BoolReflect_solutions.v
+solutions/SsrStyle_solutions.v
+solutions/DepRecords_solutions.v
+solutions/HTT_solutions.v
 
