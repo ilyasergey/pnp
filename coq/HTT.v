@@ -1094,7 +1094,7 @@ Coq%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08,Nanevski-al:POPL10}%.
 In the rest of this chapter we will consider a number of important
 concepts of HTT, so the necessary modules should be imported from the
 library folder [htt], which contains the compiled files (see
-Section%~\ref{sec:htt-sources}% for the instructions on obtaining and
+Section%~\ref{sec:get-files}% for the instructions on obtaining and
 building HTT from the sources).
 *)
 
