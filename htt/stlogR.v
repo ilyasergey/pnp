@@ -1,7 +1,5 @@
-Set Automatic Coercions Import.
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Require Import pred prelude pcm unionmap heap heaptac stmod stsep stlog. 
+From mathcomp Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+From HTT Require Import pred prelude pcm unionmap heap heaptac stmod stsep stlog. 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Import Prenex Implicits.
@@ -37,7 +35,7 @@ Structure form (k r : heap) :=
   Form {heap_of :> tagged_heap; 
         _ : form_axiom k r heap_of}.
 
-Implicit Arguments Form [].
+Arguments Form : clear implicits. 
 
 Lemma formE r k (f : form k r) : untag f = k \+ r.
 Proof. by case: f=>[[j]] /=; rewrite /form_axiom /= => ->. Qed.

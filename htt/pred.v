@@ -1,19 +1,19 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrfun ssrbool eqtype seq.
+Require Import ssreflect ssrbool ssrfun.
 Require Import Setoid Morphisms.
+From mathcomp Require Import eqtype seq.
 Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive.
+Unset Strict Implicit. 
+Unset Printing Implicit Defensive. 
 
 (* First some basic propositional equalities Basically, we need to repeat *)
 (* most of ssrbool.v here but we'll do it as we go. *)
 
 Lemma andTp p : True /\ p <-> p.      Proof. by intuition. Qed.
-Lemma andpT p : p /\ True <-> p.      Proof. by intuition. Qed.
+Lemma andpT p : p /\ True <-> p.      Proof. by intuition. Qed.  
 Lemma andFp p : False /\ p <-> False. Proof. by intuition. Qed.
 Lemma andpF p : p /\ False <-> False. Proof. by intuition. Qed.
 Lemma orTp p : True \/ p <-> True.    Proof. by intuition. Qed.
-Lemma orpT p : p \/ True <-> True.    Proof. by intuition. Qed.
+Lemma orpT p : p \/ True <-> True.    Proof. by intuition. Qed.  
 Lemma orFp p : False \/ p <-> p.      Proof. by intuition. Qed.
 Lemma orpF p : p \/ False <-> p.      Proof. by intuition. Qed.
 
@@ -26,7 +26,7 @@ Open Scope rel_scope.
 (* (1) Pred is the type of propositional functions                        *)
 (* (2) Simpl_Pred is the type of predicates that automatically simplify   *)
 (*     when used in an applicative position.                              *)
-(* (3) Mem_Pred is for predicates that support infix notation x \In P     *)
+(* (3) Mem_Pred is for predicates that support infix notation x \In P     *) 
 (* (4) PredType is the structure for interpreting various types, such as  *)
 (* lists, tuples, etc. as predicates.                                     *)
 (*                                                                        *)
@@ -78,8 +78,8 @@ Definition isMem pT toPred mem := mem = (fun p : pT => MemProp [eta toPred p]).
 (* the general structure for predicates *)
 
 Structure PredType : Type := PropPredType {
-  Pred_Sort :> Type;
-  toPred : Pred_Sort -> Pred T;
+  Pred_Sort :> Type; 
+  toPred : Pred_Sort -> Pred T; 
   _ : {mem | isMem toPred mem}}.
 
 Definition mkPredType pT toP := PropPredType (exist (@isMem pT toP) _ (erefl _)).
@@ -91,18 +91,18 @@ Coercion Pred_of_Mem mp : Pred_Sort PredPredType :=
   let: MemProp p := mp in [eta p].
 Canonical Structure MemPredType := Eval hnf in mkPredType Pred_of_Mem.
 Canonical Structure predPredType := Eval hnf in @mkPredType (pred T) id.
-Canonical Structure simplpredPredType :=
+Canonical Structure simplpredPredType := 
   Eval hnf in @mkPredType (simpl_pred T) (fun p x => p x).
 
 End Predicates.
 
-Implicit Arguments Pred0 [T].
-Implicit Arguments PredT [T].
+Arguments Pred0 [T].
+Arguments PredT [T].
 Prenex Implicits Pred0 PredT PredI PredU PredC PredD Preim.
 
-Notation "r1 +p r2" := (PredU r1 r2 : Pred _)
+Notation "r1 +p r2" := (PredU r1 r2 : Pred _) 
   (at level 55, right associativity) : rel_scope.
-Notation "r1 *p r2" := (xPredI r1 r2 : Pred _)
+Notation "r1 *p r2" := (xPredI r1 r2 : Pred _) 
   (at level 45, right associativity) : rel_scope.
 
 Notation "[ 'Pred' : T | E ]" := (SimplPred (fun _ : T => E))
@@ -113,7 +113,7 @@ Notation "[ 'Pred' x : T | E ]" := (SimplPred (fun x : T => E))
   (at level 0, x ident, only parsing) : fun_scope.
 Notation "[ 'Pred' x y | E ]" := (SimplPred (fun t => let: (x, y) := t in E))
   (at level 0, x ident, y ident, format "[ 'Pred'  x  y  |  E ]") : fun_scope.
-Notation "[ 'Pred' x y : T | E ]" :=
+Notation "[ 'Pred' x y : T | E ]" := 
   (SimplPred (fun t : (T*T) => let: (x, y) := t in E))
   (at level 0, x ident, y ident, only parsing) : fun_scope.
 
@@ -146,10 +146,10 @@ Coercion Pred_of_Mem_Pred T mp := [Pred x : T | InMem x mp].
 
 (* equality and subset *)
 
-Definition EqPredType T (pT : PredType T) (p1 p2 : pT) :=
+Definition EqPredType T (pT : PredType T) (p1 p2 : pT) := 
   forall x : T, toPred p1 x <-> toPred p2 x.
 
-Definition SubPredType T (pT : PredType T) (p1 p2 : pT) :=
+Definition SubPredType T (pT : PredType T) (p1 p2 : pT) := 
   forall x : T, toPred p1 x -> toPred p2 x.
 
 (* Definition EqPred T (p1 p2 : Pred T) := EqPredType p1 p2. *)
@@ -157,34 +157,34 @@ Definition SubPredType T (pT : PredType T) (p1 p2 : pT) :=
 Definition EqSimplPred T (p1 p2 : Simpl_Pred T) := EqPredType p1 p2.
 Definition SubSimplPred T (p1 p2 : Simpl_Pred T) := SubPredType p1 p2.
 (*
-Definition EqMem T (p1 p2 : Mem_Pred T) := EqPredType p1 p2.
+Definition EqMem T (p1 p2 : Mem_Pred T) := EqPredType p1 p2. 
 Definition SubMem T (p1 p2 : Mem_Pred T) := SubPredType p1 p2.
 *)
 
-Definition EqPredFun T1 T2 (pT2 : PredType T2) p1 p2 :=
+Definition EqPredFun T1 T2 (pT2 : PredType T2) p1 p2 := 
   forall x : T1, @EqPredType T2 pT2 (p1 x) (p2 x).
-Definition SubPredFun T1 T2 (pT2 : PredType T2) p1 p2 :=
+Definition SubPredFun T1 T2 (pT2 : PredType T2) p1 p2 := 
   forall x : T1, @SubPredType T2 pT2 (p1 x) (p2 x).
 
 Definition EqMem T p1 p2 := forall x : T, InMem x p1 <-> InMem x p2.
 Definition SubMem T p1 p2 := forall x : T, InMem x p1 -> InMem x p2.
 
-Notation "A <~> B" := (@EqPredType _ _ A B)
+Notation "A <~> B" := (@EqPredType _ _ A B) 
   (at level 70, no associativity) : rel_scope.
-Notation "A ~> B" := (@SubPredType _ _ A B)
+Notation "A ~> B" := (@SubPredType _ _ A B) 
   (at level 70, no associativity) : rel_scope.
-Notation "A <~1> B" := (@EqPredFun _ _ _ A B)
+Notation "A <~1> B" := (@EqPredFun _ _ _ A B) 
   (at level 70, no associativity) : rel_scope.
-Notation "A ~1> B" := (@SubPredFun _ _ _ A B)
+Notation "A ~1> B" := (@SubPredFun _ _ _ A B) 
   (at level 70, no associativity) : rel_scope.
 
-Notation "x \In A" := (InMem x (Mem A))
+Notation "x \In A" := (InMem x (Mem A)) 
   (at level 70, no associativity) : rel_scope.
-Notation "x \Notin A" := (~ (x \In A))
+Notation "x \Notin A" := (~ (x \In A)) 
   (at level 70, no associativity) : rel_scope.
-Notation "A =p B" := (EqMem (Mem A) (Mem B))
+Notation "A =p B" := (EqMem (Mem A) (Mem B)) 
   (at level 70, no associativity) : type_scope.
-Notation "A <=p B" := (SubMem (Mem A) (Mem B))
+Notation "A <=p B" := (SubMem (Mem A) (Mem B))  
   (at level 70, no associativity) : type_scope.
 
 (* Some notation for turning PredTypes into Pred or Simple Pred *)
@@ -219,7 +219,7 @@ Notation "[ 'Pred' x y \In A ]" := [Pred x y \In A & A]
   (at level 0, x ident, y ident,
    format "[ 'Pred'  x  y  \In  A ]") : fun_scope.
 
-Section Simplifications.
+Section Simplifications. 
 Variables (T : Type) (pT : PredType T).
 
 Lemma Mem_toPred : forall (p : pT), Mem (toPred p) = Mem p.
@@ -244,7 +244,7 @@ Definition MemE := Mem_Simpl. (* could be extended *)
 Lemma Mem_Mem : forall p : pT, (Mem (Mem p) = Mem p) * (Mem [Mem p] = Mem p).
 Proof. by move=> p; rewrite -Mem_toPred. Qed.
 
-End Simplifications.
+End Simplifications. 
 
 (**************************************)
 (* Definitions and lemmas for setoids *)
@@ -254,20 +254,20 @@ Section RelProperties.
 Variables (T : Type) (pT : PredType T).
 
 Lemma EqPredType_refl (r : pT) : EqPredType r r. Proof. by []. Qed.
-Lemma SubPredType_refl (r : pT) : SubPredType r r. Proof. by []. Qed.
+Lemma SubPredType_refl (r : pT) : SubPredType r r. Proof. by []. Qed.  
 
 Lemma EqPredType_sym (r1 r2 : pT) : EqPredType r1 r2 -> EqPredType r2 r1.
 Proof. by move=>H1 x; split; move/H1. Qed.
 
-Lemma EqPredType_trans' (r1 r2 r3 : pT) :
+Lemma EqPredType_trans' (r1 r2 r3 : pT) : 
   EqPredType r1 r2 -> EqPredType r2 r3 -> EqPredType r1 r3.
 Proof. by move=>H1 H2 x; split; [move/H1; move/H2 | move/H2; move/H1]. Qed.
-
-Lemma SubPredType_trans' (r1 r2 r3 : pT) :
+ 
+Lemma SubPredType_trans' (r1 r2 r3 : pT) : 
   SubPredType r1 r2 -> SubPredType r2 r3 -> SubPredType r1 r3.
-Proof. by move=>H1 H2 x; move/H1; move/H2. Qed.
+Proof. by move=>H1 H2 x; move/H1; move/H2. Qed. 
 
-Definition EqPredType_trans r2 r1 r3 := @EqPredType_trans' r1 r2 r3.
+Definition EqPredType_trans r2 r1 r3 := @EqPredType_trans' r1 r2 r3. 
 Definition SubPredType_trans r2 r1 r3 := @SubPredType_trans' r1 r2 r3.
 End RelProperties.
 
@@ -280,10 +280,10 @@ Hint Resolve EqPredType_refl SubPredType_refl.
 (* for all instances. This is really annoying, but at least I don't have  *)
 (* to reprove the lemmas on refl, sym and trans                           *)
 (*                                                                        *)
-Add Parametric Relation T (pT : PredType T) : pT (@EqPredType _ pT)
-   reflexivity proved by (@EqPredType_refl _ _)
-  symmetry proved by (@EqPredType_sym _ _)
-  transitivity proved by (@EqPredType_trans' _ _) as EqPredType_rel.
+Add Parametric Relation T (pT : PredType T) : pT (@EqPredType _ pT)    
+   reflexivity proved by (@EqPredType_refl _ _)                         
+  symmetry proved by (@EqPredType_sym _ _)                              
+  transitivity proved by (@EqPredType_trans' _ _) as EqPredType_rel.    
 
 (*                                                                        *)
 (* Add Parametric Relation T (pT : PredType T) : pT (@SubPredType _ pT)   *)
@@ -295,7 +295,7 @@ Add Parametric Relation T (pT : PredType T) : pT (@EqPredType _ pT)
   symmetry proved by (@EqPredType_sym _ _)
   transitivity proved by (@EqPredType_trans' _ _) as EqPred_rel.
 
-Add Parametric Relation T : (Pred T) (@SubPred _)
+Add Parametric Relation T : (Pred T) (@SubPred _) 
   reflexivity proved by (@SubPredType_refl _ _)
   transitivity proved by (@SubPredType_trans' _ _) as SubPred_rel.
 *)
@@ -305,7 +305,7 @@ Add Parametric Relation T : (Simpl_Pred T) (@EqSimplPred _)
   symmetry proved by (@EqPredType_sym _ _)
   transitivity proved by (@EqPredType_trans' _ _) as EqSimplPred_rel.
 
-Add Parametric Relation T : (Simpl_Pred T) (@SubSimplPred _)
+Add Parametric Relation T : (Simpl_Pred T) (@SubSimplPred _) 
   reflexivity proved by (@SubPredType_refl _ _)
   transitivity proved by (@SubPredType_trans' _ _) as SubSimplPred_rel.
 
@@ -314,7 +314,7 @@ Add Parametric Relation T : (Mem_Pred T) (@EqMem T)
   symmetry proved by (@EqPredType_sym _ _)
   transitivity proved by (@EqPredType_trans' _ _) as EqMem_rel.
 
-Add Parametric Relation T : (Mem_Pred T) (@SubMem _)
+Add Parametric Relation T : (Mem_Pred T) (@SubMem _) 
   reflexivity proved by (@SubPredType_refl _ _)
   transitivity proved by (@SubPredType_trans' _ _) as SubMem_rel.
 
@@ -322,7 +322,7 @@ Add Parametric Relation T : (Mem_Pred T) (@SubMem _)
 (* Annoyingly, even the coercions must be declared *)
 
 Add Parametric Morphism T : (@Pred_of_Simpl T) with signature
-      @EqSimplPred _ ==> @EqPredType T (PredPredType T) as Pred_of_Simpl_morph.
+      @EqSimplPred _ ==> @EqPredType T (PredPredType T) as Pred_of_Simpl_morph. 
 Proof. by []. Qed.
 
 (* Do we need other coercions? We'll discover as we go *)
@@ -334,20 +334,20 @@ Proof. by []. Qed.
 (* even though the former is an instance of the later.                *)
 
 (*
-Add Parametric Morphism T : (@EqPred T) with signature
+Add Parametric Morphism T : (@EqPred T) with signature 
     @EqPred _ ==> @EqPred _ ==> iff as EqPred_morph.
 Proof. by move=>r1 s1 H1 r2 s2 H2; rewrite H1 H2. Qed.
 *)
 
-Add Parametric Morphism T (pT : PredType T) : (@EqPredType T pT) with signature
+Add Parametric Morphism T (pT : PredType T) : (@EqPredType T pT) with signature 
     @EqPredType _ _ ==> @EqPredType _ _ ==> iff as EqPredType_morph.
 Proof. by move=>r1 s1 H1 r2 s2 H2; rewrite H1 H2. Qed.
 
-Add Parametric Morphism T (pT : PredType T) : (@SubPredType T pT) with signature
+Add Parametric Morphism T (pT : PredType T) : (@SubPredType T pT) with signature 
     @EqPredType _ _ ==> @EqPredType _ _ ==> iff as SubPred_morph.
 Proof. by move=>r1 s1 H1 r2 s2 H2; split=>H x; move/H1; move/H; move/H2. Qed.
 
-Add Parametric Morphism T : (@InMem T) with signature
+Add Parametric Morphism T : (@InMem T) with signature 
     @eq _ ==> @EqMem _ ==> iff as InMem_morph.
 Proof. by move=>x r s H; split; move/H. Qed.
 
@@ -355,21 +355,21 @@ Add Parametric Morphism T (pT : PredType T) : (@Mem T pT) with signature
   @EqPredType _ _ ==> @EqMem _ as Mem_morhp.
 Proof. by move=>x y H p; rewrite /EqPredType -!toPredE in H *; rewrite H. Qed.
 
-Add Parametric Morphism T : (@PredU T) with signature
+Add Parametric Morphism T : (@PredU T) with signature 
     @EqPredType _ _ ==> @EqPredType _ _ ==> @EqSimplPred _ as predU_morph.
 Proof.
-move=>r1 s1 H1 r2 h2 H2 x; split;
+move=>r1 s1 H1 r2 h2 H2 x; split; 
 by case; [move/H1 | move/H2]=>/=; auto.
 Qed.
 
-Add Parametric Morphism T : (@PredI T) with signature
+Add Parametric Morphism T : (@PredI T) with signature 
     @EqPredType _ _ ==> @EqPredType _ _ ==> @EqPredType _ _ as predI_morph.
 Proof.
-move=>r1 s1 H1 r2 s2 H2 x; split;
+move=>r1 s1 H1 r2 s2 H2 x; split; 
 by case; move/H1=>T1; move/H2=>T2.
 Qed.
 
-Add Parametric Morphism T : (@PredC T) with signature
+Add Parametric Morphism T : (@PredC T) with signature 
     @EqPredType _ _ ==> @EqPredType _ _ as predC_morph.
 Proof. by move=>r s H x; split=>H1; apply/H. Qed.
 
@@ -380,7 +380,7 @@ Lemma orrI (r : Pred nat) : r +p r <~> r.
 Proof.  by move=>x; split; [case | left]. Qed.
 
 Lemma orrC (r1 r2 : Pred T) : r1 +p r2 <~> r2 +p r1.
-Proof. move=>x; split=>/=; tauto. Qed.
+Proof. move=>x; split=>/=; tauto. Qed. 
 
 Lemma orr0 (r : Pred T) : r +p Pred0 <~> r.
 Proof. by move=>x; split; [case | left]. Qed.
@@ -398,7 +398,7 @@ Lemma orrA (r1 r2 r3 : Pred T) : (r1 +p r2) +p r3 <~> r1 +p r2 +p r3.
 Proof. by rewrite (orrC r2) orrCA orrC. Qed.
 
 (* absorption *)
-Lemma orrAb (r1 a : Pred T) : r1 <~> r1 +p a <-> a ~> r1.
+Lemma orrAb (r1 a : Pred T) : r1 <~> r1 +p a <-> a ~> r1. 
 Proof.
 split; first by move=>-> x /=; auto.
 move=>H x /=; split; first by auto.
@@ -406,7 +406,7 @@ by case=>//; move/H.
 Qed.
 
 Lemma sub_orl (r1 r2 : Pred T) : r1 ~> r1 +p r2. Proof. by left. Qed.
-Lemma sub_orr (r1 r2 : Pred T) : r2 ~> r1 +p r2. Proof. by right. Qed.
+Lemma sub_orr (r1 r2 : Pred T) : r2 ~> r1 +p r2. Proof. by right. Qed.   
 
 End RelLaws.
 
@@ -423,7 +423,7 @@ Lemma subp_trans (p2 p1 p3 : Pred T) : p1 <=p p2 -> p2 <=p p3 -> p1 <=p p3.
 Proof. by move=>H1 H2 x; move/H1; move/H2. Qed.
 
 Lemma subp_or (p1 p2 q : Pred T) : p1 <=p q /\ p2 <=p q <-> p1 +p p2 <=p q.
-Proof.
+Proof. 
 split=>[[H1] H2 x|H1]; first by case; [move/H1 | move/H2].
 by split=>x H2; apply: H1; [left | right].
 Qed.
@@ -462,7 +462,7 @@ Identity Coercion seq_of_EqSeq : EqSeq_Class >-> seq.
 Coercion Pred_of_Eq_Seq (s : EqSeq_Class) : Pred_Class := [eta Mem_Seq s].
 
 Canonical Structure seq_PredType := @mkPredType T (seq T) Pred_of_Eq_Seq.
-(* The line below makes Mem_Seq a canonical instance of topred. *)
+(* The line below makes Mem_Seq a canonical instance of topred. *) 
 Canonical Structure Mem_Seq_PredType := mkPredType Mem_Seq.
 
 Lemma In_cons : forall y s x, (x \In y :: s) <-> (x = y) \/ (x \In s).
@@ -484,27 +484,27 @@ Proof.
 move=>x; elim=>[|y s1 IH] s2 /=; first by split; [right | case].
 rewrite !InE /=.
 split.
-- case=>[->|/IH]; first by left; left.
-  by case; [left; right | right].
-case; first by case; [left | move=>H; right; apply/IH; left].
-by move=>H; right; apply/IH; right.
+- case=>[->|/IH]; first by left; left. 
+  by case; [left; right | right]. 
+case; first by case; [left | move=>H; right; apply/IH; left]. 
+by move=>H; right; apply/IH; right. 
 Qed.
 
 End ListMembership.
 
-Lemma Mem_map T T' (f : T -> T') x (s : seq T) :
+Lemma Mem_map T T' (f : T -> T') x (s : seq T) : 
          x \In s -> f x \In (map f s).
 Proof.
 elim: s=>[|y s IH] //; rewrite InE /=.
 by case=>[<-|/IH]; [left | right].
 Qed.
 
-Lemma Mem_map_inv T T' (f : T -> T') x (s : seq T) :
+Lemma Mem_map_inv T T' (f : T -> T') x (s : seq T) : 
         x \In (map f s) -> exists y, x = f y /\ y \In s.
 Proof.
 elim: s=>[|y s IH] //=; rewrite InE /=.
-case; first by move=>->; exists y; split=>//; left.
-by case/IH=>z [->]; exists z; split=>//; right.
+case; first by move=>->; exists y; split=>//; left. 
+by case/IH=>z [->]; exists z; split=>//; right. 
 Qed.
 
 Prenex Implicits Mem_map_inv.
@@ -512,7 +512,7 @@ Prenex Implicits Mem_map_inv.
 (* Setoids for extensional equality of functions *)
 
 Lemma eqfun_refl A B (f : A -> B) : f =1 f. Proof. by []. Qed.
-Lemma eqfun_sym A B (f1 f2 : A -> B) : f1 =1 f2 -> f2 =1 f1.
+Lemma eqfun_sym A B (f1 f2 : A -> B) : f1 =1 f2 -> f2 =1 f1. 
 Proof. by move=>H x; rewrite H. Qed.
 Lemma eqfun_trans A B (f1 f2 f3 : A -> B) : f1 =1 f2 -> f2 =1 f3 -> f1 =1 f3.
 Proof. by move=>H1 H2 x; rewrite H1 H2. Qed.
@@ -522,5 +522,62 @@ Add Parametric Relation A B : (A -> B) (@eqfun _ _)
   symmetry proved by (@eqfun_sym A B)
   transitivity proved by (@eqfun_trans A B) as eqfun_morph.
 
+
+(***********************************)
+(* Image of a collective predicate *)
+(***********************************)
+
+Section Image.
+Variables (A B : Type) (P : Pred A) (f : A -> B).
+
+Inductive image_spec b : Prop := Im_mem a of b = f a & a \In P.
+
+Definition Image' := [Pred b | image_spec b].
+
+End Image. 
+
+(* swap to make the notation consider P before E; helps inference *)
+Notation Image f P := (Image' P f).
+
+Notation "[ 'Image' E | i <- s ]" := (Image (fun i => E) s)
+  (at level 0, E at level 99, i ident,
+   format "[ '[hv' 'Image'  E '/ '  |  i  <-  s ] ']'") : rel_scope.
+
+Notation "[ 'Image' E | i <- s & C ]" := [Image E | i <- [PredI s & C]]
+  (at level 0, E at level 99, i ident,
+   format "[ '[hv' 'Image'  E '/ '  |  i  <-  s '/ '  &  C ] ']'") : rel_scope.
+
+Notation "[ 'Image' E | i : T <- s ]" := (Image (fun i : T => E) s)
+  (at level 0, E at level 99, i ident, only parsing) : rel_scope.
+
+Notation "[ 'Image' E | i : T <- s & C ]" :=
+  [Image E | i : T <- [PredI s & C]]
+  (at level 0, E at level 99, i ident, only parsing) : rel_scope.
+
+Lemma Image_mem A B (f : A -> B) (P : Pred A) x : x \In P -> f x \In Image f P.
+Proof. by apply: Im_mem. Qed.
+
+Lemma Image_inj_sub A B (f : A -> B) (X1 X2 : Pred A) : 
+        injective f -> Image f X1 <=p Image f X2 -> X1 <=p X2.
+Proof. by move=>H E x /(Image_mem f) /E [y] /H ->. Qed.
+
+Lemma Image_inj_eqmem A B (f : A -> B) (X1 X2 : Pred A) : 
+        injective f -> Image f X1 =p Image f X2 -> X1 =p X2.
+Proof. by move=>H E; split; apply: Image_inj_sub H _ _; rewrite E. Qed.
+
+Lemma ImageU A B (f : A -> B) (X1 X2 : Pred A) : 
+        Image f (PredU X1 X2) =p [PredU Image f X1 & Image f X2].
+Proof.
+move=>x; split.
+- by case=>y -> [H|H]; [left | right]; apply: Image_mem. 
+by case; case=>y -> H; apply: Image_mem; [left | right]. 
+Qed.
+
+Lemma ImageIm A B C (f1 : B -> C) (f2 : A -> B) (X : Pred A) : 
+        Image f1 (Image f2 X) =p Image (f1 \o f2) X. 
+Proof.
+move=>x; split; first by case=>_ -> [x' ->] H; exists x'.
+by case=>a -> H; exists (f2 a)=>//; exists a.
+Qed.
 
 

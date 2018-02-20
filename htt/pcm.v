@@ -1,6 +1,5 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
-Require Import pred prelude ordtype finmap.
+From mathcomp Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
+From HTT Require Import pred prelude ordtype finmap.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -42,7 +41,7 @@ Definition unit := unit_op class.
 
 End ClassDef.
 
-Implicit Arguments unit [cT].
+Arguments unit [cT].
 
 Definition morph_axiom (A B : type) (f : sort A -> sort B) :=
   f unit = unit /\ forall x y, f (join x y) = join (f x) (f y).
@@ -64,7 +63,7 @@ Notation "x \+ y" := (join x y) (at level 43, left associativity).
 Notation valid := valid.
 Notation Unit := unit.
 
-Implicit Arguments unit [cT].
+Arguments unit [cT].
 Prenex Implicits join unit.
 
 Section Morphism.
@@ -207,7 +206,7 @@ Notation "[ 'unlifted' 'of' T ]" := (@clone T _ _ id id)
 Notation ounit := ounit.
 Notation ojoin := ojoin.
 
-Implicit Arguments ounit [cT].
+Arguments ounit [cT].
 
 Lemma ojoinC (U : unlifted) (x y : U) : ojoin x y = ojoin y x.
 Proof. by case: U x y=>T [ou oj ojC]. Qed.
@@ -233,7 +232,7 @@ Module Lift.
 Section Lift.
 Variable A : unlifted.
 
-Structure lift : Type := Undef | Up of A.
+Inductive lift : Type := Undef | Up of A.
 
 Let unit := Up ounit.
 
@@ -355,7 +354,7 @@ Definition maxPCM := Eval hnf in PCM nat maxPCMMixin.
 
 (* mutexes are an unlifted pcm and an equality type *)
 
-Structure mutex := own | nown.
+Inductive mutex := own | nown.
 
 Module MutexUnlift.
 
@@ -494,7 +493,7 @@ Module FinMapPCM.
 Section FinMapPCM.
 Variables (K : ordType) (V : Type).
 
-Structure finmap := Undef | Def of {finMap K -> V}.
+Inductive finmap := Undef | Def of {finMap K -> V}.
 
 Definition valid (f : finmap) :=
   if f is Def _ then true else false.

@@ -1,7 +1,5 @@
-Set Automatic Coercions Import.
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Require Import pred domain pcm unionmap heap stmod stsep. 
+From mathcomp Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+From HTT Require Import pred domain pcm unionmap heap stmod stsep. 
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -170,7 +168,7 @@ case/(H3 _ _ E1 Vi)=>m1 [->][Vm] /(_ t).
 by rewrite E; exists m1.
 Qed.
 
-Implicit Arguments gh_ex [A C i s e r].
+Arguments gh_ex [A C] t [i s e r].
 
 
 (* Two val_do lemmas which simplify binary posts *)

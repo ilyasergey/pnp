@@ -1,0 +1,38 @@
+-Q htt HTT
+-Q coq PnP
+-Q solutions PnPSolutions
+-arg "-w -notation-overridden,-local-declaration,-redundant-canonical-projection,-projection-no-head-constant"
+
+htt/pred.v
+htt/prelude.v
+htt/idynamic.v
+htt/ordtype.v
+htt/pperm.v
+htt/finmap.v
+htt/domain.v
+htt/pcm.v
+htt/unionmap.v
+htt/heap.v
+htt/heaptac.v
+htt/stmod.v
+htt/stsep.v
+htt/stlog.v
+htt/stlogR.v
+htt/array.v
+coq/Introduction.v
+coq/FunProg.v
+coq/LogicPrimer.v
+coq/Rewriting.v
+coq/BoolReflect.v
+coq/SsrStyle.v
+coq/DepRecords.v
+coq/HTT.v
+coq/Conclusion.v
+solutions/FunProg_solutions.v
+solutions/LogicPrimer_solutions.v
+solutions/Rewriting_solutions.v
+solutions/BoolReflect_solutions.v
+solutions/SsrStyle_solutions.v
+solutions/DepRecords_solutions.v
+solutions/HTT_solutions.v
+

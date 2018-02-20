@@ -1,8 +1,6 @@
-From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq fintype.
-From mathcomp
-Require Import path.
-Require Import pred prelude ordtype.
+Require Import ssreflect ssrbool ssrfun. 
+From mathcomp Require Import ssrnat eqtype seq fintype path.
+From HTT Require Import pred prelude ordtype.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
