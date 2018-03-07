@@ -222,6 +222,7 @@ Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes ca
 
 Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file will automatically trigger the Proof General mode.
 
+Finally, the optional Company-Coq%\footnote{\url{https://github.com/cpitclaudel/company-coq}}% collection of extensions to Proof General adds many modern IDE features such as auto-completion of tactics and names, refactoring, and inline help.
 
 ** Getting the lecture files and solutions
 %\label{sec:get-files}%
