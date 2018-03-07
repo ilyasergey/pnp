@@ -1192,14 +1192,14 @@ the total number of leaves in both its branches.
 
 *)
 
-Fixpoint numleaves t :=
-if t is node t1 t2 then numleaves t1 + numleaves t2 else 1.
+Fixpoint leaves t :=
+if t is node t1 t2 then leaves t1 + leaves t2 else 1.
 
 (**
 
 %\noindent%
-A node is a_complete_ tree if both its branches
-are complete and have the same height. A leaf is
+A node is deemed a _complete_ tree if both its branches
+are complete and have the same height; a leaf is
 considered a complete tree.
 
 *)
@@ -1216,10 +1216,10 @@ is two to the power of the tree's height.
 
 *)
 
-Theorem complete_numleaves_height : forall t, complete t -> numleaves t = 2 ^ height t.
+Theorem complete_leaves_height t : complete t -> leaves t = 2 ^ height t.
 (* begin hide *)
 Proof.
-elim => //= t1 IH1 t2 IH2.
+elim: t => //= t1 IH1 t2 IH2.
 move/andP => [H_c H_h].
 move/andP: H_c => [H_c1 H_c2].
 move/eqP: H_h => H_h.
