@@ -200,7 +200,7 @@ Alternatively, instead of running %\texttt{make install}%, one can set up the en
 
 ** Emacs set-up
 
-Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% and Mathematical Components%
+Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{Available from \url{https://github.com/ProofGeneral/PG}.}% and Mathematical Components%
 footnote{Available from \url{https://github.com/math-comp/math-comp}}% following the instructions below.
 Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>> add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General and Ssreflect/MathComp repositories were).
 
