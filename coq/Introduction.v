@@ -211,7 +211,7 @@ Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> an
 (load-file "~/misc/math-comp/mathcomp/ssreflect/pg-ssr.el") 
 >>
 
-Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
+Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
 << 
 (cua-mode t) 
