@@ -1169,7 +1169,7 @@ several functions on such trees.
 *)
 
 Inductive tree : Set :=
-| leaf of tree
+| leaf
 | node of tree & tree.
 
 (**
@@ -1205,7 +1205,7 @@ considered a complete tree.
 *)
 
 Fixpoint complete t :=
-if t is node t1 t2  then complete t1 && complete t2 && (height t1 == height t2)
+if t is node t1 t2 then complete t1 && complete t2 && (height t1 == height t2)
 else true.
 
 (**
