@@ -1,6 +1,6 @@
 From mathcomp.ssreflect
-Require Import ssreflect ssrbool ssrnat seq eqtype ssrfun.
-Add LoadPath "./../htt" as HTT.
+Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
+Add LoadPath "../htt" as HTT.
 From HTT
 Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.
 
