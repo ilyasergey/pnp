@@ -8,7 +8,7 @@ default: Makefile.coq
 	make -f Makefile.coq
 
 clean: Makefile.coq
-	make -f Makefile.coq clean
+	make -f Makefile.coq cleanall
 	rm -f Makefile.coq
 
 Makefile.coq: _CoqProject
