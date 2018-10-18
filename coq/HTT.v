@@ -1107,7 +1107,7 @@ Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
 From fcsl
 Require Import prelude pred pcm unionmap heap.
 From HTT
-Require Import heaptac stmod stsep stlog stlogR.
+Require Import stmod stsep stlog stlogR.
 
 Module HTT.
 

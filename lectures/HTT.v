@@ -2,9 +2,10 @@
 
 From mathcomp.ssreflect
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Add LoadPath "../htt" as HTT.
+From fcsl
+Require Import prelude pred pcm unionmap heap.
 From HTT
-Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.
+Require Import stmod stsep stlog stlogR.
 
 Module HTT.
 
@@ -494,7 +495,7 @@ case: H D=>r [h'][->] _.
 ]]
 *)
 
-rewrite hvalidPtUn. 
+rewrite validPtUn. 
 (**
 [[
   ...

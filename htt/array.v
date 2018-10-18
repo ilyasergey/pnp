@@ -5,7 +5,7 @@ Require Import tuple finfun finset.
 From fcsl
 Require Import pred pcm unionmap heap.
 From HTT
-Require Import heaptac domain stmod stsep stlog stlogR.
+Require Import domain stmod stsep stlog stlogR.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
