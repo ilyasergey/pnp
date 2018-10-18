@@ -1102,11 +1102,12 @@ building HTT from the sources).
 %\ccom{Add LoadPath}%
 *) 
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Add LoadPath "../htt" as HTT.
+From fcsl
+Require Import prelude pred pcm unionmap heap.
 From HTT
-Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.
+Require Import heaptac stmod stsep stlog stlogR.
 
 Module HTT.
 
@@ -2053,7 +2054,7 @@ machinery to find the others).
 
 *)
 
-rewrite hvalidPtUn. 
+rewrite validPtUn. 
 (**
 [[
   ...

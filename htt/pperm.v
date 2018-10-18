@@ -1,6 +1,7 @@
 Require Import ssreflect ssrfun. 
-From mathcomp.ssreflect Require Import ssrbool ssrnat seq eqtype path.
-From HTT Require Import pred.
+From mathcomp
+Require Import ssrbool ssrnat seq eqtype path.
+From fcsl Require Import pred.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Import Prenex Implicits.
@@ -292,4 +293,3 @@ rewrite inE; case/orP; first by move/eqP=><-; rewrite eq_refl.
 case: eqP=>[->//|_ H]; move/(perm_cons y): (IH2 _ H).
 by apply: perm_trans; apply: permutation_swap.
 Qed.
-

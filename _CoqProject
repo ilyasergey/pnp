@@ -3,16 +3,8 @@
 -Q solutions PnPSolutions
 -arg "-w -notation-overridden,-local-declaration,-redundant-canonical-projection,-projection-no-head-constant"
 
-htt/pred.v
-htt/prelude.v
-htt/idynamic.v
-htt/ordtype.v
 htt/pperm.v
-htt/finmap.v
 htt/domain.v
-htt/pcm.v
-htt/unionmap.v
-htt/heap.v
 htt/heaptac.v
 htt/stmod.v
 htt/stsep.v

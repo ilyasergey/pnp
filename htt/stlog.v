@@ -1,5 +1,6 @@
 From mathcomp Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-From HTT Require Import pred domain pcm unionmap heap stmod stsep. 
+From fcsl Require Import pred pcm unionmap heap.
+From HTT Require Import domain stmod stsep.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.

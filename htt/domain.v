@@ -1,5 +1,5 @@
 From mathcomp Require Import ssreflect ssrbool ssrfun ssrnat eqtype seq.
-From HTT Require Import pred prelude.
+From fcsl Require Import axioms pred prelude.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
@@ -138,7 +138,7 @@ Lemma sub_asym x y : sub_leq x y -> sub_leq y x -> x = y.
 Proof.
 move: x y=>[x Hx][y Hy]; rewrite /sub_leq /= => H1 H2.
 move: (poset_asym H1 H2) Hy=> <- Hy; congr exist.
-by apply: proof_irrelevance.
+by apply: pf_irr.
 Qed.
 
 Lemma sub_trans x y z : sub_leq x y -> sub_leq y z -> sub_leq x z.
@@ -267,7 +267,7 @@ Lemma ideal_asym x y : ideal_leq x y -> ideal_leq y x -> x = y.
 Proof.
 move: x y=>[x1 H1][x2 H2]; rewrite /ideal_leq /= => H3 H4; move: H1 H2. 
 rewrite (poset_asym H3 H4)=>H1 H2.
-congr Ideal; apply: proof_irrelevance.
+congr Ideal; apply: pf_irr.
 Qed.   
 
 Lemma ideal_trans x y z : ideal_leq x y -> ideal_leq y z -> ideal_leq x z.
@@ -693,7 +693,7 @@ Lemma chainE (T : poset) (s1 s2 : chain T) :
         s1 = s2 <-> pred_of s1 =p pred_of s2.
 Proof.
 split=>[->//|]; move: s1 s2=>[s1 H1][s2 H2] /= E; move: H1 H2.
-suff: s1 = s2 by move=>-> H1 H2; congr Chain; apply: proof_irrelevance.
+suff: s1 = s2 by move=>-> H1 H2; congr Chain; apply: pf_irr.
 by apply: fext=>x; apply: pext; split; move/E.
 Qed.
 
@@ -1234,8 +1234,8 @@ Proof. by case. Qed.
 Lemma contE (s : chain D1) (C : continuous) :
        f (lim s) = lim [f ^^ s by cont_mono C]. 
 Proof.
-case: C=>M E; rewrite E; congr (lim (image_chain _ _)). 
-apply: proof_irrelevance.
+case: C=>M E; rewrite E; congr (lim (image_chain _ _)).
+by apply: pf_irr.
 Qed.
 
 End Continuity.
