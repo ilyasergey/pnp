@@ -344,7 +344,6 @@ Lemma sexit4 h : valid h -> (valid (Unit : heap) ->
                    Unit = Unit :> heap) -> supdom h h.
 Proof. by move=>*; rewrite -(unitL h); apply: subdomE=>//; rewrite unitL. Qed.
 
-(*
 Lemma supdomUh A B h1 h2 x (v1 : A) (v2 : B) : 
         valid (h2 \+ (x :-> v2)) -> 
           (valid h2 -> supdom h2 h1) -> 
@@ -352,9 +351,11 @@ Lemma supdomUh A B h1 h2 x (v1 : A) (v2 : B) :
 Proof.
 move=>H1 H2.
 apply: subdomUE=>//; first by apply: H2; apply: validL H1.
-by apply: subdomPE; apply: (@hvalidUnPt_cond _ x v2 h2); rewrite joinC.
+apply: subdomPE.
+move: H1.
+rewrite validUnPt.
+by move/and3P; case.
 Qed.
-*)
 
 Lemma supdomeqUh h1 h2 h : 
         valid (h2 \+ h) -> (valid h2 -> supdom h2 h1) -> supdom (h2 \+ h) (h1 \+ h).
@@ -367,7 +368,6 @@ End Defcheck.
 
 (* now the ltac *)
 
-(*
 Ltac supdom_checker t H :=
   match goal with 
   | |- is_true (supdom (?h1 \+ t) ?h2) => 
@@ -403,9 +403,7 @@ Ltac supdom_checker t H :=
     supdom_checker t H
   | |- _ => idtac 
   end.
-*)
 
-(*
 Ltac defcheck := 
   match goal with 
   | |- is_true (valid ?h2) -> is_true (valid ?h1) =>
@@ -425,10 +423,7 @@ Ltac defcheck :=
       supdom_checker t H; move: H {t}; rewrite /supdom
   | |- _ => idtac
   end.
-*)
 
-(*
 Lemma test2 h1 h2 x (v1 v2 : nat) : subdom h1 h2 ->
         valid (h2 \+ (x :-> v2)) -> valid (h1 \+ (x :-> v1)).
 Proof. by move=>H; defcheck. Qed.
-*)
