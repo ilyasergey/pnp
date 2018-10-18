@@ -1006,7 +1006,7 @@ infer them from the values of actual arguments (e.g., [1] and [tt]),
 and declare [my_pair]'s type arguments as implicit:
 *)
 
-Implicit Arguments my_pair [A B].
+Arguments my_pair [A B].
 
 (**
 

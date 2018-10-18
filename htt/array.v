@@ -19,7 +19,7 @@ Prenex Implicits indx.
 (***********************************)
 
 Record array (I : finType) (T : Type) : Type := Array {orig :> ptr}.
-Implicit Arguments Array [I T]. 
+Arguments Array [I T]. 
 
 Definition array_for (I : finType) (T : Type) of phant (I -> T) := array I T. 
 Identity Coercion array_for_array : array_for >-> array.
