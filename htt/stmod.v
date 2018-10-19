@@ -1,5 +1,6 @@
 From mathcomp Require Import ssreflect ssrbool ssrfun ssrnat eqtype seq.
-From HTT Require Import pred prelude idynamic pcm unionmap heap domain.
+From fcsl Require Import axioms pred prelude pcm unionmap heap.
+From HTT Require Import domain.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
@@ -89,7 +90,7 @@ Lemma modelE (e1 e2 : STspec) : e1 = e2 <-> model e1 = model e2.
 Proof.
 move: e1 e2=>[e1 M1 S1 H1][e2 M2 S2 H2] /=; split=>[[//]|E].
 rewrite E in M1 S1 H1 *. 
-by congr STprog; apply: proof_irrelevance.
+by congr STprog; apply: pf_irr.
 Qed.
 
 
@@ -104,7 +105,7 @@ Lemma st_asym e1 e2 : st_leq e1 e2 -> st_leq e2 e1 -> e1 = e2.
 Proof.
 move: e1 e2=>[e1 M1 S1 H1][e2 M2 S2 H2]; rewrite /st_leq /= => E1 E2.
 rewrite (poset_asym E1 E2) in M1 M2 S1 S2 H1 H2 *; congr STprog;
-by apply: proof_irrelevance.
+by apply: pf_irr.
 Qed.
 
 Lemma st_trans e1 e2 e3 : st_leq e1 e2 -> st_leq e2 e3 -> st_leq e1 e3.
@@ -190,7 +191,7 @@ Proof.
 case: e=>mod M S H; rewrite M; split; case=>i [H1] H2. 
 - by exists i; split=>//; exists (bound H1).
 exists i, H1; case: H2 =>/= H2.
-by rewrite (proof_irrelevance H2 (bound H1)).
+by rewrite (pf_irr H2 (bound H1)).
 Qed.
 
 Lemma def_runs i y m (e : STspec) : 
@@ -422,7 +423,7 @@ End Consequence.
 Section Read.
 Variable (A : Type) (x : ptr). 
 
-Local Notation idyn v := (@idyn _ id _ v).
+Local Notation idyn v := (@dyn _ id _ v).
 
 Definition read_s : spec A := 
   (fun i : heap => x \in dom i /\ exists v : A, find x i = Some (idyn v),
@@ -457,7 +458,7 @@ End Read.
 Section Write.
 Variable (A : Type) (x : ptr) (v : A).
 
-Local Notation idyn v := (@idyn _ id _ v).
+Local Notation idyn v := (@dyn _ id _ v).
 
 Definition write_s : spec unit := 
   (fun i : heap => x \in dom i : Prop,
@@ -492,7 +493,7 @@ End Write.
 Section Allocation.
 Variables (A : Type) (v : A).
 
-Local Notation idyn v := (@idyn _ id _ v).
+Local Notation idyn v := (@dyn _ id _ v).
   
 Definition alloc_s : spec ptr := 
   (fun i => valid i : Prop, 
@@ -516,7 +517,10 @@ Lemma alloc_dstrict : def_strict alloc_sp.
 Proof.
 case=>p H y [m][/= H1][l][H2][H3][H4 H5]; case/H: H1=>_ D.
 suff {H3}: valid (m \+ l :-> v) by rewrite -H3.
-by rewrite joinC hvalidPtUn H4 D H5.
+rewrite joinC.
+rewrite validPtUn.
+apply/andP; split => //.
+by apply/andP; split.
 Qed.
 
 Lemma alloc_has_spec : alloc_sp \In has_spec alloc_s.
@@ -556,7 +560,7 @@ suff {H2}: valid (m \+ updi (fresh m) (nseq n v)) by rewrite -H2.
 elim: n =>[|k IH]; first by rewrite /= unitR. 
 rewrite (_ : nseq k.+1 v = rcons (nseq k v) v); last first.
 - by elim: {IH} k=>[|k IH] //=; rewrite -IH.
-rewrite updi_last joinA joinC hvalidPtUn IH /=. 
+rewrite updi_last joinA joinC validPtUn IH /=. 
 rewrite ptr_null negb_and fresh_null /=.
 rewrite domUn !inE /= negb_and IH negb_or /=.
 by rewrite dom_fresh updimV negb_and fresh_null ltnn.

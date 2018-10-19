@@ -1,5 +1,6 @@
 From mathcomp Require Import ssreflect ssrbool ssrnat ssrfun seq eqtype.
-From HTT Require Import pred pcm unionmap heap stmod.
+From fcsl Require Import pred pcm unionmap heap.
+From HTT Require Import stmod.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
@@ -26,7 +27,7 @@ Lemma antiframe p q i m h :
 Proof.
 move=>D1 H i2 m2 E D2 H1; rewrite {i}E in H D1 D2 *.
 move: (H i2 (m2 \+ h)); rewrite joinA; case/(_ (erefl _) D1 H1)=>h2 [E][D3].
-rewrite joinA in E; exists h2; rewrite (joinKf D3 E).
+rewrite joinA in E; exists h2; rewrite (joinKx D3 E).
 by rewrite E in D3; rewrite (validL D3).
 Qed.
 
@@ -196,11 +197,11 @@ Lemma readP : Model.conseq (Model.read_s A x) [read_s].
 Proof.
 move=>i H D; split=>[|{H D} y _ [->] H _ i1 h E1 D E2].
 - case: H D=>i1 [i2][->][[v]] -> _ D /=. 
-  rewrite hdomPtUn inE /= D eq_refl; split=>//.
-  by exists v; rewrite hfindPtUn.
+  rewrite domPtUn inE /= D eq_refl; split=>//.
+  by exists v; rewrite findPtUn.
 move: E1 E2 H D=>-> [v ->] H D; exists (x :-> v); do 3!split=>//.
 move=>w /(hcancelPtV (validL D)) <-; apply: H.
-by rewrite hfindPtUn.
+by rewrite findPtUn.
 Qed.
 
 Definition read := with_spec _ (Model.Do (Model.read A x) readP).
@@ -219,9 +220,20 @@ Lemma writeP : Model.conseq (Model.write_s x v) [write_s].
 Proof.
 move=>i H D; split=>[|{H D} y m [->] <- D1 i1 h E1 D2 [B][w] E2].
 - case: H D=>i1 [i2][->][[B]][y] -> _ D /=.
-  by rewrite hdomPtUn inE /= D eq_refl.
+  by rewrite domPtUn inE /= D eq_refl.
 move: E1 E2 D1 D2=>->->-> D; exists (x :-> v).
-by rewrite updUnL hdomPt inE /= eq_refl (hvalidPt_cond D) /= updU eq_refl.
+rewrite updUnL domPt inE /= eq_refl.
+case: ifP => //=.
+- move/andP => [Hx Ht].
+  split => //.
+  rewrite updU.
+  case: ifP => //=.
+  by move/eqP => Hx'.
+- move/andP => Hx.
+  case: Hx; split => //.
+  rewrite validPtUn in D.
+  move/and3P: D.
+  by case.
 Qed.
 
 Definition write := with_spec _ (Model.Do (Model.write x v) writeP).
@@ -240,8 +252,12 @@ Proof.
 move=>i H D; split=>[|{H D} y m [x][H1][->][H2] <- D1 i1 h E1 D E2].
 - by case: H D=>i1 [i2][->][->].
 move: E1 E2 H2 D D1=>-> ->; rewrite {1 2}unitL=>H2 D D1.
-exists (x :-> v); rewrite updUnR (negbTE H2) hvalidPtUn H1 H2 D.
-by do !split=>//; exists x.
+exists (x :-> v); rewrite updUnR (negbTE H2).
+rewrite validPtUn.
+split => //=.
+split => //; last by exists x.
+apply/andP; split => //=.
+by apply/andP.
 Qed.
 
 Definition alloc := with_spec _ (Model.Do (Model.alloc v) allocP).
@@ -280,9 +296,9 @@ Lemma deallocP : Model.conseq (Model.dealloc_s x) [dealloc_s].
 Proof.
 move=>i H D; split=>[|{H D} y m [->] <- D1 i1 h E1 D2 [A][v] E2].
 - case: H D=>i1 [i2][->][[A]][v] -> _ D /=.
-  by rewrite hdomPtUn inE /= D eq_refl.
-move: E1 E2 D1 D2=>->->->; rewrite hvalidPtUn; case/and3P=>H1 _ H2.
-by exists Unit; rewrite freeUnR // freeU eq_refl /cond /= H1 free0.
+  by rewrite domPtUn inE /= D eq_refl.
+move: E1 E2 D1 D2=>->->->; rewrite validPtUn; case/and3P=>H1 _ H2.
+by exists Unit; rewrite freeUnR // freeU eq_refl H1 free0.
 Qed.
 
 Definition dealloc := with_spec _ (Model.Do (Model.dealloc x) deallocP).

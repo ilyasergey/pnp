@@ -1,8 +1,9 @@
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-Add LoadPath "../htt" as HTT.
+From fcsl
+Require Import prelude pred pcm unionmap heap.
 From HTT
-Require Import prelude pred pcm unionmap heap heaptac stmod stsep stlog stlogR.
+Require Import stmod stsep stlog stlogR.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -26,7 +27,7 @@ Lemma lseg_null xs q h :
 Proof.
 case: xs=>[|x xs] D /= H; first by case: H=><- ->.
 case: H D=>r [h'][->] _. 
-by rewrite hvalidPtUn. 
+by rewrite validPtUn. 
 Qed. 
 
 Definition lseq p := lseg p null.

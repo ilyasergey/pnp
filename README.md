@@ -17,15 +17,16 @@ Initial release: August 2014
 
 ### Requirements
 
-* [Coq 8.7](https://coq.inria.fr/coq-87)
-* [Mathematical Components 1.6.4](http://math-comp.github.io/math-comp/) (`ssreflect`)
+* [Coq 8.7](https://coq.inria.fr/coq-87) or [Coq 8.8](https://github.com/coq/coq/releases/tag/V8.8.2)
+* [Mathematical Components 1.6.4 or 1.7.0](http://math-comp.github.io/math-comp/) (`ssreflect`)
+* [FCSL PCM 1.0.0](https://github.com/imdea-software/fcsl-pcm)
 
 ### Building
 
 We recommend installing the requirements via [OPAM](https://opam.ocaml.org/doc/Install.html):
 ```
 opam repo add coq-released https://coq.inria.fr/opam/released
-opam install coq-mathcomp-ssreflect
+opam install coq-mathcomp-ssreflect coq-fcsl-pcm
 ```
 
 Then, run `make clean; make` from the root folder. This will compile

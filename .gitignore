@@ -154,3 +154,5 @@ latex/*.pdf
 latex/pnp-blx.bib
 pnp*.zip
 CoqMakefile.conf
+Makefile.coq.conf
+.coqdeps.d

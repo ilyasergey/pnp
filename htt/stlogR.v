@@ -1,5 +1,6 @@
 From mathcomp Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
-From HTT Require Import pred prelude pcm unionmap heap heaptac stmod stsep stlog. 
+From fcsl Require Import axioms pred prelude pcm unionmap heap.
+From HTT Require Import heaptac stmod stsep stlog.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Import Prenex Implicits.
