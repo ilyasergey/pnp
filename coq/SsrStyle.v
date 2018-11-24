@@ -144,7 +144,7 @@ case: c; first by [].
 
 Now, right after case-analysing on [c], the proof script specifies
 that the _first_ of the generated subgoals should be solved using [by
-[].]. In this case %\texttt{first}% is called _selector_, and its
+[]]. In this case %\texttt{first}% is called _selector_, and its
 counterpart %\texttt{last}% would specify that the last goal should be
 taken care of instead, before proceeding.
 
