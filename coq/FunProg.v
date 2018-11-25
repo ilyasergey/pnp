@@ -621,7 +621,7 @@ Inductive strange : Set :=  cs : strange -> strange.
 (** 
 
 Therefore, an attempt to create a value of type [strange] by invoking
-its single constructor will inevitably lead to an infinie,
+its single constructor will inevitably lead to an infinite,
 non-terminating, series of constructor calls, and such programs cannon
 be encoded in Coq. It is interesting to take a look at the recursion
 principle of [strange]:

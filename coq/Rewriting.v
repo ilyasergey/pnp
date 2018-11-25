@@ -77,7 +77,7 @@ universes) and an element [x] of type [A]. There is nothing
 particularly new here: we have seen parametrized inductive predicates
 before, for instance, conjunction and disjunction in
 %Section~\ref{sec:conjdisj}%. The novel part of this definition is
-what comes after the semicolon trailing the parameter list. Unlike all
+what comes after the colon trailing the parameter list. Unlike all
 previously seen logical connectives, the equality predicate has type
 [A -> Prop] in contrast to just [Prop]. In the Coq terminology, it
 means that [eq] is not just inductively-defined datatype, but is an
