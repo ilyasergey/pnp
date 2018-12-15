@@ -158,14 +158,14 @@ Alternatively, you can clone the the sources of these lecture notes, along with 
 
 ** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.8, Ssreflect/Mathematical Components version 1.7.0, and FCSL PCM version 1.0.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.8.2, Ssreflect/Mathematical Components version 1.7.0, and FCSL PCM version 1.0.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
 
 The easiest way to obtain the necessary versions of Coq/Ssreflect is
 to install them via OPAM package manager
 (%\url{https://opam.ocaml.org/}%): 
 
 << 
-opam install coq
+opam install coq.8.8.2
 >>
 
 
@@ -178,7 +178,7 @@ opam repo add coq-released https://coq.inria.fr/opam/released
 opam install coq-mathcomp-ssreflect.1.7.0 coq-fcsl-pcm.1.0.0
 >>
 
-Alternatively, you can compile Coq 8.8, Ssreflect/Mathematical
+Alternatively, you can compile Coq 8.8.2, Ssreflect/Mathematical
 Components version 1.7.0, and FCSL PCM 1.0.0 from sources, which would take around an hour.%\footnote{Getting Coq using a system-specific package
 manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
 although the Coq version acquired this way is not guaranteed to work
