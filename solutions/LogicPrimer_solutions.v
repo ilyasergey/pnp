@@ -1,9 +1,11 @@
 From mathcomp.ssreflect
 Require Import ssreflect.
 
+Require Classical_Prop.
+
 Module LogicPrimer.
 
-Require Import Classical_Prop.
+Import Classical_Prop.
 Definition peirce_law := forall P Q: Prop, ((P -> Q) -> P) -> P.
 
 (**
