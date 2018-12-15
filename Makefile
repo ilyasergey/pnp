@@ -19,7 +19,7 @@ Makefile.coq: _CoqProject
 doc: latex/$(COQNOTES).pdf
 
 latex/%.v.tex: Makefile coq/%.v coq/%.glob coq/Introduction.v coq/FunProg.v coq/LogicPrimer.v coq/Rewriting.v coq/BoolReflect.v coq/SsrStyle.v coq/DepRecords.v coq/HTT.v coq/Conclusion.v
-	cd coq ; coqdoc --interpolate --latex --body-only -s \
+	cd coq ; coqdoc --no-externals --interpolate --latex --body-only -s \
 		$*.v -o ../latex/$*.v.tex
 
 latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/proceedings.bib latex/defs.tex 
