@@ -161,8 +161,9 @@ with propositions and proofs.
 From mathcomp.ssreflect Require Import ssreflect.
 
 (* begin hide *)
-Module LogicPrimer.
+Require Classical_Prop.
 
+Module LogicPrimer.
 (* end hide *)
  
 (**
@@ -1452,7 +1453,7 @@ example on page 414 of the Coq'Art book).
 
 *)
 
-Require Import Classical_Prop.
+Import Classical_Prop.
 
 
 (**
