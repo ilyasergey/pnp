@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Programs and Proofs: Set-up</title>
+<script src="../ilya.sergey.js"></script>
+<link rel='stylesheet' type='text/css' href='style.css' />
+<link href='//fonts.googleapis.com/css?family=Judson|Raleway:500' rel='stylesheet' type='text/css'>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-66331549-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+
+<body style="max-width:1000px">
+
+<h2>
+Programs and Proofs:
+Mechanizing Mathematics with Dependent Types</h2>
+
+<h1>Installation and Set-up</h1>
+
+<p> In order to follow the course, execute the examples and complete
+the exercises, you are expected to have the Coq Proof Assistant with
+Ssreflect extension installed at your machine. This page contains some
+general instructions on the installation and set-up.  </p>
+
+<p> There is also an option to use a virtual machine image instead of
+installing all the software natively (the instruction on obtaining the
+VM are below).  </p>
+
+<p> For further information or assistance on set-up, please, contact
+<script>Sergey.emailme("Ilya Sergey")</script>. </p>
+
+<hr>
+
+<h2>Installing Coq and Ssreflect natively</h2>
+
+<p>
+
+The sources of the course files are checked to compile and tested with
+Coq version 8.6 and Ssreflect/Mathematical Components version
+1.6.1. It is not guaranteed that the same examples will work seamlessly
+with different versions. Therefore, several recipes on how to build
+install the necessary software are provided below.
+
+
+<h3>Linux, Cygwin and Mac OS X</h3>
+
+
+Linux and Mac OS X users are recommended to compile <b>Coq 8.6</b> and
+  <b>Ssreflect/Mathematical Components 1.6</b> from sources, which
+  would take around an hour (getting Coq using a system-specific
+  package manager, such as <b>aptitude</b> or <b>MacPorts</b> is
+  another option, although the Coq version acquired this way is not
+  guaranteed to work with Ssreflect 1.6).
+
+<ul>
+
+  <li><a href="https://coq.inria.fr/download">Coq 8.6</a>
+    sources</li>
+
+  <li><a
+   href="https://math-comp.github.io/math-comp/">Ssreflect/Mathematical
+   Components 1.6.1</a> sources</li>
+
+</ul>
+
+
+  In order to be compiled, Coq 8.6 requires Objective Caml
+  version 4.02.2 or later, Camlp5 version >=6.13, GNU Make version
+  3.81 or later (see the <code>INSTALL</code> file from the archive
+  with sources for the full list of requirements on configuration and
+  installation). Once compiled, the following environment variables
+  should be set (e.g., in <code>~/.bashrc</code> or
+  <code>~/.profile</code> configuration files) to build Ssreflect
+  (with the respective paths chosen during the Coq's installation):
+
+<pre>
+    export COQBIN="/usr/local/bin/"
+    export COQ_MK="/usr/local/bin/coq_makefile"
+</pre>
+
+  It is also recommended to keep sources of Ssreflect and Mathematical
+  Components easily accessible as reading them might be helpful when
+  working with libraries (for instance, in the folder
+  <code>~/misc/mathcomp-1.6/mathcomp</code>).
+
+  Upon installing Ssreflect via <code>make install</code>, the following
+  environment variable should be also set up:
+
+<pre>
+    export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" 
+</pre>
+
+  Alternatively, instead of running <code>make install</code>, one can
+  set up the environment variable <code>SSRCOQ_LIB</code> to point to
+  the folder <code>ssreflect-location/theories</code>, which contains
+  all Ssreflect modules compiled (and <code>ssreflect-location</code>
+  denotes the location of the directory where Ssreflect has been
+  unpacked to).
+
+</p>
+
+<hr>
+
+<h2>Emacs and Proof General set-up</h2>
+
+<p>
+
+<a href="http://www.gnu.org/software/emacs/">Emacs</a> (or <a
+   href="http://aquamacs.org/">Aquamacs</a> for Mac OS X users) text
+  editor provides a convenient environment for Coq development, thanks
+  to the <a href = "https://github.com/emacsattic/proofgeneral">Proof
+  General</a> mode.
+
+<p> On Unix-like systems, clone <a href =
+"https://github.com/emacsattic/proofgeneral">Proof General</a> from
+its GitHub repository, following the instructions below. Upon
+downloading and unpacking, add the following lines into the
+<code>.emacs</code> configuration file located in the home directory
+(<code>~/</code>) in Unix and in <code>C:\</code> root in Windows
+(possibly replacing the <code>~/misc/</code> part with the path where
+Proof General and Ssreflect sources were unpacked/cloned).  </p>
+
+<pre>
+    ;; Proof General support
+    (load-file "~/misc/PG/generic/proof-site.el") 
+
+    ;; Ssreflect support 
+    (load-file "~/misc/mathcomp-1.6/mathcomp/ssreflect/pg-ssr.el")
+</pre>
+
+Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes
+can also find it convenient to enable the Cua mode in Emacs, which can
+be done by adding the following lines into the <code>.emacs</code> file:
+
+<pre>
+    (cua-mode t)
+    (setq cua-auto-tabify-rectangles nil)
+    (transient-mark-mode 1)
+    (setq cua-keep-region-after-copy t) 
+</pre>
+
+Every Coq file has the extension <code>.v</code>. Opening any
+<code>.v</code> file will automatically trigger the Proof General
+mode.
+
+</p>
+
+<hr>
+
+<h2>Using a virtual machine image</h2>
+
+<p><b>WARNING:</b>
+The virtual machine image hasn't yet been updated for Coq 8.5 and
+Ssreflect 1.6 and contains an older version of the course.
+</p>
+
+<p> If compiling and installing Coq and Ssreflect from scratch looks
+like too much hassle, there is also a possibility to use a virtual
+machine image with all necessary libraries preinstalled and Emacs set
+up to work with Ssreflect. The image requires <a href =
+"http://www.virtualbox.org/wiki/Downloads">Oracle VirtualBox</a> to be
+used; it is about 1.8 GB size and can be obtained by the following <a
+ href =
+"http://racky.imdeasoftware.org/constructive/pnp/Ubuntu-CoqSsr-PnP.ova">link</a>. It
+runs Ubuntu 14.04 and automatically logs in when started with the user
+<code>coquser</code> (use the password <code>coquser</code> whenever
+it is required). The folder <code>~/misc</code> contains the sources
+of Ssreflect and Proof General.
+
+</p>
+<hr>
+
+<h2>Checking your set-up </h2>
+
+<p>
+
+To check that your setup is correct, create in Emacs a <a href =
+"./test.v">file</a> with an extension <code>.v</code> and the
+following text in it:
+
+<div style="background-color:#E8E8E8">
+<pre>
+From mathcomp.ssreflect
+Require Import ssreflect.
+Set Implicit Arguments.
+Unset Strict Implicit.
+Unset Printing Implicit Defensive.
+
+Module Test.
+
+Variable A : Type.
+
+Theorem counterexample P : (exists x : A, ~P x) -> ~(forall x, P x).
+Proof.
+by case=>x H1 H2; apply: H1 (H2 x).
+Qed.
+
+Print counterexample.
+
+End Test.
+</pre>
+</div>
+
+After that, set the text caret to the very last position of the file
+and press <code>Ctrl-c Ctrl-Enter</code>. This will activate the Proof
+General interactive checking mode and will interpret the file. As the
+result, the buffer <code><b>*goals*</b></code> should display the
+following message:
+
+<pre>
+Module Test is defined
+</pre>
+
+which would mean that your set-up is correct and you are ready for
+hacking in Coq/Ssreflect.
+
+</p>
+
+[<a href="./index.html">Back to the course page</a>]
+<br><br>
+<hr>
+
+<font size="1">
+<!-- hhmts start -->Last modified: Thu Jan  3 18:33:17 +08 2019 <!-- hhmts end -->
+</font>
+</body>
+</html>
