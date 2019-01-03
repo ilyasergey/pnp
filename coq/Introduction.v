@@ -158,14 +158,14 @@ Alternatively, you can clone the the sources of these lecture notes, along with 
 
 ** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.8, Ssreflect/Mathematical Components version 1.7.0, and FCSL PCM version 1.0.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.8.2, Ssreflect/Mathematical Components version 1.7.0, and FCSL PCM version 1.0.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
 
 The easiest way to obtain the necessary versions of Coq/Ssreflect is
 to install them via OPAM package manager
 (%\url{https://opam.ocaml.org/}%): 
 
 << 
-opam install coq
+opam install coq.8.8.2
 >>
 
 
@@ -178,7 +178,7 @@ opam repo add coq-released https://coq.inria.fr/opam/released
 opam install coq-mathcomp-ssreflect.1.7.0 coq-fcsl-pcm.1.0.0
 >>
 
-Alternatively, you can compile Coq 8.8, Ssreflect/Mathematical
+Alternatively, you can compile Coq 8.8.2, Ssreflect/Mathematical
 Components version 1.7.0, and FCSL PCM 1.0.0 from sources, which would take around an hour.%\footnote{Getting Coq using a system-specific package
 manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
 although the Coq version acquired this way is not guaranteed to work
@@ -200,9 +200,8 @@ Alternatively, instead of running %\texttt{make install}%, one can set up the en
 
 ** Emacs set-up
 
-Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{Available from \url{https://github.com/emacsattic/proofgeneral}.}% and Mathematical Components%
-footnote{Available from \url{https://github.com/math-comp/math-comp}}% following the instructions below.
-Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>> add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where Proof General and Ssreflect/MathComp repositories were).
+The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
+Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>>, add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in the <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where the Proof General and Ssreflect/MathComp repositories were).
 
 << 
 ;; Proof General support 
@@ -212,7 +211,7 @@ Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> an
 (load-file "~/misc/math-comp/mathcomp/ssreflect/pg-ssr.el") 
 >>
 
-Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
+Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
 << 
 (cua-mode t) 
@@ -223,6 +222,7 @@ Linux users, more used to the Windows-style Copy/Paste/Undo keystrokes can also 
 
 Every Coq file has the extension %\texttt{.v}%. Opening any %\texttt{.v}% file will automatically trigger the Proof General mode.
 
+Finally, the optional Company-Coq%\footnote{\url{https://github.com/cpitclaudel/company-coq}}% collection of extensions to Proof General adds many modern IDE features such as auto-completion of tactics and names, refactoring, and inline help.
 
 ** Getting the lecture files and solutions
 %\label{sec:get-files}%

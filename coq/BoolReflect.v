@@ -667,7 +667,7 @@ This is why we need a mechanism to conveniently switch between two
 possible representation. Ssreflect solves this problem by employing
 the familiar rewriting machinery (%see Section~\ref{sec:indexed} of
 Chapter~\ref{ch:eqrew}%) and introducing the inductive predicate
-family [reflect], which connects propositions an booleans:
+family [reflect], which connects propositions and booleans:
 
 %\ssrd{reflect}%
 %\index{reflect datatype@{\textsf{reflect} datatype}}%

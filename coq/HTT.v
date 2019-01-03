@@ -55,8 +55,8 @@ transparency_ property, which ensures that programs in such languages
 expressions, evaluating to some result (similar to mathematical
 functions) or diverging. Therefore, such programs, whose outcome is
 only a value, but not some side effect (e.g., output to a file), can
-be replaced safely by their result, if it's computable. This
-possibility provides a convenient way of algebraic reasoning about
+be replaced safely by their result, if it is computable. This
+possibility provides a convenient way of reasoning algebraically about
 such programs by means of equality rewritings---precisely what we were
 observing and leveraging in %Chapters~\ref{ch:eqrew}
 and~\ref{ch:ssrstyle}% of this course in the context of Coq taken as a
@@ -72,11 +72,11 @@ some of the program's algebraic properties. While a functional program
 is already a good description of its result (due to referential
 transparency), its algebraic properties (e.g., some equalities that
 hold over it) are usually a subject of separate statements, which
-should be proved%~\cite{Bird:BOOK}%. Good example of such properties
+should be proved%~\cite{Bird:BOOK}%. Good examples of such properties
 are the commutativity and cancellation properties, which we proved for
 natural numbers with addition, considered as an instance of PCM on
 page%~\pageref{pg:addnprops} of Chapter~\ref{ch:depstruct}%. Another
-classical series of examples, which we did not focus in this course,
+classical series of examples, which we did not focus on in this course,
 are properties of list functions, such as appending and reversal
 (e.g., that the list reversal is an inverse to itself).%\footnote{A
 common anti-pattern in dependently-typed languages and Coq in
@@ -1154,7 +1154,7 @@ of separation logic, and [[vfun x => ...]] notation accounts for the
 fact that the computation can throw an
 exception%~\cite{Nanevski-al:JFP08}%, the possibility we do not
 discuss in this course.
-** Structuring the program verification in HTT 
+** Structuring program verification in HTT
 Let us now consider how the examples from %Section~\ref{sec:seplog}%
 can be given specifications and verified in Coq. The program on
 page%~\pageref{pg:alterx}%, which modifies a pointer [x] and keeps a
@@ -1834,7 +1834,7 @@ Qed.
 *)
 
 (**
-* On shallow and deep embedding
+* On shallow and deep embeddings
 %\label{sec:shallowdeep}%
 A noteworthy trait of HTT's approach to verification of effectful
 programs is its use of _shallow embedding_ of the imperative language
