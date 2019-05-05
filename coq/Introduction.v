@@ -160,55 +160,50 @@ Alternatively, you can clone the the sources of these lecture notes, along with 
 
 The sources of this manuscript have been compiled and tested with Coq version 8.9.0, Ssreflect/Mathematical Components version 1.8.0, and FCSL PCM version 1.1.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
 
-The easiest way to obtain the necessary versions of Coq/Ssreflect is
-to install them via OPAM package manager
-(%\url{https://opam.ocaml.org/}%): 
+The easiest way to obtain the necessary versions of Coq and the libraries is
+to install them via the OPAM package manager (%\url{https://opam.ocaml.org}%):
 
 << 
 opam install coq.8.9.0
 >>
 
 
-In order to install  and Ssreflect/Mathematical
-Components and FCSL PCM, you will need to register the corresponding
-repository and then install the package as follows:
+In order to install Ssreflect/Mathematical Components and FCSL PCM,
+you will need to register the corresponding
+repository and then install the packages as follows:
 
 << 
 opam repo add coq-released https://coq.inria.fr/opam/released 
 opam install coq-mathcomp-ssreflect.1.8.0 coq-fcsl-pcm.1.1.0
 >>
 
-Alternatively, you can compile Coq 8.9.0, Ssreflect/Mathematical
-Components version 1.8.0, and FCSL PCM 1.1.0 from sources, which would take around an hour.%\footnote{Getting Coq using a system-specific package
+Alternatively, you can compile Coq 8.9.0%\footnote{\url{https://github.com/coq/coq}}%, Ssreflect/Mathematical
+Components version 1.8.0%\footnote{\url{https://github.com/math-comp/math-comp}}%, and
+FCSL PCM 1.1.0%\footnote{\url{https://github.com/imdea-software/fcsl-pcm}}%
+from sources.%\footnote{Getting Coq using a system-specific package
 manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
 although the Coq version acquired this way is not guaranteed to work
 properly with Ssreflect/Mathematical Components 1.8.0.}%
-In order to be compiled, Coq requires Objective Caml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}. Without doing so, Ssreflect might emit some errors during its compilation.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build Ssreflect (with the respective paths chosen during the Coq's installation):
+In order to be compiled, Coq requires Objective Caml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build the libraries (with the respective paths chosen during the Coq's installation):
 
 << 
 export COQBIN="/usr/local/bin/" 
 export COQ_MK="/usr/local/bin/coq_makefile" 
 >>
 
-After compiling and installing Ssreflect on top of Coq, as described in the corresponding <<INSTALL>> file of the archive, you should be able to compile and install the Mathematical Components libraries using the same process. It is also recommended to keep Ssreflect/MathComp's sources easily accessible as reading them might be helpful when working with libraries (for instance, put them to the folder <<~/misc/mathcomp-1.8.0>>).
-
-Upon installing Ssreflect via %\texttt{make install}%, the following environment variable should be also set up:
-
-<< export SSRCOQ_LIB="/usr/local/lib/coq/user-contrib/mathcomp/ssreflect" >>
-
-Alternatively, instead of running %\texttt{make install}%, one can set up the environment variable %\texttt{SSRCOQ\_LIB}% to point to the folder %\texttt{ssreflect-location/mathcomp/ssreflect}%, which contains all Ssreflect modules compiled (and %\texttt{ssreflect-location}% denotes the location of the directory where Ssreflect has been unpacked to).
+After installation, it is recommended to keep the sources of Ssreflect/Mathematical Components and FCSL PCM easily accessible as reading them might be helpful when working with the libraries (for instance, put them into the folders <<~/misc/math-comp-1.8.0>> and <<~/misc/fcsl-pcm-1.1.0>>).
 
 ** Emacs set-up
 
-The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org/}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
-Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp/>>, add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in the <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where the Proof General and Ssreflect/MathComp repositories were).
+The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Ssreflect/Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
+Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp-1.8.0/>>, add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in the <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where the Proof General and Ssreflect/Mathematical Components repositories were).
 
 << 
 ;; Proof General support 
 (load-file "~/misc/PG/generic/proof-site.el")
 
 ;; Ssreflect support 
-(load-file "~/misc/math-comp/mathcomp/ssreflect/pg-ssr.el") 
+(load-file "~/misc/math-comp-1.8.0/mathcomp/ssreflect/pg-ssr.el")
 >>
 
 Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
