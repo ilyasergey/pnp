@@ -17,9 +17,9 @@ Initial release: August 2014
 
 ### Requirements
 
-* [Coq 8.7](https://coq.inria.fr/coq-87) or [Coq 8.8](https://github.com/coq/coq/releases/tag/V8.8.2)
-* [Mathematical Components 1.6.4 or 1.7.0](http://math-comp.github.io/math-comp/) (`ssreflect`)
-* [FCSL PCM 1.0.0](https://github.com/imdea-software/fcsl-pcm)
+* [Coq 8.8 or 8.9](https://coq.inria.fr/download)
+* [Mathematical Components 1.7.0 or 1.8.0](http://math-comp.github.io/math-comp/) (`ssreflect`)
+* [FCSL PCM 1.0.0 or 1.1.0](https://github.com/imdea-software/fcsl-pcm)
 
 ### Building
 
