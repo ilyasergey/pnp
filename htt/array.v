@@ -84,7 +84,7 @@ Program Definition new (x : T) : STsep (emp, [vfun y => shape y [ffun => x]]) :=
       ret (Array x)).
 Next Obligation.
 move=>i ->; step=>y; heval; rewrite unitR; vauto; congr updi. 
-rewrite fgraph_codom /= codomE cardE.
+rewrite ?fgraph_codom /= codomE cardE.
 by elim: (enum I)=>[|t ts] //= ->; rewrite (ffunE _ _). 
 Qed.
 
@@ -121,6 +121,7 @@ move=>_ ->; case: fintype.pickP=>[v|] H /=.
 - apply: bnd_seq; apply: val_do0=>//= x m [->] _ _.
   by apply: val_do0=>//; exists [ffun => f v], nil. 
 step; do !split=>//. 
+rewrite ?codom_ffun.
 suff L: #|I| = 0 by case: (fgraph f)=>/=; rewrite L; case.
 by rewrite cardE; case: (enum I)=>[|x s] //; move: (H x).
 Qed.
