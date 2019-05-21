@@ -374,7 +374,7 @@ nat_rec : forall P : nat -> Set,
           P 0 -> (forall n : nat, P n -> P n.+1) -> forall n : nat, P n
 ]]
 
-The type of [nat_rec] requires a bit of explanation. It is a
+The type of [nat_rec] requires a bit of explanation. It is
 polymorphic in the sense of Haskell and OCaml (i.e., it is
 parametrized over another type). More precisely, its first parameter,
 bound by the [forall] quantifier is a function, which maps natural
