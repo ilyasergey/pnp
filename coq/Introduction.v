@@ -282,9 +282,9 @@ I'm grateful to Michael D. Adams, Amal Ahmed, Jim Apple, Daniil
 Berezun, Giovanni Bernardi, Dmitri Boulytchev, William J. Bowman,
 Kirill Bryantsev, Santiago Cuellar, Andrea Cerone, Olivier Danvy,
 %R\'{e}my Haemmerle%, %Jos\'{e}% Francisco Morales, Phillip Mates,
-Gleb Mazovetskiy, Karl Palmskog, Anton Podkopaev, Leonid Shalupov, Jan Stolarek and
-James R. Wilcox who provided a lot of valuable feedback and found
-countless typos in earlier versions of the notes.
+Gleb Mazovetskiy, Karl Palmskog, Daniel Patterson, Anton Podkopaev, 
+Leonid Shalupov, Jan Stolarek and James R. Wilcox who provided a lot 
+of valuable feedback and found countless typos in earlier versions of the notes.
 
 The mascot picture %\emph{Le Coq M\'{e}canis\'{e}}% on the front page
 is created by Lilia Anisimova.
