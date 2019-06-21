@@ -148,7 +148,7 @@ by step; apply: val_doR=>// V; exists xs; rewrite V ptrA addn1 -addSnnS unitL.
 Qed.
 Next Obligation.
 move=>_ /= [f][->] _; apply: val_do0=>// V; exists (tval (fgraph f)).
-by rewrite ptr0 V {3}fgraph_codom /= codomE size_map -cardE. 
+by rewrite ptr0 V {3}fgraph_codom /= codomE size_map -cardE addn0.
 Qed.
 
 
