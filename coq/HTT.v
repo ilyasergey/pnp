@@ -2187,7 +2187,7 @@ End LList.
 (** 
 %\begin{exercise}[Imperative in-place map]% 
 Define, specify and verify the imperative higher-order function
-[list_map] that takes arguments two types, [S] and [T], a function [f
+[list_map] that takes as arguments two types, [S] and [T], a function [f
 : T -> S] and a head [p] of a single-linked list, described by a
 predicate [lseq], and changes the list in place by applying [f] to
 each of its elements, while preserving the list's structure. The

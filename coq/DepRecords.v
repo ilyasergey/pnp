@@ -92,7 +92,7 @@ operations and the carrier.
 In this chapter we will learn how to encode common algebraic data
 structures in Coq in a way very similar to how data structures are
 encoded in languages like C (with a bit of Haskell-ish type class-like
-machinery), so the represintation, unlike the one in C or Haskell,
+machinery), so the representation, unlike the one in C or Haskell,
 would allow for flexible and generic reasoning about the structures'
 properties. In the process, we will meet some old friends from the
 course of abstract algebra---partial commutative monoids, and implement

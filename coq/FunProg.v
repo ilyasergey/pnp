@@ -752,7 +752,7 @@ fst : forall A B : Type, A * B -> A
 Check snd.
 (**
 [[
-fst : forall A B : Type, A * B -> B
+snd : forall A B : Type, A * B -> B
 ]]
 
 

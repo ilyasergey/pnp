@@ -179,7 +179,7 @@ Qed.
 
 (** 
 
-The last proof script first moved for assumptions to the context, so
+The last proof script first moved four assumptions to the context, so
 the goal became [(P -> Q -> R) -> Q -> R]. Next, it partially applied
 the top assumption [(P -> Q -> R)] to [p : P] from the context and
 moved the result back to the goal, so it became [(Q -> R) -> Q -> R],
@@ -210,7 +210,7 @@ us to conclude the proof.
 
 So far we have explored only views that help to weaken the hypothesis
 using the view lemma, which is an implication. In fact, Ssreflect's
-view mechanism is elaborated enough to deal with view lemmas defined
+view mechanism is elaborate enough to deal with view lemmas defined
 by means of equivalence (double implication) %\texttt{<->}%, and the
 system can figure out itself, "in which direction" the view lemma
 should be applied. Let us demonstrate it with the following example,
@@ -1081,7 +1081,7 @@ Lemma ExistsUnique1 A (P : A -> A -> Prop):
 (**
 
 The notation [exists ! x, P x] is an abbreviation for the sigma-type,
-whose second component is the higher-order predicate unique, defined
+whose second component is the higher-order predicate [unique], defined
 as follows:
 
 *)
