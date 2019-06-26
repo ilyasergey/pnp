@@ -970,7 +970,6 @@ to do so is by the [case]-analysis on a single constructor.
 *)
 
 Goal P /\ Q -> Q.
-Proof.
 case.
 
 (**  
