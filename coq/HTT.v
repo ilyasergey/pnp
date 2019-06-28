@@ -1148,7 +1148,7 @@ alloc : forall (A : Type) (v : A),
 That is, alloc is a procedure, which starts in an empty heap [Unit]
 and whose argument [v] of type [A] becomes referenced by the pointer
 (which is also the [alloc]'s result) in the resulting
-singleton-pointer heap. The notation [x :-> y] corresponds to the the
+singleton-pointer heap. The notation [x :-> y] corresponds to the
 points-to assertion $x \mapsto y$ in the mathematical representation
 of separation logic, and [[vfun x => ...]] notation accounts for the
 fact that the computation can throw an

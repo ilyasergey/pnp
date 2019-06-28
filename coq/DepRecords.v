@@ -277,7 +277,7 @@ valid_op
      : forall T : Type, mixin_of T -> T -> bool
 ]]
 
-Coq supports the syntax for anonymous record fields (via the the
+Coq supports the syntax for anonymous record fields (via the
 underscore [_]), so getters for them are not generated. We have
 decided to make the property fields of [mixin_of] to be anonymous,
 since they will usually appear only in the proofs, where the structure

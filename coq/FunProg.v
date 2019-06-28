@@ -206,13 +206,13 @@ from scratch using the definition of [nat] from above. Since [nat] is
 a recursive type, the addition of two natural numbers [n] and [m]
 should be defined recursively as well. In Coq, recursive functions are
 defined via the keyword [Fixpoint]. In the following definition of the
-[my_plus] function, we will make use of Ssreflect's infix notation
+[my_plus] function, we will make use of Ssreflect's postfix notation
 [.+1] (with no spaces between the characters) as an alternative to the
 standard [nat]'s recursive constructor [S].%\footnote{It is important
 to bear in mind that \texttt{.+1} is not just a function for
 incrementation, but also is a datatype constructor, allowing one to
 obtain the Peano successor of a number \texttt{n} by taking
-\texttt{n.+1}.}% Also, Coq provides a convenient notation [0] to the
+\texttt{n.+1}.}% Also, Coq provides a convenient notation [0] for the
 _zero_ constructor [O].
 
 *)
@@ -227,7 +227,7 @@ Fixpoint my_plus n m :=
 
 Here, we deliberately used less concise notation in order to
 demonstrate the syntax [let: x := e1 in e2] construct, which,
-similarly to Haskell and OCaml allows, one to bind intermediate
+similarly to Haskell and OCaml, allows one to bind intermediate
 computations within expressions.%\footnote{The same example also
 demonstrates the use of Ssreflect alternative to Coq's standard
 \texttt{let} command, not trailed with a colon. We will be making use
@@ -303,7 +303,7 @@ such argument using the explicit annotation \texttt{struct} right
 after the function parameter list, e.g., %[{struct n}]% in the case of
 %[my_plus]%.}% This criteria is sufficient to ensure the termination
 of all functions in Coq. Of course, such termination check is a severe
-restriction to the computation power of Coq, which therefore is not
+restriction to the computational power of Coq, which therefore is not
 Turing-complete as a programming language (as it supports only
 primitive recursion).
 
@@ -504,7 +504,7 @@ use of the _dependent_ pattern matching, which now explicitly
 _refines_ the return type [P n' -> _] of the whole [match e with ps
 end] expression. This small addition allows the Coq type checker to
 relate the expected type of [my_plus]' first argument in the second
-branch to the the type of the pattern matching scrutinee [n']. Without
+branch to the type of the pattern matching scrutinee [n']. Without
 the explicit [return] in the pattern matching, in some cases when its
 result type depends on the value of the scrutinee, the Coq type
 checking engine will fail to unify the type of the branch and the
@@ -551,11 +551,11 @@ are often used to "enforce" the dependently-typed programs to work in
 a particular expected way. In Coq, dependent function types are
 omnipresent, and are syntactically specified using the
 [forall]-binder, similarly to the way _parametric_ types are specified
-in Haskell or type calculi like polymorphic lambda calculus (also
+in Haskell or typed calculi like polymorphic lambda calculus (also
 known as System
 $F$%~\cite{Reynolds:SP74,Girard:PhD}%).%\footnote{Although, generally
 speaking, Coq abuses the $\forall$-notation using it for what is
-denoted in other type calculi by means of quantifiers $\Lambda$ (terms
+denoted in other typed calculi by means of quantifiers $\Lambda$ (terms
 parametrized by types), $\forall$ (types parametrized by types) and
 $\Pi$ (types parametrized by terms)~\cite{Pierce:BOOK02}.}% The
 crucial difference beween Coq's core calculus and System $F$ is that
@@ -887,7 +887,7 @@ _)] as a part of its return type, which narrows the search scope. As usual the
 underscores [_] denote a wildcard in the pattern and can be used both
 in the name or type component. Moreover, one can use named patterns of
 the form [?id] to bind free identifiers in the sub-types of a sought
-expression. For instance, the next query will list all function with
+expression. For instance, the next query will list all functions with
 map-like types (notice how the higher-order constructor types are
 abstracted over using wildcards):
 *)
@@ -1064,7 +1064,7 @@ particular, sections allow the programmer to limit the scope of
 modules imported to the current file (each compiled %\texttt{.v}% file
 in the scope of the interpreter is considered as a module), as well as
 to defined _locally-scoped_ variables. To see how it works, let us
-construct a section containing an utility function for natural
+construct a section containing a utility function for natural
 numbers.  Declaring a section starts from the keyword
 [Section],%\ccom{Section}% followed by the name of the section:
 
@@ -1086,7 +1086,7 @@ Variable n: nat.
 
 (** 
 
-We can now define a function, implementing a multiplication of natural
+We can now define a function, implementing multiplication of natural
 numbers by means of addition. To do this, we assume the variable [n]
 to be fixed, so the multiplication can be formulated just as a
 function of _one_ parameter:

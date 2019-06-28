@@ -152,7 +152,7 @@ In order to be able to follow the manuscript and execute the examples provided, 
 
 % \begin{center} \url{http://ilyasergey.net/pnp} \end{center} %
 
-Alternatively, you can clone the the sources of these lecture notes, along with the exercises and the solution from the following public GitHub repository:
+Alternatively, you can clone the sources of these lecture notes, along with the exercises and the solution from the following public GitHub repository:
 
 % \begin{center} \url{https://github.com/ilyasergey/pnp} \end{center} %
 
@@ -232,7 +232,7 @@ After the sources are downloaded and unzipped, run <<make>> from the root folder
 
 The table below describes the correspondence between the chapters of the manuscript and the accompanying files.
 
-% \vspace{15pt} \begin{center} \begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolRefl.v} \\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} \\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} %
+% \vspace{15pt} \begin{center} \begin{tabular}{|c|l|l|} \hline \textbf{\textnumero} & \textbf{Chapter title} & \textbf{Coq file} \\ \hline \ref{ch:funprog} & Functional Programming in Coq & \texttt{FunProg.v} \\ \hline \ref{ch:logic} & Propositional Logic & \texttt{LogicPrimer.v} \\ \hline \ref{ch:eqrew} & Equality and Rewriting Principles & \texttt{Rewriting.v} \\ \hline \ref{ch:boolrefl} & Views and Boolean Reflection & \texttt{BoolReflect.v} \\ \hline \ref{ch:ssrstyle} & Inductive Reasoning in Ssreflect & \texttt{SsrStyle.v} \\ \hline \ref{ch:depstruct} & Encoding Mathematical Structures & \texttt{DepRecords.v} \\ \hline \ref{ch:htt} & Case Study: Program Verification in Hoare Type Theory & \texttt{HTT.v} \\ \hline \end{tabular} \end{center} \vspace{15pt} %
 
 
 * Naming conventions
@@ -274,7 +274,7 @@ still spelled in ASCII, e.g., %\texttt{forall}%, [exists] and
 
 This course was inspired by the fantastic experience of working with
 Aleks Nanevski on verification of imperative and concurrent programs
-during the author's stay at IMDEA Software Institue.  Aleks'
+during the author's stay at IMDEA Software Institute.  Aleks'
 inimitable sense of beauty when it comes to formal proofs has been one
 of the main principles guiding the design of these lecture notes.
 

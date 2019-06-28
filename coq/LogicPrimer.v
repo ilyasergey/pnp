@@ -1187,7 +1187,7 @@ False]. The view mechanism then "interpreted" [P] in the goal via [H]
 and changing it to [Q], since [H] was of type [P -> Q], which results
 in the modified goal [Q -> False].  Next, we apply the view [Hq] to
 the goal, which switches [Q] to [False], which makes the rest of the
-prof trivial.  *)
+proof trivial.  *)
 
 move /Hq.
 done.
