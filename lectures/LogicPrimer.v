@@ -772,7 +772,7 @@ in the universe, whose level is taken to be the level of [A].
 *)
 
 Definition R (A: Type) (x: A): A := x. 
-Implicit Arguments R [A].
+Arguments R [A].
 
 Check R tt. 
 

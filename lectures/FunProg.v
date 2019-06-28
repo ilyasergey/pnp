@@ -404,7 +404,7 @@ Error: The term "1" has type "nat" while it is expected to have type "Type".
 
 (* Declaring implicit arguments *)
 
-Implicit Arguments my_pair [A B].
+Arguments my_pair [A B].
 
 (* Defining custom notation *)
 
