@@ -195,7 +195,7 @@ After installation, it is recommended to keep the sources of Ssreflect/Mathemati
 
 ** Emacs set-up
 
-The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org}}% for Mac OS X users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Ssreflect/Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
+The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org}}% for macOS users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Ssreflect/Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
 Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp-1.8.0/>>, add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in the <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where the Proof General and Ssreflect/Mathematical Components repositories were).
 
 << 
