@@ -100,7 +100,7 @@ Although all the three books have been used in numerous introductory courses for
 
 - This course advocates inductive types' _parameters_ as an alternative to _indices_ as a way of reasoning about explicit equalities in datatypes with constraints.
 
-- The reasoning by rewriting is first presented from the perspective of Coq's definition of the propositional equality and followed by elaboration on the idea of using _datatype indices_ as a tool to define client-specific conditional _rewriting rules_.
+- The reasoning by rewriting is first presented from the perspective of Coq's definition of propositional equality and followed by elaboration on the idea of using _datatype indices_ as a tool to define client-specific conditional _rewriting rules_.
 
 - This manuscript explains the essentials of Ssreflect's _boolean reflection_ between the sort [Prop] and the datatype [bool] as a particular case of conditional rewriting, following the spirit of the computational approach to the proofs of decidable propositions.
 
