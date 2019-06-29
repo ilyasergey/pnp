@@ -1,6 +1,6 @@
 (** %\chapter{Propositional Logic}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect.
 
 Module LogicPrimer.

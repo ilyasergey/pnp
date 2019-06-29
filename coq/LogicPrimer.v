@@ -58,8 +58,8 @@ The _Calculus of Inductive Constructions_
 foundation of Coq, similarly to its close relative, Martin-%\loef%'s
 _Intuitionistic Type Theory_ %\cite{Martin-Loef:84}%, considers proofs
 to be just regular values of the "programming" language it
-defines. Therefore, the process of constructing the proofs of Coq is
-very similar to the process of writing the programs. Intuitively, when
+defines. Therefore, the process of constructing proofs in Coq is
+very similar to the process of writing programs. Intuitively, when
 one asks a question "Whether the proposition [P] is _true_?", what is
 meant in fact is "Whether the _proof_ of [P] can be
 constructed?". This is an unusual twist, which is crucial for
@@ -76,7 +76,7 @@ that inhabits them.
 %
 
 This formulation of "truth" is somewhat surprising at the first
-encounter, comparing to the classical propositional logic, where the
+encounter, comparing to classical propositional logic, where the
 propositions are considered to be true simply if they are tautologies
 (i.e., reduce to the boolean value [true] for all possible
 combinations of their free variables' values), therefore leading to
@@ -115,7 +115,7 @@ one hand, it makes it an extremely powerful tool to state almost any
 proposition of interest in modern mathematics or computer science. On
 the other hand, proving such statements (i.e., constructing their
 proof terms), will require human assistance, in the same way the
-"paper-and-pencil" proofs are constructed in the classical
+"paper-and-pencil" proofs are constructed in classical
 mathematics. However, unlike the paper-and-pencil proofs, proofs
 constructed in Coq are a subject of immediate _automated_ check, since
 they are just programs to be verified for well-typedness. Therefore,
@@ -148,7 +148,7 @@ as higher-order propositions.
 We start our acquaintance with propositional logic in Coq by
 demonstrating how the two simplest propositions, the truth and the
 falsehood, are encoded. Once again, let us remember that, unlike in
-the propositional logic, in Coq these two are _not_ the only possible
+propositional logic, in Coq these two are _not_ the only possible
 propositional _values_, and soon we will see how a wide range of
 propositions different from mere truth or falsehood are
 implemented. From now on, we will be always including to the
@@ -158,7 +158,7 @@ with propositions and proofs.
 
  *)
 
-From mathcomp.ssreflect Require Import ssreflect.
+From mathcomp Require Import ssreflect.
 
 (* begin hide *)
 Require Classical_Prop.
@@ -275,7 +275,7 @@ proofs).
 So, our first theorem is proved. As it was hinted previously, it could
 have been stated even more concisely, formulated as a mere definition,
 and proved by means of providing a corresponding value, without the
-need to enter a proof mode:
+need to enter the proof mode:
 
 *)
 
@@ -284,7 +284,7 @@ Definition true_is_true': True := I.
 (**
 
 Although this is a valid way to prove statements in Coq, it is not as
-convenient as an interactive proof mode, when it comes to the
+convenient as the interactive proof mode, when it comes to
 construction of large proofs, arising from complicated
 statements. This is why, when it comes to proving propositions, we
 will prefer the interactive proof mode to the "vanilla" program
@@ -542,12 +542,12 @@ the following proposition:
 %\end{center}%
 
 The proposition is therefore _parametrized_ over three propositional
-variables, [P], [Q] and [R], and states that from the proof term of
-type [P -> Q] and a proof term of type [Q -> R] one can receive a
+variables, [P], [Q] and [R], and states that from a proof term of
+type [P -> Q] and a proof term of type [Q -> R] one can build a
 proof term of type [P -> R].%\footnote{Recall that the arrows have
 right associativity, just like function types in Haskell and OCaml,
 which allows one to apply functions partially, specifying their
-arguments one by one}% Let us now prove these statement in the form of
+arguments one by one}% Let us now prove this statement in the form of
 a theorem.  *)
 
 Theorem imp_trans: forall P Q R: Prop, (P -> Q) -> (Q -> R) -> P -> R.
@@ -567,7 +567,7 @@ preparatory step for the future reasoning.
 %\index{tacticals}%
 %\index{bookkeeping}%
 %\index{tacticals|seealso {Coq/Ssreflect tacticals}}%
-Ssreflect offers a tactic and small but powerful toolkit of
+Ssreflect offers a tactic and a small but powerful toolkit of
 _tacticals_ (i.e., higher-order tactics) for bookkeeping. In
 particular, for moving the bound variables from "bottom to the top",
 one should use a combination of the "no-op" tactic [move]%\ssrt{move}%
@@ -749,7 +749,7 @@ proof style}%.
   example of the forward proofs are the proofs from the classical
   mathematic textbooks: first a number of "supporting" lemmas is
   formulated, proving some partial results, and finally all these
-  lemmas are applied in a concert in order to prove an important
+  lemmas are applied in concert in order to prove an important
   theorem.
 
 While the standard Coq is very well supplied with a large number of
@@ -1096,14 +1096,14 @@ Qed.
 (**
 
 It is worth noticing that the definition of disjunction in Coq is
-_constructive_, whereas the disjunction in the classical propositional
+_constructive_, whereas the disjunction in classical propositional
 logic is not. More precisely, in classical logic the proof of the
-proposition [P \/ ~ P] is true by the axiom of the excluded middle
+proposition [P \/ ~ P] is true by the axiom of excluded middle
 (see %Section~\ref{sec:axioms}% for a more detailed discussion),
 whereas in Coq, proving [P \/ ~ P] would amount to _constructing_ the
 proof of either [P] or [~ P]. Let us illustrate it with a specific
-example. If [P] is a proposition stating that [P = NP], then the
-classical logic's tautology [P \/ ~ P] holds, although it does not
+example. If [P] is a proposition stating that [P = NP], then in
+classical logic tautology [P \/ ~ P] holds, although it does not
 contribute to the proof of either of the disjuncts. In constructive
 logic, which Coq is an implementation of, in the trivial assumptions
 given the proof of [P \/ ~ P], we would be able to extract the proof
@@ -1135,12 +1135,12 @@ Print not.
 
 Therefore, the negation [not] on propositions from [Prop] is just a
 function, which maps a proposition [A] to the implication [A ->
-False]. With this respect the intuition of negation from the classical
+False]. With this respect the intuition of negation from classical
 logic might be misleading: as it will be discussed in
 %Section~\ref{sec:axioms}%, the Calculus of Constructions lacks the
-axiom of double negation, which means that the proof of [~ ~A] will not
-deliver the proof of [A], as such derivation would be not
-constructive, as one cannot get a value of type [A] out of a function
+double negation elimination axiom, which means that the proof of [~ ~A] will not
+deliver the proof of [A], as such derivation would be non-constructive,
+as one cannot get a value of type [A] out of a function
 of type [(A -> B) -> B], where [B] is taken to be [False].
 
 However, reasoning out of negation helps to derive the familiar proofs
@@ -1368,7 +1368,7 @@ do). Similarly, in order to prove the propositions [forall x: A, P x],
 one needs to prove that [P x] holds for _any_ [x] of type [A]. Since
 the type [A] itself can define an infinite set, there is no way to
 enumerate all conjuncts, however, an explicit handle [x] gives a way
-to effective _index_ them, so proving [P x] for an arbitrary [x] would
+to effectively _index_ them, so proving [P x] for an arbitrary [x] would
 establish the validity of the universal quantification itself. Another
 useful insight is that in Coq [forall x: A, P x] is a type of a
 dependent function that maps [x] of type [A] to a value of type [P
@@ -1407,13 +1407,13 @@ Curry-Howard dual of a disjunction.
 
 End Connectives.
 
-(** * Missing axioms from the classical logic
+(** * Missing axioms from classical logic
 %\label{sec:axioms}%
 
 In the previous sections of this chapter, we have seen how a fair
 amount of propositions from the higher-order propositional logics can
 be encoded and proved in Coq. However, some reasoning principles,
-employed in the _classical_ propositional logic, cannot be encoded in
+employed in _classical_ propositional logic, cannot be encoded in
 Coq in a form of provable statements, and, hence, should be encoded as
 _axioms_.
 
@@ -1509,7 +1509,7 @@ NNPP
 Finally, the classical formulation of the implication through the
 disjunction is again an axiom in the constructive logic, as otherwise
 from the function of type [P -> Q] one would be able to construct the
-proof of [~P \/ Q], which would make the law of the excluded middle
+proof of [~P \/ Q], which would make the law of excluded middle
 trivial to derive.
 *)
 
@@ -1528,7 +1528,7 @@ to %\Godel%'s incompleteness result) that all classical logic axioms
 are consistent with CIC, and, therefore, don't make it possible to
 derive the falsehood%~\cite{Werner:TACS97}%.
 
-The following exercise reconcile most of the familiar axioms of the
+The following exercise reconciles most of the familiar axioms of 
 classical logic.
 
 %\begin{exercise}[Equivalence of classical logic axioms (from \S~5.2.4
@@ -1630,14 +1630,14 @@ the [Prop] sort), so it would subsume the existing impredicative
 propositional calculi%~\cite{Coquand-Huet:ECCA85}%, and, in
 %\index{System $F$}%
 particular, %System~$F$% (which is impredicative), allowing for the
-expressive reasoning in the higher-order propositional logic.
+expressive reasoning in higher-order propositional logic.
 
 _Impredicativity_ as a property of definitions allows one to define
 domains that are _self-recursive_---a feature of [Prop] that we
 recently observed. Unfortunately, when restated in the classical set
-theory, impredicativity immediately leads to the famous Russel's
-paradox, which arises from the attempt to define a set of all sets
-that do not belong to themselves. In the terms of programming, the
+theory, impredicativity immediately leads to the famous paradox by Russel,
+which arises from the attempt to define the set of all sets
+that do not belong to themselves. In terms of programming,
 Russel's paradox provides a recipe to encode a fixpoint combinator in
 the calculus itself and write generally-recursive programs.
 

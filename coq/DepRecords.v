@@ -103,7 +103,7 @@ As usual, we will require a number of Ssreflect package imported.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
 
 (* begin hide *)
@@ -654,8 +654,7 @@ Record mixin_of (U : pcm) := Mixin {
 (** 
 
 Notice that the validity of the sum [a \+ c] is not imposed, as it can
-be proven from the propositional equality and the validity of [a \+
-b].
+be proven from propositional equality and the validity of [a \+ b].
 
 We continue the definition by describing the standard packaging data
 structure.
@@ -1032,7 +1031,7 @@ That is, the mixin for equality is a dependent record, whose first
 field is a relation [op] on a particular carrier type [T] (defined
 internally as a function [T * T -> bool]), and the second argument is
 a proof of the definition [axiom], which postulates that the relation
-is in fact equivalent to the propositional equality (which is
+is in fact equivalent to propositional equality (which is
 established by means of inhabiting the [reflect] predicate
 instance). Therefore, in order to make a relation [op] to be a
 decidable equality on [T], one needs to prove that, in fact, it is

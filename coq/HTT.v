@@ -1505,8 +1505,8 @@ be unified with our goal, so we proceed by applying it.
 The remaining part of the proof of this goal has absolutely nothing to
 do with program verification and separation logic and accounts to
 combining a number of arithmetical facts in the goal via the
-hypotheses [Hi] and [X]. We proceed by first turing the boolean
-equality in [X] into the propositional on via the view [eqP] and then
+hypotheses [Hi] and [X]. We proceed by first turning boolean
+equality in [X] into propositional via the view [eqP] and then
 substituting all occurrences of [n'] in the goal and other assumptions
 via Coq's tactic [subst]. The rest of the proof is by providing
 existential witnesses and rewriting [1 * a'] to [a'] in [Hi].

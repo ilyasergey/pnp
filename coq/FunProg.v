@@ -69,7 +69,7 @@ unit
 ]]
 
 In fact, since Coq makes the analogy between sets and types so
-transparent, it is not difficult to define a type, describing the
+transparent, it is not difficult to define a type describing the
 _empty_ set:
 
 *)
@@ -83,7 +83,7 @@ which we simply _cannot construct_, as the type itself does _not_
 provide any constructors!  In fact, this observation about inhabitance
 of types/sets and the definition of an empty type will come in quite
 handy very soon when we will be talking about the truth and falsehood
-in the setting of Curry-Howard correspondence in
+in the setting of the Curry-Howard correspondence in
 Chapter%~\ref{ch:logic}%. Unfortunately, at this moment there is not
 so much we can do with such simple types as [unit] or [empty], so we
 proceed by defining some more interesting datatypes.
@@ -95,11 +95,11 @@ library, we do not need to define it ourselves. Instead, we include
 the following modules into our file using the [From ... Require
 Import] %\ccom{Require Import}% %\ccom{From}% command:%\footnote{The
 \textsf{From ...} premise is optional, and in this particular case
-it allows to include libraries from %[mathcomp.ssreflect]% without additional qualifiers.}%
+it allows to include libraries from %[mathcomp]% without additional qualifiers.}%
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
@@ -194,7 +194,7 @@ import yet another Ssreflect library:
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssrnat.
 
 (** 
@@ -778,7 +778,7 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import seq.
 Print seq.
 

@@ -33,7 +33,7 @@ exploiting Coq's mechanism of _indexed type families_.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrnat ssrbool eqtype.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
@@ -232,7 +232,7 @@ establish computable definitional equality on \emph{any} values, as
 the values might be of an infinite nature. For instance, stating the
 equality of two functions would require checking their results on all
 elements of the common domain, which might be infinite. in this
-respect, the propositional equality acts like it ``compares the
+respect, propositional equality acts like it ``compares the
 references'', whereas definitional equality ``compares the structure''
 of two elements.}% In particular, natural numbers can be compared
 against each other by means of direct pattern matching, which is

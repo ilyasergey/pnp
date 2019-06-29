@@ -1,6 +1,6 @@
 (** %\chapter{Equality and Rewriting Principles}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrfun eqtype ssrnat ssrbool.
 
 Module Rewriting.

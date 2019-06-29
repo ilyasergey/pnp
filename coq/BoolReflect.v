@@ -74,7 +74,7 @@ first.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrnat prime ssrbool eqtype.
 
 (* begin hide *)
@@ -380,7 +380,7 @@ functions $f_1$ and $f_2$ of type [nat -> nat] and return a boolean
 answer, which would indicate whether these two functions are equal
 (point-wise) or not, as it would amount to checking the result of the
 both function on each natural number, which, clearly, wouldn't
-terminate. Therefore, the propositional equality of functions is a good
+terminate. Therefore, propositional equality of functions is a good
 example of a proposition, which is undecidable in general, so we
 cannot provide a terminating procedure for any values of its arguments
 (i.e., $f_1$ and $f_2$).
@@ -465,7 +465,7 @@ the comma (so the dependent function type "$\Pi{}n:~\textsf{nat}, n$"
 is malformed), similarly to how one cannot write a _type_ [Int -> 3]
 in Haskell%\index{Haskell}%, as it does not make sense. This
 expression can be, however, _coerced_ into [Prop] by means of
-comparing the boolean expresion with [true] using the propositional
+comparing the boolean expresion with [true] using propositional
 equality
 
 [[
@@ -1043,7 +1043,7 @@ move=>x y; rewrite /foo.
 ]]
 
 The rewriting rule/view lemma [eqP], imported from [eqtype] allows us
-to switch from the propositional equality to the boolean one, which
+to switch from propositional to boolean equality, which
 makes the assumption to be [x == y]. Next, we combine the implicit
 fact that [x == y] in the assumption of a proposition is in fact [(x
 == y) = true] to perform in-place rewriting (see

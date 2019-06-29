@@ -1,6 +1,6 @@
 (** %\chapter{Case Study: Program Verification in Hoare Type Theory}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype seq ssrfun.
 From fcsl
 Require Import prelude pred pcm unionmap heap.

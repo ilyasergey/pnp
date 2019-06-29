@@ -100,7 +100,7 @@ Although all the three books have been used in numerous introductory courses for
 
 - This course advocates inductive types' _parameters_ as an alternative to _indices_ as a way of reasoning about explicit equalities in datatypes with constraints.
 
-- The reasoning by rewriting is first presented from the perspective of Coq's definition of the propositional equality and followed by elaboration on the idea of using _datatype indices_ as a tool to define client-specific conditional _rewriting rules_.
+- The reasoning by rewriting is first presented from the perspective of Coq's definition of propositional equality and followed by elaboration on the idea of using _datatype indices_ as a tool to define client-specific conditional _rewriting rules_.
 
 - This manuscript explains the essentials of Ssreflect's _boolean reflection_ between the sort [Prop] and the datatype [bool] as a particular case of conditional rewriting, following the spirit of the computational approach to the proofs of decidable propositions.
 
@@ -110,7 +110,7 @@ Although all the three books have been used in numerous introductory courses for
 
 ** What this course is about
 
-Besides the enumerated above list of topics, which are described in detail and supported by a number of examples, this course supplies some amount of "standard" material required to introduce a reader with a background in programming and classical mathematical disciplines to proof engineering and program development in Coq. It starts from explaining how simple functional programs and datatypes can be defined and executed in the programming environment of Coq, proceeding to the definition of propositional logic connectives and elements of interactive proof construction. Building further on the programming intuitions about algebraic datatypes, this manuscript introduces a definition of the propositional equality and the way to encode custom rewriting rules, which then culminates with a discussion on the boolean reflection and reasoning by means of computation. This discussion is continued by revising important principles of proofs by induction in Coq and providing pointers to the standard Ssreflect libraries, which should be used as a main component for everyday mathematical reasoning. The course concludes by reconciling all of the described concepts and Coq/Ssreflect reasoning principles by tackling a large case study---verifying imperative programs within the framework of Nanevski et al.'s Hoare Type Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
+Besides the enumerated above list of topics, which are described in detail and supported by a number of examples, this course supplies some amount of "standard" material required to introduce a reader with a background in programming and classical mathematical disciplines to proof engineering and program development in Coq. It starts from explaining how simple functional programs and datatypes can be defined and executed in the programming environment of Coq, proceeding to the definition of propositional logic connectives and elements of interactive proof construction. Building further on the programming intuitions about algebraic datatypes, this manuscript introduces a definition of propositional equality and the way to encode custom rewriting rules, which then culminates with a discussion on the boolean reflection and reasoning by means of computation. This discussion is continued by revising important principles of proofs by induction in Coq and providing pointers to the standard Ssreflect libraries, which should be used as a main component for everyday mathematical reasoning. The course concludes by reconciling all of the described concepts and Coq/Ssreflect reasoning principles by tackling a large case study---verifying imperative programs within the framework of Nanevski et al.'s Hoare Type Theory%~\cite{Nanevski-al:ICFP06,Nanevski-al:JFP08}%.
 
 ** What this course is not about
 
@@ -144,11 +144,11 @@ The reader is expected to have some experience with mainstream object-oriented a
 
 While this manuscript is aiming to be self-contained in its presentation of a subset of Coq, it would be %\naive~%to expect it to be the _only_ Coq reference used for setting-up a formal development. That said, we encourage the reader to use the standard Coq manual%~\cite{Coq-manual}% as well as Ssreflect documentation%~\cite{Gontier-al:TR}% whenever an unknown tactic, piece of syntax or obscure notation is encountered. Coq's [Search], %\texttt{Locate}% and [Print] tools, explained in %Chapter~\ref{ch:funprog}% are usually of great help when it comes to investigating what someone's Coq code does, so don't hesitate to use them.
 
-Finally, we assume that the Emacs text editor %\index{Emacs}% with a Proof General mode installed %\index{Proof General}% (as explained further in this chapter) will be used as the environment for writing code scripts, and the GNU %\texttt{make}% machinery is available at the reader's machine in order to build the necessary libraries and tools.
+Finally, we assume that the Emacs text editor %\index{Emacs}% with a Proof General mode installed %\index{Proof General}% (as explained further in this chapter) will be used as the environment for writing code scripts, and the GNU %\texttt{make}% machinery is available on the reader's machine in order to build the necessary libraries and tools.
 
 * Setup
 
-In order to be able to follow the manuscript and execute the examples provided, the reader is expected to have Coq with Ssreflect installed at her machine. This section contains some general instructions on the installation and set-up. Most of the mentioned below sources can be downloaded from the following URL, accompanying these notes:
+In order to be able to follow the manuscript and execute the examples provided, the reader is expected to have Coq with Ssreflect installed on her machine. This section contains some general instructions on the installation and set-up. Most of the mentioned below sources can be downloaded from the following URL, accompanying these notes:
 
 % \begin{center} \url{http://ilyasergey.net/pnp} \end{center} %
 
@@ -158,7 +158,7 @@ Alternatively, you can clone the sources of these lecture notes, along with the 
 
 ** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.9.0, Ssreflect/Mathematical Components version 1.8.0, and FCSL PCM version 1.1.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.9.0, Ssreflect/Mathematical Components version 1.8.0, and FCSL PCM version 1.1.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build and install the necessary software are provided below.
 
 The easiest way to obtain the necessary versions of Coq and the libraries is
 to install them via the OPAM package manager (%\url{https://opam.ocaml.org}%):
@@ -184,7 +184,7 @@ from sources.%\footnote{Getting Coq using a system-specific package
 manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
 although the Coq version acquired this way is not guaranteed to work
 properly with Ssreflect/Mathematical Components 1.8.0.}%
-In order to be compiled, Coq requires Objective Caml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build the libraries (with the respective paths chosen during the Coq's installation):
+In order to be compiled, Coq requires OCaml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build the libraries (with the respective paths chosen during the Coq's installation):
 
 << 
 export COQBIN="/usr/local/bin/" 
@@ -239,7 +239,7 @@ The table below describes the correspondence between the chapters of the manuscr
 
 Coq as a tool and environment for interactive theorem proving
 incorporates a number of entities in itself. As a programming and
-specification language, Coq implements a dependently-type _calculus_
+specification language, Coq implements a dependently-typed _calculus_
 (i.e., a small formal programming language) _Gallina_,
 %\index{Gallina}% which is an extension of the _Calculus of Inductive
 Constructions_ (CIC) explained in Chapter%~\ref{ch:logic}%. Therefore,

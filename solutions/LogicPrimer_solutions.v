@@ -1,4 +1,4 @@
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect.
 
 Require Classical_Prop.
