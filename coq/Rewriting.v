@@ -33,7 +33,7 @@ exploiting Coq's mechanism of _indexed type families_.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrnat ssrbool eqtype.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.

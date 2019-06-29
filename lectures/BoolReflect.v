@@ -1,6 +1,6 @@
 (**  %\chapter{Views and Boolean Reflection}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrfun eqtype ssrnat ssrbool prime eqtype.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.

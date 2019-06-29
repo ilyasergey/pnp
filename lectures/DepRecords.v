@@ -1,6 +1,6 @@
 (** %\chapter{Encoding Mathematical Structures}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat ssrfun.
 Set Implicit Arguments.
 Unset Strict Implicit.

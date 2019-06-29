@@ -36,7 +36,7 @@ of standard Ssreflect modules, such as [ssrbool], [ssrnat] and
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun seq.
 
 (* begin hide *)

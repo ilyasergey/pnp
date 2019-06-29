@@ -103,7 +103,7 @@ As usual, we will require a number of Ssreflect package imported.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype ssrfun.
 
 (* begin hide *)

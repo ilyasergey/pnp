@@ -95,11 +95,11 @@ library, we do not need to define it ourselves. Instead, we include
 the following modules into our file using the [From ... Require
 Import] %\ccom{Require Import}% %\ccom{From}% command:%\footnote{The
 \textsf{From ...} premise is optional, and in this particular case
-it allows to include libraries from %[mathcomp.ssreflect]% without additional qualifiers.}%
+it allows to include libraries from %[mathcomp]% without additional qualifiers.}%
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool.
 
 (** Now, we can inspect the definition of the [bool] type by simply
@@ -194,7 +194,7 @@ import yet another Ssreflect library:
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssrnat.
 
 (** 
@@ -778,7 +778,7 @@ Inductive sum (A B : Type) : Type :=  inl : A -> A + B | inr : B -> A + B
 ]]
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import seq.
 Print seq.
 

@@ -158,7 +158,7 @@ with propositions and proofs.
 
  *)
 
-From mathcomp.ssreflect Require Import ssreflect.
+From mathcomp Require Import ssreflect.
 
 (* begin hide *)
 Require Classical_Prop.

@@ -1,6 +1,6 @@
 (** %\chapter{Inductive Reasoning in SSReflect}% *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect eqtype ssrnat ssrbool ssrfun seq.
 Module SsrStyle.
 

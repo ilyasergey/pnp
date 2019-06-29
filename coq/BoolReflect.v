@@ -74,7 +74,7 @@ first.
 
 *)
 
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrnat prime ssrbool eqtype.
 
 (* begin hide *)

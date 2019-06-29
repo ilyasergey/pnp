@@ -1,4 +1,4 @@
-From mathcomp.ssreflect
+From mathcomp
 Require Import ssreflect ssrbool ssrnat eqtype seq.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
