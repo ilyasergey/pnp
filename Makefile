@@ -27,6 +27,7 @@ latex/$(COQNOTES).pdf: latex/$(COQNOTES).tex $(TEX) latex/references.bib latex/p
 
 latex/%.pdf: latex/%.tex latex/references.bib latex/proceedings.bib latex/defs.tex 
 	cd latex && pdflatex $* && pdflatex $* && bibtex $* -min-crossrefs=99 && makeindex $* && pdflatex $* && pdflatex $*
+	mv pnp.pdf docs/
 
 zip:
 	rm -f pnp.zip
