@@ -999,7 +999,7 @@ Error: The term "1" has type "nat" while it is expected to have type "Type".
 
 The error message is caused by the fact that the constructor has
 expected the type parameters to be provided _explicitly_ first, so the
-value above should in fact has been created by calling [my_pair nat
+value above should in fact have been created by calling [my_pair nat
 unit 1 tt]. Since mentioning types every time is tedious, we can now
 take advantage of Coq's elaboration algorithm, which is capable to
 infer them from the values of actual arguments (e.g., [1] and [tt]),
