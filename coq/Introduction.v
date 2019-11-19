@@ -116,7 +116,7 @@ Besides the enumerated above list of topics, which are described in detail and s
 
 There is a range of topics that this course does not cover, although it is the author's belief that the provided material should be sufficient for the reader to proceed to these more advanced subjects on her own. Some of the exciting topics, which are certainly worth studying but lie beyond the scope of this manuscript, are listed below together with pointers to the relevant bibliographic references.
 
-- Reasoning about infinite objects in Coq via of co-induction (see Chapters 5 and 7 of the book%~\cite{Chlipala:BOOK}% as well as the research papers%~\cite{Hur-al:POPL13,Leroy-Grall:IC09}%).
+- Reasoning about infinite objects in Coq via co-induction (see Chapters 5 and 7 of the book%~\cite{Chlipala:BOOK}% as well as the research papers%~\cite{Hur-al:POPL13,Leroy-Grall:IC09}%).
 
 - Proof automation by means of tactic engineering (see%~\cite[Chapters 13--15]{Chlipala:BOOK}% and the papers%~\cite{Ziliani-al:ICFP13,Stampoulis-Shao:ICFP10,Stampoulis-Shao:POPL12}%) or lemma overloading%~\cite{Gontier-al:ICFP11}%.
 
