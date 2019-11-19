@@ -668,8 +668,8 @@ programming, as they appear in Coq.
 
 
 The type of pairs is parametrized by two arbitrary types [A] and
-[B] (by now let us think of its sort [Type] as of a generalization of
-a generalization of [Set], which we have seen before). As in Haskell
+[B] (by now let us think of its sort [Type] as a generalization of
+[Set], which we have seen before). As in Haskell
 or OCaml, [prod] can also be seen as a type-level constructor with two
 parameters that can be possibly curried:
 *)
