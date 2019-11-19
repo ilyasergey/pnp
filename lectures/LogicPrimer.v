@@ -638,7 +638,7 @@ Qed.
 Sometimes, the universal and the existential quantifications are
 paraphrased as "infinitary" conjunction and disjunction
 correspondingly. This analogy comes in handy when understanding the
-properties of both quantifications, so let us elabore on it for a bit.
+properties of both quantifications, so let us elaborate on it for a bit.
 
 *)
 
@@ -719,10 +719,10 @@ the falsehood.
 _Impredicativity_ as a property of definitions allows one to define
 domains that are _self-recursive_---a feature of [Prop] that we
 recently observed. Unfortunately, when restated in the classical set
-theory, impredicativity immediately leads to the famous Russel's
+theory, impredicativity immediately leads to the famous Russell's
 paradox, which arises from the attempt to define a set of all sets
 that do not belong to themselves. In the terms of programming, the
-Russel's paradox provides a recipe to encode a fixpoint combinator in
+Russell's paradox provides a recipe to encode a fixpoint combinator in
 the calculus itself and write generally-recursive programs.
 
 ** Exploring and debugging the universe hierarchy

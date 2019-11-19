@@ -558,7 +558,7 @@ speaking, Coq abuses the $\forall$-notation using it for what is
 denoted in other typed calculi by means of quantifiers $\Lambda$ (terms
 parametrized by types), $\forall$ (types parametrized by types) and
 $\Pi$ (types parametrized by terms)~\cite{Pierce:BOOK02}.}% The
-crucial difference beween Coq's core calculus and System $F$ is that
+crucial difference between Coq's core calculus and System $F$ is that
 in Coq the types can be parametrised not just by _types_ but also by
 _values_. While the utility of this language "feature" can be already
 demonstrated for constructing and type-checking _programs_ (for

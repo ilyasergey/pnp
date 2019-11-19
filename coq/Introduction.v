@@ -261,7 +261,7 @@ monospace font}%.
 
 In the rest of the manuscript, though, we will be abusing the
 terminology and blur the distinction between entities that belong to
-Galina, Vernacular or Coq as a framework, and will be referring to
+Gallina, Vernacular or Coq as a framework, and will be referring to
 them simply as "Coq terms", "Coq tactics" and "Coq commands".
 
 In the program displays, interleaving with the text, some mathematical

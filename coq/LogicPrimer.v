@@ -1358,7 +1358,7 @@ Qed.
 Sometimes, the universal and the existential quantifications are
 paraphrased as "infinitary" conjunction and disjunction
 correspondingly. This analogy comes in handy when understanding the
-properties of both quantifications, so let us elabore on it for a bit.
+properties of both quantifications, so let us elaborate on it for a bit.
 
 In order to prove the conjunction [P1 /\ ... /\ Pn], one needs to
 establish that _all_ propositions [P1 ... Pn] hold, which in the
@@ -1635,10 +1635,10 @@ expressive reasoning in higher-order propositional logic.
 _Impredicativity_ as a property of definitions allows one to define
 domains that are _self-recursive_---a feature of [Prop] that we
 recently observed. Unfortunately, when restated in the classical set
-theory, impredicativity immediately leads to the famous paradox by Russel,
+theory, impredicativity immediately leads to the famous paradox by Russell,
 which arises from the attempt to define the set of all sets
 that do not belong to themselves. In terms of programming,
-Russel's paradox provides a recipe to encode a fixpoint combinator in
+Russell's paradox provides a recipe to encode a fixpoint combinator in
 the calculus itself and write generally-recursive programs.
 
 %System~$F$% is not a dependently-typed calculus and it has been
@@ -1648,7 +1648,7 @@ values. However, adding dependent types to the mix (which Coq requires
 to make propositions quantify over arbitrary values, not just other
 propositions, serving as a general-purpose logic) makes the design of
 a calculus more complicated, in order to avoid paradoxes akin to the
-Russels', which arise from mixing values and sets of values. This
+Russell's, which arise from mixing values and sets of values. This
 necessity to "cut the knot" inevitably requires to have a sort of a
 higher level, which contains all sets and propositions (i.e., the
 whole sorts [Set] and [Prop]), but does not contain itself. Let us
@@ -1818,9 +1818,9 @@ the [R]-"function" belongs to the universe with a higher level number
 than [R]-"argument". Checking this scenario requires supporting a more
 flexible form of universe polymorphism, which can assign different
 universe levels to different occurrences of the same definition in a
-common expression, and in this sence reminds _let-polymorphism_
+common expression, and in this sense reminds _let-polymorphism_
 %~\cite[\S 22.7]{Pierce:BOOK02}\index{let-polymorphism}%.  This
-feature was introduced in Coq ince version
+feature was introduced in Coq since version
 8.5%~\cite{Sozeau-Tabareau:ITP14}%, and it allows us to redefine [R]
 as universe-polymorphic via the new [Polymorphic] %\ccom{Polymorphic}%
 keyword.%\footnote{More documentation on universe polymorphism is
