@@ -409,7 +409,7 @@ functions%~\cite{Henglein:TOPLAS93}%. This should not be very
 surprising, since every loop can be encoded as a recursive function,
 and, since, as we have already started guessing, Hoare triples are
 reminiscent of types, automatic inferring of loop invariants would
-corresponds to type inference for recursive functions. In the
+correspond to type inference for recursive functions. In the
 subsequent sections we will see examples of looping/recursive programs
 with loop invariants and exercise in establishing some of them.
 
@@ -441,7 +441,7 @@ a program's behaviour, a _soundness_ result should be first
 logic, soundness means the logic rules allow one to infer only those
 statements that do not contradict the definition of a Hoare triple
 (page%~\pageref{pg:triple}%). This result can be proven in many
-different ways, and the nature of the proof usually depend on the
+different ways, and the nature of the proof usually depends on the
 underlying operational/denotational semantics, which is typically not
 questioned, being self-obvious, and defines precisely what does it
 mean for a program _to be executed_. Traditional ways of proving
@@ -455,8 +455,8 @@ with respect to some reasonable operational/denotational semantics.
 %\label{sec:seplog}%
 The original Hoare logic has many limitations. It works only with
 mutable variables and does not admit procedures or first-order
-code. But the most its severe shortcoming becomes evident when it
-comes to specifying programs that manipulate with _pointers_, i.e.,
+code. But its most severe shortcoming becomes evident when it
+comes to specifying programs that manipulate _pointers_, i.e.,
 the most interesting imperative cases of imperative
 code. %\index{pointers}% In the presence of pointers and a heap,
 mutable variables become somewhat redundant, so for now by _local
@@ -509,7 +509,7 @@ The logical variable $Y$ is of importance, as it is used to state that
 the value of the pointer $y$ remains unchanged after the program has
 terminated.%\footnote{We will abuse the terminology and refer to the
 values and immutable local variables uniformly, as, unlike the setting
-of Section~\ref{sec:imp-spec}, the later ones are assumed to
+of Section~\ref{sec:imp-spec}, the latter ones are assumed to be
 substituted by the former ones during the evaluation anyway.}% Alas,
 this specification is not correct, as the conjunction of the two does
 not distinguish between the case when $x$ and $y$ are the same pointer
@@ -566,7 +566,7 @@ stated, it is just a value of type [unit].%\footnote{The classical
 formulation of Separation Logic~\cite{Reynolds:LICS02} introduces the
 logical connective $\sep$, dubbed \emph{separating conjunction},
 \index{separating conjunction} which allows to describe the split of a
-heap $h$ into two disjoin parts without mentioning $h$
+heap $h$ into two disjoint parts without mentioning $h$
 explicitly. That is, the assertion $P~\sep~Q$ holds for a heap $h$, if
 there exist heaps $h_1$ and $h_2$, such that $h = h_1 \join h_2$, $P$
 is satisfied by $h_1$ and $Q$ is satisfied by $h_2$. We will stick to
@@ -619,7 +619,7 @@ with %\index{large footprint}% small footprint-like specifications,
 mentions the "additional" heap $h'$ in the pre- and post-conditions,
 which can be arbitrarily instantiated, emphasizing that it remains
 unchanged (recall that $h'$ is implicitly universally-quantified over,
-and its scope is the whole triple), so the resulting is just being
+and its scope is the whole triple), so the resulting heap is just being
 "increased"/"decreased" by a memory entry that has been
 allocated/deallocated.%\footnote{The classical separation logic
 provides a so-called \emph{frame rule},\index{frame rule} which allows
@@ -720,7 +720,7 @@ the in-place fixpoint operator as
 \end{center}
 % 
 That is, the function %\texttt{f}% is defined with an argument of the
-unit type and is immediately invoked. If the condition argument
+bool type and is immediately invoked. If the condition argument
 $\com{x}$ is satisfied, the body $\com{c}$ is executed and the
 function calls itself recursively with a new argument $\com{e'}$;
 otherwise the function just returns a unit result. For the first time,
