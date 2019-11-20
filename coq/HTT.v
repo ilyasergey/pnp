@@ -242,7 +242,7 @@ starting from an opposite side and exploring the datatypes in the
 programming perspective first.}%
 
 Hoare logic also suggests a number of axioms and inference rules that
-specify which Hoare triple can be in fact inferred. We postpone the
+specify which Hoare triple can in fact be inferred. We postpone the
 description of their encoding by means of Coq's datatypes till
 %Section~\ref{sec:htt-intro}% of this chapter and so far demonstrate
 some of them in the logical notation "with a bar". For example, the
