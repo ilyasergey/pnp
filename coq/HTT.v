@@ -167,7 +167,7 @@ as _partial correctness_, and in this chapter we will focus on it. It
 is possible to give to a Hoare triple $\spec{P}~c~\spec{Q}$ a
 different interpretation, which would deliver a stronger property: "if
 right before the program $c$ is executed the state of mutable
-variables is described by a proposition $P$, then $c$ terminates and
+variables is described by a proposition $P$, _then $c$ terminates_ and
 the resulting state satisfies the proposition $Q$". Such property is
 called _total correctness_ and requires tracking some sort of "fuel"
 for the program in the assertions, so it could run further. We do not
