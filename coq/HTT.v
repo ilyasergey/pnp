@@ -118,7 +118,7 @@ by means of checking, whether it satisfies a given spec. In
 particular, we will learn how the effects of state-manipulating
 programs can be specified via dependent types, and the specifications
 of separate effectful programs can be _composed_, therefore allowing
-us to structure the reasoning in the modular way, similarly to
+us to structure the reasoning in a modular way, similarly to
 mathematics, where one needs to prove a theorem only once and then can
 just rely on its statement, so it can be employed in the proofs of
 other facts.
