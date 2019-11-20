@@ -230,7 +230,7 @@ for each of its constructors. The elimination rules are converses of
 the introduction rules and formalize the intuition behind the case
 analysis. An alternative example of an inference rule for a
 proposition encoded by means of Coq's datatype constructor is the
-definition of the predicate for _beautiful_ numbers [beautiful] from
+definition of the predicate for beautiful numbers [beautiful] from
 %Section~\ref{sec:cannot}%. There, the constructor [b_sum] serves as
 an inference rule that, given the proofs that [n'] is beautiful and
 [m'] is beautiful, constructs the proof of the fact that their sum is
