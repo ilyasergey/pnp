@@ -282,7 +282,7 @@ I'm grateful to Michael D. Adams, Amal Ahmed, Jim Apple, Daniil
 Berezun, Giovanni Bernardi, Dmitri Boulytchev, William J. Bowman,
 Kirill Bryantsev, Santiago Cuellar, Andrea Cerone, Olivier Danvy,
 %R\'{e}my Haemmerle%, %Jos\'{e}% Francisco Morales, Phillip Mates,
-Gleb Mazovetskiy, Karl Palmskog, Daniel Patterson, Anton Podkopaev, 
+Gleb Mazovetskiy, Anton V. Nikishaev, Karl Palmskog, Daniel Patterson, Anton Podkopaev, 
 Leonid Shalupov, Jan Stolarek, Anton Trunov and James R. Wilcox who provided a lot 
 of valuable feedback and found countless typos in earlier versions of the notes.
 
