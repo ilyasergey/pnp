@@ -465,7 +465,7 @@ the comma (so the dependent function type "$\Pi{}n:~\textsf{nat}, n$"
 is malformed), similarly to how one cannot write a _type_ [Int -> 3]
 in Haskell%\index{Haskell}%, as it does not make sense. This
 expression can be, however, _coerced_ into [Prop] by means of
-comparing the boolean expresion with [true] using propositional
+comparing the boolean expression with [true] using propositional
 equality
 
 [[
