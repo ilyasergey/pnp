@@ -325,7 +325,7 @@ a bit ahead of ourselves, this is exactly what is going to happen soon
 in this chapter (as the title of the chapter suggests).
 
 At this point, we can already see a simple paper-and-pencil proof of a
-program that manipulates with mutable variables. In the Hoare logic
+program that manipulates mutable variables. In the Hoare logic
 tradition, since most of the programs are typically compositions of
 small programs, the proofs of specifications are written to follow the
 structure of the program, so the first assertion corresponds to the
