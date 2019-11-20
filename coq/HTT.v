@@ -408,7 +408,7 @@ has a deep relation to type inference with polymorphically-recursive
 functions%~\cite{Henglein:TOPLAS93}%. This should not be very
 surprising, since every loop can be encoded as a recursive function,
 and, since, as we have already started guessing, Hoare triples are
-reminiscent to types, automatic inferring of loop invariants would
+reminiscent of types, automatic inferring of loop invariants would
 corresponds to type inference for recursive functions. In the
 subsequent sections we will see examples of looping/recursive programs
 with loop invariants and exercise in establishing some of them.
