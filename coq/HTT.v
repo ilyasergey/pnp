@@ -792,7 +792,7 @@ value of the accumulator. Otherwise it stores into the accumulator the
 old value multiplied by %\texttt{n'}%, decrements %\texttt{n}% and
 re-iterates. After the loop terminates, the two pointers are
 deallocated and the main function returns the result.
-Our goal for the rest of this section will to be verify this program
+Our goal for the rest of this section will be to verify this program
 semi-formally, using the rules for separation logic presented above,
 against its _functional_ specification. In other words, we will have
 to check that the program %\texttt{fact}% returns precisely the
@@ -940,8 +940,8 @@ computations and their effects.
 %\index{monads}%
 While presenting rules for Hoare and separation logic, we have seen a
 number of operators, allowing to construct larger programs from
-smaller ones: conditionals, loops, binding etc. However, only two of
-the connective are inherent to imperative programming and make it
+smaller ones: conditionals, loops, binding, etc. However, only two of
+the connectives are inherent to imperative programming and make it
 distinct from the programming with pure functions:
 %\index{imperative commands}%
 %\index{commands|see {imperative commands}}%
@@ -989,7 +989,7 @@ The %\texttt{>>=}% function is pronounced as _bind_ and describes how
 a particular monad instance _combines_ two computations, such that the
 second one, whose type is %\texttt{m b}%, may depend on the value of
 result of the first one, whose type is %\texttt{m a}%. The result of
-overall computation is then the one of the second component, namely,
+the overall computation is then the one of the second component, namely,
 %\texttt{m b}%. The function %\texttt{return}% specifies how to
 provide a "default" value for an effectful computation, i.e., how to
 "pair" a value of type %\texttt{a}% with an "effect" entity in order
@@ -1006,7 +1006,7 @@ Haskell%~\cite{PeytonJones:squad}%), as well as the fact of program
 Haskell deliberately does not capture. In a more informal language,
 the monadic type $\com{m}$ indicates that in the program "something
 fishy is going on, besides the result being computed", so this type
-serves as a mechanism, which is used for the type checker to make sure
+serves as a mechanism, which is used by the type checker to make sure
 that only programs with the _same_ effect are composed together by
 means of binding (hence the type of the bind operator in the
 $\com{Monad}$ type class). This is an important insight, which will be
@@ -1015,14 +1015,14 @@ imperative programs using dependent types, as we will see in
 %Section~\ref{sec:htt-intro}%.
 ** Monadic do-notation
 Since composing effectful/monadic computations is a very common
-operation in Haskell, the language provides convenient [do]-notation
+operation in Haskell, the language provides a convenient [do]-notation
 to write programs in a %\index{do-notation}% monadic style, such that
 the invocation of the bind function in the expression of the form
 %\texttt{c1 >>= (\textbackslash x -> c2)}%, where %\texttt{x}% might
 occur in %\texttt{c2}%, can be written as %\texttt{\{do x <- c1;
 c2\}}%.
 %\index{IO monad@\texttt{IO} monad}%
-For example, a program below is composed of several computations
+For example, the program below is composed of several computations
 within the %\texttt{IO}% monad, which indicates that the possible
 effect of the program, which has %\texttt{IO}% in its type, can be
 reading from input or writing into the output
@@ -1034,7 +1034,7 @@ main = do putStrLn "Enter a character"
           putStrLn $ "\nThe character was: " ++ [c] 
           return ()
 >>
-The computations involved into the program, are represented, in
+The computations involved in the program, are represented, in
 particular, by the Haskell commands (i.e., monadically-typed function
 call) [putStrLn "Enter a character"], which prints a string to the
 output stream, and the call to [getChar], which reads a caracter from
@@ -1182,10 +1182,10 @@ development%~\cite{Sozeau:TYPES06}%. That is, based on the expression
 itself ([Do (x ::= v)]), Coq will infer _the most general type_ that
 the expression can be allowed to have, and then it becomes a
 programmer's _obligation_ to show that the declared type is actually a
-specialization of the inferred type. In the context of the Hoare
-theory, the type, inferred by Coq based on the definition can be seen
+specialization of the inferred type. In the context of HTT,
+the type, inferred by Coq based on the definition, can be seen
 as a specification with the _weakest pre_ and _strongest
-postconditions_, which can be then weakened via the %\Rule{Conseq}%
+postconditions_, which can then be weakened via the %\Rule{Conseq}%
 rule. The program itself is wrapped into the [Do]-notation, which is
 provided by the HTT library and indicates that the computations inside
 always deal with the [STsep] type, similar to the Haskell's treatment
@@ -1197,7 +1197,7 @@ the value [Y] of type [nat], which is referenced by [y]. The
 precondition states the existence of some type [B] and value [w], such
 that [x] points to it. The postcondition specifies that the result is
 of type [unit] (and, therefore, is unconstrained), and the content of
-the pointer [x] became [v], which the content of the pointer [y]
+the pointer [x] became [v], while the content of the pointer [y]
 remained unchanged. Notice that we make explicit use of the PCM
 notation (%Section~\ref{sec:pcms}%) for the empty heap, which is
 paraphrased as [Unit] and for the disjoint union of heaps, which is
@@ -1299,7 +1299,7 @@ move=>h1 [y Y][B][w]->{h1} _ /=.
 ]]
 %\httn{verify}%
 The resulting goal is stated using the [verify]-notation, which means
-in this particular case that in the heap of the shape [x :-> w \+ y
+that in this particular case, in the heap of the shape [x :-> w \+ y
 :-> Y] we need to be able to prove that the result and the produced
 heap of the command [x ::= v] satisfy the predicate [[vfun _ h => h =
 x :-> v \+ y :-> Y]]. This goal can be proved using one of the
@@ -1342,8 +1342,8 @@ Definition fact_inv (n acc : ptr) (N : nat) h : Prop :=
       (fact_pure n') * a' = fact_pure N].
 
 (** 
-To show how separation logic in general and its particular
-implementation in HTT allow one to build the reasoning
+To show how separation logic, in general and its particular
+implementation in HTT, allows one to build the reasoning
 _compositionally_ (i.e., by building the proofs about large programs
 from the facts about their components), we will first provide and
 prove a specification for the internal factorial loop, which, in fact,
@@ -1372,7 +1372,7 @@ as a recursive function, taking as arguments the two pointers, [n] and
 using the monadic fixpoint operator [Fix]%\httn{Fix}%, whose semantics
 is similar to the semantics of the classical _Y-combinator_, defined
 usually by the equation [Y f = f (Y f)], where [f] is a fixpoint
-operator argument that should be though of as a recursive function
+operator argument that should be thought of as a recursive function
 being defined. Similarly, the fixpoint operator [Fix], provided by
 HTT, takes as arguments a function, which is going to be called
 recursively ([loop], in this case), its argument and _body_. The named
@@ -1518,7 +1518,7 @@ existential witnesses and rewriting [1 * a'] to [a'] in [Hi].
   by rewrite mul1n in Hi.
 
 (** 
-The second goal requires to satisfy the specification of a sequence of
+The second goal requires satisfying the specification of a sequence of
 assignments, which can be done automatically using the [heval] tactic.
 *)
 
@@ -1539,7 +1539,7 @@ specification of the recursive call to [loop], whose spec is also
 stored in our assumption context. Before we can apply a lemma, which
 is an analogue of the %\Rule{App}%, we need to _instantiate_ the
 logical variables of [loop]'s specification (which is described by the
-type [fact_tp]). The spec [fac_tp] features only one logical variable,
+type [fact_tp]). The spec [fact_tp] features only one logical variable,
 namely [N], so we provide it using the HTT lemma [gh_ex].%\footnote{In
 a case of several logical variables, the lemma should have been
 applied the corresponding number of times with appropriate
@@ -1645,7 +1645,7 @@ have previously verified, is going to be invoked, so we need to make
 use of what corresponds to the rule %\Rule{App}% again. In this case,
 however, the tactic [val_doR] will not work immediately, so we will
 first need to reduce the program to be verified from the binding
-command to a mere function call be means of HTT's [bnd_seq] lemma,
+command to a mere function call by means of HTT's [bnd_seq] lemma,
 which tackles the binding _combined_ with a call to a user-defined
 function, and this is exactly our case. Next, we instantiate the
 [fact_acc] specification's logical variable [N] by applying [gh_ex]
@@ -1709,7 +1709,7 @@ Qed.
 Try to redo the exercise%~\ref{ex:swap}% _without_ using the
 automation provided by the [heval] tactic. The goal of this exercise
 is to explore the library of HTT lemmas, mimicking the rules of the
-separation logic. You can alway displat the whole list of the
+separation logic. You can always display the whole list of the
 available lemmas by running the command [Search _ (verify _ _ _)] and
 then refine the query for specific programs (e.g., [read] or [write]).
 %\end{exercise}%
@@ -1838,7 +1838,7 @@ Qed.
 %\label{sec:shallowdeep}%
 A noteworthy trait of HTT's approach to verification of effectful
 programs is its use of _shallow embedding_ of the imperative language
-%\index{shallow embedding}% to the programming language of Coq. In
+%\index{shallow embedding}% into the programming language of Coq. In
 fact, the imperative programs that we have written, e.g., the
 factorial procedure, are mere Coq programs, written in Coq syntax with
 a number of HTT-specific notations. Moreover, the Hoare triples, by
@@ -1866,12 +1866,12 @@ variables by Coq's native variables (disguised by the binding notation
 %\index{internal DSL}%
 %\index{embedded DSL}%
 To summarize, shallow embedding is an approach of implementing
-programming languages (not necessarily in Coq), characterized by
+programming languages (not necessarily in Coq) characterized by
 representation of the language of interest (usually called a
 _domain-specific language_ or DSL) as a subset of another
 general-purpose _host_ language, so the programs in the former one are
 simply the programs in the latter one. The idea of shallow embedding
-originates at early '60s with the beginning of era of the Lisp
+originated in early '60s with the beginning of the era of the Lisp
 programming language%~\cite{Graham:BOOK}\index{Lisp}%, which, thanks
 to its macro-expansion system, serves as a powerful platform to
 implement DSLs by means of shallow embedding (such DSLs are sometimes
@@ -1897,12 +1897,12 @@ makes the problem of name binding to be explicit, so it would be
 appreciated as an important aspect in the design and reasoning about
 programming
 languages%~\cite{Aydemir-al:POPL08,Weirich-al:ICFP11,Chargueraud:JAR12}%. We
-believe, these are the reason why this approach is typically chosen as
+believe, these are the reasons why this approach is typically chosen as
 a preferable one when teaching program specification and verification in
 Coq%~\cite{Pierce-al:SF}%.
 Importantly, deep embedding gives the programming language implementor
 the _full control_ over its syntax and semantics.%\footnote{This
-observation is reminiscent to the reasond of using deep embedding in
+observation is reminiscent to the reasons of using deep embedding in
 the practical world.}% In particular, the expressivity limits of a
 defined logic or a type system are not limited by expressivity of
 Coq's (or any other host language's) type system. Deep embedding makes
@@ -1915,8 +1915,8 @@ correctness of program transformations and optimizing
 compilers%~\cite{Appel:BOOK14}%. In contrast, the choice of shallow
 embedding, while sparing one the labor of implementing the parser,
 name binder and type checker, may limit the expressivity of the
-logical calculus or a type system to be defied. In the case of HTT,
-for instance, it amounts to the impossibility to specify programs that
+logical calculus or a type system to be defined. In the case of HTT,
+for instance, it amounts to the impossibility of specifying programs that
 store _effectful functions_ and their specifications into a
 heap.%\footnote{This limitation can be, however, overcome by
 postulating necessary \emph{axioms} on top of CIC.}%
@@ -1954,7 +1954,7 @@ commands%\footnote{I.e., monadic values constructed by means of the
 write/alloc/dealloc/read/return commands and standard Coq connectives,
 such as conditional expression or pattern matching.}% and Hoare
 triples, defined as types. Each command is represented by a function,
-which sometimes referred to as _state transformer_, in the sense that
+which is sometimes referred to as a _state transformer_, in the sense that
 it takes a particular heap and transforms it to another heap, also
 returning some result. The denotational semantics of HTT commands in
 terms of state-transforming functions makes it also possible to define
@@ -1977,7 +1977,7 @@ as a set.
 %\index{extraction}%
 If execution of programs verified in HTT is of interest, it can be
 implemented by means of _extraction_ of HTT commands into programs
-into an external language, which supports general recursion natively
+in an external language, which supports general recursion natively
 (e.g., Haskell). In fact, such extraction has been implemented in the
 first release of HTT%~\cite{Nanevski-al:JFP08}%, but was not ported to
 the latest release.
@@ -1989,7 +1989,7 @@ implementation of single-linked lists truly relies on pointers, and
 specifying such datatypes and programs is an area where separation
 logic shines.
 %\index{single-linked lists}%
-On a surface, a single-linked list can be represented by a pointer,
+On the surface, a single-linked list can be represented by a pointer,
 which points to its head.
 *)
 
@@ -2017,7 +2017,7 @@ Fixpoint lseg (p q : ptr) (xs : seq T): Pred heap :=
 
 (** 
 The notation [[Pred h | ...]] is just an abbreviation for a function
-of type [heap -> Prop], where [h] is assumed to be of type [heap]. The
+of type [heap -> Prop], where [h] is assumed to be of the type [heap]. The
 notation [h \In f] is a synonym for [f h] assuming [f] is a predicate
 of type [heap -> Prop].
 The following lemma [lseg_null] states a fact, which is almost
@@ -2047,7 +2047,7 @@ In the process of the proof we are forced to use the validity of a
 heap in order to derive a contradiction. In the case of heap's
 validity, one of the requirements is that every pointer in it is not
 [null]. We can make it explicit by rewriting the top assumption with
-one of numerous HTT's lemmas about heap validity (use the [Search]
+one of the numerous HTT lemmas about heap validity (use the [Search]
 machinery to find the others).
 
 %\httl{hvalidPtUn}%
@@ -2108,7 +2108,7 @@ Lemma lseq_null xs h : valid h -> h \In lseq null xs -> xs = [::] /\ h = Unit.
 Proof. by move=>D; case/(lseg_null D)=>_ ->. Qed.
 
 (** 
-The next lemma, [lseq_pos], states that is a head of a linked list,
+The next lemma, [lseq_pos], states that if [p] is a head of a linked list,
 defined by a heap [h], is not [null], then it can be "beheaded". That
 is, there will exist a head value [x], a "next" [r] and a residual
 heap [h'], such that the heap [h'] corresponds to the list's tail,
@@ -2141,7 +2141,7 @@ remove p : {xs}, STsep (lseq p xs, [vfun y => lseq y (behead xs)]) :=
            ret pnext). 
 
 (** 
-The proof is straightforward and employs both lemmas [lseq_null] to
+The proof is straightforward and employs both lemmas: [lseq_null] to
 prove the "[null]" case and [lseq_pos] for the case when the list has
 at least one element.
 *)
