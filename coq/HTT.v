@@ -880,7 +880,7 @@ $\finv$ at the beginning of the loop, when it falls into the
 components, constraining the values of $\com{n}$ and $\com{acc}$ in
 the heap and (b) the "re-composition" of the same invariant
 immediately before the recursive call of $\com{loop}$ in order to
-ensure its precondition. The later is possible because of algebraic
+ensure its precondition. The latter is possible because of algebraic
 properties of the factorial function $f$, namely the fact that for any
 $n$, if $n > 0$ then $f(n)\times a = f(n-1) \times n \times a$, the
 insight we have used in order to "re-distribute" the values between
@@ -909,7 +909,7 @@ specified by means of _types_.
 In imperative programs there is a significant distinction between
 _expressions_ and _programs_ (or _commands_). While the former ones
 are _pure_, i.e., will always evaluate to the same result, by which
-they can be safely replaced, the later ones are _effectful_, as their
+they can be safely replaced, the latter ones are _effectful_, as their
 result and the ultimate outcome may produce some irreversible effect
 (e.g., mutating references, throwing exceptions, performing output or
 reading from input), which one should account for. Hoare logics, and,
@@ -953,7 +953,7 @@ distinct from the programming with pure functions:
   result of the first computation, so it can be substituted to all
   occurrences of $x$ in the second command, $c_2$. In this sense,
   binding is different from expressions of the form [let x = e1 in
-  e2], omnipresent in functional programs, as later ones might allow
+  e2], omnipresent in functional programs, as the latter ones might allow
   for both strict and lazy evaluation of the right-hand side
   expression [e1] depending on a semantics of the language (e.g.,
   call-by-value in Standard ML vs. call-by-need in Haskell). This

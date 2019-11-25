@@ -319,7 +319,7 @@ Qed.
 Now, as we have defined a PCM structure along with its specialized
 version, a cancellative PCM, it is time to see how to _instantiate_
 these abstract definitions with concrete datatypes, i.e., _prove_ the
-later ones to be instances of a PCM.
+latter ones to be instances of a PCM.
 
 ** Defining arbitrary PCM instances
 
