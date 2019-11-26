@@ -18,7 +18,7 @@
 
 In the previous chapter we had an opportunity to explore Coq as a
 functional programming language and learn how to define inductive
-datatypes and programs that operate with them, implementing the later
+datatypes and programs that operate with them, implementing the latter
 ones directly or using the automatically-generated recursion
 combinators. Importantly, most of the values that we met until this
 moment, inhabited the types, which were defined as elements of the
