@@ -952,7 +952,7 @@ Qed.
 Lemma gorgeous_beautiful (n: nat) : gorgeous n -> beautiful n.
 (* begin hide *)
 Proof.
-elim=>{n}n=>//.
+elim=>{n} -n=>//.
 - by move=>->; apply: b_0.
 - move=>m H1 H2->{n}.
   by move: (b_sum (m + 3) m 3 H2)=>H; apply: H=>//; apply: b_3.

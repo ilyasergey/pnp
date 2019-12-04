@@ -5,6 +5,7 @@ Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
 
+Declare Scope stsep_scope.
 Delimit Scope stsep_scope with stsep. 
 Open Scope stsep_scope.
 
@@ -67,8 +68,8 @@ Definition post_of A := [fun e : ST A => (spec_of e).2].
 Definition code_of A (e : ST A) := 
   let: with_spec _ c := e return STbin (spec_of e) in c.
 
-Arguments pre_of [A].
-Arguments post_of [A].
+Arguments pre_of {A}.
+Arguments post_of {A}.
 Arguments with_spec [A].
 Prenex Implicits pre_of post_of.
 
@@ -164,7 +165,7 @@ Local Notation conseq1 e s :=
 Lemma conseq_refl A (e : ST A) : conseq e (spec_of e). 
 Proof. by case: e=>s e i H; apply: frame0. Qed.
 
-Hint Resolve conseq_refl. 
+Hint Resolve conseq_refl : core.
 
 Section SepConseq.
 Variables (A : Type) (s2 : spec A) (e : ST A) (pf : conseq e s2).
@@ -387,8 +388,3 @@ Notation "c1 ';;' c2" := (bind c1 (fun _ => c2))
   (at level 78, right associativity) : stsep_scope.
 Notation "'!' x" := (read _ x) (at level 50) : stsep_scope.
 Notation "e1 '::=' e2" := (write e1 e2) (at level 60) : stsep_scope.
-
-
-
-
-

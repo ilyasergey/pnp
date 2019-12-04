@@ -309,7 +309,7 @@ apply/subdomP=>[//||x in1]; first by apply negbT.
 by apply: (subdomQ H2) (subdomQ H1 in1).
 Qed.
 
-Hint Resolve subdom_emp subdomPE.
+Hint Resolve subdom_emp subdomPE : core.
 
 
 (* swap the arguments *)
@@ -374,10 +374,10 @@ Ltac supdom_checker t H :=
      let j := fresh "j" in
      set j := {1}(h1 \+ t); 
      rewrite -1?joinA /j {j};
-     (apply: (sexit1 H)=>{H} H || apply: (sexit2 H)=>{H} H)
+     (apply: (sexit1 H)=>{H} -H || apply: (sexit2 H)=>{H} -H)
   | |- is_true (supdom t ?h1) => 
      rewrite -1?joinA;
-     (apply: (sexit3 H)=>{H} H || apply: (sexit4 H)=>{H} H)
+     (apply: (sexit3 H)=>{H} -H || apply: (sexit4 H)=>{H} -H)
   | |- is_true (supdom (?h1 \+ (?x :-> ?v)) ?h2) => 
     let j := fresh "j" in 
     set j := {1}(h1 \+ (x :-> v));
@@ -385,7 +385,7 @@ Ltac supdom_checker t H :=
     rewrite 1?(joinC (x :-> _)) -?(joinAC _ _ (x :-> _)) /j {j}; 
     (* then one of the following must apply *)
     (* if x is in the second union then cancel *)
-    (apply: (supdomUh _ H)=>{H} H || 
+    (apply: (supdomUh _ H)=>{H} -H ||
     (* if not, rotate x in the first union *)
      (rewrite (joinC h1) ?joinA in H * )); supdom_checker t H
   (* if the heap is not a points-to relation, also try to cancel *)
@@ -396,7 +396,7 @@ Ltac supdom_checker t H :=
     rewrite 1?(joinC h) -?(joinAC _ _ h) /j {j}; 
     (* then one of the following must apply *)
     (* if h is in the second union then cancel *)
-    (apply: (supdomeqUh H)=>{H} H || 
+    (apply: (supdomeqUh H)=>{H} -H ||
     (* if not, rotate h in the first union *)
     (rewrite (joinC h1) ?joinA in H * )); 
     (* and proceed *)
