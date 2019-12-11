@@ -391,7 +391,7 @@ Definition conseq A (s1 s2 : spec A) :=
 Lemma conseq_refl (A : Type) (s : spec A) : conseq s s.
 Proof. by []. Qed.
 
-Hint Resolve conseq_refl. 
+Hint Resolve conseq_refl : core.
 
 Section Consequence.
 Variables (A : Type) (s1 s2 : spec A) (e : STspec s1) (pf : conseq s1 s2).
@@ -607,4 +607,3 @@ Definition dealloc :=
 End Deallocation.
 
 End Model.
-
