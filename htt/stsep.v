@@ -5,7 +5,6 @@ Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive. 
 
-Declare Scope stsep_scope.
 Delimit Scope stsep_scope with stsep. 
 Open Scope stsep_scope.
 
