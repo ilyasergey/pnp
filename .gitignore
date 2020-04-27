@@ -143,6 +143,9 @@ cv/*.out
 *.v.d
 *.glob
 .coq-native
+*.vok
+*.vos
+.Makefile.coq.d
 
 # -----------------------------------------------------------------------------
 # Project-specific stuff

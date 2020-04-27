@@ -158,13 +158,13 @@ Alternatively, you can clone the sources of these lecture notes, along with the 
 
 ** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.9.0, Ssreflect/Mathematical Components version 1.8.0, and FCSL PCM version 1.1.0. It is not guaranteed that the same examples will work seamlessly with different versions. Therefore, several recipes on how to build and install the necessary software are provided below.
+The sources of this manuscript have been compiled and tested with Coq version 8.11.1, Ssreflect/Mathematical Components version 1.10.0, and FCSL PCM version 1.2.0. It is not guaranteed that the same examples will work seamlessly with different versions. 
 
 The easiest way to obtain the necessary versions of Coq and the libraries is
 to install them via the OPAM package manager (%\url{https://opam.ocaml.org}%):
 
 << 
-opam install coq.8.9.0
+opam install coq.8.11.1
 >>
 
 
@@ -174,24 +174,8 @@ repository and then install the packages as follows:
 
 << 
 opam repo add coq-released https://coq.inria.fr/opam/released 
-opam install coq-mathcomp-ssreflect.1.8.0 coq-fcsl-pcm.1.1.0
+opam install coq-mathcomp-ssreflect.1.10.0 coq-fcsl-pcm.1.2.0
 >>
-
-Alternatively, you can compile Coq 8.9.0%\footnote{\url{https://github.com/coq/coq}}%, Ssreflect/Mathematical
-Components version 1.8.0%\footnote{\url{https://github.com/math-comp/math-comp}}%, and
-FCSL PCM 1.1.0%\footnote{\url{https://github.com/imdea-software/fcsl-pcm}}%
-from sources.%\footnote{Getting Coq using a system-specific package
-manager, such as \emph{aptitude} or \emph{MacPorts} is another option,
-although the Coq version acquired this way is not guaranteed to work
-properly with Ssreflect/Mathematical Components 1.8.0.}%
-In order to be compiled, Coq requires OCaml version 4.02.3 or later, Camlp5 version 6.13 or later, GNU Make version 3.81 or later (see the <<INSTALL>> file from the archive with sources for more details on configuration and installation).%\footnote{If you are installing a newer version of Coq, replacing an older one, you might need to erase first the folder with obsolete Coq libraries, e.g., \texttt{/usr/local/lib/coq}, before running \texttt{make install}.}% Once compiled and installed, the following environment variables should be set (e.g., in <<~/.bashrc>> or <<~/.profile>> configuration files) to build the libraries (with the respective paths chosen during the Coq's installation):
-
-<< 
-export COQBIN="/usr/local/bin/" 
-export COQ_MK="/usr/local/bin/coq_makefile" 
->>
-
-After installation, it is recommended to keep the sources of Ssreflect/Mathematical Components and FCSL PCM easily accessible as reading them might be helpful when working with the libraries (for instance, put them into the folders <<~/misc/math-comp-1.8.0>> and <<~/misc/fcsl-pcm-1.1.0>>).
 
 ** Emacs set-up
 
