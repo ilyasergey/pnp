@@ -168,13 +168,14 @@ opam install coq.8.11.1
 >>
 
 
-In order to install Ssreflect/Mathematical Components and FCSL PCM,
+In order to install Ssreflect/Mathematical Components, FCSL PCM, and HTT,
 you will need to register the corresponding
 repository and then install the packages as follows:
 
 << 
-opam repo add coq-released https://coq.inria.fr/opam/released 
-opam install coq-mathcomp-ssreflect.1.10.0 coq-fcsl-pcm.1.2.0
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam pin add coq-htt git+https://github.com/TyGuS/htt\#master --no-action --yes
+opam install coq-mathcomp-ssreflect coq-fcsl-pcm coq-htt
 >>
 
 ** Emacs set-up
@@ -187,7 +188,7 @@ Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> an
 (load-file "~/misc/PG/generic/proof-site.el")
 
 ;; Ssreflect support 
-(load-file "~/misc/math-comp-1.8.0/mathcomp/ssreflect/pg-ssr.el")
+(load-file "~/misc/math-comp-1.10.0/mathcomp/ssreflect/pg-ssr.el")
 >>
 
 Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
