@@ -1,4 +1,3 @@
--Q htt HTT
 -Q coq PnP
 -Q solutions PnPSolutions
 
@@ -8,13 +7,6 @@
 -arg -w -arg -projection-no-head-constant
 -arg -w -arg -undo-batch-mode
 
-htt/domain.v
-htt/heaptac.v
-htt/stmod.v
-htt/stsep.v
-htt/stlog.v
-htt/stlogR.v
-htt/array.v
 coq/Introduction.v
 coq/FunProg.v
 coq/LogicPrimer.v

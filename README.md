@@ -20,13 +20,15 @@ Initial release: August 2014
 * [Coq](https://coq.inria.fr/download), versions from 8.7 to 8.11.1
 * [Mathematical Components](http://math-comp.github.io/math-comp/), versions from 1.6.2 to 1.10.0 (`ssreflect` package)
 * [FCSL-PCM](https://github.com/imdea-software/fcsl-pcm), versions 1.0.0, 1.1.0, or 1.2.0
+* [Hoare Type Theory](https://github.com/TyGuS/htt)
 
 ### Building
 
 We recommend installing the requirements via [opam](https://opam.ocaml.org/doc/Install.html):
 ```
 opam repo add coq-released https://coq.inria.fr/opam/released
-opam install coq-mathcomp-ssreflect coq-fcsl-pcm
+opam pin add coq-htt git+https://github.com/TyGuS/htt\#master --no-action --yes
+opam install coq coq-mathcomp-ssreflect coq-fcsl-pcm coq-htt
 ```
 
 Then, run `make clean; make` from the root folder. This will compile

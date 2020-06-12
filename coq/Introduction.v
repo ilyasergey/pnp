@@ -209,7 +209,7 @@ Finally, the optional Company-Coq%\footnote{\url{https://github.com/cpitclaudel/
 The reader is encouraged to download the additional material for this course in the form of Coq files with all examples from the manuscript plus some additional exercises. The sources can be obtained from the %\href{https://github.com/ilyasergey/pnp}{\texttt{GitHub repository}}%.
 The Coq files accompanying lectures (with solutions omitted) are contained in the %\texttt{lectures}% folder.
 For the examples of Chapter%~\ref{ch:htt}% and the corresponding lecture source file, the sources of the Hoare Type Theory (HTT) development will be required. 
-The current version of the notes includes the ready-to-use up-to-date sources of HTT in the folder %\texttt{htt}%.
+The up-to-date sources of HTT are available in the GitHub repository %\url{https://github.com/TyGuS/htt}%. The HTT itself can be installed via %\texttt{opam}%.
 Solutions for all of the exercises can be found in the folder %\texttt{solutions}% of the GitHub project accessible by the link above.
 
 After the sources are cloned, run <<make>> from the root folder. This will build all necessary libraries, lectures, solutions for the exercises, and the lecture notes. The resulting PDF file is %\texttt{latex/pnp.pdf}%.
