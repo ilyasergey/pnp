@@ -674,17 +674,14 @@ family [reflect], which connects propositions and booleans:
 
 *)
 
-(* begin hide *)
-Module Inner.
-(* end hide *)
-Inductive reflect (P : Prop) : bool -> Set :=
-  | ReflectT  of   P : reflect P true
-  | ReflectF of ~ P : reflect P false.
-(* begin hide *)
-End Inner.
-(* end hide *)
+Print Bool.reflect.
 
 (**
+[[
+Inductive reflect (P : Prop) : bool -> Set :=
+  | ReflectT of   P : reflect P true
+  | ReflectF of ~ P : reflect P false.
+]]
 
 Similarly to the custom rewriting rules, the [reflect] predicate is
 nothing but a convenient way to encode a "truth" table with respect to
