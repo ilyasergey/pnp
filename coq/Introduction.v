@@ -158,13 +158,13 @@ Alternatively, you can clone the sources of these lecture notes, along with the 
 
 ** Installing Coq, Ssreflect and Mathematical Components
 
-The sources of this manuscript have been compiled and tested with Coq version 8.11.1, Ssreflect/Mathematical Components version 1.10.0, and FCSL PCM version 1.2.0. It is not guaranteed that the same examples will work seamlessly with different versions. 
+The sources of this manuscript have been compiled and tested with Coq version 8.11.2, Ssreflect/Mathematical Components version 1.11.0, and FCSL PCM version 1.2.0. It is not guaranteed that the same examples will work seamlessly with different versions. 
 
 The easiest way to obtain the necessary versions of Coq and the libraries is
 to install them via the OPAM package manager (%\url{https://opam.ocaml.org}%):
 
 << 
-opam install coq.8.11.1
+opam install coq.8.11.2
 >>
 
 
@@ -180,16 +180,7 @@ opam install coq-mathcomp-ssreflect coq-fcsl-pcm coq-htt
 
 ** Emacs set-up
 
-The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org}}% for macOS users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs, clone the Git repository of Proof General,%\footnote{\url{https://github.com/ProofGeneral/PG}}% and Ssreflect/Mathematical Components%\footnote{\url{https://github.com/math-comp/math-comp}}% following the instructions below.
-Upon cloning both repositories, for instance, into the folders <<~/misc/PG/>> and <<~/misc/math-comp-1.8.0/>>, add the following lines into the %\texttt{.emacs}% configuration file located in the home directory in Unix and in the <<C:\>> root in Windows (possibly replacing the %\texttt{\textasciitilde/misc/}% part with the path where the Proof General and Ssreflect/Mathematical Components repositories were).
-
-<< 
-;; Proof General support 
-(load-file "~/misc/PG/generic/proof-site.el")
-
-;; Ssreflect support 
-(load-file "~/misc/math-comp-1.10.0/mathcomp/ssreflect/pg-ssr.el")
->>
+The Emacs%\footnote{\url{http://www.gnu.org/software/emacs/}}% (or Aquamacs%\footnote{\url{http://aquamacs.org}}% for MacOS users) text editor provides a convenient environment for Coq development, thanks to the Proof General mode. After downloading and installing Emacs follow the instructions from the Proof General repository%\footnote{\url{https://github.com/ProofGeneral/PG}}% to configure the Emacs support for Coq.
 
 Linux users who are more used to the Windows-style Copy/Paste/Undo keystrokes can also find it convenient to enable the Cua mode in Emacs, which can be done by adding the following lines into the %\texttt{.emacs}% file:
 
