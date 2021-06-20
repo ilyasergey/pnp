@@ -653,7 +653,7 @@ Definition strange_to_empty (s: strange): empty :=
   strange_rect (fun _ => empty) (fun _ e => e) s.
 
 (**
-To summarize, designing a datatype, which is not inhabited, while not
+To summarize, designing a datatype which is not inhabited, while not
 trivial, is not impossible, and it is a task of a designer of a
 particular type to make sure that its values in fact can be
 constructed.
