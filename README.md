@@ -1,5 +1,7 @@
 # Programs and Proofs
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4996239.svg)](https://doi.org/10.5281/zenodo.4996239)
+
 A Short Course on Interactive Proofs in Coq/Ssreflect. This project
 contains the Coq sources, the lectures and the exercises for the
 course
